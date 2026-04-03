@@ -122,7 +122,7 @@ Este documento apresenta a proposta inicial do Trabalho de Conclusão de Curso (
 \vspace{\onelineskip}
 
 \noindent
-\textbf{Palavras-chave}: palavra1. palavra2. palavra3. palavra4. palavra5.
+\textbf{Palavras-chave}: Telemetria. ESP32. LoRaWan. Regressão. OCR. ETL.
 \end{resumo}
 
 % ---------------------------------------------------------------
@@ -215,43 +215,30 @@ A revisão bibliográfica não consiste em simplesmente listar os trabalhos enco
 \section{Justificativa}
 \label{sec:justificativa}
 
-Explicite por que resolver esse problema é importante. A justificativa deve abordar:
+O desenvolvimento de um sistema telemétrico com o objetivo de digitalizar medidores hídricos, provém uma ferramenta de grande valor para a sociedade, atacando um grande problema social urbano que é o desperdício de água em áreas privadas.
 
-\begin{itemize}
-    \item \textbf{Relevância acadêmica}: como este trabalho contribui para o avanço do conhecimento na área;
-    \item \textbf{Relevância prática/profissional}: quais benefícios práticos a solução trará para usuários, organizações ou a sociedade;
-    \item \textbf{Lacuna identificada}: o que ainda não foi resolvido ou explorado suficientemente pelos trabalhos existentes.
-\end{itemize}
+Dentro do âmbito acadêmico, o desenvolvimento de sistemas não focados em desempenho não é algo tão estudado nem tão corriqueiro, o estudo e aprofundamento na prática de um sistema empenhado em reduzir o consumo energético é um relevante avanço do conhecimento na área.
 
-Mostre que o trabalho não é apenas um texto sobre um tema popular, mas sim uma proposta que visa preencher uma lacuna real e contribuir de forma significativa para a área.
+Diante dessas duas faces encontramos duas lacunas passíveis de atuação que é o desenvolvimento e aprofundamento de um sistema focado em economia de recurso energético aliado a um hardware de baixo poder computacional e atuando sobre um problema social que temos como objetivo mitigá-lo.
 
 % ---------------------------------------------------------------
 \section{Objetivo}
 \label{sec:objetivo}
 
-Os objetivos definem o que o trabalho pretende alcançar. Devem ser claros, mensuráveis e diretamente relacionados ao problema identificado.
-
 \subsection{Objetivo principal}
 
-O objetivo principal deve ser \textbf{único} e sintetizar o propósito central do trabalho em uma frase direta. Ele deve responder à pergunta: \textit{o que este trabalho pretende resolver ou alcançar?}
-
-Exemplo: \textit{Desenvolver um sistema web para gerenciamento de tarefas acadêmicas que permita aos estudantes organizar suas atividades de forma colaborativa.}
-
-\textbf{Dica}: utilize verbos no infinitivo como \textit{desenvolver}, \textit{analisar}, \textit{propor}, \textit{avaliar}, \textit{implementar}, \textit{comparar}, entre outros. Evite verbos vagos como \textit{estudar} ou \textit{entender}.
+Desenvolver um sistema telemétrico para hidrômetros analógicos convencionais, digitalizando-os utilizando microprocessadores ESP32 com um firmware otimizado para realizar transmissão de imagens via rede LoRaWan, visando a otimização de custos e a eficiência energética, utilizando um nó central coletar informações utilizando algoritmo de OCR, e então processar os dados coletados gerando alertas ao detectar anomalias e calculando previsões de consumo, e posteriormente apresentando os dados coletados em um dashboard atualizado em tempo real.
 
 \subsection{Objetivos secundários}
 
 Os objetivos secundários são desdobramentos do objetivo principal. Eles descrevem as etapas ou ações necessárias para atingir o objetivo principal. Devem ser mensuráveis e verificáveis.
 
 \begin{enumerate}
-    \item Realizar levantamento bibliográfico sobre [tema específico];
-    \item Identificar e analisar os requisitos do sistema/solução proposta;
-    \item Projetar a arquitetura da solução com base nos requisitos levantados;
-    \item Implementar um protótipo funcional da solução proposta;
-    \item Validar a solução por meio de [testes, métricas, estudo de caso, etc.].
+    \item Digitalizar Hidrômetros utilizando microprocessadores ESP32, e enviando imagens via rede sem fio;
+    \item Implementação de Rede LoRaWan conectando os nós da rede e configurando-a com o objetivo de reduzir ao máximo o consumo energético;
+    \item Implementar um pipeline ETL no nó central da rede, com o objetivo de estruturar os dados para serem apresentados em dashboards;
+    \item Aplicar modelos de análise de dados sobre histórico coletado para gerar  previsões de demanda e alertas automáticos de irregularidades no fluxo(como vazamentos ou fraudes);
 \end{enumerate}
-
-\textbf{Atenção}: cada objetivo secundário deve contribuir diretamente para o alcance do objetivo principal. Evite listar objetivos que não tenham relação clara com o problema.
 
 % ===============================================================
 % CAPÍTULO 2 - REVISÃO BIBLIOGRÁFICA
