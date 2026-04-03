@@ -63,10 +63,10 @@
 % ---------------------------------------------------------------
 % INFORMAÇÕES DO DOCUMENTO
 % ---------------------------------------------------------------
-\titulo{Título do Trabalho de Conclusão de Curso}
-\autor{Nome Completo do Aluno}
+\titulo{Desenvolvimento de Sistema Telemétrico de Hidrômetros Analógicos com Pipeline ETL.}
+\autor{Marcelo Fernandes de Oliveira Junior \\ Gustavo Oliveira dos Santos \\ Christian Lima Santana}
 \local{São Paulo}
-\data{2025}
+\data{2026}
 \orientador{Prof. Nome do Orientador}
 % \coorientador{Prof. Nome do Coorientador} % Descomente se houver coorientador
 
@@ -75,12 +75,12 @@
   \par
   Unidade Santo Amaro
   \par
-  Curso de [Nome do Curso]
+  Curso de Bacharelado em Ciência da Computação
 }
 
 \tipotrabalho{Trabalho de Conclusão de Curso I}
 
-\preambulo{Proposta de Trabalho de Conclusão de Curso apresentado ao SENAC Santo Amaro como requisito parcial para aprovação na disciplina de TCC1 do curso de [Nome do Curso].}
+\preambulo{Proposta de Trabalho de Conclusão de Curso apresentado ao SENAC Santo Amaro como requisito parcial para aprovação na disciplina de TCC1 do curso de Bacharelado em Ciência da Computação.}
 
 % ---------------------------------------------------------------
 % COMPILA O ÍNDICE
@@ -157,15 +157,25 @@ Este documento apresenta a proposta inicial do Trabalho de Conclusão de Curso (
 \chapter{Introdução}
 \label{cap:introducao}
 
-A introdução deve apresentar o tema do trabalho de forma clara e objetiva, situando o leitor no contexto da pesquisa. Neste capítulo, são apresentados o contexto no qual o problema se insere, a justificativa para a realização do estudo e os objetivos que norteiam o desenvolvimento do trabalho.
+Em um mundo cada vez mais consciente sob a escassez de recursos hídricos, torna-se imprescindível o desenvolvimento de novas ferramentas de medição.
+
+Sistemas interconectados de alta confiabilidade, baixo custo de implantação e menor necessidade de manutenção são requisitos de uma boa solução para a problemática. 
+
+Sob a ótica tecnológica, encontramos grandes desafios na implementação de um sistema focado em atacar tal questão, entre eles destacam-se a otimização e implementação de algoritmos e protocolos com objetivo de redução de consumo energético, redução de processamento e maximização da confiabilidade na transmissão de dados.
+
+Este trabalho tem como objetivo desenvolver um sistema telemétrico de baixo custo, alta confiabilidade e baixa necessidade de manutenção para áreas privadas de pequeno/médio porte.
 
 % ---------------------------------------------------------------
 \section{Contexto}
 \label{sec:contexto}
 
-Apresente o cenário que originou o problema, ressaltando fatos, indicadores e lacunas identificadas na área de estudo. O contexto deve situar o leitor sobre o estado atual do tema, mostrando a relevância do assunto para a Computação e para a sociedade.
+Sob um cenário de escassez hídrica, e de um contínuo desperdício entre 35\% a 40\% de água potável em áreas urbanas, torna-se necessário o acompanhamento periódico para identificação de anomalias e previsibilidade de consumo de recursos hídricos. 
 
-Descreva o ambiente ou domínio em que o problema ocorre, utilizando dados e referências que comprovem a existência do problema. Explique quem são os principais afetados e quais são as consequências de não resolvê-lo.
+No âmbito acadêmico, há uma lacuna na abordagem para a solução do problema em áreas privadas de pequeno/médio porte, onde em tais obras, em suma, não há uma preocupação com o recurso consumido pelo próprio sistema telemétrico, e nem a geração de insights de utilizando conceitos de ciência de dados.
+
+Para a computação este tema possui grande relevância ao abordarmos principalmente o desenvolvimento e um sistema não focado em melhor desempenho, mas sim voltado para menor consumo possível e ainda sim atendendo todas as demandas que o problema propõe.
+
+Para a sociedade, uma ferramenta de baixo custo de implementação e alto poder no auxílio de tomada de decisões entrega um alto valor agregado.
 
 \vspace{0.3cm}
 \noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
@@ -278,7 +288,7 @@ Descreva como a pesquisa bibliográfica foi conduzida, incluindo:
 
 Exemplo de descrição:
 
-\textit{A pesquisa bibliográfica foi realizada nas bases Google Scholar, IEEE Xplore e ACM Digital Library, utilizando as palavras-chave ``machine learning'', ``classificação de texto'' e ``processamento de linguagem natural''. Foram selecionados artigos publicados entre 2018 e 2025, em português e inglês, que abordassem diretamente técnicas de classificação automática de documentos.}
+\textit{A pesquisa bibliográfica foi realizada nas bases Google Scholar, IEEE Xplore e ACM Digital Library, utilizando as palavras-chave ``LoRaWan'', ``ESP32'' e ``Monitoramento''. Foram selecionados artigos publicados entre 2021 e 2026, em português e inglês, que abordassem diretamente técnicas de desenvolvimento de sistemas de telemetria.}
 
 % ---------------------------------------------------------------
 \section{Fundamentos}
