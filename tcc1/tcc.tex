@@ -298,8 +298,8 @@ Para cada trabalho relacionado, descreva:
 \begin{enumerate}
     \item \textbf{Qual problema} o trabalho tentou resolver (e por que é o mesmo problema que o seu);
     \item A metodologia ou abordagem utilizada para resolvê-lo;
-    \item Os principais resultados obtidos;
-    \item As limitações identificadas na solução proposta;
+    \item Os principais resultados obtidos; 
+    \item As limitações identificadas na solução proposta; 
     \item Como o \textbf{seu trabalho se diferencia} ou avança em relação a ele.
 \end{enumerate}
 
@@ -310,14 +310,21 @@ Para resolvê-lo, o autor propôs desenvolver um sistema utilizando microprocess
 
 A metodologia utilizada foi a pesquisa experimental, onde houve o desenvolvimento de um sistema que supri a necessidade de extração de dados de maneira digital. 
 
-Os resultados mostraram que o desenvolvimento deste tipo de ferramente é totalmente viável, e em suma, o experimento foi bem sucedido. 
-No entanto, a solução apresenta limitações, uma delas é a utlização de edge-computing aplicado a um hardware que possui recursos severamente limitados, impactando diretamente na utlização de recursos energéticos, em um sistema que urge o foco em baixo consumo de energia e memória, outro ponto a ser abordado é a limitação da câmera na captura de imagens, necessitando de uma adaptação em lente para haver a capacidade de captura de dados próximos. 
+Os resultados mostraram que o desenvolvimento deste tipo de ferramenta é totalmente viável, e em suma, o experimento foi bem sucedido. 
+No entanto, a solução apresenta limitações, uma delas é a utlização de edge-computing aplicado a um hardware que possui recursos severamente limitados, impactando diretamente na utlização de recursos energéticos, em um sistema que urge o foco em baixo consumo de energia e memória, outro ponto a ser abordado é a limitação da câmera na captura de imagens, necessitando de uma adaptação em lente para a captura de dados próximos. 
 
 O presente trabalho diferencia-se por aplicar conceitos de Fog-Computing (implementando camadas de processamento pré-cloud), e um ponto que atacamos mais profundamente é o desenvolvimento de uma rede LoRaWan confiável para tráfego de dados e o aprofundamento dos insight's gerados na etapa de apresentação dos dados.
 
-\subsection{Trabalho 2: [Título do trabalho]}
+\subsection{Trabalho 2: Sistema de Gerenciamento Inteligente de Água Utilizando Sensores Baseados em IoT}
 
-[Descrever o segundo trabalho seguindo a mesma estrutura acima, sempre evidenciando que o problema abordado é o mesmo ou muito próximo ao seu.]
+\citeonline{Tedjojuwono2024} abordou o tema de sistemas inteligentes para o manejo de recursos hídricos em áreas residenciais. 
+Para resolvê-lo, os autores propuseram o desenvolvimento de um framework que substitui medidores mecânicos por sensores de fluxo eletrônicos integrados a uma arquitetura IoT. O sistema utiliza prototipagem com Arduino Uno e sensores de efeito Hall (YF-S201) para coletar dados de vazão em tempo real, enviando as informações via módulo 3G/GPRS para um servidor de banco de dados centralizado. Os dados processados alimentam uma aplicação web que permite o monitoramento do consumo, faturamento automatizado e a detecção precoce de anomalias na distribuição.
+
+A metodologia utilizada seguiu os princípios do Design Thinking, incluindo uma fase qualitativa de coleta de requisitos através de entrevistas com usuários e a criação de mapas de empatia, seguida pelo desenvolvimento do protótipo e avaliação de usabilidade através da escala SUS (System Usability Scale). 
+
+Os resultados mostraram que a solução é viável e intuitiva, obtendo uma pontuação média de 72 na escala SUS, o que indica uma boa aceitação pelos usuários. No entanto, o trabalho aponta limitações na abrangência dos dados, focando primariamente na taxa de fluxo, e destaca a necessidade de integrar mais tipos de sensores (como pressão e qualidade da água) para análises de Big Data mais robustas. Além disso, a precisão total do sistema de previsão depende de um volume maior de dados históricos que ainda precisam ser coletados. 
+
+O presente trabalho diferencia-se por focar na infraestrutura de comunicação LoRaWAN, visando uma maior eficiência energética e alcance em comparação ao GPRS/3G utilizado pelos autores, além de explorar a integração direta com medidores analógicos já existentes através de telemetria, em vez da substituição completa do hardware de medição. 
 
 \subsection{Trabalho 3: [Título do trabalho]}
 
