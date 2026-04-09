@@ -35,6 +35,9 @@
 \usepackage{pgfgantt}               % Diagramas de Gantt
 \usepackage[brazilian,hyperpageref]{backref}  % Páginas com citações
 \usepackage[alf]{abntex2cite}       % Citações ABNT
+%Adicionados posteriormente:
+\usepackage{tabularx} % Para tabelas com largura ajustada
+\usepackage{booktabs} % Para linhas mais elegantes (estilo acadêmico)
 
 % ---------------------------------------------------------------
 % CONFIGURAÇÕES DO PDF
@@ -277,6 +280,19 @@ Exemplo de descrição:
 % ---------------------------------------------------------------
 \section{Fundamentos}
 \label{sec:fundamentos}
+
+\begin{table}[ht]
+\centering
+\caption{Especificações dos componentes de hardware utilizados.}
+\label{tab:componentes_hardware}
+\begin{tabularx}{\textwidth}{@{} l X X @{}}
+\toprule
+\textbf{Componente} & \textbf{Função Principal} & \textbf{Característica Chave para o Projeto} \\ \midrule
+ESP32-CAM & Captura e processamento & Baixo custo e suporte a redes Wi-Fi. \\ \addlinespace
+SMW-SX1262M0 & Transmissão de Longo Alcance & Alta sensibilidade (-148 dBm) e baixo consumo. \\ \addlinespace
+Interface Serial & Programação/Debug & Ponte USB-TTL para gravação de código. \\ \bottomrule
+\end{tabularx}
+\end{table}
 
 Aprofunde os conceitos técnicos que serão utilizados na solução proposta. Diferentemente do referencial teórico (que apresenta conceitos gerais), os fundamentos devem detalhar as tecnologias, algoritmos, frameworks ou metodologias específicas que serão empregados no desenvolvimento.
 
