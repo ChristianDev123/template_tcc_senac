@@ -235,11 +235,19 @@ Os objetivos secundários são desdobramentos do objetivo principal. Eles descre
 \chapter{Revisão Bibliográfica}
 \label{cap:revisao}
 
-A revisão bibliográfica tem como finalidade apresentar o embasamento teórico do trabalho, demonstrando o conhecimento do autor sobre o tema e identificando o estado da arte. Este capítulo deve ser organizado por conceitos e temas, construindo uma linha de argumentação que sustente a proposta do trabalho.
-
 % ---------------------------------------------------------------
 \section{Referencial teórico}
 \label{sec:referencial}
+
+\section{Hardware de baixo consumo e Eficiência em IoT}
+
+\subsection{Microcontroladores e a Plataforma ESP32}
+O desenvolvimento de nós de sensoriamento para cidades inteligentes exige hardware que equilibre poder de processamento e autonomia energética. O ESP32 destaca-se nesse cenário como uma plataforma robusta de baixo custo, integrando conectividade sem fio e múltiplos modos de operação \cite{Sari2022}. Diferente de arquiteturas mais simples, o ESP32 permite a execução de tarefas complexas e segurança criptográfica sem comprometer severamente o ciclo de vida da bateria, desde que devidamente configurado \cite{Ahmad2021}.
+
+\subsection{Estratégias de Gerenciamento de Energia}
+A viabilidade de dispositivos IoT em campo, como medidores de água residenciais, depende da minimização do consumo em estado de repouso (\textit{deep sleep}). Segundo \citeonline{Ferreira2020}, a vida útil da bateria é influenciada criticamente não apenas pelo hardware, mas pela eficiência das rotinas de escrita em periféricos e pela otimização do firmware. 
+
+A escolha da tecnologia de rede também desempenha papel fundamental no balanço energético. Comparativos demonstram que, embora o Wi-Fi ofereça maior taxa de transferência, a tecnologia LoRa apresenta uma eficiência superior para transmissões de longo alcance e baixo volume de dados, sendo mais adequada para dispositivos alimentados por bateria que operam em locais isolados \cite{Martine2023}.
 
 Apresente os principais conceitos, teorias e definições que fundamentam o trabalho. O referencial teórico deve fornecer ao leitor a base necessária para compreender o problema e a solução proposta.
 
