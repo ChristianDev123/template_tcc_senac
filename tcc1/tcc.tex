@@ -264,18 +264,11 @@ Utilize citações para fundamentar cada conceito apresentado. Segundo \citeonli
 \section{Metodologia da pesquisa bibliográfica}
 \label{sec:metodologia_pesquisa}
 
-Descreva como a pesquisa bibliográfica foi conduzida, incluindo:
+A pesquisa bibliográfica foi conduzida de forma sistemática, estruturando-se em três temas principais: Hardware, Software e Redes. Para a seleção dos trabalhos, utilizaram-se as bases de dados Google Scholar, MDPI e Intechopen.
 
-\begin{itemize}
-    \item \textbf{Bases de dados consultadas}: Google Scholar, IEEE Xplore, ACM Digital Library, SciELO, Periódicos CAPES, entre outras;
-    \item \textbf{Palavras-chave utilizadas}: liste os termos de busca em português e inglês;
-    \item \textbf{Critérios de inclusão e exclusão}: quais critérios foram usados para selecionar ou descartar trabalhos (período, idioma, relevância, tipo de publicação);
-    \item \textbf{Período de abrangência}: intervalo de anos das publicações consultadas.
-\end{itemize}
+O processo de seleção seguiu um fluxo de filtragem (funil). Inicialmente, foram identificados 50 artigos por meio da análise de títulos, utilizando strings de busca majoritariamente em inglês, tais como ``iot AND energy efficiency'' e ``ESP32 AND camera monitoring''. Como ferramentas auxiliares na descoberta de conexões entre autores e na triagem inicial de relevância, foram utilizadas as plataformas ResearchRabbit e Gemini Deep Research.
 
-Exemplo de descrição:
-
-\textit{A pesquisa bibliográfica foi realizada nas bases Google Scholar, IEEE Xplore e ACM Digital Library, utilizando as palavras-chave ``LoRaWan'', ``ESP32'' e ``Monitoramento''. Foram selecionados artigos publicados entre 2021 e 2026, em português e inglês, que abordassem diretamente técnicas de desenvolvimento de sistemas de telemetria.}
+Na etapa de refinamento, aplicou-se a leitura dos resumos (abstracts) e a verificação de disponibilidade integral dos textos. Foram adotados como critérios de inclusão: artigos publicados entre 2020 e 2026, relevância direta com sistemas de telemetria e foco em implementações práticas. Como critério de exclusão, descartaram-se trabalhos com acesso restrito ou que não apresentassem detalhes técnicos sobre a integração dos eixos propostos.
 
 % ---------------------------------------------------------------
 \section{Fundamentos}
@@ -289,7 +282,6 @@ Exemplo de descrição:
 \toprule
 \textbf{Componente} & \textbf{Função Principal} & \textbf{Característica Chave para o Projeto} \\ \midrule
 ESP32-CAM & Captura e processamento & Baixo custo e suporte a redes Wi-Fi. \\ \addlinespace
-SMW-SX1262M0 & Transmissão de Longo Alcance & Alta sensibilidade (-148 dBm) e baixo consumo. \\ \addlinespace
 Interface Serial & Programação/Debug & Ponte USB-TTL para gravação de código. \\ \bottomrule
 \end{tabularx}
 \end{table}
