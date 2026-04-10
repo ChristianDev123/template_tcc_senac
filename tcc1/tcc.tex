@@ -168,7 +168,7 @@ Este trabalho propõe o desenvolvimento de um sistema telemétrico para hidrôme
 \section{Contexto}
 \label{sec:contexto}
 
-O cenário brasileiro de saneamento aponta perdas na distribuição de água potável que variam entre 35\% e 40\% [Citar Fonte]. Em áreas privadas, a ausência de monitoramento em tempo real impossibilita a detecção precoce de vazamentos e anomalias.
+O cenário brasileiro de saneamento aponta perdas na distribuição de água potável. Como apresentado no jornal \citeonline{g1_desperdicio_2026} o desperdício de recurso hídrico no Brasil hoje representa a considerável fatia de 39,5\% de todo o volume distribuído à população. Em áreas privadas, a ausência de monitoramento em tempo real impossibilita a detecção precoce de vazamentos e anomalias.
 
 No campo da Ciência da Computação, a relevância do tema reside na orquestração de sistemas ponta-a-ponta (edge-to-cloud). Enquanto a literatura frequentemente foca em alta performance de processamento, este projeto explora o paradigma de sistemas restritos, onde o algoritmo deve ser otimizado para o menor consumo de energia possível (utilizando protocolos como LoRaWAN). Além disso, busca-se preencher a lacuna de análise de dados em pequena escala, aplicando conceitos de ciência de dados para gerar insights acionáveis ao consumidor final.
 
@@ -223,8 +223,6 @@ Desenvolver um sistema telemétrico para hidrômetros analógicos convencionais,
 
 \subsection{Objetivos secundários}
 
-Os objetivos secundários são desdobramentos do objetivo principal. Eles descrevem as etapas ou ações necessárias para atingir o objetivo principal. Devem ser mensuráveis e verificáveis.
-
 \begin{enumerate}
     \item Digitalizar Hidrômetros utilizando microprocessadores ESP32, e enviando imagens via rede sem fio;
     \item Implementação de Rede LoRaWan conectando os nós da rede e configurando-a com o objetivo de reduzir ao máximo o consumo energético;
@@ -250,15 +248,15 @@ O desenvolvimento de nós de sensoriamento para cidades inteligentes exige hardw
 \subsection{Estratégias de Gerenciamento de Energia}
 A viabilidade de dispositivos IoT em campo, como medidores de água residenciais, depende da minimização do consumo em estado de repouso (\textit{deep sleep}). Segundo \citeonline{Ferreira2020}, a vida útil da bateria é influenciada criticamente não apenas pelo hardware, mas pela eficiência das rotinas de escrita em periféricos e pela otimização do firmware. 
 
-A escolha da tecnologia de rede também desempenha papel fundamental no balanço energético. Comparativos demonstram que, embora o Wi-Fi ofereça maior taxa de transferência, a tecnologia LoRa apresenta uma eficiência superior para transmissões de longo alcance e baixo volume de dados, sendo mais adequada para dispositivos alimentados por bateria que operam em locais isolados \cite{Martine2023}.
+% A escolha da tecnologia de rede também desempenha papel fundamental no balanço energético. Comparativos demonstram que, embora o Wi-Fi ofereça maior taxa de transferência, a tecnologia LoRa apresenta uma eficiência superior para transmissões de longo alcance e baixo volume de dados, sendo mais adequada para dispositivos alimentados por bateria que operam em locais isolados \cite{Martine2023}.
 
-Apresente os principais conceitos, teorias e definições que fundamentam o trabalho. O referencial teórico deve fornecer ao leitor a base necessária para compreender o problema e a solução proposta.
+% Apresente os principais conceitos, teorias e definições que fundamentam o trabalho. O referencial teórico deve fornecer ao leitor a base necessária para compreender o problema e a solução proposta.
 
-Organize esta seção por temas ou conceitos, não por autor. Cada subseção deve abordar um conceito relevante, explicando-o e relacionando-o ao contexto do trabalho.
+% Organize esta seção por temas ou conceitos, não por autor. Cada subseção deve abordar um conceito relevante, explicando-o e relacionando-o ao contexto do trabalho.
 
-Por exemplo: se o trabalho envolve desenvolvimento web, aborde conceitos como arquitetura cliente-servidor, APIs REST, padrões de projeto, etc. Se envolve inteligência artificial, explique os algoritmos e técnicas que serão utilizados.
+% Por exemplo: se o trabalho envolve desenvolvimento web, aborde conceitos como arquitetura cliente-servidor, APIs REST, padrões de projeto, etc. Se envolve inteligência artificial, explique os algoritmos e técnicas que serão utilizados.
 
-Utilize citações para fundamentar cada conceito apresentado. Segundo \citeonline{Wazlawick2020}, o referencial teórico deve demonstrar que o autor domina os fundamentos necessários para conduzir a pesquisa.
+% Utilize citações para fundamentar cada conceito apresentado. Segundo \citeonline{Wazlawick2020}, o referencial teórico deve demonstrar que o autor domina os fundamentos necessários para conduzir a pesquisa.
 
 % ---------------------------------------------------------------
 \section{Metodologia da pesquisa bibliográfica}
@@ -266,7 +264,7 @@ Utilize citações para fundamentar cada conceito apresentado. Segundo \citeonli
 
 A pesquisa bibliográfica foi conduzida de forma sistemática, estruturando-se em três temas principais: Hardware, Software e Redes. Para a seleção dos trabalhos, utilizaram-se as bases de dados Google Scholar, MDPI e Intechopen.
 
-O processo de seleção seguiu um fluxo de filtragem (funil). Inicialmente, foram identificados 50 artigos por meio da análise de títulos, utilizando strings de busca majoritariamente em inglês, tais como ``iot AND energy efficiency'' e ``ESP32 AND camera monitoring''. Como ferramentas auxiliares na descoberta de conexões entre autores e na triagem inicial de relevância, foram utilizadas as plataformas ResearchRabbit e Gemini Deep Research.
+O processo de seleção seguiu um fluxo de filtragem (funil). Inicialmente, foram identificados 120 artigos por meio da análise de títulos, utilizando strings de busca majoritariamente em inglês, tais como ``iot AND energy efficiency'' e ``ESP32 AND camera monitoring''. Como ferramentas auxiliares na descoberta de conexões entre autores e na triagem inicial de relevância, foram utilizadas as plataformas ResearchRabbit e Gemini Deep Research.
 
 Na etapa de refinamento, aplicou-se a leitura dos resumos (abstracts) e a verificação de disponibilidade integral dos textos. Foram adotados como critérios de inclusão: artigos publicados entre 2020 e 2026, relevância direta com sistemas de telemetria e foco em implementações práticas. Como critério de exclusão, descartaram-se trabalhos com acesso restrito ou que não apresentassem detalhes técnicos sobre a integração dos eixos propostos.
 
