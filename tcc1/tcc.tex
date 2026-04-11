@@ -172,40 +172,6 @@ O cenário brasileiro de saneamento aponta perdas na distribuição de água pot
 
 No campo da Ciência da Computação, a relevância do tema reside na orquestração de sistemas ponta-a-ponta (edge-to-cloud). Enquanto a literatura frequentemente foca em alta performance de processamento, este projeto explora o paradigma de sistemas restritos, onde o algoritmo deve ser otimizado para o menor consumo de energia possível (utilizando protocolos como LoRaWAN). Além disso, busca-se preencher a lacuna de análise de dados em pequena escala, aplicando conceitos de ciência de dados para gerar insights acionáveis ao consumidor final.
 
-\vspace{0.3cm}
-\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
-\textbf{Orientação sobre citações (ABNT NBR 10520:2023)}
-
-\vspace{0.2cm}
-O aluno deve \textbf{priorizar citações indiretas} (paráfrases), nas quais a ideia do autor é reescrita com as próprias palavras. Citações diretas (transcrições literais) \textbf{não são recomendadas}, exceto quando o texto original for insubstituível --- por exemplo, definições consagradas, leis, normas técnicas ou trechos cuja reformulação alteraria o sentido.
-
-\vspace{0.2cm}
-\textbf{Citação indireta} (recomendada) --- o autor interpreta e reescreve a ideia:
-
-\vspace{0.1cm}
-\textit{Exemplo 1 --- sistema autor-data entre parênteses:}\\
-A definição clara do problema é considerada um fator determinante para o sucesso de qualquer pesquisa na área de Computação \cite{Wazlawick2020}.
-
-\vspace{0.1cm}
-\textit{Exemplo 2 --- autor como parte do texto:}\\
-Para \citeonline{Pressman2016}, a escolha de uma metodologia adequada impacta diretamente na qualidade dos resultados obtidos em projetos de software.
-
-\vspace{0.2cm}
-\textbf{Citação direta curta} (até 3 linhas, apenas quando indispensável) --- entre aspas, com indicação de página:
-
-\vspace{0.1cm}
-Segundo \citeonline[p.~42]{Wazlawick2020}, ``a formulação do problema deve ser expressa de forma clara, objetiva e delimitada, evitando ambiguidades que possam comprometer o escopo da pesquisa''.
-
-\vspace{0.2cm}
-\textbf{Citação direta longa} (mais de 3 linhas, apenas quando indispensável) --- recuo de 4\,cm, fonte menor, sem aspas:
-
-\begin{citacao}
-A revisão bibliográfica não consiste em simplesmente listar os trabalhos encontrados, mas em analisá-los criticamente, identificando convergências, divergências e lacunas que justifiquem a realização de uma nova pesquisa \cite[p.~87]{Wazlawick2020}.
-\end{citacao}
-
-\textbf{Resumo}: use citações indiretas como regra. Reserve a citação direta para casos excepcionais em que a transcrição literal seja realmente necessária.
-}}
-
 % ---------------------------------------------------------------
 \section{Justificativa}
 \label{sec:justificativa}
@@ -275,33 +241,6 @@ O processo de seleção seguiu um fluxo de filtragem (funil). Inicialmente, fora
 Na etapa de refinamento, aplicou-se a leitura dos resumos (abstracts) e a verificação de disponibilidade integral dos textos. Foram adotados como critérios de inclusão: artigos publicados entre 2020 e 2026, relevância direta com sistemas de telemetria e foco em implementações práticas. Como critério de exclusão, descartaram-se trabalhos com acesso restrito ou que não apresentassem detalhes técnicos sobre a integração dos eixos propostos.
 
 % ---------------------------------------------------------------
-\section{Fundamentos}
-\label{sec:fundamentos}
-
-\begin{table}[ht]
-\centering
-\caption{Especificações dos componentes de hardware utilizados.}
-\label{tab:componentes_hardware}
-\begin{tabularx}{\textwidth}{@{} l X X @{}}
-\toprule
-\textbf{Componente} & \textbf{Função Principal} & \textbf{Característica Chave para o Projeto} \\ \midrule
-ESP32-CAM & Captura e processamento & Baixo custo e suporte a redes Wi-Fi. \\ \addlinespace
-Interface Serial & Programação/Debug & Ponte USB-TTL para gravação de código. \\ \bottomrule
-\end{tabularx}
-\end{table}
-
-Aprofunde os conceitos técnicos que serão utilizados na solução proposta. Diferentemente do referencial teórico (que apresenta conceitos gerais), os fundamentos devem detalhar as tecnologias, algoritmos, frameworks ou metodologias específicas que serão empregados no desenvolvimento.
-
-Por exemplo:
-\begin{itemize}
-    \item Se o trabalho utiliza aprendizado de máquina, explique os algoritmos escolhidos (árvores de decisão, redes neurais, SVM, etc.);
-    \item Se o trabalho envolve desenvolvimento de software, descreva as tecnologias (linguagens, frameworks, bancos de dados);
-    \item Se envolve análise de dados, explique as métricas e técnicas estatísticas que serão aplicadas.
-\end{itemize}
-
-Utilize figuras, diagramas e tabelas para ilustrar conceitos quando apropriado.
-
-% ---------------------------------------------------------------
 \section{Trabalhos relacionados}
 \label{sec:trabalhos_relacionados}
 
@@ -337,30 +276,6 @@ A metodologia utilizada baseou-se em uma revisão técnica e proposição de arq
 Os resultados indicaram que a adoção de Gêmeos Digitais oferece uma visão holística e preditiva da infraestrutura hídrica, permitindo reduzir o desperdício e melhorar a resiliência do sistema diante de variações ambientais. No entanto, o trabalho destaca desafios significativos na implementação, como o alto custo computacional, a necessidade de conectividade constante e a complexidade de integrar dados de sensores heterogêneos em uma única plataforma digital confiável.
 
 O presente trabalho diferencia-se por focar em uma solução de baixo custo e alta autonomia energética através do protocolo LoRaWAN, enquanto a abordagem de Gêmeos Digitais exige uma infraestrutura de dados massiva e constante. Além disso, priorizamos a extração de dados diretamente de hidrômetros analógicos existentes, oferecendo uma alternativa de transição tecnológica mais acessível para a realidade local em comparação ao modelo de virtualização completa proposto pelos autores.
-
-\vspace{0.5cm}
-
-Uma tabela comparativa ajuda a sintetizar as diferenças entre os trabalhos:
-
-\begin{table}[htb]
-    \centering
-    \caption{Comparação entre trabalhos relacionados}
-    \label{tab:trabalhos_relacionados}
-    \begin{tabular}{l|c|c|c|c}
-        \toprule
-        \textbf{Critério} & \textbf{Trabalho 1} & \textbf{Trabalho 2} & \textbf{Trabalho 3} & \textbf{Este trabalho} \\
-        \midrule
-        Objetivo           & [resumo]   & [resumo]   & [resumo]   & [resumo] \\
-        \midrule
-        Tecnologia         & [tecn.]    & [tecn.]    & [tecn.]    & [tecn.] \\
-        \midrule
-        Validação          & [método]   & [método]   & [método]   & [método] \\
-        \midrule
-        Limitação          & [limit.]   & [limit.]   & [limit.]   & --- \\
-        \bottomrule
-    \end{tabular}
-    \legend{Fonte: Elaborado pelo autor (2025)}
-\end{table}
 
 % ===============================================================
 % CAPÍTULO 3 - DESENVOLVIMENTO
