@@ -70,7 +70,7 @@
 \autor{Marcelo Fernandes de Oliveira Junior \\ Gustavo Oliveira dos Santos \\ Christian Lima Santana}
 \local{São Paulo}
 \data{2026}
-\orientador{Prof. Nome do Orientador}
+\orientador{Afonso César Lelis Brandão}
 % \coorientador{Prof. Nome do Coorientador} % Descomente se houver coorientador
 
 \instituicao{%
@@ -208,16 +208,31 @@ Desenvolver um sistema telemétrico para hidrômetros analógicos convencionais,
 
 \section{Hardware de baixo consumo e Eficiência em IoT}
 
-\subsection{Microcontroladores e a Plataforma ESP32}
-O desenvolvimento de nós de sensoriamento para cidades inteligentes exige hardware que equilibre poder de processamento e autonomia energética. O ESP32 destaca-se nesse cenário como uma plataforma robusta de baixo custo, integrando conectividade sem fio e múltiplos modos de operação \cite{Sari2022}. Diferente de arquiteturas mais simples, o ESP32 permite a execução de tarefas complexas e segurança criptográfica sem comprometer severamente o ciclo de vida da bateria, desde que devidamente configurado \cite{Ahmad2021}.
+O desenvolvimento de nós de sensoriamento para cidades inteligentes exige hardware que equilibre poder de processamento e autonomia energética.
 
-\subsection{Estratégias de Gerenciamento de Energia}
-A viabilidade de dispositivos IoT em campo, como medidores de água residenciais, depende da minimização do consumo em estado de repouso (\textit{deep sleep}). Segundo \citeonline{Ferreira2020}, a vida útil da bateria é influenciada criticamente não apenas pelo hardware, mas pela eficiência das rotinas de escrita em periféricos e pela otimização do firmware. 
+Como destacado por \cite{Sari2022} e \cite{Ahmad2021}, o ESP32 destaca-se nesse cenário como uma plataforma robusta de baixo custo, integrando conectividade sem fio e múltiplos modos de operação. Diferente de arquiteturas mais simples, o ESP32 permite a execução de tarefas complexas e segurança criptográfica sem comprometer severamente o ciclo de vida da bateria, desde que devidamente configurado.
 
-\subsection{Rede}
-Segundo \cite{Camargo2022}, entorno de 60\% do consumo energético de sistemas IOT são consumidos na comunicação, a escolha efetiva de protocolo de comunicação e otimização de parâmetros como dispersão de sinal, entre outros, torna-se uma tarefa de suma importância no desenvolvimento de um sistema IOT otimizado de baixo custo.
+A viabilidade de dispositivos IoT em campo, como medidores de água residenciais, dependem da minimização do consumo em estado de repouso (\textit{deep sleep}). 
 
-O LoRaWan surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de consumo energético para o esse tipo de device.
+Segundo \citeonline{Ferreira2020}, a vida útil da bateria é influenciada criticamente não apenas pelo hardware, mas pela eficiência das rotinas de escrita em periféricos e pela otimização do firmware.
+
+Segundo \cite{Camargo2022}, entorno de 60\% do recurso energético de sistemas IOT são consumidos na comunicação, a escolha efetiva de protocolo de comunicação e otimização de parâmetros como dispersão de sinal, largura de banda e taxa de codificação (destinado a redundância de mensagem, tolerância a erros), entre outros fatores, torna-se uma tarefa de suma importância no desenvolvimento de um sistema IOT otimizado de baixo custo.
+
+O LoRaWan (Long Range Wide Area Network), é um protocolo LPWAN (Low Power Wide Area Network), que possui o objetivo de viabilizar a comunicação em grandes distâncias, conciliado ao baixo consumo energético. Diante disso, o protocolo surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de redução de consumo energético, em contra partida, a baixa largura de banda oferecida por tal solução apoia o desenvolvimento de sistemas baseado em edge-computing, trafegando em rede apenas os dados e metadados prontos para serem tratados em getaway central, assim amplificando o desafio de desenvolver um sistema focado no menor consumo energético em borda.
+
+Toda via, surge ao mesclarmos tais conceitos, o desafio de alinhar o menor consumo de recurso energético possível, com o objetivo de prolongar a vida útil de bateria dos devices utilizados, às mais otimizadas soluções de rede, hardware e técnicas de desenvolvimento de software.
+
+
+% \subsection{Microcontroladores e a Plataforma ESP32}
+% O desenvolvimento de nós de sensoriamento para cidades inteligentes exige hardware que equilibre poder de processamento e autonomia energética. O ESP32 destaca-se nesse cenário como uma plataforma robusta de baixo custo, integrando conectividade sem fio e múltiplos modos de operação \cite{Sari2022}. Diferente de arquiteturas mais simples, o ESP32 permite a execução de tarefas complexas e segurança criptográfica sem comprometer severamente o ciclo de vida da bateria, desde que devidamente configurado \cite{Ahmad2021}.
+
+% \subsection{Estratégias de Gerenciamento de Energia}
+% A viabilidade de dispositivos IoT em campo, como medidores de água residenciais, depende da minimização do consumo em estado de repouso (\textit{deep sleep}). Segundo \citeonline{Ferreira2020}, a vida útil da bateria é influenciada criticamente não apenas pelo hardware, mas pela eficiência das rotinas de escrita em periféricos e pela otimização do firmware. 
+
+% \subsection{Rede}
+% Segundo \cite{Camargo2022}, entorno de 60\% do consumo energético de sistemas IOT são consumidos na comunicação, a escolha efetiva de protocolo de comunicação e otimização de parâmetros como dispersão de sinal, entre outros, torna-se uma tarefa de suma importância no desenvolvimento de um sistema IOT otimizado de baixo custo.
+
+% O LoRaWan surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de consumo energético para o esse tipo de device.
 
 
 % A escolha da tecnologia de rede também desempenha papel fundamental no balanço energético. Comparativos demonstram que, embora o Wi-Fi ofereça maior taxa de transferência, a tecnologia LoRa apresenta uma eficiência superior para transmissões de longo alcance e baixo volume de dados, sendo mais adequada para dispositivos alimentados por bateria que operam em locais isolados \cite{Martine2023}.
