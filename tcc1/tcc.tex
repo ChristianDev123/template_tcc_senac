@@ -160,25 +160,27 @@ Este documento apresenta a proposta inicial do Trabalho de Conclusão de Curso (
 \chapter{Introdução}
 \label{cap:introducao}
 
-A gestão eficiente de recursos hídricos tornou-se um dos pilares da sustentabilidade urbana moderna. Diante de cenários de escassez, a digitalização da medição de consumo surge como uma ferramenta estratégica para identificar desperdícios e padrões de uso. No entanto, a implementação de sistemas de telemetria enfrenta desafios técnicos significativos, como a necessidade de alta confiabilidade em transmissões de longo alcance, baixo custo de implantação e, sobretudo, a maximização da autonomia energética em dispositivos com recursos computacionais limitados.
+A gestão eficiente de recursos hídricos consolidou-se como um dos pilares fundamentais da sustentabilidade urbana contemporânea. Diante de cenários recorrentes de escassez e da pressão crescente sobre as bacias hidrográficas, a digitalização da medição de consumo apresenta-se como uma ferramenta estratégica para a identificação de desperdícios e a compreensão de padrões de uso. Entretanto, a modernização dessa infraestrutura enfrenta desafios técnicos e financeiros significativos, especialmente no que tange à confiabilidade das transmissões de longo alcance e à autonomia energética de dispositivos com recursos computacionais restritos.
 
-Este trabalho propõe o desenvolvimento de um sistema telemétrico para hidrômetros analógicos, integrando hardware de baixo consumo com um pipeline de extração, transformação e carga (ETL), focado no atendimento de áreas privadas de pequeno e médio porte.
+Nesse cenário, este trabalho propõe o desenvolvimento de um sistema telemétrico voltado para hidrômetros analógicos. A solução integra o uso de microcontroladores de baixo consumo para a digitalização de leituras e um pipeline ETL para a extração, transformação e carga dos dados, visando atender à demanda de monitoramento em áreas privadas de pequeno e médio porte.
 
 % ---------------------------------------------------------------
 \section{Contexto}
 \label{sec:contexto}
 
-O cenário brasileiro de saneamento aponta perdas na distribuição de água potável. Como apresentado no jornal \citeonline{g1_desperdicio_2026} o desperdício de recurso hídrico no Brasil hoje representa a considerável fatia de 39,5\% de todo o volume distribuído à população. Em áreas privadas, a ausência de monitoramento em tempo real impossibilita a detecção precoce de vazamentos e anomalias.
+O panorama brasileiro de saneamento básico revela índices críticos de ineficiência na distribuição de água potável. Conforme dados do Instituto Trata Brasil, o país desperdiça aproximadamente 40,31\% de toda a água tratada antes mesmo que esta alcance os pontos de consumo final \cite{tratabrasil2025}. Essa perda não apenas compromete a segurança hídrica, mas também gera prejuízos financeiros vultosos às concessionárias e consumidores.
 
-No campo da Ciência da Computação, a relevância do tema reside na orquestração de sistemas ponta-a-ponta (edge-to-cloud). Enquanto a literatura frequentemente foca em alta performance de processamento, este projeto explora o paradigma de sistemas restritos, onde o algoritmo deve ser otimizado para o menor consumo de energia possível (utilizando protocolos como LoRaWAN). Além disso, busca-se preencher a lacuna de análise de dados em pequena escala, aplicando conceitos de ciência de dados para gerar insights acionáveis ao consumidor final.
+Em ambientes privados e condomínios, a ausência de sistemas de monitoramento em tempo real impede a detecção precoce de anomalias e vazamentos ocultos. No âmbito da Ciência da Computação, a relevância deste tema concentra-se na orquestração de sistemas que conectam dispositivos periféricos diretamente à computação em nuvem. O paradigma de sistemas restritos exige que algoritmos e protocolos de comunicação, como o LoRaWAN, sejam rigorosamente otimizados para garantir a máxima eficiência energética e a integridade da informação em redes de longo alcance.
 
 % ---------------------------------------------------------------
 \section{Justificativa}
 \label{sec:justificativa}
 
-A digitalização de medidores analógicos existentes (retrofitting) apresenta-se como uma solução de baixo custo frente à substituição completa por medidores inteligentes (smart meters). A relevância social deste projeto está na democratização do acesso à informação de consumo, permitindo o controle financeiro e a mitigação do desperdício.
+Apesar da necessidade de redução das perdas hídricas, a atualização tecnológica da medição enfrenta barreiras econômicas severas. A substituição integral de parques de hidrômetros mecânicos por medidores inteligentes demanda um investimento inicial de capital que pode variar entre 200 e 400 dólares por unidade \cite{mordor2026}. Esse custo elevado constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala, conforme demonstrado em estudos de viabilidade econômica do setor \citeonline{polimi2020}.
 
-Academicamente, o trabalho justifica-se pelo estudo prático de protocolos de comunicação de baixo consumo e pela implementação de um fluxo de dados que garanta a integridade da informação desde o sensor até a visualização final. A integração entre o hardware (Sistemas Embarcados) e o software (Pipeline ETL) oferece um estudo de caso completo sobre a viabilidade técnica de redes IoT de baixo custo em ambientes urbanos.
+Como alternativa viável, a digitalização de dispositivos analógicos preexistentes — processo de modernização adaptativa — permite dotar a infraestrutura atual de inteligência com custos reduzidos. Ao acoplar módulos de baixo custo, como o ESP32, aos medidores já instalados, evita-se a necessidade de intervenções estruturais complexas. A relevância social desta abordagem reside na democratização do controle de consumo, permitindo que o usuário identifique vazamentos de forma célere e mitigue o desperdício.
+
+Academicamente, a pesquisa justifica-se pela implementação prática de técnicas de Reconhecimento Óptico de Caracteres (OCR) em hardware de processamento limitado. A integração entre a coleta de dados via LoRaWAN e o processamento sistemático através de um pipeline ETL oferece um estudo de caso sobre a viabilidade de redes IoT urbanas integradas a dashboards para a geração de conhecimentos estratégicos.
 % ---------------------------------------------------------------
 \section{Objetivo}
 \label{sec:objetivo}
