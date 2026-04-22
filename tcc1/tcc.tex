@@ -323,13 +323,37 @@ O presente trabalho diferencia-se por focar em uma solução de baixo custo e al
 % ===============================================================
 \chapter{Desenvolvimento}
 \label{cap:desenvolvimento}
-
-Neste capítulo, apresenta-se a solução proposta para o problema identificado, bem como o cronograma de trabalho previsto para o desenvolvimento completo do projeto no TCC2.
-
-% ---------------------------------------------------------------
 \section{Solução proposta}
 \label{sec:solucao}
 
+A solução consiste no desenvolvimento de um \textbf{Sistema Telemétrico de Baixo Custo para Digitalização de Hidrômetros Analógicos}, baseado em \textit{Internet das Coisas (IoT)} e \textit{Processamento de Imagens}. O objetivo é transformar medidores de água mecânicos convencionais em dispositivos inteligentes (\textit{Smart Meters}), capazes de transmitir leituras de consumo de forma remota e automatizada, eliminando a necessidade de leitura manual e permitindo o monitoramento em tempo real.
+
+O projeto será composto por quatro pilares principais:
+
+\begin{itemize}
+    \item \textbf{Módulo de Captura (Edge Device):} Um dispositivo de hardware acoplado ao hidrômetro.
+    
+    \item \textbf{Protocolo de Comunicação:} Utilização de rede LoRaWAN para transmissão de longa distância e baixo consumo.
+    
+    \item \textbf{Pipeline ETL (Extract, Transform, Load):} Uma infraestrutura de backend para tratamento e armazenamento dos dados brutos.
+    
+    \item \textbf{Interface de Monitoramento:} Um dashboard para visualização analítica do consumo.
+\end{itemize}
+
+O núcleo da coleta de dados reside em um microcontrolador equipado com câmera (ESP32-CAM). Este módulo será programado para despertar em intervalos programados, e então capturar uma imagem do mostrador analógico do hidrômetro.
+
+A solução utiliza técnicas de Visão Computacional e OCR (Optical Character Recognition). O processamento pode ocorrer localmente (Edge Computing), onde o dispositivo extrai apenas os números da leitura e envia o dado processado, ou a imagem pode ser transmitida de forma compactada para processamento em nuvem, dependendo das restrições de largura de banda da rede escolhida.
+
+Para viabilizar o uso em locais de difícil acesso ou sem cobertura Wi-Fi/celular (como cavaletes e caixas subterrâneas), a solução utiliza a tecnologia LoRaWAN (Long Range Wide Area Network).
+
+Uma vez que os dados chegam ao servidor, eles entram em um Pipeline ETL.
+
+A solução final entrega uma Ferramenta de Telemetria e Dashboard, onde o usuário final pode acompanhar o consumo diário/mensal, detectar vazamentos através de padrões anômalos de consumo e gerar relatórios automatizados de cobrança ou gestão hídrica.
+\newline
+\newline
+\newline
+
+% Deixar o template por enquanto para fazer o rascunho. 
 Descreva detalhadamente a solução que será desenvolvida para resolver o problema apresentado na introdução. A descrição deve incluir:
 
 \begin{itemize}
