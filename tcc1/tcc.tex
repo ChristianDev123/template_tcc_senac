@@ -177,11 +177,11 @@ Em ambientes privados e condomínios, a ausência de sistemas de monitoramento e
 
 \subsection{Desafios Tecnológicos}
 
-Um dos maiores desafios dentro da tecnologia atual é a gestão e prolongamento máximo da vida útil das baterias que alimentam devices de diferentes finalidades.
+Um dos maiores desafios dentro da tecnologia atual é a gestão e prolongamento máximo da vida útil das baterias que alimentam dispositivos de diferentes finalidades.
 
 Dado a natureza da aplicação de dispositivos IOT que estamos desenvolvendo, denota-se a necessidade da utilização de baterias como fonte primária de alimentação do sistema. Diante de tal cenário, emerge o questionamento sobre qual o tipo de bateria mais adequado a se implementar. 
 
-Como explicado por XXX em XXX, há diversos fatores que impactam na escolha mais racional da bateria utilizada em devices IOT, entre eles: densidade energética, range de temperatura de funcionamento, segurança, eficiência energética, longevidade e custo. Ainda em tal artigo evidência-se, como um forte candidato a este tipo de aplicação a escolha de bateria de íon-lítio, onde com o passar do tempo, tornou-se mais viável economicamente e oferecendo bons níveis de todos os parâmetros citados anteriormente.
+Como explicado em ''Navigating Battery Choices in IoT: An Extensive Survey of Technologies and Their Applications'' \cite{hasan2023navigating} , há diversos fatores que impactam na escolha mais racional da bateria utilizada em dispositivos IOT, entre eles: densidade energética, range de temperatura de funcionamento, segurança, eficiência energética, longevidade e custo. Ainda em tal artigo evidência-se, como um forte candidato a este tipo de aplicação a escolha de bateria de íon-lítio, onde com o passar do tempo, tornou-se mais viável economicamente e oferecendo bons níveis de todos os parâmetros citados anteriormente.
 
 Ainda sobre as baterias de íon-lítio, a Panasonic, uma das principais fabricantes de baterias deste tipo no mundo, publica abertamente os valores médios de ciclos de recarga suportados por seus produtos sob determinadas condições, no caso de um tipo de bateria de ion-lítio mais comumente utilizado, tal produto varia a quantidade de ciclos de recarga por volta de 1500 a 2000 ciclos.
 
@@ -193,11 +193,11 @@ Portanto, aqui esclarecemos a necessidade de implementar um sistema eficiente en
 \section{Justificativa}
 \label{sec:justificativa}
 
-Apesar da necessidade de redução das perdas hídricas, a atualização tecnológica da medição enfrenta barreiras econômicas severas. A substituição integral de parques de hidrômetros mecânicos por medidores inteligentes demanda um investimento inicial de capital que pode variar entre 200 e 400 dólares por unidade \cite{mordor2026}. Esse custo elevado constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala, conforme demonstrado em estudos de viabilidade econômica do setor \citeonline{polimi2020}.
+Evidenciado por \citeonline{mordor2026} e \citeonline{polimi2020}, a atualização tecnológica na medição de recursos hídricos enfrenta barreiras econômicas severas. A substituição integral de parques de hidrômetros mecânicos por medidores inteligentes demandam um investimento inicial de capital que pode variar entre 200 a 400 dólares por unidade, tal custo constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala conforme demonstrado em estudos de viabilidade econômica do setor.
 
-Como alternativa viável, a digitalização de dispositivos analógicos preexistentes — processo de modernização adaptativa — permite dotar a infraestrutura atual de inteligência com custos reduzidos. Ao acoplar módulos de baixo custo, como o ESP32, aos medidores já instalados, evita-se a necessidade de intervenções estruturais complexas. A relevância social desta abordagem reside na democratização do controle de consumo, permitindo que o usuário identifique vazamentos de forma célere e mitigue o desperdício.
+Como alternativa viável, a digitalização de dispositivos analógicos preexistentes — processo de modernização adaptativa — permite dotar a infraestrutura atual de inteligência com custos reduzidos. Ao acoplar módulos de baixo custo, como o ESP32, aos medidores já instalados, evita-se a necessidade de intervenções estruturais complexas. A relevância social desta abordagem reside na transparência  e acessibilidade no controle de consumo, permitindo que o usuário identifique vazamentos de forma célere e mitigue o desperdício.
 
-Academicamente, a pesquisa justifica-se pela implementação prática de técnicas de Reconhecimento Óptico de Caracteres (OCR) em hardware de processamento limitado. A integração entre a coleta de dados via LoRaWAN e o processamento sistemático através de um pipeline ETL oferece um estudo de caso sobre a viabilidade de redes IoT urbanas integradas a dashboards para a geração de conhecimentos estratégicos.
+Academicamente, a pesquisa justifica-se pelo desenvolvimento de um sistema enxuto capaz de realizar todas as operações necessárias para a coleta sistemática dos dados de forma mais eficiente possível na questão energética, investindo em uma abordagem de computação centralizada, aliada á técnicas de Reconhecimento Óptico de Caracteres (OCR) e implementando um pipeline ETL integrado a um dashboard focado em gerar conhecimento estratégico sobre o assunto.
 % ---------------------------------------------------------------
 \section{Objetivo}
 \label{sec:objetivo}
@@ -239,7 +239,7 @@ Segundo \cite{Camargo2022}, entorno de 60\% do recurso energético de sistemas I
 
 O LoRaWan (Long Range Wide Area Network), é um protocolo LPWAN (Low Power Wide Area Network), que possui o objetivo de viabilizar a comunicação em grandes distâncias, conciliado ao baixo consumo energético. Diante disso, o protocolo surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de redução de consumo energético, em contra partida, a baixa largura de banda oferecida por tal solução apoia o desenvolvimento de sistemas baseado em edge-computing, trafegando em rede apenas os dados e metadados prontos para serem tratados em getaway central, assim amplificando o desafio de desenvolver um sistema focado no menor consumo energético em borda.
 
-Toda via, surge ao mesclarmos tais conceitos, o desafio de alinhar o menor consumo de recurso energético possível, com o objetivo de prolongar a vida útil de bateria dos devices utilizados, às mais otimizadas soluções de rede, hardware e técnicas de desenvolvimento de software.
+Toda via, surge ao mesclarmos tais conceitos, o desafio de alinhar o menor consumo de recurso energético possível, com o objetivo de prolongar a vida útil de bateria dos dispositivos utilizados, às mais otimizadas soluções de rede, hardware e técnicas de desenvolvimento de software.
 
 
 % \subsection{Microcontroladores e a Plataforma ESP32}
