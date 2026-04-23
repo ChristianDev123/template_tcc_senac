@@ -160,9 +160,9 @@ Este documento apresenta a proposta inicial do Trabalho de Conclusão de Curso (
 \chapter{Introdução}
 \label{cap:introducao}
 
-A gestão eficiente de recursos hídricos consolidou-se como um dos pilares fundamentais da sustentabilidade urbana contemporânea. Diante de cenários recorrentes de escassez e da pressão crescente sobre as bacias hidrográficas, a digitalização da medição de consumo apresenta-se como uma ferramenta estratégica para a identificação de desperdícios e a compreensão de padrões de uso. Entretanto, a modernização dessa infraestrutura enfrenta desafios técnicos e financeiros significativos, especialmente no que tange à confiabilidade das transmissões de longo alcance e à autonomia energética de dispositivos com recursos computacionais restritos.
+A gestão eficiente de recursos hídricos consolidou-se como um dos pilares fundamentais da sustentabilidade urbana contemporânea. Diante de cenários de escassez e estiagens em grandes metrópoles, a digitalização da medição de consumo hídrico apresenta-se como uma ferramenta estratégica na contenção de desperdícios e compreensão de padrões de uso. Entretanto, a modernização da atual infraestrutura enfrenta desafios técnicos e financeiros, especialmente no que tange à manutenção, confiabilidade e custo ao médio/longo prazo sob os dispositivos empregados em tal tarefa.
 
-Nesse cenário, este trabalho propõe o desenvolvimento de um sistema telemétrico voltado para hidrômetros analógicos. A solução integra o uso de microcontroladores de baixo consumo para a digitalização de leituras e um pipeline ETL para a extração, transformação e carga dos dados, visando atender à demanda de monitoramento em áreas privadas de pequeno e médio porte.
+Neste contexto, este trabalho tem como objetivo desenvolver um sistema telemétrico que possui como principal função digitalizar hidrômetros analógicos, que já estão difundidos em nossa infraestrutura urbana. Tal solução conta com o uso de microcontroladores conectados por uma rede interna baseado em protocolo LoRaWan, em conjunto com um pipeline de tratamento de dados (ETL), visando atender à demanda de monitoramento de áreas privadas de pequeno e médio porte.
 
 % ---------------------------------------------------------------
 \section{Contexto}
@@ -171,7 +171,7 @@ Nesse cenário, este trabalho propõe o desenvolvimento de um sistema telemétri
 \subsection{Manejamento de Recursos Hídricos}
 
 Como evidenciado pelo \cite{tratabrasil2025}, aproximadamente  40,31\% de toda água produzida por agências de saneamento básico no Brasil é perdida por diversos fatores, entre eles, um dos fatores que se destaca é a perda causada por dificuldades de coleta e acompanhamento de dados fornecidos por hidrômetros, que para o Ministério das Cidades (2003), se qualifica como uma perda comercial. 
-Diante de tal problemática, abre-se a discussão sobre os graves impactos na gerência de hídricos e financeiros aos usuários da rede de distribuição, concessionárias e ao governo.
+Diante de tal problemática, abre-se a discussão sobre os graves impactos na gerência de recursos hídricos e financeiros aos usuários da rede de distribuição, concessionárias e ao governo.
 
 Em ambientes privados e condomínios, a ausência de sistemas de monitoramento em tempo real impede a detecção precoce de anomalias e vazamentos ocultos. Havendo uma lacuna em ferramentas que auxiliam consumidores e gerentes das redes hídricas efetuarem acompanhamento de dados de forma mais recorrente possibilitando realizar correções de maneira mais tempestiva.
 
@@ -192,11 +192,11 @@ Portanto, aqui esclarecemos a necessidade de implementar um sistema eficiente en
 % ---------------------------------------------------------------
 \section{Justificativa}
 \label{sec:justificativa}
-
+% Não sei se é melhor colocarmos essa parte como mais um argumento em contexto ou se mantemos em justificativa %
 Evidenciado por \citeonline{mordor2026} e \citeonline{polimi2020}, a atualização tecnológica na medição de recursos hídricos enfrenta barreiras econômicas severas. A substituição integral de parques de hidrômetros mecânicos por medidores inteligentes demandam um investimento inicial de capital que pode variar entre 200 a 400 dólares por unidade, tal custo constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala conforme demonstrado em estudos de viabilidade econômica do setor.
 
 Como alternativa viável, a digitalização de dispositivos analógicos preexistentes — processo de modernização adaptativa — permite dotar a infraestrutura atual de inteligência com custos reduzidos. Ao acoplar módulos de baixo custo, como o ESP32, aos medidores já instalados, evita-se a necessidade de intervenções estruturais complexas. A relevância social desta abordagem reside na transparência  e acessibilidade no controle de consumo, permitindo que o usuário identifique vazamentos de forma célere e mitigue o desperdício.
-
+%======================================================%
 Academicamente, a pesquisa justifica-se pelo desenvolvimento de um sistema enxuto capaz de realizar todas as operações necessárias para a coleta sistemática dos dados de forma mais eficiente possível na questão energética, investindo em uma abordagem de computação centralizada, aliada á técnicas de Reconhecimento Óptico de Caracteres (OCR) e implementando um pipeline ETL integrado a um dashboard focado em gerar conhecimento estratégico sobre o assunto.
 % ---------------------------------------------------------------
 \section{Objetivo}
