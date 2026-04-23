@@ -329,7 +329,7 @@ Os resultados indicaram que a adoção de Gêmeos Digitais oferece uma visão ho
 O presente trabalho diferencia-se por focar em uma solução de baixo custo e alta autonomia energética através do protocolo LoRaWAN, enquanto a abordagem de Gêmeos Digitais exige uma infraestrutura de dados massiva e constante. Além disso, priorizamos a extração de dados diretamente de hidrômetros analógicos existentes, oferecendo uma alternativa de transição tecnológica mais acessível para a realidade local em comparação ao modelo de virtualização completa proposto pelos autores.
 
 % ===============================================================
-% CAPÍTULO 3 - DESENVOLVIMENTO
+% CAPÍTULO 3 - DESENVOLVIMENTO (WIP)
 % ===============================================================
 \chapter{Desenvolvimento}
 \label{cap:desenvolvimento}
@@ -359,26 +359,6 @@ Para viabilizar o uso em locais de difícil acesso ou sem cobertura Wi-Fi/celula
 Uma vez que os dados chegam ao servidor, eles entram em um Pipeline ETL.
 
 A solução final entrega uma Ferramenta de Telemetria e Dashboard, onde o usuário final pode acompanhar o consumo diário/mensal, detectar vazamentos através de padrões anômalos de consumo e gerar relatórios automatizados de cobrança ou gestão hídrica.
-\newline
-\newline
-\newline
-
-% Deixar o template por enquanto para fazer o rascunho. 
-Descreva detalhadamente a solução que será desenvolvida para resolver o problema apresentado na introdução. A descrição deve incluir:
-
-\begin{itemize}
-    \item \textbf{Visão geral da solução}: o que será desenvolvido (sistema, aplicativo, modelo, ferramenta, etc.);
-    \item \textbf{Arquitetura}: como os componentes da solução se organizam e interagem;
-    \item \textbf{Tecnologias e ferramentas}: quais linguagens, frameworks, bibliotecas, bancos de dados e ambientes serão utilizados, e por que foram escolhidos;
-    \item \textbf{Funcionalidades principais}: o que a solução fará para atender aos objetivos;
-    \item \textbf{Metodologia de desenvolvimento}: qual abordagem será utilizada (ágil, cascata, prototipação, etc.);
-    \item \textbf{Critérios de validação}: como será medido o sucesso da solução (métricas, testes, avaliação com usuários, etc.).
-\end{itemize}
-
-Utilize diagramas, fluxogramas ou mockups para ilustrar a solução. Exemplo de descrição de arquitetura:
-
-\textit{A solução proposta consiste em uma aplicação web composta por três camadas: front-end desenvolvido em React.js, back-end em Node.js com Express, e banco de dados PostgreSQL. A comunicação entre front-end e back-end será feita por meio de uma API REST.}
-
 % ---------------------------------------------------------------
 \section{Cronograma de trabalho}
 \label{sec:cronograma}
@@ -412,21 +392,22 @@ O cronograma a seguir apresenta, no formato de diagrama de Gantt, as atividades 
         % Grupo 1: Revisão e Planejamento
         \ganttgroup{Fase 1: Planejamento}{1}{4} \\
         \ganttbar{Revisão bibliográfica}{1}{3} \\
-        \ganttbar{Definição de requisitos}{2}{4} \\
-        \ganttbar{Projeto da arquitetura}{3}{4} \\
+        \ganttbar{Definição da Arquitetura ETL e IoT}{2}{4} \\
+        \ganttbar{Seleção e Compra de Componentes}{3}{4} \\
         \ganttmilestone{Entrega do projeto}{4} \\
 
         % Grupo 2: Desenvolvimento
         \ganttgroup{Fase 2: Desenvolvimento}{5}{11} \\
-        \ganttbar{Implementação do módulo 1}{5}{7} \\
-        \ganttbar{Implementação do módulo 2}{7}{9} \\
-        \ganttbar{Integração dos módulos}{9}{11} \\
-        \ganttmilestone{Protótipo funcional}{11} \\
+        \ganttbar{Firmware e Telemetria}{5}{7} \\
+        \ganttbar{Configuração do Pipeline ETL}{7}{9} \\
+        \ganttbar{Integração de Dados e Dashboard}{9}{11} \\
+        \ganttmilestone{Protótipo Operacional}{11} \\
 
         % Grupo 3: Testes e Finalização
-        \ganttgroup{Fase 3: Validação}{12}{16} \\
-        \ganttbar{Testes e validação}{12}{14} \\
-        \ganttbar{Ajustes e correções}{14}{15} \\
+        \ganttgroup{Fase 3: Validação e Escrita}{12}{16} \\
+        \ganttbar{Testes de Campo e Coleta de Dados}{12}{14} \\
+        \ganttbar{Ajustes e correções}{13}{14} \\
+        \ganttbar{Análise de Resultados}{14}{15} \\
         \ganttbar{Redação final do TCC2}{13}{16} \\
         \ganttmilestone{Entrega final}{16}
 
@@ -434,22 +415,16 @@ O cronograma a seguir apresenta, no formato de diagrama de Gantt, as atividades 
         \ganttlink{elem2}{elem3}
         \ganttlink{elem3}{elem4}
         \ganttlink{elem4}{elem5}
+        \ganttlink{elem6}{elem7}
         \ganttlink{elem7}{elem8}
         \ganttlink{elem8}{elem9}
         \ganttlink{elem9}{elem10}
+        \ganttlink{elem11}{elem12}
         \ganttlink{elem12}{elem13}
+        \ganttlink{elem13}{elem14}
     \end{ganttchart}
     \legend{Fonte: Elaborado pelo autor (2025)}
 \end{figure}
-
-\textbf{Instruções para personalização do cronograma}:
-\begin{itemize}
-    \item Ajuste o número de semanas conforme o calendário acadêmico do semestre;
-    \item Modifique as atividades de acordo com as etapas do seu projeto;
-    \item Os marcos (\textit{milestones}) indicam entregas importantes --- adapte-os às datas de avaliação;
-    \item As setas entre atividades indicam dependências --- uma atividade só inicia após a conclusão da anterior;
-    \item Utilize o diagrama como ferramenta de acompanhamento: atualize-o a cada reunião com o orientador.
-\end{itemize}
 
 % ---------------------------------------------------------------
 % ELEMENTOS PÓS-TEXTUAIS
