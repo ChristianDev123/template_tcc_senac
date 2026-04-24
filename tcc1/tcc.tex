@@ -228,6 +228,22 @@ Implementar um sistema de telemetria de baixo custo e alta eficiência energéti
 \section{Referencial teórico}
 \label{sec:referencial}
 
+\section{Software Otimizado de Baixo Custo em Sistemas Restritos}
+
+O desenvolvimento do software para dispositivos IoT exige um rigoroso controle sobre a alocação de recursos, uma vez que a eficiencia impacta diretamente ao consumo energético e viabilidade do sistema. Em plataformas com recursos limitados, como o ESP32, a escolha da linguagem de programação e o framework são essenciais e determinantes para o sucesso de implementassão de tarefas complexas.
+
+\cite{Plauska2023} demonstra que, linguagens compiladas como C e C++ têm um desempenho superior em termos de utilização de CPU e memória SRAM quando comparadas a linguagens interpretadas ou de alto nivel. Em tarefas de processamento intensivo o uso de C permite uma gestão de memória altamente precisa, fator crítico para execusãod e algoritimos (OCR) em dispositivos que possuem apenas algumas centenas de kilobytes de memória.
+
+Além da captura de dados, a arquitetura de software deve prever a integridade da informação por meio de um fluxo sistemático de tratamento de dados. De acordo com \cite{Naude2017}, o desenvolvimento de um \textit{firmware} robusto exige implementação de rotinas de gerenciamento de tarefas e estados de dormência (\textit{Deep Sleep}) sincronizados com os ciclos de leitura do sensor ou câmera. Esse gerenciamento garante que o sistema permaneça em estado de baixo consumo na maior parte do tempo, ligando novamente apenas para realizar a tarefa de visão computacional e transmissão.
+
+Por fim, a integração dos dados coletados em um \textit{pipeline} ETL (Extração, Transformação e Carga) permite que informações brutas vindas da borda sejam estruturadas e convertidas em conhecimentos estratégicos. A utilização de técnicas de ciência de dados na camada central da aplicação possibilita a geração de alertas automáticos e a análise preditiva de consumo, agregando valor à solução de telemetria de baixo custo.
+
+%\subsection{Fundamentos da Conversão Analógico-Digital}
+
+%A tradução de fenômenos fisicos para o dominio computacional fundamenta-se na interface entre sensores e controladores, mediada principalmente pela conversão alanógico-digital (ADC). segundo \cite{Bipon2009} essa interação requer equilibrio rigoroso entre precisão, custo e consumo energético.
+
+%Embora o sistema proposto utilize câmera como sensor de imagem, os principos de amostragem e mitigação de ruidos via software são conceitos univerais. 
+
 \section{Hardware de baixo consumo e Eficiência em IoT}
 
 O desenvolvimento de nós de sensoriamento para cidades inteligentes exige hardware que equilibre poder de processamento e autonomia energética.
