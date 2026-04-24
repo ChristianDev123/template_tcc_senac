@@ -195,7 +195,7 @@ Portanto, aqui esclarecemos a necessidade de implementar um sistema eficiente en
 \section{Justificativa}
 \label{sec:justificativa}
 % Não sei se é melhor colocarmos essa parte como mais um argumento em contexto ou se mantemos em justificativa %
-Evidenciado por \citeonline{mordor2026} e \citeonline{polimi2020}, a atualização tecnológica na medição de recursos hídricos enfrenta barreiras econômicas severas. A substituição integral de parques de hidrômetros mecânicos por medidores inteligentes demandam um investimento inicial de capital que pode variar entre 200 a 400 dólares por unidade, tal custo constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala conforme demonstrado em estudos de viabilidade econômica do setor.
+Evidenciado por \citeonline{mordor2026} e \citeonline{polimi2020}, a atualização tecnológica na medição de recursos hídricos enfrenta barreiras econômicas severas. A substituição integral de parques de hidrômetros analógicos por medidores inteligentes demandam um investimento inicial de capital que pode variar entre 200 a 400 dólares por unidade, tal custo constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala conforme demonstrado em estudos de viabilidade econômica do setor.
 
 Como alternativa viável, a digitalização de dispositivos analógicos preexistentes — processo de modernização adaptativa — permite dotar a infraestrutura atual de inteligência com custos reduzidos. Ao acoplar módulos de baixo custo, como o ESP32, aos medidores já instalados, evita-se a necessidade de intervenções estruturais complexas. A relevância social desta abordagem reside na transparência  e acessibilidade no controle de consumo, permitindo que o usuário identifique vazamentos de forma célere e mitigue o desperdício.
 %======================================================%
@@ -358,7 +358,7 @@ O projeto será composto por quatro pilares principais:
 
 O núcleo da coleta de dados reside em um microcontrolador equipado com câmera (ESP32-CAM). Este módulo será programado para despertar em intervalos programados, e então capturar uma imagem do mostrador analógico do hidrômetro.
 
-A solução utiliza técnicas de Visão Computacional e OCR (Optical Character Recognition). O processamento pode ocorrer localmente (Edge Computing), onde o dispositivo extrai apenas os números da leitura e envia o dado processado, ou a imagem pode ser transmitida de forma compactada para processamento em nuvem, dependendo das restrições de largura de banda da rede escolhida.
+A solução utiliza técnicas de Visão Computacional e OCR (Optical Character Recognition). O processamento ocorrerá em modelo de computação centralizada, onde imagem é transmitida de forma compactada para processamento posterior, dependendo das restrições de largura de banda da rede escolhida.
 
 Para viabilizar o uso em locais de difícil acesso ou sem cobertura Wi-Fi/celular (como cavaletes e caixas subterrâneas), a solução utiliza a tecnologia LoRaWAN (Long Range Wide Area Network).
 
