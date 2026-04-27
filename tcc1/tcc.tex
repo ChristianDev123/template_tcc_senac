@@ -260,6 +260,45 @@ O LoRaWan (Long Range Wide Area Network), é um protocolo LPWAN (Low Power Wide 
 
 Toda via, surge ao mesclarmos tais conceitos, o desafio de alinhar o menor consumo de recurso energético possível, com o objetivo de prolongar a vida útil de bateria dos dispositivos utilizados, às mais otimizadas soluções de rede, hardware e técnicas de desenvolvimento de software.
 
+\subsection{Metodologia de Avaliação e Métricas de Validação}
+\label{sec:metricas}
+
+Para avaliar a eficácia do sistema de telemetria proposto e garantir a objetividade dos resultados, serão adotados indicadores quantitativos divididos em quatro dimensões críticas: desempenho de rede, precisão de visão computacional, eficiência energética e acurácia preditiva.
+
+\subsubsection{Desempenho da Rede de Comunicação}
+A robustez da transmissão via LoRaWAN será quantificada através da Taxa de Entrega de Pacotes (PDR - \textit{Packet Delivery Ratio}). Conforme a metodologia de \cite{bravo2025ants}, o PDR é definido pela razão entre o número de pacotes recebidos pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor:
+
+\begin{equation}
+PDR = \left( \frac{\text{Pacotes Recebidos}}{\text{Pacotes Enviados}} \right) \times 100
+\end{equation}
+
+Além do PDR, será medida a latência de ponta a ponta, compreendendo o tempo decorrido desde o disparo da captura da imagem no ESP32 até a disponibilidade do dado processado no \textit{dashboard}.
+
+\subsubsection{Acurácia da Visão Computacional (OCR)}
+A validação do algoritmo de OCR, responsável pela extração dos dígitos dos hidrômetros analógicos, será realizada sob diferentes condições de iluminação e ângulos de captura, visando simular cenários reais de instalação. 
+
+Conforme discutido por \cite{barkat2024smart}, a eficácia de modelos de \textit{Deep Learning} aplicados ao monitoramento de água deve ser medida pela sua capacidade de generalização. Para este trabalho, a métrica principal será a Acurácia de Leitura ($Acc_{ocr}$), definida pela razão entre as predições que coincidem exatamente com o valor real (verdade de campo) e o total de amostras testadas:
+
+\begin{equation}
+Acc_{ocr} = \frac{VP + VN}{VP + VN + FP + FN}
+\end{equation}
+
+Onde $VP$, $VN$, $FP$ e $FN$ representam, respectivamente, os Verdadeiros Positivos, Verdadeiros Negativos, Falsos Positivos e Falsos Negativos obtidos através da Matriz de Confusão. Esta abordagem quantitativa permite identificar se erros de leitura estão associados a fatores externos, como reflexos na cúpula de vidro do medidor ou distorções de perspectiva.
+
+\subsubsection{Precisão dos Modelos Preditivos}
+Para avaliar as previsões de consumo de água, será utilizado o Erro Absoluto Médio (MAE - \textit{Mean Absolute Error}), seguindo a fundamentação de \cite{barkat2024smart}. O MAE permite mensurar a magnitude média do erro nas previsões em relação aos valores reais consumidos:
+
+\begin{equation}
+MAE = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|
+\end{equation}
+Onde $y_i$ representa o consumo real e $\hat{y}_i$ o valor previsto pelo modelo.
+
+\subsubsection{Autonomia Energética}
+A eficiência do hardware será validada através da medição do consumo de corrente em diferentes estados de operação (\textit{Deep Sleep}, captura de imagem e transmissão). A autonomia estimada ($A$) em dias será calculada pela relação entre a capacidade da bateria ($C_{bat}$) e o consumo médio diário ($I_{médio}$):
+
+\begin{equation}
+A = \frac{C_{bat}}{I_{médio} \times 24}
+\end{equation}
 
 % \subsection{Microcontroladores e a Plataforma ESP32}
 % O desenvolvimento de nós de sensoriamento para cidades inteligentes exige hardware que equilibre poder de processamento e autonomia energética. O ESP32 destaca-se nesse cenário como uma plataforma robusta de baixo custo, integrando conectividade sem fio e múltiplos modos de operação \cite{Sari2022}. Diferente de arquiteturas mais simples, o ESP32 permite a execução de tarefas complexas e segurança criptográfica sem comprometer severamente o ciclo de vida da bateria, desde que devidamente configurado \cite{Ahmad2021}.
@@ -309,7 +348,7 @@ ST06 & Hardware & "ESP32-CAM" AND "analog meter" AND "OCR" \\
 ST07 & Software & "ETL pipeline" AND "IoT" AND "telemetry" \\ 
 ST08 & Software & "automatic meter reading" OCR accuracy "error rate" evaluation \\
 ST09 & Redes & "packet delivery ratio" LoRaWAN "latency" monitoring system \\
-ST010 & Contexto & "water consumption prediction" "mean absolute error" forecasting metrics \\bottomrule
+ST010 & Contexto & "water consumption prediction" "mean absolute error" forecasting metrics \\ \bottomrule
 \end{tabular}
 \end{table}
 
@@ -382,46 +421,6 @@ Uma vez que os dados chegam ao servidor, eles entram em um Pipeline ETL.
 
 A solução final entrega uma Ferramenta de Telemetria e Dashboard, onde o usuário final pode acompanhar o consumo diário/mensal, detectar vazamentos através de padrões anômalos de consumo e gerar relatórios automatizados de cobrança ou gestão hídrica.
 % ---------------------------------------------------------------
-
-\subsection{Metodologia de Avaliação e Métricas de Validação}
-\label{sec:metricas}
-
-Para avaliar a eficácia do sistema de telemetria proposto e garantir a objetividade dos resultados, serão adotados indicadores quantitativos divididos em quatro dimensões críticas: desempenho de rede, precisão de visão computacional, eficiência energética e acurácia preditiva.
-
-\subsubsection{Desempenho da Rede de Comunicação}
-A robustez da transmissão via LoRaWAN será quantificada através da Taxa de Entrega de Pacotes (PDR - \textit{Packet Delivery Ratio}). Conforme a metodologia de \cite{bravo2025ants}, o PDR é definido pela razão entre o número de pacotes recebidos pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor:
-
-\begin{equation}
-PDR = \left( \frac{\text{Pacotes Recebidos}}{\text{Pacotes Enviados}} \right) \times 100
-\end{equation}
-
-Além do PDR, será medida a latência de ponta a ponta, compreendendo o tempo decorrido desde o disparo da captura da imagem no ESP32 até a disponibilidade do dado processado no \textit{dashboard}.
-
-\subsubsection{Acurácia da Visão Computacional (OCR)}
-A validação do algoritmo de OCR, responsável pela extração dos dígitos dos hidrômetros analógicos, será realizada sob diferentes condições de iluminação e ângulos de captura, visando simular cenários reais de instalação. 
-
-Conforme discutido por \cite{barkat2024smart}, a eficácia de modelos de \textit{Deep Learning} aplicados ao monitoramento de água deve ser medida pela sua capacidade de generalização. Para este trabalho, a métrica principal será a Acurácia de Leitura ($Acc_{ocr}$), definida pela razão entre as predições que coincidem exatamente com o valor real (verdade de campo) e o total de amostras testadas:
-
-\begin{equation}
-Acc_{ocr} = \frac{VP + VN}{VP + VN + FP + FN}
-\end{equation}
-
-Onde $VP$, $VN$, $FP$ e $FN$ representam, respectivamente, os Verdadeiros Positivos, Verdadeiros Negativos, Falsos Positivos e Falsos Negativos obtidos através da Matriz de Confusão. Esta abordagem quantitativa permite identificar se erros de leitura estão associados a fatores externos, como reflexos na cúpula de vidro do medidor ou distorções de perspectiva.
-
-\subsubsection{Precisão dos Modelos Preditivos}
-Para avaliar as previsões de consumo de água, será utilizado o Erro Absoluto Médio (MAE - \textit{Mean Absolute Error}), seguindo a fundamentação de \cite{barkat2024smart}. O MAE permite mensurar a magnitude média do erro nas previsões em relação aos valores reais consumidos:
-
-\begin{equation}
-MAE = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|
-\end{equation}
-Onde $y_i$ representa o consumo real e $\hat{y}_i$ o valor previsto pelo modelo.
-
-\subsubsection{Autonomia Energética}
-A eficiência do hardware será validada através da medição do consumo de corrente em diferentes estados de operação (\textit{Deep Sleep}, captura de imagem e transmissão). A autonomia estimada ($A$) em dias será calculada pela relação entre a capacidade da bateria ($C_{bat}$) e o consumo médio diário ($I_{médio}$):
-
-\begin{equation}
-A = \frac{C_{bat}}{I_{médio} \times 24}
-\end{equation}
 
 \section{Cronograma de trabalho}
 \label{sec:cronograma}
