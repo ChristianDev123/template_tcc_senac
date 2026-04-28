@@ -170,6 +170,9 @@ A validação do sistema será avaliada através da análise de taxa de entrega 
 \section{Contexto}
 \label{sec:contexto}
 
+Diante de uma problemática tão ampla e que atinge tão intensivamente a atual sociedade, abre-se 3 linhas que contextualizam a dimensão que tal questão aborda.
+
+
 \subsection{Manejamento de Recursos Hídricos}
 
 Como evidenciado pelo \cite{tratabrasil2025}, aproximadamente  40,31\% de toda água produzida por agências de saneamento básico no Brasil é perdida por diversos fatores, entre eles, um dos fatores que se destaca é a perda causada por dificuldades de coleta e acompanhamento de dados fornecidos por hidrômetros, que para o Ministério das Cidades (2003), se qualifica como uma perda comercial. 
@@ -185,22 +188,27 @@ Dado a natureza da aplicação de dispositivos IOT que estamos desenvolvendo, de
 
 Como explicado em ''Navigating Battery Choices in IoT: An Extensive Survey of Technologies and Their Applications'' \cite{hasan2023navigating} , há diversos fatores que impactam na escolha mais racional da bateria utilizada em dispositivos IOT, entre eles: densidade energética, range de temperatura de funcionamento, segurança, eficiência energética, longevidade e custo. Ainda em tal artigo evidência-se, como um forte candidato a este tipo de aplicação a escolha de bateria de íon-lítio, onde com o passar do tempo, tornou-se mais viável economicamente e oferecendo bons níveis de todos os parâmetros citados anteriormente.
 
-Ainda sobre as baterias de íon-lítio, a Panasonic, uma das principais fabricantes de baterias deste tipo no mundo, publica abertamente os valores médios de ciclos de recarga suportados por seus produtos sob determinadas condições, no caso de um tipo de bateria de ion-lítio mais comumente utilizado, tal produto varia a quantidade de ciclos de recarga por volta de 1500 a 2000 ciclos.
+Ainda sobre as baterias de íon-lítio, a \citeonline{panasonic_cr_standard}, uma das principais fabricantes de baterias deste tipo no mundo, publica abertamente os valores médios de ciclos de recarga suportados por seus produtos sob determinadas condições, no caso de um tipo de bateria de ion-lítio mais comumente utilizado, tal produto varia a quantidade de ciclos de recarga por volta de 1500 a 2000 ciclos.
 
 Portanto, aqui esclarecemos a necessidade de implementar um sistema eficiente energeticamente com o objetivo de reduzir a necessidade de manutenção nos aparelhos desenvolvidos.
 
 
+\subsection{Realidade Mercadológica}
 
-% ---------------------------------------------------------------
-\section{Justificativa}
-\label{sec:justificativa}
-% Não sei se é melhor colocarmos essa parte como mais um argumento em contexto ou se mantemos em justificativa %
 Conforme evidenciado por \citeonline{fortune2025} e \citeonline{polimi2020}, a atualização tecnológica na medição de recursos hídricos enfrenta barreiras econômicas severas. A substituição integral de parques de hidrômetros analógicos por medidores inteligentes demanda um investimento inicial de capital que pode variar entre 200 e 400 dólares por unidade. Tal custo constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala, conforme demonstrado em estudos de viabilidade econômica do setor.
 
-Como alternativa viável, a digitalização de dispositivos analógicos preexistentes — processo de modernização adaptativa — permite dotar a infraestrutura atual de inteligência com custos reduzidos. Ao acoplar módulos de baixo custo, como o ESP32, aos medidores já instalados, evita-se a necessidade de intervenções estruturais complexas. A relevância social desta abordagem reside na transparência e acessibilidade no controle de consumo, permitindo que o usuário identifique vazamentos de forma célere e mitigue o desperdício estrutural de água.
+Como alternativa viável, a digitalização de dispositivos analógicos preexistentes — processo de modernização adaptativa — permite dotar a infraestrutura atual de inteligência com custos reduzidos. Ao acoplar módulos de baixo custo, como o ESP32, aos medidores já instalados, evita-se a necessidade de intervenções estruturais complexas, e por consequência, de custos inicial significativamente elevado. 
 
-Academicamente, a pesquisa justifica-se pelo desenvolvimento de um sistema embarcado de alta eficiência, projetado para operar sob severas restrições de hardware. A escolha da linguagem C para o desenvolvimento do firmware é fundamentada pela necessidade de otimização da memória SRAM e redução do consumo energético, superando limitações de linguagens interpretadas em dispositivos restritos \cite{PerformanceEvaluation2023}. O trabalho propõe uma arquitetura de computação distribuída que alia técnicas de Reconhecimento Óptico de Caracteres (OCR) na borda à implementação de um pipeline ETL integrado. Essa abordagem permite a conversão de dados analógicos em conhecimentos estratégicos por meio de dashboards em tempo real, oferecendo um estudo de caso robusto sobre a viabilidade técnica de redes IoT de baixo custo.
-% ---------------------------------------------------------------
+\section{Justificativa}
+\label{sec:justificativa}
+
+A relevância social na abordagem deste trabalho reside na transparência e acessibilidade no controle de consumo, permitindo que o usuário identifique vazamentos de forma célere e mitigue o desperdício de água.
+
+Academicamente, a pesquisa justifica-se pelo desenvolvimento de um sistema embarcado de alta eficiência, projetado para operar sob severas restrições de hardware.
+% A escolha da linguagem C para o desenvolvimento do firmware é fundamentada pela necessidade de otimização da memória SRAM e redução do consumo energético, superando limitações de linguagens interpretadas em dispositivos restritos \cite{PerformanceEvaluation2023}.
+O trabalho propõe uma arquitetura de computação distribuída que alia técnicas de Reconhecimento Óptico de Caracteres (OCR) à implementação de um pipeline ETL integrado. 
+Essa abordagem permite a extração de dados analógicos gerando informação estratégica, oferecendo um estudo de caso robusto sobre a viabilidade técnica de redes IoT de baixo custo.
+
 \section{Objetivo}
 \label{sec:objetivo}
 
@@ -228,15 +236,15 @@ Implementar um sistema de telemetria de baixo custo e alta eficiência energéti
 \section{Referencial teórico}
 \label{sec:referencial}
 
-\section{Software Otimizado de Baixo Custo em Sistemas Restritos}
+\section{Software Otimizado em Sistemas Restritos}
 
 O desenvolvimento do software para dispositivos IoT exige um rigoroso controle sobre a alocação de recursos, uma vez que a eficiencia impacta diretamente ao consumo energético e viabilidade do sistema. Em plataformas com recursos limitados, como o ESP32, a escolha da linguagem de programação e o framework são essenciais e determinantes para o sucesso de implementassão de tarefas complexas.
 
-\cite{Plauska2023} demonstra que, linguagens compiladas como C e C++ têm um desempenho superior em termos de utilização de CPU e memória SRAM quando comparadas a linguagens interpretadas ou de alto nivel. Em tarefas de processamento intensivo o uso de C permite uma gestão de memória altamente precisa, fator crítico para execusãod e algoritimos (OCR) em dispositivos que possuem apenas algumas centenas de kilobytes de memória.
+\cite{Plauska2023} demonstram que, linguagens compiladas como C e C++ têm um desempenho superior em termos de gestão de CPU e memória SRAM quando comparadas a linguagens interpretadas ou de alto nivel. Em tarefas de processamento intensivo o uso de C permite uma gestão de memória altamente precisa, fator crítico para execusão de algoritimos (OCR) em dispositivos que possuem apenas algumas centenas de kilobytes de memória.
 
-Além da captura de dados, a arquitetura de software deve prever a integridade da informação por meio de um fluxo sistemático de tratamento de dados. De acordo com \cite{Naude2017}, o desenvolvimento de um \textit{firmware} robusto exige implementação de rotinas de gerenciamento de tarefas e estados de dormência (\textit{Deep Sleep}) sincronizados com os ciclos de leitura do sensor ou câmera. Esse gerenciamento garante que o sistema permaneça em estado de baixo consumo na maior parte do tempo, ligando novamente apenas para realizar a tarefa de visão computacional e transmissão.
+% Além da captura de dados, a arquitetura de software deve prever a integridade da informação por meio de um fluxo sistemático de tratamento de dados. De acordo com \cite{Naude2017}, o desenvolvimento de um \textit{firmware} robusto exige implementação de rotinas de gerenciamento de tarefas e estados de dormência (\textit{Deep Sleep}) sincronizados com os ciclos de leitura do sensor ou câmera. Esse gerenciamento garante que o sistema permaneça em estado de baixo consumo na maior parte do tempo, ligando novamente apenas para realizar a tarefa de visão computacional e transmissão.
 
-Por fim, a integração dos dados coletados em um \textit{pipeline} ETL (Extração, Transformação e Carga) permite que informações brutas vindas da borda sejam estruturadas e convertidas em conhecimentos estratégicos. A utilização de técnicas de ciência de dados na camada central da aplicação possibilita a geração de alertas automáticos e a análise preditiva de consumo, agregando valor à solução de telemetria de baixo custo.
+% Por fim, a integração dos dados coletados em um \textit{pipeline} ETL (Extração, Transformação e Carga) permite que informações brutas vindas da borda sejam estruturadas e convertidas em conhecimentos estratégicos. A utilização de técnicas de ciência de dados na camada central da aplicação possibilita a geração de alertas automáticos e a análise preditiva de consumo, agregando valor à solução de telemetria de baixo custo.
 
 %\subsection{Fundamentos da Conversão Analógico-Digital}
 
