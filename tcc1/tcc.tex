@@ -195,17 +195,15 @@ Portanto, aqui esclarecemos a necessidade de implementar um sistema eficiente en
 
 \subsection{Realidade Mercadológica}
 
-Conforme evidenciado por \citeonline{fortune2025} e \citeonline{polimi2020}, a atualização tecnológica na medição de recursos hídricos enfrenta barreiras econômicas severas. A substituição integral de parques de hidrômetros analógicos por medidores inteligentes demanda um investimento inicial de capital que pode variar entre 200 e 400 dólares por unidade. Tal custo constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala, conforme demonstrado em estudos de viabilidade econômica do setor.
+A transição para redes de medição inteligente (\textit{smart metering}) enfrenta barreiras econômicas severas relacionadas ao custo de implementação de sistemas autônomos. Conforme indicado por \citeonline{fortune2025} e \citeonline{polimi2020}, a substituição integral de parques de hidrômetros analógicos demanda um investimento inicial de capital (\textit{CAPEX}) elevado, o que constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala. A complexidade de infraestrutura necessária para a substituição física dos medidores limita a viabilidade econômica de projetos em áreas privadas de pequeno e médio porte.
 
-Como alternativa viável, a digitalização de dispositivos analógicos preexistentes — processo de modernização adaptativa — permite dotar a infraestrutura atual de inteligência com custos reduzidos. Ao acoplar módulos de baixo custo, como o ESP32, aos medidores já instalados, evita-se a necessidade de intervenções estruturais complexas, e por consequência, de custos inicial significativamente elevado. 
-
-\section{Justificativa}
+Ao acoplar módulos de baixo custo aos medidores já instalados, a digitalização de dispositivos analógicos preexistentes(\textit{dumb meters}), processo conhecido como(\textit{retrofitting}) permite dotar a infraestrutura atual de inteligência com custos reduzidos e com a mesma eficiencia dos medidores inteligentes que estão no mercado como mencionado por \cite{Stefano2019}
 \label{sec:justificativa}
 
 A relevância social na abordagem deste trabalho reside na transparência e acessibilidade no controle de consumo, permitindo que o usuário identifique vazamentos de forma célere e mitigue o desperdício de água.
 
 Academicamente, a pesquisa justifica-se pelo desenvolvimento de um sistema embarcado de alta eficiência, projetado para operar sob severas restrições de hardware.
-% A escolha da linguagem C para o desenvolvimento do firmware é fundamentada pela necessidade de otimização da memória SRAM e redução do consumo energético, superando limitações de linguagens interpretadas em dispositivos restritos \cite{PerformanceEvaluation2023}.
+% A escolha da linguagem C para o desenvolvimento do firmware é fundamentada pela necessidade de otimização da memória SRAM e redução do consumo energético, superando limitações de linguagens interpretadas em dispositivos restritos \cite{Plauska2023}.
 O trabalho propõe uma arquitetura de computação distribuída que alia técnicas de Reconhecimento Óptico de Caracteres (OCR) à implementação de um pipeline ETL integrado. 
 Essa abordagem permite a extração de dados analógicos gerando informação estratégica, oferecendo um estudo de caso robusto sobre a viabilidade técnica de redes IoT de baixo custo.
 
@@ -242,15 +240,7 @@ O desenvolvimento do software para dispositivos IoT exige um rigoroso controle s
 
 \cite{Plauska2023} demonstram que, linguagens compiladas como C e C++ têm um desempenho superior em termos de gestão de CPU e memória SRAM quando comparadas a linguagens interpretadas ou de alto nivel. Em tarefas de processamento intensivo o uso de C permite uma gestão de memória altamente precisa, fator crítico para execusão de algoritimos (OCR) em dispositivos que possuem apenas algumas centenas de kilobytes de memória.
 
-% Além da captura de dados, a arquitetura de software deve prever a integridade da informação por meio de um fluxo sistemático de tratamento de dados. De acordo com \cite{Naude2017}, o desenvolvimento de um \textit{firmware} robusto exige implementação de rotinas de gerenciamento de tarefas e estados de dormência (\textit{Deep Sleep}) sincronizados com os ciclos de leitura do sensor ou câmera. Esse gerenciamento garante que o sistema permaneça em estado de baixo consumo na maior parte do tempo, ligando novamente apenas para realizar a tarefa de visão computacional e transmissão.
 
-% Por fim, a integração dos dados coletados em um \textit{pipeline} ETL (Extração, Transformação e Carga) permite que informações brutas vindas da borda sejam estruturadas e convertidas em conhecimentos estratégicos. A utilização de técnicas de ciência de dados na camada central da aplicação possibilita a geração de alertas automáticos e a análise preditiva de consumo, agregando valor à solução de telemetria de baixo custo.
-
-%\subsection{Fundamentos da Conversão Analógico-Digital}
-
-%A tradução de fenômenos fisicos para o dominio computacional fundamenta-se na interface entre sensores e controladores, mediada principalmente pela conversão alanógico-digital (ADC). segundo \cite{Bipon2009} essa interação requer equilibrio rigoroso entre precisão, custo e consumo energético.
-
-%Embora o sistema proposto utilize câmera como sensor de imagem, os principos de amostragem e mitigação de ruidos via software são conceitos univerais. 
 
 \section{Hardware de baixo consumo e Eficiência em IoT}
 
@@ -267,6 +257,12 @@ Segundo \cite{Camargo2022}, entorno de 60\% do recurso energético de sistemas I
 O LoRaWan (Long Range Wide Area Network), é um protocolo LPWAN (Low Power Wide Area Network), que possui o objetivo de viabilizar a comunicação em grandes distâncias, conciliado ao baixo consumo energético. Diante disso, o protocolo surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de redução de consumo energético, em contra partida, a baixa largura de banda oferecida por tal solução apoia o desenvolvimento de sistemas baseado em edge-computing, trafegando em rede apenas os dados e metadados prontos para serem tratados em getaway central, assim amplificando o desafio de desenvolver um sistema focado no menor consumo energético em borda.
 
 Toda via, surge ao mesclarmos tais conceitos, o desafio de alinhar o menor consumo de recurso energético possível, com o objetivo de prolongar a vida útil de bateria dos dispositivos utilizados, às mais otimizadas soluções de rede, hardware e técnicas de desenvolvimento de software.
+
+\subsection{Fundamentos da Conversão Analógico-Digital}
+A tradução de fenômenos fisicos para o dominio computacional fundamenta-se na interface entre sensores e controladores, mediada principalmente pela conversão alanógico-digital (ADC). segundo \cite{Bipon2009} essa interação requer equilibrio rigoroso entre precisão, custo e consumo energético.
+
+Embora o sistema proposto utilize câmera como sensor de imagem, os principos de amostragem e mitigação de ruidos via software são conceitos univerais. 
+
 
 \subsection{Metodologia de Avaliação e Métricas de Validação}
 \label{sec:metricas}
