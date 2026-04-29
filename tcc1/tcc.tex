@@ -170,19 +170,17 @@ A validação do sistema será avaliada através da análise de taxa de entrega 
 \section{Contexto}
 \label{sec:contexto}
 
-Diante de uma problemática tão ampla e que atinge tão intensivamente a atual sociedade, abre-se 3 linhas que contextualizam a dimensão que tal questão aborda.
-
+A gestão da água no Brasil enfrenta hoje três grandes desafios: o desperdício elevado por falta de dados, o alto custo para modernizar os medidores antigos e as limitações técnicas de dispositivos que dependem de baterias. Para entender a dimensão desse problema, a questão será analisada sob três pilares: a gestão dos recursos hídricos, os desafios da tecnologia IoT e a viabilidade econômica de mercado.
 
 \subsection{Manejamento de Recursos Hídricos}
 
-Como evidenciado pelo \cite{tratabrasil2025}, aproximadamente  40,31\% de toda água produzida por agências de saneamento básico no Brasil é perdida por diversos fatores, entre eles, um dos fatores que se destaca é a perda causada por dificuldades de coleta e acompanhamento de dados fornecidos por hidrômetros, que para o Ministério das Cidades (2003), se qualifica como uma perda comercial. 
+A base do problema reside na ineficiência do sistema de distribuição atual. Como evidenciado pelo \cite{tratabrasil2025}, aproximadamente  40,31\% de toda água produzida por agências de saneamento básico no Brasil é perdida por diversos fatores, entre eles, um dos fatores que se destaca é a perda causada por dificuldades de coleta e acompanhamento de dados fornecidos por hidrômetros, que para o Ministério das Cidades (2003), se qualifica como uma perda comercial. 
 Diante de tal problemática, abre-se a discussão sobre os graves impactos na gerência de recursos hídricos e financeiros aos usuários da rede de distribuição, concessionárias e ao governo.
 
 Em ambientes privados e condomínios, a ausência de sistemas de monitoramento em tempo real impede a detecção precoce de anomalias e vazamentos ocultos. Havendo uma lacuna em ferramentas que auxiliam consumidores e gerentes das redes hídricas efetuarem acompanhamento de dados de forma mais recorrente possibilitando realizar correções de maneira mais tempestiva.
 
 \subsection{Desafios Tecnológicos}
-
-Um dos maiores desafios dentro da tecnologia atual é a gestão e prolongamento máximo da vida útil das baterias que alimentam dispositivos de diferentes finalidades.
+Para mitigar as perdas mencionadas anteriormente, a computação aplicada propõe o uso de dispositivos de Internet das Coisas (IoT). Porém, a implementação dessas redes de monitoramento contínuo possui um gargalo de suma importância em relacionado à gestão energética.
 
 Dado a natureza da aplicação de dispositivos IOT que estamos desenvolvendo, denota-se a necessidade da utilização de baterias como fonte primária de alimentação do sistema. Diante de tal cenário, emerge o questionamento sobre qual o tipo de bateria mais adequado a se implementar. 
 
@@ -195,9 +193,9 @@ Portanto, aqui esclarecemos a necessidade de implementar um sistema eficiente en
 
 \subsection{Realidade Mercadológica}
 
-A transição para redes de medição inteligente (\textit{smart metering}) enfrenta barreiras econômicas severas relacionadas ao custo de implementação de sistemas autônomos. Conforme indicado por \citeonline{fortune2025} e \citeonline{polimi2020}, a substituição integral de parques de hidrômetros analógicos demanda um investimento inicial de capital (\textit{CAPEX}) elevado, o que constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala. A complexidade de infraestrutura necessária para a substituição física dos medidores limita a viabilidade econômica de projetos em áreas privadas de pequeno e médio porte.
+A modernização da gestão hídrica enfrenta um impasse econômico: embora existam medidores inteligentes nativos no mercado, a substituição integral dos parques de hidrômetros analógicos exige um investimento de capital (\textit{CAPEX}) proibitivo. Conforme indicado por \citeonline{fortune2025} e \citeonline{polimi2020}, a substituição integral de parques de hidrômetros analógicos demanda um (\textit{CAPEX}) elevado, o que constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala. A complexidade de infraestrutura necessária para a substituição física dos medidores limita a viabilidade econômica de projetos em áreas privadas de pequeno e médio porte.
 
-Ao acoplar módulos de baixo custo aos medidores já instalados, a digitalização de dispositivos analógicos preexistentes(\textit{dumb meters}), processo conhecido como(\textit{retrofitting}) permite dotar a infraestrutura atual de inteligência com custos reduzidos e com a mesma eficiencia dos medidores inteligentes que estão no mercado como mencionado por \cite{Stefano2019}
+Ao acoplar módulos de baixo custo aos medidores já instalados, a digitalização de dispositivos analógicos preexistentes(\textit{dumb meters}), processo conhecido como (\textit{retrofitting}) permite dotar a infraestrutura atual de inteligência com custos reduzidos e com a mesma eficiencia dos medidores inteligentes que estão no mercado como mencionado por \cite{Stefano2019}
 \section{Justificativa}
 \label{sec:justificativa}
 
@@ -229,7 +227,6 @@ Implementar um sistema de telemetria de baixo custo e alta eficiência energéti
 \chapter{Revisão Bibliográfica}
 \label{cap:revisao}
 
-% ---------------------------------------------------------------
 \section{Referencial teórico}
 \label{sec:referencial}
 
@@ -393,7 +390,7 @@ Os resultados apontaram uma precisão de 99,71\% no reconhecimento dos dígitos 
 O presente trabalho diferencia-se da abordagem de \citeonline{bravo2025ants} ao deslocar a carga computacional do Reconhecimento Óptico de Caracteres (OCR) do dispositivo final para a nuvem. Enquanto o trabalho correlato executa o processamento localmente no ESP32-CAM, esta pesquisa foca na robustez de um pipeline de processamento remoto. Isso permite a utilização de modelos de visão computacional mais complexos e precisos, que excederiam a capacidade de memória e processamento do hardware local, além de centralizar a lógica de extração de dados para facilitar manutenções e atualizações do algoritmo de IA sem a necessidade de novos firmwares nos sensores.
 
 % ===============================================================
-% CAPÍTULO 3 - DESENVOLVIMENTO (WIP)
+% CAPÍTULO 3 - DESENVOLVIMENTO
 % ===============================================================
 \chapter{Desenvolvimento}
 \label{cap:desenvolvimento}
