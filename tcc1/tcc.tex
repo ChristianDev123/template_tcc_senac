@@ -210,8 +210,6 @@ Essa abordagem permite a extração de dados analógicos gerando informação es
 \section{Objetivo}
 \label{sec:objetivo}
 
-\subsection{Objetivo principal}
-
 Implementar um sistema de telemetria de baixo custo e alta eficiência energética para hidrômetros analógicos, integrando visão computacional (OCR) e comunicação LoRaWAN para gestão e previsão de consumo de água.
 
 \subsection{Objetivos secundários}
@@ -234,15 +232,13 @@ Implementar um sistema de telemetria de baixo custo e alta eficiência energéti
 \section{Referencial teórico}
 \label{sec:referencial}
 
-\section{Software Otimizado em Sistemas Restritos}
+\subsection{Software Otimizado em Sistemas Restritos}
 
 O desenvolvimento do software para dispositivos IoT exige um rigoroso controle sobre a alocação de recursos, uma vez que a eficiencia impacta diretamente ao consumo energético e viabilidade do sistema. Em plataformas com recursos limitados, como o ESP32, a escolha da linguagem de programação e o framework são essenciais e determinantes para o sucesso de implementassão de tarefas complexas.
 
 \cite{Plauska2023} demonstram que, linguagens compiladas como C e C++ têm um desempenho superior em termos de gestão de CPU e memória SRAM quando comparadas a linguagens interpretadas ou de alto nivel. Em tarefas de processamento intensivo o uso de C permite uma gestão de memória altamente precisa, fator crítico para execusão de algoritimos (OCR) em dispositivos que possuem apenas algumas centenas de kilobytes de memória.
 
-
-
-\section{Hardware de baixo consumo e Eficiência em IoT}
+\subsection{Hardware de baixo consumo e Eficiência em IoT}
 
 O desenvolvimento de nós de sensoriamento para cidades inteligentes exige hardware que equilibre poder de processamento e autonomia energética.
 
@@ -359,6 +355,8 @@ ST010 & Contexto & "water consumption prediction" "mean absolute error" forecast
 % ---------------------------------------------------------------
 \section{Trabalhos relacionados}
 \label{sec:trabalhos_relacionados}
+
+Nesta seção, analisam-se pesquisas que utilizam IoT e Visão Computacional para a digitalização de medidores de consumo, como as soluções de computação de borda propostas por \citeonline{SilvaVilela2021} e \citeonline{bravo2025ants}, além de arquiteturas de sensores inteligentes exploradas por \citeonline{Tedjojuwono2024}. O objetivo é contextualizar as escolhas arquiteturais deste TCC, comparando modelos de processamento (borda vs. nuvem) e protocolos de comunicação sem fio. A revisão fundamenta o estado da técnica e destaca os diferenciais desta proposta em termos de infraestrutura de dados e eficiência energética.
 
 \subsection{Trabalho 1: Solução IoT para Digitalização de Medidores de Consumo por Visao Computacional e MicroML}
 
