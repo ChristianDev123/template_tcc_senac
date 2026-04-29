@@ -232,7 +232,9 @@ Implementar um sistema de telemetria de baixo custo e alta eficiência energéti
 
 \subsection{Software Otimizado em Sistemas Restritos}
 
-O desenvolvimento do software para dispositivos IoT exige um rigoroso controle sobre a alocação de recursos, uma vez que a eficiencia impacta diretamente ao consumo energético e viabilidade do sistema. Em plataformas com recursos limitados, como o ESP32, a escolha da linguagem de programação e o framework são essenciais e determinantes para o sucesso de implementassão de tarefas complexas.
+O desenvolvimento do software para dispositivos IoT exige um rigoroso controle sobre a alocação de recursos, uma vez que a eficiência impacta diretamente ao consumo energético e viabilidade do sistema. Em plataformas com recursos limitados, como o ESP32, a escolha da linguagem de programação e o framework são essenciais e determinantes para o sucesso de implementassão de tarefas complexas.
+
+Do ponto de vista computacional e eficiência de recursos, o uso nativo do ESP-IDF (\textit{Espressif IoT Development Framework}) apresenta vantagens significativas em comparação a frameworks de alto nível, como Arduino e MicroPython. O ESP-IDF é projetado para aproveitar ao máximo as capacidades do hardware, permitindo controle granular sobre a memória e o consumo energético, enquanto frameworks de alto nível abstraem muitos detalhes, o que pode levar a um uso ineficiente dos recursos limitados do dispositivo \cite{espidf}.
 
 \cite{Plauska2023} demonstram que, linguagens compiladas como C e C++ têm um desempenho superior em termos de gestão de CPU e memória SRAM quando comparadas a linguagens interpretadas ou de alto nivel. Em tarefas de processamento intensivo o uso de C permite uma gestão de memória altamente precisa, fator crítico para execusão de algoritimos (OCR) em dispositivos que possuem apenas algumas centenas de kilobytes de memória.
 
