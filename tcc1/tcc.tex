@@ -231,14 +231,6 @@ Implementar um sistema de telemetria de baixo custo e alta eficiência energéti
 \section{Referencial teórico}
 \label{sec:referencial}
 
-\subsection{Software Otimizado em Sistemas Restritos}
-
-O desenvolvimento do software para dispositivos IoT exige um rigoroso controle sobre a alocação de recursos, uma vez que a eficiência impacta diretamente ao consumo energético e viabilidade do sistema. Em plataformas com recursos limitados, como o ESP32, as escolhas da linguagem de programação e framework's são essenciais e determinantes para o sucesso de implementassão de tarefas complexas.
-
-Do ponto de vista computacional e eficiência de recursos, o uso nativo do ESP-IDF (\textit{Espressif IoT Development Framework}) apresenta vantagens significativas em comparação a frameworks de alto nível, como Arduino e MicroPython. O ESP-IDF é projetado para aproveitar ao máximo as capacidades do hardware, permitindo controle granular sobre a memória e consumo energético, enquanto muitos de seus concorrentes implementam abstrações, podendo ocasionar o uso ineficiente dos limitados recursos do dispositivo \cite{espidf}.
-
-\cite{Plauska2023} demonstram que, linguagens compiladas como C e C++ têm um desempenho superior em termos de gestão de CPU e memória SRAM quando comparadas a linguagens interpretadas ou de alto nivel. Em tarefas de processamento intensivo o uso de C permite uma gestão de memória altamente precisa, fator crítico para execusão de algoritimos (OCR) em dispositivos que possuem apenas algumas centenas de kilobytes de memória.
-
 \subsection{Hardware de baixo consumo e Eficiência em IoT}
 
 O desenvolvimento de nós de sensoriamento para cidades inteligentes exige hardware que equilibre poder de processamento e autonomia energética.
@@ -255,11 +247,22 @@ O LoRaWan (Long Range Wide Area Network), é um protocolo LPWAN (Low Power Wide 
 
 Toda via, surge ao mesclarmos tais conceitos, o desafio de alinhar o menor consumo de recurso energético possível, com o objetivo de prolongar a vida útil de bateria dos dispositivos utilizados, às mais otimizadas soluções de rede, hardware e técnicas de desenvolvimento de software.
 
+\subsection{Software Otimizado em Sistemas Restritos}
+
+O desenvolvimento do software para dispositivos IoT exige um rigoroso controle sobre a alocação de recursos, uma vez que a eficiência impacta diretamente ao consumo energético e viabilidade do sistema. Em plataformas com recursos limitados, como o ESP32, as escolhas da linguagem de programação e framework's são essenciais e determinantes para o sucesso de implementação de tarefas complexas.
+
+Do ponto de vista computacional e eficiência de recursos, o uso nativo do ESP-IDF (\textit{Espressif IoT Development Framework}) apresenta vantagens significativas em comparação a frameworks de alto nível, como Arduino e MicroPython. O ESP-IDF é projetado para aproveitar ao máximo as capacidades do hardware, permitindo controle granular sobre a memória e consumo energético, enquanto muitos de seus concorrentes implementam abstrações, podendo ocasionar o uso ineficiente dos limitados recursos do dispositivo \cite{espidf}.
+
+\cite{Plauska2023} demonstram que, linguagens compiladas como C e C++ têm um desempenho superior em termos de gestão de CPU e memória SRAM quando comparadas a linguagens interpretadas ou de alto nivel. Em tarefas de processamento intensivo o uso de C permite uma gestão de memória altamente precisa, fator crítico para execusão de algoritimos (OCR) em dispositivos que possuem apenas algumas centenas de kilobytes de memória.
+
+\subsection{Envio de Imagens via Rede LoRaWan}
+
+% Na Minha Opnião melhor remover (Christian)
 \subsection{Fundamentos da Conversão Analógico-Digital}
 A tradução de fenômenos fisicos para o dominio computacional fundamenta-se na interface entre sensores e controladores, mediada principalmente pela conversão alanógico-digital (ADC). segundo \citeonline{Bipom2009} essa interação requer equilibrio rigoroso entre precisão, custo e consumo energético.
 
 Embora o sistema proposto utilize câmera como sensor de imagem, os principos de amostragem e mitigação de ruidos via software são conceitos univerais. 
-
+% ENDSECTION
 
 \subsection{Metodologia de Avaliação e Métricas de Validação}
 \label{sec:metricas}
@@ -301,29 +304,6 @@ A eficiência do hardware será validada através da medição do consumo de cor
 A = \frac{C_{bat}}{I_{médio} \times 24}
 \end{equation}
 
-% \subsection{Microcontroladores e a Plataforma ESP32}
-% O desenvolvimento de nós de sensoriamento para cidades inteligentes exige hardware que equilibre poder de processamento e autonomia energética. O ESP32 destaca-se nesse cenário como uma plataforma robusta de baixo custo, integrando conectividade sem fio e múltiplos modos de operação \cite{Sari2022}. Diferente de arquiteturas mais simples, o ESP32 permite a execução de tarefas complexas e segurança criptográfica sem comprometer severamente o ciclo de vida da bateria, desde que devidamente configurado \cite{Ahmad2021}.
-
-% \subsection{Estratégias de Gerenciamento de Energia}
-% A viabilidade de dispositivos IoT em campo, como medidores de água residenciais, depende da minimização do consumo em estado de repouso (\textit{deep sleep}). Segundo \citeonline{Ferreira2020}, a vida útil da bateria é influenciada criticamente não apenas pelo hardware, mas pela eficiência das rotinas de escrita em periféricos e pela otimização do firmware. 
-
-% \subsection{Rede}
-% Segundo \cite{Camargo2022}, entorno de 60\% do consumo energético de sistemas IOT são consumidos na comunicação, a escolha efetiva de protocolo de comunicação e otimização de parâmetros como dispersão de sinal, entre outros, torna-se uma tarefa de suma importância no desenvolvimento de um sistema IOT otimizado de baixo custo.
-
-% O LoRaWan surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de consumo energético para o esse tipo de device.
-
-
-% A escolha da tecnologia de rede também desempenha papel fundamental no balanço energético. Comparativos demonstram que, embora o Wi-Fi ofereça maior taxa de transferência, a tecnologia LoRa apresenta uma eficiência superior para transmissões de longo alcance e baixo volume de dados, sendo mais adequada para dispositivos alimentados por bateria que operam em locais isolados \cite{Martine2023}.
-
-% Apresente os principais conceitos, teorias e definições que fundamentam o trabalho. O referencial teórico deve fornecer ao leitor a base necessária para compreender o problema e a solução proposta.
-
-% Organize esta seção por temas ou conceitos, não por autor. Cada subseção deve abordar um conceito relevante, explicando-o e relacionando-o ao contexto do trabalho.
-
-% Por exemplo: se o trabalho envolve desenvolvimento web, aborde conceitos como arquitetura cliente-servidor, APIs REST, padrões de projeto, etc. Se envolve inteligência artificial, explique os algoritmos e técnicas que serão utilizados.
-
-% Utilize citações para fundamentar cada conceito apresentado. Segundo \citeonline{Wazlawick2020}, o referencial teórico deve demonstrar que o autor domina os fundamentos necessários para conduzir a pesquisa.
-
-% ---------------------------------------------------------------
 \section{Metodologia da pesquisa bibliográfica}
 \label{sec:metodologia_pesquisa}
 
