@@ -267,6 +267,14 @@ O processamento intensivo exigido pelo OCR requer que a implementação evite qu
 
 \subsection{Envio de Imagens via Rede LoRaWan}
 
+Uma das principais incógnitas levantadas por este artigo é a viabilidade do envio das imagens geradas em nós na borda da rede ao getaway (nó central). Como apresentado por \cite{almeida2022iot}, a viabilidade na propagação de dados não estruturados via rede LoRaWan, é algo sim viável, mas com a ressalva de limitações de bits por pacote, maior latência na disponibilização dos dados e a aplicação de algoritmos que orquestra todo o recebimento e envio de dados pela rede.
+
+Diante de tal fato, para realização de tal experimentação, casa-se perfeitamente a implementação de algoritmos para a redução de tamanho de imagens, à considerar que este é um dos fatores mais influentes na execução de tal abordagem, um ponto apresentado por Almeida e demais, é a aplicação de algoritmos de compressão como o JPEG e a transformação de imagens em escalas de cinza, assim reduzindo as informações a serem enviadas via rede.
+
+Alguns algoritmos que aqui avaliamos serem benéficos para a otimização deste tipo de abordagem são os algoritmos de Bounding Box e Dilação Morfológica, algoritmos esses que são amplamente utilizados em modelos de visão computacional com o objetivo de encontrar núcleos de informações em imagens.
+
+
+
 % Na Minha Opnião melhor remover (Christian)
 % \subsection{Fundamentos da Conversão Analógico-Digital}
 % A tradução de fenômenos fisicos para o dominio computacional fundamenta-se na interface entre sensores e controladores, mediada principalmente pela conversão alanógico-digital (ADC). segundo \citeonline{Bipom2009} essa interação requer equilibrio rigoroso entre precisão, custo e consumo energético.
@@ -391,7 +399,7 @@ Utilizaremos esse trabalho como referência de borda para realizar uma comparaç
 \section{Solução Proposta}
 \label{sec:solucao}
 
-A solução proposta fundamenta-se no desenvolvimento e na análise de um \textbf{Sistema Telemétrico de Baixo Custo para Digitalização de Hidrómetros Analógicos}, integrando dispositivos de borda, comunicação de longo alcance e processamento em nuvem. O diferencial desta pesquisa reside na investigação experimental de duas arquitecturas distintas de visão computacional, visando identificar a configuração ideal para cenários de restrição energética e de largura de banda.
+A solução proposta fundamenta-se no desenvolvimento e na análise de um \textbf{Sistema Telemétrico de Baixo Custo para Digitalização de Hidrómetros Analógicos}, integrando dispositivos de borda, comunicação de longo alcance e processamento em nuvem. O diferencial desta pesquisa reside na investigação experimental de duas arquiteturas distintas de visão computacional, visando identificar a configuração ideal para cenários de restrição energética e de largura de banda.
 
 O projeto está estruturado em quatro componentes interdependentes:
 
@@ -408,7 +416,7 @@ O projeto está estruturado em quatro componentes interdependentes:
 O núcleo da investigação consiste na implementação e comparação de dois modelos operacionais:
 
 \begin{enumerate}
-    \item \textbf{Processamento Local (Edge OCR):} O dispositivo de borda realiza a inferência da imagem localmente (utilizando modelos optimizados). Neste modo, apenas o valor numérico da leitura é transmitido.
+    \item \textbf{Processamento Local (Edge OCR):} O dispositivo de borda realiza a inferência da imagem localmente (utilizando modelos otimizados). Neste modo, apenas o valor numérico da leitura é transmitido.
     \item \textbf{Processamento Remoto (Cloud OCR):} O dispositivo envia a imagem capturada (fragmentada e comprimida) para o servidor, onde modelos de redes neurais de alta complexidade processam a informação. 
 \end{enumerate}
 
