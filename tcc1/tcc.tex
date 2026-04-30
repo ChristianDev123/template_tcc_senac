@@ -386,12 +386,12 @@ Utilizaremos esse trabalho como referência de borda para realizar uma comparaç
 % ===============================================================
 \chapter{Desenvolvimento}
 \label{cap:desenvolvimento}
-\section{Solução proposta}
+\section{Solução Proposta}
 \label{sec:solucao}
 
-A solução consiste no desenvolvimento de um \textbf{Sistema Telemétrico de Baixo Custo para Digitalização de Hidrômetros Analógicos}, baseado em \textit{Internet das Coisas (IoT)} e \textit{Processamento de Imagens}. O objetivo é transformar medidores de água mecânicos convencionais em dispositivos inteligentes (\textit{Smart Meters}), capazes de transmitir leituras de consumo de forma remota e automatizada, eliminando a necessidade de leitura manual e permitindo o monitoramento em tempo real.
+A solução proposta fundamenta-se no desenvolvimento e na análise de um \textbf{Sistema Telemétrico de Baixo Custo para Digitalização de Hidrómetros Analógicos}, integrando dispositivos de borda, comunicação de longo alcance e processamento em nuvem. O diferencial desta pesquisa reside na investigação experimental de duas arquitecturas distintas de visão computacional, visando identificar a configuração ideal para cenários de restrição energética e de largura de banda.
 
-O projeto será composto por quatro pilares principais:
+O projeto está estruturado em quatro componentes interdependentes:
 
 \begin{itemize}
     \item \textbf{Módulo de Captura (Edge Device):} Um dispositivo de hardware acoplado ao hidrômetro.
@@ -403,16 +403,14 @@ O projeto será composto por quatro pilares principais:
     \item \textbf{Interface de Monitoramento:} Um dashboard para visualização analítica do consumo.
 \end{itemize}
 
-O núcleo da coleta de dados reside em um microcontrolador equipado com câmera (ESP32-CAM). Este módulo será programado para despertar em intervalos programados, e então capturar uma imagem do mostrador analógico do hidrômetro.
+O núcleo da investigação consiste na implementação e comparação de dois modelos operacionais:
 
-A solução utiliza técnicas de Visão Computacional e OCR (Optical Character Recognition). O processamento ocorrerá em modelo de computação centralizada, onde imagem é transmitida de forma compactada para processamento posterior, dependendo das restrições de largura de banda da rede escolhida.
+\begin{enumerate}
+    \item \textbf{Processamento Local (Edge OCR):} O dispositivo de borda realiza a inferência da imagem localmente (utilizando modelos optimizados). Neste modo, apenas o valor numérico da leitura é transmitido.
+    \item \textbf{Processamento Remoto (Cloud OCR):} O dispositivo envia a imagem capturada (fragmentada e comprimida) para o servidor, onde modelos de redes neurais de alta complexidade processam a informação. 
+\end{enumerate}
 
-Para viabilizar o uso em locais de difícil acesso ou sem cobertura Wi-Fi/celular (como cavaletes e caixas subterrâneas), a solução utiliza a tecnologia LoRaWAN (Long Range Wide Area Network).
-
-Uma vez que os dados chegam ao servidor, eles entram em um Pipeline ETL.
-
-A solução final entrega uma Ferramenta de Telemetria e Dashboard, onde o usuário final pode acompanhar o consumo diário/mensal, detectar vazamentos através de padrões anômalos de consumo e gerar relatórios automatizados de cobrança ou gestão hídrica.
-% ---------------------------------------------------------------
+Esta abordagem dual permitirá a recolha de métricas quantitativas sobre a vida útil estimada da bateria, a acurácia do reconhecimento em diferentes condições de luminosidade e a fiabilidade da transmissão de pacotes pesados em redes LoRaWAN. Assim, a solução deixa de ser meramente uma implementação técnica para tornar-se uma análise de viabilidade para sistemas de \textit{Smart Metering} em larga escala.
 
 \section{Cronograma de trabalho}
 \label{sec:cronograma}
