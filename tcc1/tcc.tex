@@ -160,17 +160,15 @@ Este documento apresenta a proposta inicial do Trabalho de Conclusão de Curso (
 \chapter{Introdução}
 \label{cap:introducao}
 
-A gestão eficiente de recursos hídricos consolidou-se como um dos pilares fundamentais da sustentabilidade urbana contemporânea. Diante de cenários de escassez e estiagens em grandes metrópoles, a digitalização da medição de consumo hídrico apresenta-se como uma ferramenta estratégica na contenção de desperdícios e compreensão de padrões de uso. Entretanto, a modernização da atual infraestrutura enfrenta desafios técnicos e financeiros, especialmente no que tange à manutenção, confiabilidade e custo ao médio/longo prazo sob os dispositivos empregados em tal tarefa.
+A gestão eficiente de recursos hídricos consolidou-se como um dos pilares fundamentais da sustentabilidade urbana contemporânea. Diante de cenários de escassez e estiagens em grandes metrópoles, a digitalização da medição de consumo hídrico apresenta-se como uma ferramenta estratégica na contenção de desperdícios e compreensão de padrões de uso. Entretanto, a modernização da atual infraestrutura enfrenta desafios técnicos e financeiros, especialmente no que tange à manutenção, confiabilidade e custo no médio/longo prazo sob os dispositivos empregados em tal tarefa.
 
-Neste contexto, este trabalho tem como objetivo desenvolver um sistema telemétrico que possui como principal função digitalizar hidrômetros analógicos, que já estão difundidos em nossa infraestrutura urbana. Tal solução conta com o uso de microcontroladores conectados por uma rede interna baseado em protocolo LoRaWan, em conjunto com um pipeline de tratamento de dados (ETL), visando atender à demanda de monitoramento de áreas privadas de pequeno e médio porte.
-
-A validação do sistema será avaliada através da análise de taxa de entrega de pacotes, precisão de OCR e autonomia energética.
+Neste contexto, este trabalho tem como objetivo comparar duas formas de implementação de sistemas telemétricos baseados em IOT, mais especificamente, com computação centralizada (Cloud Computing) e com computação em borda (Edge Computing), com o objetivo de avaliar qual a melhor abordagem na resolução do problema.
 
 % ---------------------------------------------------------------
 \section{Contexto}
 \label{sec:contexto}
 
-A gestão da água no Brasil enfrenta hoje três grandes desafios: o desperdício elevado por falta de dados, o alto custo para modernizar os medidores antigos e as limitações técnicas de dispositivos que dependem de baterias. Para entender a dimensão desse problema, a questão será analisada sob três pilares: a gestão dos recursos hídricos, os desafios da tecnologia IoT e a viabilidade econômica de mercado.
+A problemática da informalização do sistema de medição de consumo hídrico enfrenta três grandes desafios atualmente: o alto custo de modernização de medidores convencionais, a necessidade constante de manutenção em aparelhos destinados a implementação de IOT e a acurácia em modelos de visão computacional desenvolvidos para viabilizar o tráfego de dados. Para melhor entendimento da dimensão do problema, analisaremos sob a ótica de três grandes pilares: gestão de recursos hídricos, desafios na implementação de tecnologia IOT e a atual realidade de mercado.
 
 \subsection{Manejamento de Recursos Hídricos}
 
@@ -180,15 +178,14 @@ Diante de tal problemática, abre-se a discussão sobre os graves impactos finan
 Em ambientes privados e condomínios, a ausência de sistemas de monitoramento em tempo real impede a detecção precoce de anomalias e vazamentos ocultos. Havendo uma lacuna em ferramentas que auxiliam consumidores e gerentes das redes hídricas efetuarem acompanhamento de dados de forma mais recorrente possibilitando realizar correções de maneira mais tempestiva.
 
 \subsection{Desafios Tecnológicos}
-Com o objetivo de mitigar as perdas mencionadas anteriormente, a computação aplicada propõe o uso de dispositivos de Internet das Coisas (IoT). Porém, a implementação dessas redes de monitoramento contínuo possui um gargalo de suma importância em relacionado à gestão energética.
 
-Dado a natureza da aplicação de dispositivos IOT que estamos desenvolvendo, denota-se a necessidade da utilização de baterias como fonte primária de alimentação do sistema. Diante de tal cenário, emerge o questionamento sobre qual o tipo de bateria mais adequado a se implementar. 
+Dado a natureza da aplicação dos dispositivos IOT, denota-se a necessidade da utilização de baterias como fonte primária de alimentação do sistema. Diante de tal cenário, emerge o questionamento sobre qual o tipo de bateria mais adequado a se implementar. 
 
 Como explicado em ''Navigating Battery Choices in IoT: An Extensive Survey of Technologies and Their Applications'' \cite{hasan2023navigating} , há diversos fatores que impactam na escolha mais racional da bateria utilizada em dispositivos IOT, entre eles: densidade energética, range de temperatura de funcionamento, segurança, eficiência energética, longevidade e custo. Ainda em tal artigo evidência-se, como um forte candidato a este tipo de aplicação a escolha de bateria de íon-lítio, onde com o passar do tempo tornou-se mais viável economicamente e oferecendo bons níveis de todos os parâmetros citados anteriormente, sendo a opção escolhida para implementação em nossos dispositivos.
 
 Ainda sobre as baterias de íon-lítio, a \citeonline{panasonic_cr_standard}, uma das principais fabricantes de baterias deste tipo no mundo, publica abertamente os valores médios de ciclos de recarga suportados por seus produtos sob determinadas condições, no caso de um tipo de bateria de ion-lítio mais comumente utilizado, tal produto varia a quantidade de ciclos de recarga por volta de 1500 a 2000 ciclos.
 
-Portanto, aqui esclarecemos a necessidade de implementar um sistema eficiente energeticamente com o objetivo de prolongar a vida útil de um dos mais vitais componentes dos nossos dispositivos e reduzir a necessidade de manutenção nos aparelhos desenvolvidos.
+Portanto, aqui esclarecemos a necessidade de implementar um sistema eficiente energeticamente com o objetivo de prolongar a vida útil de um dos mais vitais componentes deste tipo de dispositivos e reduzir a necessidade de manutenção nos aparelhos desenvolvidos.
 
 
 \subsection{Realidade Mercadológica}
@@ -200,16 +197,21 @@ Ao acoplar módulos de baixo custo aos medidores já instalados, a digitalizaç�
 \section{Justificativa}
 \label{sec:justificativa}
 
-A relevância social na abordagem deste trabalho reside na transparência e acessibilidade no controle de consumo, permitindo que o usuário identifique vazamentos de forma célere e mitigue o desperdício de água.
+A maior pauta deste trabalho é avaliar onde é mais efetivo, menos custoso e mais vantajoso manter o processamento em soluções IOT que abordam o tema de medição de recursos hídricos.
 
-Academicamente, a pesquisa justifica-se pelo desenvolvimento de um sistema embarcado de alta eficiência, projetado para operar sob severas restrições de hardware.
-% A escolha da linguagem C para o desenvolvimento do firmware é fundamentada pela necessidade de otimização da memória SRAM e redução do consumo energético, superando limitações de linguagens interpretadas em dispositivos restritos \cite{Plauska2023}.
+A relevância do trabalho, apresenta-se no estudo aprofundado de possíveis soluções da problemática, norteando o desenvolvimento de ferramentas do gênero e pavimentando caminhos para novas soluções.
 
-O trabalho propõe uma arquitetura de computação distribuída que alia técnicas de Reconhecimento Óptico de Caracteres (OCR) à implementação de um pipeline ETL integrado. 
 
-Essa abordagem permite a extração de dados analógicos gerando informação estratégica, oferecendo um estudo de caso robusto sobre a viabilidade técnica de redes IoT de baixo custo.
+% A relevância social na abordagem deste trabalho reside na transparência e acessibilidade no controle de consumo, permitindo que o usuário identifique vazamentos de forma célere e mitigue o desperdício de água.
 
-Embora existam soluções de OCR na borda, a transmissão de imagens via LoRaWAN para processamento remoto oferece vantagens em termos de atualização de modelos e precisão, mas apresenta desafios de rede. A pesquisa justifica-se pela necessidade de quantificar qual abordagem é mais sustentável para redes de larga escala.
+% Academicamente, a pesquisa justifica-se pelo desenvolvimento de um sistema embarcado de alta eficiência, projetado para operar sob severas restrições de hardware.
+% % A escolha da linguagem C para o desenvolvimento do firmware é fundamentada pela necessidade de otimização da memória SRAM e redução do consumo energético, superando limitações de linguagens interpretadas em dispositivos restritos \cite{Plauska2023}.
+
+% O trabalho propõe uma arquitetura de computação distribuída que alia técnicas de Reconhecimento Óptico de Caracteres (OCR) à implementação de um pipeline ETL integrado. 
+
+% Essa abordagem permite a extração de dados analógicos gerando informação estratégica, oferecendo um estudo de caso robusto sobre a viabilidade técnica de redes IoT de baixo custo.
+
+% Embora existam soluções de OCR na borda, a transmissão de imagens via LoRaWAN para processamento remoto oferece vantagens em termos de atualização de modelos e precisão, mas apresenta desafios de rede. A pesquisa justifica-se pela necessidade de quantificar qual abordagem é mais sustentável para redes de larga escala.
 
 \section{Objetivo}
 \label{sec:objetivo}
@@ -219,7 +221,7 @@ Comparar a viabilidade técnica, a acurácia e o consumo energético entre o pro
 \subsection{Objetivos secundários}
 
 \begin{enumerate}
-    \item Digitalizar Hidrômetros utilizando microprocessadores ESP32, e enviando imagens via rede sem fio;
+    \item Digitalizar Hidrômetros utilizando microprocessadores ESP32, e enviando imagens e/ou dados via rede sem fio;
     \item Implementação de Rede LoRaWan conectando os nós da rede e configurando-a com o objetivo de reduzir ao máximo o consumo energético;
     \item Implementar um pipeline ETL no nó central da rede, com o objetivo de estruturar os dados para serem apresentados em dashboards;
     \item Aplicar modelos de análise de dados sobre histórico coletado para gerar previsões de demanda e alertas automáticos de irregularidades no fluxo (como vazamentos ou fraudes);
@@ -264,10 +266,10 @@ Do ponto de vista computacional e eficiência de recursos, o uso nativo do ESP-I
 \subsection{Envio de Imagens via Rede LoRaWan}
 
 % Na Minha Opnião melhor remover (Christian)
-\subsection{Fundamentos da Conversão Analógico-Digital}
-A tradução de fenômenos fisicos para o dominio computacional fundamenta-se na interface entre sensores e controladores, mediada principalmente pela conversão alanógico-digital (ADC). segundo \citeonline{Bipom2009} essa interação requer equilibrio rigoroso entre precisão, custo e consumo energético.
+% \subsection{Fundamentos da Conversão Analógico-Digital}
+% A tradução de fenômenos fisicos para o dominio computacional fundamenta-se na interface entre sensores e controladores, mediada principalmente pela conversão alanógico-digital (ADC). segundo \citeonline{Bipom2009} essa interação requer equilibrio rigoroso entre precisão, custo e consumo energético.
 
-Embora o sistema proposto utilize câmera como sensor de imagem, os principos de amostragem e mitigação de ruidos via software são conceitos univerais. 
+% Embora o sistema proposto utilize câmera como sensor de imagem, os principos de amostragem e mitigação de ruidos via software são conceitos univerais. 
 % ENDSECTION
 
 \subsection{Metodologia de Avaliação e Métricas de Validação}
