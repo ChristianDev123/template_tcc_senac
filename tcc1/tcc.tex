@@ -66,7 +66,7 @@
 % ---------------------------------------------------------------
 % INFORMAÇÕES DO DOCUMENTO
 % ---------------------------------------------------------------
-\titulo{Desenvolvimento de Sistema Telemétrico de Hidrômetros Analógicos com Pipeline ETL.}
+\titulo{Análise Comparativa de Desempenho e Eficiência Energética entre OCR na Borda e Processamento em Nuvem para Telemetria de Hidrômetros via LoRaWAN.}
 \autor{Marcelo Fernandes de Oliveira Junior \\ Gustavo Oliveira dos Santos \\ Christian Lima Santana}
 \local{São Paulo}
 \data{2026}
@@ -204,13 +204,17 @@ A relevância social na abordagem deste trabalho reside na transparência e aces
 
 Academicamente, a pesquisa justifica-se pelo desenvolvimento de um sistema embarcado de alta eficiência, projetado para operar sob severas restrições de hardware.
 % A escolha da linguagem C para o desenvolvimento do firmware é fundamentada pela necessidade de otimização da memória SRAM e redução do consumo energético, superando limitações de linguagens interpretadas em dispositivos restritos \cite{Plauska2023}.
-O trabalho propõe uma arquitetura de computação centralizada que alia técnicas de Reconhecimento Óptico de Caracteres (OCR) à implementação de um pipeline ETL integrado. 
-Essa abordagem permite a extração de dados analógicos gerando informação estratégica, focando no baixo consumo de energia e processamento em borda, oferecendo um estudo de caso robusto sobre a viabilidade técnica de redes IoT de baixo custo.
+
+O trabalho propõe uma arquitetura de computação distribuída que alia técnicas de Reconhecimento Óptico de Caracteres (OCR) à implementação de um pipeline ETL integrado. 
+
+Essa abordagem permite a extração de dados analógicos gerando informação estratégica, oferecendo um estudo de caso robusto sobre a viabilidade técnica de redes IoT de baixo custo.
+
+Embora existam soluções de OCR na borda, a transmissão de imagens via LoRaWAN para processamento remoto oferece vantagens em termos de atualização de modelos e precisão, mas apresenta desafios de rede. A pesquisa justifica-se pela necessidade de quantificar qual abordagem é mais sustentável para redes de larga escala.
 
 \section{Objetivo}
 \label{sec:objetivo}
 
-Implementar um sistema de telemetria de baixo custo e alta eficiência energética para hidrômetros analógicos, integrando visão computacional (OCR) e comunicação LoRaWAN para gestão e previsão de consumo de água.
+Comparar a viabilidade técnica, a acurácia e o consumo energético entre o processamento de OCR realizado localmente no ESP32-CAM (Edge) e o processamento remoto via pipeline ETL em nuvem (Cloud), utilizando a rede LoRaWAN como meio de transmissão.
 
 \subsection{Objetivos secundários}
 
@@ -218,9 +222,11 @@ Implementar um sistema de telemetria de baixo custo e alta eficiência energéti
     \item Digitalizar Hidrômetros utilizando microprocessadores ESP32, e enviando imagens via rede sem fio;
     \item Implementação de Rede LoRaWan conectando os nós da rede e configurando-a com o objetivo de reduzir ao máximo o consumo energético;
     \item Implementar um pipeline ETL no nó central da rede, com o objetivo de estruturar os dados para serem apresentados em dashboards;
-    \item Aplicar modelos de análise de dados sobre histórico coletado para gerar  previsões de demanda e alertas automáticos de irregularidades no fluxo(como vazamentos ou fraudes);
+    \item Aplicar modelos de análise de dados sobre histórico coletado para gerar previsões de demanda e alertas automáticos de irregularidades no fluxo (como vazamentos ou fraudes);
     \item Avaliar o desempenho do sistema através de métricas quantitativas de rede, precisão de imagem e consumo energético
+    \item Estabelecer métricas de comparação para avaliar o trade-off entre o tempo de processamento local (Edge) e o tempo/energia de transmissão da imagem completa para a nuvem (Cloud)
 \end{enumerate}
+
 
 % ===============================================================
 % CAPÍTULO 2 - REVISÃO BIBLIOGRÁFICA
@@ -370,8 +376,9 @@ A metodologia consistiu na integração de um módulo ESP32-CAM para captura de 
 
 Os resultados apontaram uma precisão de 99,71\% no reconhecimento dos dígitos e um alcance de transmissão estável de até 1070 metros em condições de campo aberto. Os autores observaram que medidores mais antigos ou obstruídos podem elevar o tempo de processamento do OCR.
 
-O presente trabalho diferencia-se da abordagem de \citeonline{bravo2025ants} ao deslocar a carga computacional do Reconhecimento Óptico de Caracteres (OCR) do dispositivo final para a nuvem. Enquanto o trabalho correlato executa o processamento localmente no ESP32-CAM, esta pesquisa foca na robustez de um pipeline de processamento remoto. Isso permite a utilização de modelos de visão computacional mais complexos e precisos, que excederiam a capacidade de memória e processamento do hardware local, além de centralizar a lógica de extração de dados para facilitar manutenções e atualizações do algoritmo de IA sem a necessidade de novos firmwares nos sensores.
+O presente trabalho diferencia-se da abordagem de \citeonline{bravo2025ants} ao deslocar a carga computacional do Reconhecimento Óptico de Caracteres (OCR) do dispositivo final para a nuvem. Enquanto o trabalho correlato executa o processamento localmente no ESP32-CAM, esta pesquisa foca na robustez de um pipeline de processamento remoto. Isso permite a utilização de modelos de visão computacional mais complexos e precisos, que excederiam a capacidade de memória e processamento do hardware local, além de centralizar a lógica de extração de dados para facilitar manutenções e atualizações do algoritmo de IA sem a necessidade de novos firmwares nos sensores. Esta abordagem também visa mitigar as dificuldades de processamento em medidores antigos ou obstruídos, um desafio observado na implementação local de \citeonline{bravo2025ants}.
 
+Utilizaremos esse trabalho como referência de borda para realizar uma comparação com a abordagem de processamento em nuvem, contribuindo para a discussão sobre o trade-off entre eficiência energética e precisão em sistemas de telemetria de baixo custo.
 % ===============================================================
 % CAPÍTULO 3 - DESENVOLVIMENTO
 % ===============================================================
