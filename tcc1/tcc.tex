@@ -251,13 +251,13 @@ Segundo \citeonline{Ferreira2020}, a vida útil da bateria é influenciada criti
 
 Segundo \cite{Camargo2022}, entorno de 60\% do recurso energético de sistemas IOT são consumidos na comunicação, a escolha efetiva de protocolo de comunicação e otimização de parâmetros como dispersão de sinal, largura de banda e taxa de codificação (destinado a redundância de mensagem, tolerância a erros), entre outros fatores, torna-se uma tarefa de suma importância no desenvolvimento de um sistema IOT otimizado de baixo custo.
 
-O LoRaWan (Long Range Wide Area Network), é um protocolo LPWAN (Low Power Wide Area Network), que possui o objetivo de viabilizar a comunicação em grandes distâncias, conciliado ao baixo consumo energético. Diante disso, o protocolo surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de redução de consumo energético, em contra partida, a baixa largura de banda oferecida por tal solução apoia o desenvolvimento de sistemas baseado em edge-computing, trafegando em rede apenas os dados e metadados prontos para serem tratados em getaway central, assim amplificando o desafio de desenvolver um sistema focado no menor consumo energético em borda.
+O LoRaWan (Long Range Wide Area Network), é um protocolo LPWAN (Low Power Wide Area Network), que possui o objetivo de viabilizar a comunicação em grandes distâncias, conciliado ao baixo consumo energético. Diante disso, o protocolo surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de redução de consumo energético, em contra partida, a baixa largura de banda oferecida por tal solução apoia o desenvolvimento de sistemas baseado em edge-computing, trafegando em rede apenas os dados e metadados prontos para serem tratados em gateway central, assim amplificando o desafio de desenvolver um sistema focado no menor consumo energético em borda.
 
 Toda via, surge ao mesclarmos tais conceitos, o desafio de alinhar o menor consumo de recurso energético possível, com o objetivo de prolongar a vida útil de bateria dos dispositivos utilizados, às mais otimizadas soluções de rede, hardware e técnicas de desenvolvimento de software.
 
 \subsection{Software Otimizado em Sistemas Restritos}
 
-O desenvolvimento do software para dispositivos IoT exige um rigoroso controle sobre a alocação de recursos, uma vez que a eficiência impacta diretamente ao consumo energético e viabilidade do sistema. Em plataformas com recursos limitados, como o ESP32, as escolhas da linguagem de programação e framework's são essenciais e determinantes para o sucesso de implementação de tarefas complexas.
+O desenvolvimento do software para dispositivos IoT exige um rigoroso controle sobre a alocação de recursos, uma vez que a eficiência impacta diretamente ao consumo energético e viabilidade do sistema. Em plataformas com recursos limitados, como o ESP32, as escolhas da linguagem de programação e frameworks são essenciais e determinantes para o sucesso de implementação de tarefas complexas.
 
 Do ponto de vista computacional e eficiência de recursos, o uso nativo do ESP-IDF (\textit{Espressif IoT Development Framework}) apresenta vantagens significativas em comparação a frameworks de alto nível, como Arduino e MicroPython. O ESP-IDF é projetado para aproveitar ao máximo as capacidades do hardware, permitindo controle granular sobre a memória e consumo energético, enquanto muitos de seus concorrentes implementam abstrações, podendo ocasionar o uso ineficiente dos limitados recursos do dispositivo \cite{espidf}.
 
@@ -267,7 +267,7 @@ O processamento intensivo exigido pelo OCR requer que a implementação evite qu
 
 \subsection{Envio de Imagens via Rede LoRaWan}
 
-Uma das principais incógnitas levantadas por este artigo é a viabilidade do envio das imagens geradas em nós na borda da rede ao getaway (nó central). Como apresentado por \cite{almeida2022iot}, a propagação de dados não estruturados via rede LoRaWan, é algo sim viável, mas com a ressalva de limitações de bits por pacote, maior latência na disponibilização dos dados e a necessidade de algoritmos que orquestra todo o recebimento e envio de dados pela rede.
+Uma das principais incógnitas levantadas por este artigo é a viabilidade do envio das imagens geradas em nós na borda da rede ao gateway (nó central). Como apresentado por \cite{almeida2022iot}, a propagação de dados não estruturados via rede LoRaWan, é algo sim viável, mas com a ressalva de limitações de bits por pacote, maior latência na disponibilização dos dados e a necessidade de algoritmos que orquestra todo o recebimento e envio de dados pela rede.
 
 Diante de tal fato, para realização de tal experimentação, casa-se perfeitamente a implementação de algoritmos para a redução de tamanho de imagens, à considerar que este é um dos fatores mais influentes na execução de tal abordagem, um ponto apresentado por Almeida e demais, é a aplicação de algoritmos de compressão como o JPEG e a transformação de imagens em escalas de cinza, assim reduzindo as informações a serem enviadas via rede.
 
@@ -355,7 +355,7 @@ ST010 & Contexto & "water consumption prediction" "mean absolute error" forecast
 
 Nesta seção, analisam-se pesquisas que utilizam IoT e Visão Computacional para a digitalização de medidores de consumo, como as soluções de computação de borda propostas por \citeonline{SilvaVilela2021} e \citeonline{bravo2025ants}, além de arquiteturas de sensores inteligentes exploradas por \citeonline{Tedjojuwono2024}. O objetivo é contextualizar as escolhas arquiteturais deste TCC, comparando modelos de processamento (borda vs. nuvem) e protocolos de comunicação sem fio. A revisão fundamenta o estado da técnica e destaca os diferenciais desta proposta em termos de infraestrutura de dados e eficiência energética.
 
-\subsection{Trabalho 1: Solução IoT para Digitalização de Medidores de Consumo por Visao Computacional e MicroML}
+\subsection{Trabalho 1: Solução IoT para Digitalização de Medidores de Consumo por Visão Computacional e MicroML}
 
 \citeonline{SilvaVilela2021} abordou o tema de Soluções IOT para Medidores de Consumo. 
 Para resolvê-lo, o autor propôs desenvolver um sistema utilizando microprocessadores ESP32, baseado no método de Edge-Computing (Computação em Borda), o autor desenvolveu um software próprio, otimizado para microprocessadores, focado em reconhecimento óptico de caracteres (OCR), extraindo os dados e armazenando-os localmente, posteriormente, os dados são informados em um simples dashboard apresentando o consumo extraído pelo sistema até o momento. 
@@ -363,9 +363,9 @@ Para resolvê-lo, o autor propôs desenvolver um sistema utilizando microprocess
 A metodologia utilizada foi a pesquisa experimental, onde houve o desenvolvimento de um sistema que supri a necessidade de extração de dados de maneira digital. 
 
 Os resultados mostraram que o desenvolvimento deste tipo de ferramenta é totalmente viável, e em suma, o experimento foi bem sucedido. 
-No entanto, a solução apresenta limitações, uma delas é a utlização de edge-computing aplicado a um hardware que possui recursos severamente limitados, impactando diretamente na utlização de recursos energéticos, em um sistema que urge o foco em baixo consumo de energia e memória, outro ponto a ser abordado é a limitação da câmera na captura de imagens, necessitando de uma adaptação em lente para a captura de imagens em curtas distâncias. 
+No entanto, a solução apresenta limitações, uma delas é a utilização de edge-computing aplicado a um hardware que possui recursos severamente limitados, impactando diretamente na utlização de recursos energéticos, em um sistema que urge o foco em baixo consumo de energia e memória, outro ponto a ser abordado é a limitação da câmera na captura de imagens, necessitando de uma adaptação em lente para a captura de imagens em curtas distâncias. 
 
-O presente trabalho diferencia-se por aplicar conceitos de Fog-Computing (implementando camadas de processamento pré-cloud), e um ponto que atacamos mais profundamente é o desenvolvimento de uma rede LoRaWan confiável para tráfego de dados e o aprofundamento dos insight's gerados na etapa de apresentação dos dados.
+O presente trabalho diferencia-se por aplicar uma comparação entre uma arquitetura clássica de Edge vs Cloud, e um ponto que atacamos mais profundamente é o desenvolvimento de uma rede LoRaWan confiável para tráfego de dados e o aprofundamento dos insights gerados na etapa de apresentação dos dados.
 
 \subsection{Trabalho 2: Sistema de Gerenciamento Inteligente de Água Utilizando Sensores Baseados em IoT}
 
@@ -397,7 +397,7 @@ Utilizaremos esse trabalho como referência de borda para realizar uma comparaç
 \section{Solução Proposta}
 \label{sec:solucao}
 
-A solução proposta fundamenta-se no desenvolvimento e na análise de um \textbf{Sistema Telemétrico de Baixo Custo para Digitalização de Hidrómetros Analógicos}, integrando dispositivos de borda, comunicação de longo alcance e processamento em nuvem. O diferencial desta pesquisa reside na investigação experimental de duas arquiteturas distintas de visão computacional, visando identificar a configuração ideal para cenários de restrição energética e de largura de banda.
+A solução proposta fundamenta-se no desenvolvimento e na análise de um \textbf{Sistema Telemétrico de Baixo Custo para Digitalização de hidrômetros Analógicos}, integrando dispositivos de borda, comunicação de longo alcance e processamento em nuvem. O diferencial desta pesquisa reside na investigação experimental de duas arquiteturas distintas de visão computacional, visando identificar a configuração ideal para cenários de restrição energética e de largura de banda.
 
 O projeto está estruturado em quatro componentes interdependentes:
 
