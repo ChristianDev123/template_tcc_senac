@@ -221,11 +221,10 @@ Comparar a viabilidade técnica, a acurácia e o consumo energético entre o pro
 \subsection{Objetivos secundários}
 
 \begin{enumerate}
-    \item Digitalizar Hidrômetros utilizando microprocessadores ESP32, e enviando imagens e/ou dados via rede sem fio;
+    \item Implementar os dois fluxos de processamento que compõem o experimento comparativo: o fluxo Edge, em que o OCR ocorre localmente no ESP32; e o fluxo Cloud, em que a imagem é transmitida para processamento remoto.
     \item Implementação de Rede LoRaWan conectando os nós da rede e configurando-a com o objetivo de reduzir ao máximo o consumo energético;
-    \item Implementar um pipeline ETL no nó central da rede, com o objetivo de estruturar os dados para serem apresentados em dashboards;
+    \item Avaliar e comparar os dois fluxos segundo as métricas: precisão de leitura (\%), latência de processamento (ms), consumo energético por leitura (mAh) e volume de dados transmitidos (bytes/leitura)
     \item Aplicar modelos de análise de dados sobre histórico coletado para gerar previsões de demanda e alertas automáticos de irregularidades no fluxo (como vazamentos ou fraudes);
-    \item Avaliar o desempenho do sistema através de métricas quantitativas de rede, precisão de imagem e consumo energético
     \item Estabelecer métricas de comparação para avaliar o trade-off entre o tempo de processamento local (Edge) e o tempo/energia de transmissão da imagem completa para a nuvem (Cloud)
 \end{enumerate}
 
