@@ -265,20 +265,60 @@ A adoção da tecnologia de OCR neste projeto justifica-se pela necessidade fund
 
 O processamento intensivo exigido pelo OCR requer que a implementação evite qualquer desperdício computacional.\cite{Plauska2023} demonstram que linguagens compiladas como C e C++ garantem um desempenho superior na gestão de CPU e memória SRAM em relação às linguagens interpretadas. Aliando essa eficiência à total compatibilidade do C/C++ com o ecossistema do ESP-IDF, o desenvolvedor obtém um controle de memória altamente preciso. Essa gestão minuciosa e de baixo nível é o fator crítico que viabiliza a execução de algoritmos de extração de características em microcontroladores limitados a poucas centenas de kilobytes de memória.
 
-\subsection{Envio de Imagens via Rede LoRaWan}
+\subsection{Análise de Viabilidade do Envio de Imagens via LoRaWAN} 
 
-Uma das principais incógnitas levantadas por este artigo é a viabilidade do envio das imagens geradas em nós na borda da rede ao gateway (nó central). Como apresentado por \cite{almeida2022iot}, a propagação de dados não estruturados via rede LoRaWan, é algo sim viável, mas com a ressalva de limitações de bits por pacote, maior latência na disponibilização dos dados e a necessidade de algoritmos que orquestra todo o recebimento e envio de dados pela rede.
+Uma das principais incógnitas levantadas por este artigo é a viabilidade do envio das imagens geradas em nós na borda da rede ao gateway (nó central). Como apresentado por \cite{almeida2022iot}, a propagação de dados não estruturados via rede LoRaWan, é algo sim viável, mas com a ressalva de limitações de bits por pacote, maior latência na disponibilização dos dados e a necessidade de algoritmos que orquestram todo o recebimento e envio de dados pela rede.
 
 Diante de tal fato, para realização de tal experimentação, casa-se perfeitamente a implementação de algoritmos para a redução de tamanho de imagens, à considerar que este é um dos fatores mais influentes na execução de tal abordagem, um ponto apresentado por Almeida e demais, é a aplicação de algoritmos de compressão como o JPEG e a transformação de imagens em escalas de cinza, assim reduzindo as informações a serem enviadas via rede.
 
 Alguns algoritmos que avaliamos serem benéficos para a otimização deste tipo de abordagem são os algoritmos de Bounding Box ou caixa delimitadora, ou seja, o recorte da imagem em uma área de interesse, e Dilação Morfológica, que é um algoritmo utilizado para unificar conteúdo dentro uma imagem criando uma “ilha de informação”, tais algoritmos são amplamente utilizados em modelos de visão computacional com o objetivo de encontrar núcleos de informações em imagens.
 
-% Na Minha Opnião melhor remover (Christian)
-% \subsection{Fundamentos da Conversão Analógico-Digital}
-% A tradução de fenômenos fisicos para o dominio computacional fundamenta-se na interface entre sensores e controladores, mediada principalmente pela conversão alanógico-digital (ADC). segundo \citeonline{Bipom2009} essa interação requer equilibrio rigoroso entre precisão, custo e consumo energético.
+Uma das principais preocupações técnicas no envio de imagens via LoRaWAN diz respeito aos limites regulatórios de duty cycle e ao tamanho máximo de payload por pacote. Redes LoRaWAN operando na faixa sub-GHz (como a EU868, padrão em grande parte do mundo) estão sujeitas a um duty cycle de 1\%, o que equivale a um orçamento de transmissão de apenas 36 segundos por hora, ou 864 segundos por dia de acordo com \citeonline{jebril2018overcoming}.
 
-% Embora o sistema proposto utilize câmera como sensor de imagem, os principos de amostragem e mitigação de ruidos via software são conceitos univerais. 
-% ENDSECTION
+Além disso, o tamanho máximo de payload por pacote varia conforme o \textit{Spreading Factor} (SF) utilizado. Com SF9 e largura de banda de 125 kHz, o limite é de 115 bytes brutos por pacote. Descontando o \textit{overhead} do protocolo LoRaWAN, estimado em 30 bytes (considerando cabeçalho MAC, porta de aplicação e código de integridade), restam 85 bytes úteis por pacote para os dados da imagem.
+
+Para realizar a estimativa, considerou-se uma imagem capturada pela câmera ESP32-CAM na resolução mínima disponível no dispositivo ($120\times160$ pixels), em escala de cinza, com compressão JPEG de qualidade 25. Essa configuração produz uma imagem comprimida de aproximadamente 2,86 KB, representando uma taxa de compressão de 85\% em relação ao tamanho bruto de 18,8 KB. Valores similares de compressão foram observados empiricamente por Almeida et al. (2022).
+
+Com 2.929 bytes de dados e 85 bytes úteis por pacote, são necessários 35 pacotes para transmitir a imagem completa. Utilizando a fórmula de tempo no ar do LoRa para SF9, largura de banda de 125 kHz, \textit{coding rate} $4/5$ e preâmbulo padrão de 8 símbolos, o tempo total de transmissão estimado é de aproximadamente 21,3 segundos.
+
+Com base nesses parâmetros, é possível calcular o impacto de cada transmissão sobre o orçamento diário de duty cycle:
+
+\begin{itemize}
+    \item \textbf{1 foto por dia:} 21,3 s utilizados de 864 s disponíveis $\rightarrow$ 2,4\% do orçamento diário.
+    \item \textbf{2 fotos por dia:} 42,6 s utilizados de 864 s disponíveis $\rightarrow$ 4,9\% do orçamento diário.
+\end{itemize}
+
+Esses valores demonstram que, para o caso de uso proposto, monitoramento com uma a duas capturas diárias, o envio de imagens via LoRaWAN é viável dentro dos limites regulatórios, com margem superior a 95\% do orçamento disponível. O intervalo mínimo entre transmissões caso o sistema operasse em modo contínuo seria de aproximadamente 35,6 minutos.
+
+\citeonline{jebril2018overcoming} confirmam experimentalmente a viabilidade do envio de imagens sobre a camada física LoRa, tendo transmitido imagens com sucesso a distâncias de até 6 km com SF12. Os autores reconhecem a restrição de 36 s/h imposta pelo duty cycle de 1\% como a principal limitação, o que motivou o uso direto da camada física LoRa em alguns trabalhos, distinção relevante ao cenário aqui proposto.
+
+A Tabela \ref{tab:estimativa_lora} resume os parâmetros utilizados na estimativa e os resultados obtidos.
+
+\begin{table}[h!]
+\centering
+\caption{Parâmetros da Estimativa de Transmissão}
+\label{tab:estimativa_lora}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Parâmetro} & \textbf{Valor} \\ \hline
+Resolução da imagem & $120\times160$ px  \\ \hline
+Canal & Escala de cinza  \\ \hline
+Qualidade JPEG & 25  \\ \hline
+Tamanho comprimido & 2,86 KB  \\ \hline
+Taxa de compressão & 85\%  \\ \hline
+Spreading Factor & SF9  \\ \hline
+Overhead LoRaWAN & 30 bytes  \\ \hline
+Payload útil por pacote & 85 bytes  \\ \hline
+Pacotes necessários & 35  \\ \hline
+Tempo no ar total & 21,3 s  \\ \hline
+Orçamento diário (duty cycle) & 864 s/dia  \\ \hline
+Uso para 1 foto/dia & 2,4\%  \\ \hline
+Uso para 2 fotos/dia & 4,9\%  \\ \hline
+\end{tabular}
+\end{table}
+
+Conclui-se que o envio de imagens comprimidas via LoRaWAN, nas condições descritas, é tecnicamente viável e compatível com os limites regulatórios para o caso de uso de monitoramento com baixa frequência.
+
 
 \subsection{Metodologia de Avaliação e Métricas de Validação}
 \label{sec:metricas}
