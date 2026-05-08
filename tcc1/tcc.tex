@@ -197,9 +197,11 @@ Ao acoplar módulos de baixo custo aos medidores já instalados, a digitalizaç�
 \section{Justificativa}
 \label{sec:justificativa}
 
-A maior pauta deste trabalho é avaliar onde é mais efetivo, menos custoso e mais vantajoso manter o processamento em soluções IOT que abordam o tema de medição de recursos hídricos.
+Diante da alta complexidade de implementação, possível menor acurácia de modelos de visão computacional em borda, estando suscetível à qualidade de treinamento de modelo de reconhecimento óptico, e menor adaptabilidade de modelo de sistema para solução em diversos outros projetos, a maior pauta abordada por este trabalho é avaliar onde é mais efetivo, menos custoso e mais vantajoso manter o processamento em soluções IOT que abordam o tema de medição de recursos hídricos.
 
-A relevância do trabalho, apresenta-se no estudo aprofundado de possíveis soluções da problemática, norteando o desenvolvimento de ferramentas do gênero e pavimentando caminhos para novas soluções.
+Tais questionamentos revelam-se intrigantes, ao ser inviável a adoção de modelos e frameworks exaustivamente utilizados e testados em computação em borda, e a versatilidade de processamento de dados não estruturados em ambiente centralizado, em contrapartida, apresenta-se novos desafios ao modelo centralizado proposto em questão de gerenciamento energético, e viabilidade de transmissão de dados em rede de baixa largura de banda.
+
+A relevância do trabalho, apresenta-se no estudo aprofundado de possíveis soluções da problemática, norteando o desenvolvimento de ferramentas do gênero e pavimentando caminhos para novas soluções. 
 
 
 % A relevância social na abordagem deste trabalho reside na transparência e acessibilidade no controle de consumo, permitindo que o usuário identifique vazamentos de forma célere e mitigue o desperdício de água.
@@ -264,7 +266,7 @@ A adoção da tecnologia de OCR neste projeto justifica-se pela necessidade fund
 
 Para a implementação do OCR na borda, adotou-se a abordagem TinyML utilizando a biblioteca TensorFlow Lite for Microcontrollers. Essa ferramenta apresenta baixo custo computacional e de alocação de memória, mantendo um bom desempenho de inferência, além de possuir compatibilidade nativa com o ESP-IDF, conforme demonstrado por \cite{david2021}.
 
-Em contrapartida, para o processamento de OCR externo (em nuvem ou host), será utilizado o motor Tesseract operando em conjunto com a linguagem Python em um dispositivo à parte. O Tesseract destaca-se como uma opção de médio custo de processamento e baixa taxa de erro. Além disso, apresenta alta viabilidade e acessibilidade por ser uma ferramenta de código aberto e gratuita, oferecendo vantagens em projetos acadêmicos quando comparada a soluções comerciais pagas, como a Google Vision API \cite{Gribomont2020}.
+Em contrapartida, para o processamento de OCR externo (em nuvem ou host), será utilizado o motor Tesseract operando em conjunto com a linguagem Python em um dispositivo à parte. O Tesseract destaca-se como uma opção de médio custo de processamento e baixa taxa de erro. Além disso,tal framework apresenta alta viabilidade e acessibilidade por ser uma ferramenta de código aberto e gratuita, oferecendo vantagens em projetos acadêmicos quando comparada a soluções comerciais pagas, como a Google Vision API \cite{Gribomont2020}.
 
 O processamento intensivo exigido pelo OCR requer que a implementação evite qualquer desperdício computacional.\cite{Plauska2023} demonstram que linguagens compiladas como C e C++ garantem um desempenho superior na gestão de CPU e memória SRAM em relação às linguagens interpretadas. Aliando essa eficiência à total compatibilidade do C/C++ com o ecossistema do ESP-IDF, o desenvolvedor obtém um controle de memória altamente preciso. Essa gestão minuciosa e de baixo nível é o fator crítico que viabiliza a execução de algoritmos de extração de características em microcontroladores limitados a poucas centenas de kilobytes de memória.
 
