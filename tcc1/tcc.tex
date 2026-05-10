@@ -505,8 +505,8 @@ O projeto está estruturado em quatro componentes interdependentes:
 O núcleo da investigação consiste na implementação e comparação de dois modelos operacionais:
 
 \begin{enumerate}
-    \item \textbf{Processamento Local (Edge OCR):} O dispositivo de borda realiza a inferência da imagem localmente (utilizando modelos otimizados). Neste modo, apenas o valor numérico da leitura é transmitido.
-    \item \textbf{Processamento Remoto (Cloud OCR):} O dispositivo envia a imagem capturada (fragmentada e comprimida) para o servidor, onde modelos de redes neurais de alta complexidade processam a informação. 
+    \item \textbf{Processamento Local (Edge OCR):} O dispositivo de borda realiza a inferência da imagem localmente utilizando a biblioteca Tensorflow Lite Micro. Neste modo, o processamento visual é restrito ao hardware local e apenas o valor numérico da leitura é transmitido.
+    \item \textbf{Processamento Remoto (Cloud OCR):} O dispositivo envia a imagem capturada (fragmentada e comprimida) para o servidor, onde a imagem recebida é pré-processada pela biblioteca OpenCV para otimização da leitura. Em seguida, a extração de caracteres é feita pelo motor Tesseract. 
 \end{enumerate}
 
 Esta abordagem dual permitirá a recolha de métricas quantitativas sobre a vida útil estimada da bateria, a acurácia do reconhecimento em diferentes condições de luminosidade e a fiabilidade da transmissão de pacotes pesados em redes LoRaWAN. Assim, a solução deixa de ser meramente uma implementação técnica para tornar-se uma análise de viabilidade para sistemas de \textit{Smart Metering} em larga escala.
