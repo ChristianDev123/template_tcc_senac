@@ -359,6 +359,57 @@ A eficiência do hardware será validada através da medição do consumo de cor
 A = \frac{C_{bat}}{I_{médio} \times 24}
 \end{equation}
 
+
+\subsection{Hipótese}
+\label{sec:hipotese}
+
+\subsubsection{Redução de Tamanho de Imagens e Tempo de Transmissão de Mensagens}
+
+Conforme evidenciado por \cite{almeida2022iot}, o tamanho da imagem está intrinsecamente ligado ao sucesso na transmissão de dados via rede LoRaWan. Diante de tal afirmação, denota-se a necessidade de implementar soluções com o objetivo de mitigar tal desafio.
+
+Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e posteriormente aplicando o algoritmo de limiarização adaptativa de Otsu (apresentado resultado na imagem abaixo), onde o foco é enviar apenas a informação da imagem e não os detalhes, apresenta-se uma redução substancial no tamanho das imagens.
+
+\begin{figure}[htbp]
+    \centering % Centraliza a imagem na página
+    \includegraphics[width=0.7\textwidth]{Binaria.png}
+    \caption{Resultado da limiarização adaptativa de Otsu aplicada ao hidrómetro.}
+    \label{fig:resultado_binario}
+\end{figure}
+
+Conforme apresentado na tabela 2, aplicando os algoritmos citados anteriormente, alcançamos significativos avanços em relação a redução do tamanho da imagem enviada.
+
+\begin{table}[h!]
+    \centering
+    \caption{Níveis de compressão utilizando algoritmo PNG: 320 x 240 px (Média Consolidada em bytes)}
+    \vspace{2mm}
+    \begin{tabular}{cccc}
+        \toprule
+        \textbf{Nível} & \textbf{Original (3 ch)} & \textbf{Escala Cinza (1 ch)} & \textbf{Binarizada (1 ch)} \\ 
+        \midrule
+        0 & 231.074 & 77.226 & 77.226 \\
+        1 & 62.523  & 27.251 & 5.298  \\
+        2 & 61.164  & 26.381 & 4.922  \\
+        3 & 57.720  & 25.474 & 4.531  \\
+        4 & 56.776  & 24.530 & 4.044  \\
+        5 & 54.664  & 23.793 & 3.822  \\
+        6 & 52.669  & 23.254 & 3.528  \\
+        7 & 51.946  & 23.044 & 3.425  \\
+        8 & 50.805  & 22.737 & 3.158  \\
+        9 & 50.325  & 22.639 & 2.971  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Ao relevar dos dados apresentados, esperamos que aplicando os tais algoritmos conseguiremos reduzir as imagens geradas pelo ESP32-CAM em até 95\% em relação ao seu tamanho original.
+
+A escolha da compressão por PNG foi realizada por conta da melhor adaptabilidade do algoritmo para comprimir imagens binarizadas, coisa que o JPG não lida tão bem, não apresentando ganhos significativos na binarização da imagem.
+
+Conforme apresentado por \citeonline{jebril2018overcoming}, uma imagem com tamanho aproximado de 3000 bytes levaria algo entorno de 22 segundos para ser completamente enviada ao destinatário, levando em consideração todos os tratamentos aplicados a imagem que estamos adotando, espera-se conseguirmos realizar o envio de imagens sob as mesmas configurações de SF em um tempo menor ou igual ao demonstrado por Jebril e demais.
+
+\subsubsection{OCR}
+
+A considerar o trabalho apresentado por \cite{bravo2025ants}, onde a abordagem é baseada no processamento em borda, para a abordagem em questão, a hipótese mais racional é alcançarmos a acurácia do modelo desenvolvido por Bravo e demais, com um desvio padrão de entorno de 5\%, por conta do modelo apresentar natureza probabilística. Ao voltarmos o olhar ao modelo de processamento centralizado, espera-se uma acurácia equivalente ao modelo de Bravo, a considerar que a captura das imagens também será realizada de forma probabilística, mas sendo processada por ferramentas de amplo uso e teste pela comunidade, que é o caso do framework Tesseract.
+
 \section{Metodologia da pesquisa bibliográfica}
 \label{sec:metodologia_pesquisa}
 
@@ -368,7 +419,7 @@ O processo de seleção seguiu um fluxo de filtragem (funil). Inicialmente, fora
 
 Na etapa de refinamento, aplicou-se a leitura dos resumos (abstracts) e a verificação de disponibilidade integral dos textos. Foram adotados como critérios de inclusão: artigos publicados entre 2020 e 2026, relevância direta com sistemas de telemetria e foco em implementações práticas. Como critério de exclusão, descartaram-se trabalhos com acesso restrito ou que não apresentassem detalhes técnicos sobre a integração dos eixos propostos.
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \caption{Strings de busca utilizadas no levantamento bibliográfico.}
 \label{tab:strings_busca}
@@ -433,49 +484,6 @@ Utilizaremos esse trabalho como referência de borda para realizar uma comparaç
 % ===============================================================
 \chapter{Desenvolvimento}
 \label{cap:desenvolvimento}
-
-\section{Hipótese}
-\label{sec:hipotese}
-
-\subsection{Redução de Tamanho de Imagens}
-
-Conforme evidenciado por \cite{almeida2022iot}, o tamanho da imagem está intrinsecamente ligado ao sucesso na transmissão de dados via rede LoRaWan. Diante de tal afirmação, denota-se a necessidade de implementar soluções com o objetivo de mitigar tal desafio.
-
-Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e posteriormente aplicando o algoritmo de limiarização adaptativa de Otsu (apresentado resultado na imagem abaixo), onde o foco é enviar apenas a informação da imagem e não os detalhes, apresenta-se uma redução substancial no tamanho das imagens.
-
-\begin{figure}[htbp]
-    \centering % Centraliza a imagem na página
-    \includegraphics[width=0.7\textwidth]{Binaria.png}
-    \caption{Resultado da limiarização adaptativa de Otsu aplicada ao hidrómetro.}
-    \label{fig:resultado_binario}
-\end{figure}
-
-Conforme apresentado na tabela 3, aplicando os algoritmos citados anteriormente, alcançamos significativos avanços em relação a redução do tamanho da imagem enviada.
-
-\begin{table}[h!]
-    \centering
-    \caption{Níveis de compressão utilizando algoritmo PNG: 160 x 120 px (Média Consolidada em bytes)}
-    \vspace{2mm}
-    \begin{tabular}{cccc}
-        \toprule
-        \textbf{Nível} & \textbf{Original (3 ch)} & \textbf{Escala Cinza (1 ch)} & \textbf{Binarizada (1 ch)} \\ 
-        \midrule
-        0 & 231.074 & 77.226 & 77.226 \\
-        1 & 62.523  & 27.251 & 5.298  \\
-        2 & 61.164  & 26.381 & 4.922  \\
-        3 & 57.720  & 25.474 & 4.531  \\
-        4 & 56.776  & 24.530 & 4.044  \\
-        5 & 54.664  & 23.793 & 3.822  \\
-        6 & 52.669  & 23.254 & 3.528  \\
-        7 & 51.946  & 23.044 & 3.425  \\
-        8 & 50.805  & 22.737 & 3.158  \\
-        9 & 50.325  & 22.639 & 2.971  \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-Ao relevar dos dados apresentados, esperamos que aplicando os tais algoritmos conseguiremos reduzir as imagens geradas pelo ESP32-CAM em até 95\% em relação ao seu tamanho original.
-
 
 \section{Solução Proposta}
 \label{sec:solucao}
