@@ -223,11 +223,9 @@ Comparar a viabilidade técnica, a acurácia e o consumo energético entre o pro
 \subsection{Objetivos secundários}
 
 \begin{enumerate}
-    \item Implementar os dois fluxos de processamento que compõem o experimento comparativo: o fluxo Edge, em que o OCR ocorre localmente no ESP32; e o fluxo Cloud, em que a imagem é transmitida para processamento remoto.
-    \item Implementação de Rede LoRaWan conectando os nós da rede e configurando-a com o objetivo de reduzir ao máximo o consumo energético;
-    \item Avaliar e comparar os dois fluxos segundo as métricas: precisão de leitura (\%), latência de processamento (ms), consumo energético por leitura (mAh) e volume de dados transmitidos (bytes/leitura)
-    \item Aplicar modelos de análise de dados sobre histórico coletado para gerar previsões de demanda e alertas automáticos de irregularidades no fluxo (como vazamentos ou fraudes);
-    \item Estabelecer métricas de comparação para avaliar o trade-off entre o tempo de processamento local (Edge) e o tempo/energia de transmissão da imagem completa para a nuvem (Cloud)
+    \item Implementar os dois fluxos de processamento que compõem o experimento comparativo: o fluxo Edge, em que o OCR ocorre localmente no ESP32; e o fluxo Cloud, em que a imagem é transmitida para processamento remoto. % 1. construção do experimento
+    \item Configurar a rede LoRaWan conectando os nós da rede e configurando-a com o objetivo de reduzir ao máximo o consumo energético; % 2. Configuração da infrastrutura de rede
+    \item Avaliar e comparar os dois fluxos segundo as métricas: precisão de leitura (\%), latência de processamento (ms), consumo energético por leitura (mAh) e volume de dados transmitidos (bytes/leitura), identificando o \textit{trade-off} entre processamento local e transmissão. % 3. Responde a pergunta central do TCC
 \end{enumerate}
 
 
