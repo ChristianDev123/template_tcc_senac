@@ -197,23 +197,11 @@ Ao acoplar módulos de baixo custo aos medidores já instalados, a digitalizaç�
 \section{Justificativa}
 \label{sec:justificativa}
 
-Diante da alta complexidade de implementação, possível menor acurácia de modelos de visão computacional em borda, estando suscetível à qualidade de treinamento de modelo de reconhecimento óptico, e menor adaptabilidade de modelo de sistema para solução em diversos outros projetos, a maior pauta abordada por este trabalho é avaliar onde é mais efetivo, menos custoso e mais vantajoso manter o processamento em soluções IOT que abordam o tema de medição de recursos hídricos.
+Atualmente, o método mais estudado e aplicado como solução na transmissão de dados no campo da Internet das Coisas (IOT) é a abordagem de computação em borda (Edge Computing), onde torna-se necessário o desenvolvimento de modelos específicos de visão computacional baseados em aprendizado de máquina (Machine learning). Como contraposto, há um método menos difundido na literatura que é a abordagem de processamento centralizado (Cloud Computing), onde os dados não estruturados passam por tratamentos e são enviados via rede para um nó que possui recurso abundantes de processamento e memória com o objetivo de realizar o reconhecimento de caracteres utilizando Frameworks já estabelecidos no mercado e na comunidade.
 
-Tais questionamentos revelam-se intrigantes, ao ser inviável a adoção de modelos e frameworks exaustivamente utilizados e testados em computação em borda, e a versatilidade de processamento de dados não estruturados em ambiente centralizado, em contrapartida, apresenta-se novos desafios ao modelo centralizado proposto em questão de gerenciamento energético, e viabilidade de transmissão de dados em rede de baixa largura de banda.
+Diante de tais métodos, revelam-se intrigantes questionamentos acerca da viabilidade de implementação do método centralizado na problemática hídrica, e em especial, sob redes de baixa largura de banda, e levantar quais suas vantagens e desvantagens em relação ao método convencionalmente implementado.
 
-A relevância do trabalho, apresenta-se no estudo aprofundado de possíveis soluções da problemática, norteando o desenvolvimento de ferramentas do gênero e pavimentando caminhos para novas soluções. 
-
-
-% A relevância social na abordagem deste trabalho reside na transparência e acessibilidade no controle de consumo, permitindo que o usuário identifique vazamentos de forma célere e mitigue o desperdício de água.
-
-% Academicamente, a pesquisa justifica-se pelo desenvolvimento de um sistema embarcado de alta eficiência, projetado para operar sob severas restrições de hardware.
-% % A escolha da linguagem C para o desenvolvimento do firmware é fundamentada pela necessidade de otimização da memória SRAM e redução do consumo energético, superando limitações de linguagens interpretadas em dispositivos restritos \cite{Plauska2023}.
-
-% O trabalho propõe uma arquitetura de computação distribuída que alia técnicas de Reconhecimento Óptico de Caracteres (OCR) à implementação de um pipeline ETL integrado. 
-
-% Essa abordagem permite a extração de dados analógicos gerando informação estratégica, oferecendo um estudo de caso robusto sobre a viabilidade técnica de redes IoT de baixo custo.
-
-% Embora existam soluções de OCR na borda, a transmissão de imagens via LoRaWAN para processamento remoto oferece vantagens em termos de atualização de modelos e precisão, mas apresenta desafios de rede. A pesquisa justifica-se pela necessidade de quantificar qual abordagem é mais sustentável para redes de larga escala.
+A relevância do trabalho, apresenta-se no estudo aprofundado de possíveis soluções da problemática, norteando o desenvolvimento de ferramentas do gênero e pavimentando caminhos para novas soluções.
 
 \section{Objetivo}
 \label{sec:objetivo}
