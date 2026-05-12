@@ -197,7 +197,7 @@ Ao acoplar módulos de baixo custo aos medidores já instalados, a digitalizaç�
 \section{Justificativa}
 \label{sec:justificativa}
 
-A evolução dos sistemas de telemetria para hidrômetros analógicos encontra-se em um impasse arquitetural. De um lado, a literatura atual privilegia a computação em borda (\textit{Edge Computing}), utilizando modelos otimizados para realizar o processamento localmente. Essa abordagem visa minimizar o tráfego de dados, dado que, como explicado por \cite{camargo2022}, cerca de 60\% do recurso energético em sistemas IoT é consumido pela comunicação.
+A evolução dos sistemas de telemetria para hidrômetros analógicos encontra-se em um impasse arquitetural. De um lado, a literatura atual privilegia a computação em borda (\textit{Edge Computing}), utilizando modelos otimizados para realizar o processamento localmente. Essa abordagem visa minimizar o tráfego de dados, dado que, como explicado por \cite{Camargo2022}, cerca de 60\% do recurso energético em sistemas IoT é consumido pela comunicação.
 
 Entretanto, o processamento intensivo de visão computacional em hardware limitado, como o ESP32-CAM, impõe desafios severos de consumo de memória e validação de modelos de aprendizagem de máquina, podendo impactar drasticamente a autonomia energética do dispositivo \cite{SilvaVilela2021}. Em contrapartida, a abordagem de processamento centralizado (\textit{Cloud Computing}) surge como uma alternativa menos difundida na literatura para o envio de dados não estruturados.
 
@@ -258,54 +258,98 @@ Em contrapartida, para o processamento de OCR externo (em nuvem ou host), será 
 
 O processamento intensivo exigido pelo OCR requer que a implementação evite qualquer desperdício computacional.\cite{Plauska2023} demonstram que linguagens compiladas como C e C++ garantem um desempenho superior na gestão de CPU e memória SRAM em relação às linguagens interpretadas. Aliando essa eficiência à total compatibilidade do C/C++ com o ecossistema do ESP-IDF, o desenvolvedor obtém um controle de memória altamente preciso. Essa gestão minuciosa e de baixo nível é o fator crítico que viabiliza a execução de algoritmos de extração de características em microcontroladores limitados a poucas centenas de kilobytes de memória.
 
-\subsection{Análise de Viabilidade do Envio de Imagens via LoRaWAN} 
+\subsection{Análise de Viabilidade do Envio de Imagens via LoRaWAN}
 
-Uma das principais incógnitas levantadas por este artigo é a viabilidade do envio das imagens geradas em nós na borda da rede ao gateway (nó central). Como apresentado por \citeonline{almeida2022iot}, a propagação de dados não estruturados via rede LoRaWAN é algo viável, mas com a ressalva de limitações de bits por pacote, maior latência na disponibilização dos dados e a necessidade de algoritmos que orquestrem todo o recebimento e envio de dados pela rede. 
+Uma das principais incógnitas levantadas por este artigo é a viabilidade do envio dasimagens geradas em nós na borda da rede ao gateway (nó central). Como apresentado por \citeonline{almeida2022iot}, a propagação de dados não estruturados via rede LoRaWAN é algo viável, mas com a ressalva de limitações de bits por pacote, maior latência na disponibilização dos dados e a necessidade de algoritmos que orquestrem todo o recebimento e envio de dados pela rede.
 
-Diante disso, casa-se perfeitamente a implementação de algoritmos para a redução do tamanho de imagens, a considerar que este é um dos fatores mais influentes na execução de tal abordagem. Um ponto apresentado por \citeonline{almeida2022iot} é a aplicação de algoritmos de compressão como o JPEG e a transformação de imagens em escala de cinza, reduzindo assim as informações a serem enviadas via rede. Outros algoritmos avaliados como benéficos para a otimização desta abordagem são o \textit{Bounding Box}, ou caixa delimitadora  isto é, o recorte da imagem em uma área de interesse, e a Dilação Morfológica, algoritmo utilizado para unificar conteúdo dentro de uma imagem criando uma ``ilha de informação''. Ambos são amplamente utilizados em modelos de visão computacional com o objetivo de encontrar núcleos de informação em imagens.
+Diante disso, casa-se perfeitamente a implementação de algoritmos para a redução do tamanho de imagens, a considerar que este é um dos fatores mais influentes na execução de tal abordagem. Um ponto apresentado por \citeonline{almeida2022iot} é a aplicação de algoritmos de compressão como o JPEG e a transformação de imagens em escala de cinza, reduzindo assim as informações a serem enviadas via rede. Outros algoritmos avaliados como benéficos para a otimização desta abordagem são o Bounding Box, ou caixa delimitadora, isto é, o recorte da imagem em uma área de interesse, e a Dilação Morfológica, algoritmo utilizado para unificar conteúdo dentro de uma imagem criando uma ``ilha de informação''. Ambos são amplamente utilizados em modelos de visão computacional com o objetivo de encontrar núcleos de informação em imagens.
 
 Uma das principais preocupações técnicas no envio de imagens via LoRaWAN diz respeito aos limites regulatórios de \textit{duty cycle} e ao tamanho máximo de \textit{payload} por pacote. Redes LoRaWAN operando na faixa sub-GHz (como a EU868, padrão em grande parte do mundo) estão sujeitas a um \textit{duty cycle} de 1\%, o que equivale a um orçamento de transmissão de apenas 36 segundos por hora, ou 864 segundos por dia, de acordo com \citeonline{jebril2018overcoming}. Além disso, o tamanho máximo de \textit{payload} por pacote varia conforme o \textit{Spreading Factor} (SF) utilizado. Com SF9 e largura de banda de 125~kHz, o limite é de 115 bytes brutos por pacote. Descontando o \textit{overhead} do protocolo LoRaWAN, estimado em 30 bytes (considerando cabeçalho MAC, porta de aplicação e código de integridade), restam 85 bytes úteis por pacote para os dados da imagem.
- 
-Para realizar a estimativa, considerou-se uma imagem capturada pela câmera ESP32-CAM na resolução mínima disponível no dispositivo ($120 \times 160$ pixels), em escala de cinza, com compressão JPEG de qualidade 25. Essa configuração produz uma imagem comprimida de aproximadamente 2,86~KB, representando uma taxa de compressão de 85\% em relação ao tamanho bruto de 18,8~KB  valores similares aos observados empiricamente por \citeonline{almeida2022iot}. Com 2.929 bytes de dados e 85 bytes úteis por pacote, são necessários 35 pacotes para transmitir a imagem completa. Utilizando a fórmula de tempo no ar do LoRa para SF9, largura de banda de 125~kHz, \textit{coding rate} 4/5 e preâmbulo padrão de 8 símbolos, o tempo total de transmissão estimado é de aproximadamente 21,3 segundos.
 
-Com base nesses parâmetros, é possível calcular o impacto de cada transmissão sobre o orçamento diário de duty cycle:
+Para realizar a estimativa, considerou-se uma imagem capturada pela câmera ESP32-CAM na resolução mínima disponível no dispositivo ($160 \times 120$ pixels), em escala de cinza, com compressão JPEG de qualidade 25. Essa configuração produziu, em validação empírica, uma imagem comprimida de aproximadamente 3,10~KB (3.182 bytes), representando uma taxa de compressão de aproximadamente 83\% em relação ao tamanho bruto de 18,8~KB --- valores compatíveis com os observados por \citeonline{almeida2022iot}. Com 3.182 bytes de dados e 85 bytes úteis por pacote, são necessários 38 pacotes para transmitir a imagem completa, conforme a Equação~\ref{eq:pacotes}:
+
+\begin{equation}
+  \label{eq:pacotes}
+  N_{\text{pacotes}} = \left\lceil \frac{3{.}182}{85} \right\rceil = \lceil 37{,}44 \rceil = 38 \text{ pacotes}
+\end{equation}
+
+O tempo no ar por pacote foi calculado utilizando a fórmula oficial do LoRa para SF9, largura de banda de 125~kHz, \textit{coding rate} 4/5 e preâmbulo padrão de 8 símbolos, conforme as Equações~\ref{eq:tsym} a \ref{eq:tpacote}:
+
+\begin{equation}
+  \label{eq:tsym}
+  T_{\text{símbolo}} = \frac{2^{SF}}{BW} = \frac{2^9}{125{.}000} = 4{,}096 \text{ ms}
+\end{equation}
+
+\begin{equation}
+  \label{eq:nsym}
+  n_{\text{sym}}^{\text{payload}} = 8 + \max\!\left(\left\lceil \frac{8 \cdot PL - 4 \cdot SF + 28 + 16}{4 \cdot SF} \right\rceil \cdot (CR + 4),\ 0\right)
+\end{equation}
+
+\noindent onde $PL = 115$ bytes (payload total), $SF = 9$, $CR = 1$ (para \textit{coding rate} 4/5),
+resultando em:
+
+\begin{equation}
+  n_{\text{sym}}^{\text{payload}} = 8 + \left\lceil \frac{928}{36} \right\rceil \times 5 = 8 + 26 \times 5 = 138 \text{ símbolos}
+\end{equation}
+
+\begin{equation}
+  \label{eq:tpacote}
+  T_{\text{pacote}} = \left(n_{\text{preamble}} + 4{,}25 + n_{\text{sym}}^{\text{payload}}\right) \times T_{\text{símbolo}}
+  = \left(8 + 4{,}25 + 138\right) \times 4{,}096 \approx 615{,}4 \text{ ms}
+\end{equation}
+
+O tempo total de transmissão estimado para os 38 pacotes é, portanto:
+
+\begin{equation}
+  T_{\text{total}} = 38 \times 615{,}4 \approx 23{,}4 \text{ s}
+\end{equation}
+
+Com base nesses parâmetros, é possível calcular o impacto de cada transmissão sobre o orçamento diário de \textit{duty cycle}:
 
 \begin{itemize}
-    \item \textbf{1 foto por dia:} 21,3 s utilizados de 864 s disponíveis $\rightarrow$ 2,4\% do orçamento diário.
-    \item \textbf{2 fotos por dia:} 42,6 s utilizados de 864 s disponíveis $\rightarrow$ 4,9\% do orçamento diário.
+  \item 1 foto por dia: 23,4~s utilizados de 864~s disponíveis $\rightarrow$ 2,7\% do orçamento diário.
+  \item 2 fotos por dia: 46,8~s utilizados de 864~s disponíveis $\rightarrow$ 5,4\% do orçamento diário.
 \end{itemize}
 
-Esses valores demonstram que, para o caso de uso proposto, monitoramento com uma a duas capturas diárias, o envio de imagens via LoRaWAN é viável dentro dos limites regulatórios, com margem superior a 95\% do orçamento disponível. O intervalo mínimo entre transmissões caso o sistema operasse em modo contínuo seria de aproximadamente 35,6 minutos.
+Esses valores demonstram que, para o caso de uso proposto, monitoramento com uma a duas capturas diárias, o envio de imagens via LoRaWAN é viável dentro dos limites regulatórios, com margem superior a 94\% do orçamento disponível. O intervalo mínimo entre transmissões, caso o sistema operasse em modo contínuo, seria de aproximadamente 39 minutos, calculado conforme a Equação~\ref{eq:intervalo}:
 
-\citeonline{jebril2018overcoming} confirmam experimentalmente a viabilidade do envio de imagens sobre a camada física LoRa, tendo transmitido imagens com sucesso a distâncias de até 6 km com SF12. Os autores reconhecem a restrição de 36 s/h imposta pelo duty cycle de 1\% como a principal limitação, o que motivou o uso direto da camada física LoRa em alguns trabalhos, distinção relevante ao cenário aqui proposto.
+\begin{equation}
+  \label{eq:intervalo}
+  T_{\text{intervalo}} = \frac{T_{\text{total}}}{DC} = \frac{23{,}4}{0{,}01} = 2{.}340 \text{ s} \approx 39 \text{ min}
+\end{equation}
 
-A Tabela \ref{tab:estimativa_lora} resume os parâmetros utilizados na estimativa e os resultados obtidos.
+\citeonline{jebril2018overcoming} confirmam experimentalmente a viabilidade do envio de imagens sobre a camada física LoRa, tendo transmitido imagens com sucesso a distâncias de até 6~km com SF12. Os autores reconhecem a restrição de 36~s/h imposta pelo \textit{duty cycle} de 1\% como a principal limitação, o que motivou o uso direto da camada física LoRa em alguns trabalhos, distinção relevante ao cenário aqui proposto.
 
-\begin{table}[h!]
-\centering
-\caption{Parâmetros da Estimativa de Transmissão}
-\label{tab:estimativa_lora}
-\begin{tabular}{|l|l|}
-\hline
-\textbf{Parâmetro} & \textbf{Valor} \\ \hline
-Resolução da imagem & $120\times160$ px  \\ \hline
-Canal & Escala de cinza  \\ \hline
-Qualidade JPEG & 25  \\ \hline
-Tamanho comprimido & 2,86 KB  \\ \hline
-Taxa de compressão & 85\%  \\ \hline
-Spreading Factor & SF9  \\ \hline
-Overhead LoRaWAN & 30 bytes  \\ \hline
-Payload útil por pacote & 85 bytes  \\ \hline
-Pacotes necessários & 35  \\ \hline
-Tempo no ar total & 21,3 s  \\ \hline
-Orçamento diário (duty cycle) & 864 s/dia  \\ \hline
-Uso para 1 foto/dia & 2,4\%  \\ \hline
-Uso para 2 fotos/dia & 4,9\%  \\ \hline
-\end{tabular}
+A Tabela~\ref{tab:parametros} resume os parâmetros utilizados na estimativa e os resultados obtidos.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Parâmetros da Estimativa de Transmissão}
+  \label{tab:parametros}
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Parâmetro}              & \textbf{Valor}     \\
+    \midrule
+    Resolução da imagem             & $160 \times 120$ px \\
+    Canal                           & Escala de cinza    \\
+    Qualidade JPEG                  & 25                 \\
+    Tamanho comprimido              & 3,10~KB (3.182 bytes) \\
+    Taxa de compressão              & $\approx$83\%      \\
+    \textit{Spreading Factor}       & SF9                \\
+    \textit{Overhead} LoRaWAN       & 30 bytes           \\
+    \textit{Payload} útil por pacote & 85 bytes          \\
+    Pacotes necessários             & 38                 \\
+    Tempo no ar total               & 23,4~s             \\
+    Orçamento diário (\textit{duty cycle}) & 864~s/dia   \\
+    Uso para 1 foto/dia             & 2,7\%              \\
+    Uso para 2 fotos/dia            & 5,4\%              \\
+    Intervalo mínimo (modo contínuo) & $\approx$39 min  \\
+    \bottomrule
+  \end{tabular}
+  \fonte{Os autores (2025).}
 \end{table}
 
-Conclui-se que o envio de imagens comprimidas via LoRaWAN, nas condições descritas, é tecnicamente viável e compatível com os limites regulatórios para o caso de uso de monitoramento com baixa frequência.
-
+Conclui-se que o envio de imagens comprimidas via LoRaWAN, nas condições descritas, é tecnicamente viável e compatível com os limites regulatórios para o caso de uso de monitoramento com baixa frequência de captura.
 
 \subsection{Metodologia de Avaliação e Métricas de Validação}
 \label{sec:metricas}
@@ -332,133 +376,12 @@ Acc_{ocr} = \frac{VP + VN}{VP + VN + FP + FN}
 
 Onde $VP$, $VN$, $FP$ e $FN$ representam, respectivamente, os Verdadeiros Positivos, Verdadeiros Negativos, Falsos Positivos e Falsos Negativos obtidos através da Matriz de Confusão. Esta abordagem quantitativa permite identificar se erros de leitura estão associados a fatores externos, como reflexos na cúpula de vidro do medidor ou distorções de perspectiva.
 
-\subsubsection{Precisão dos Modelos Preditivos}
-Para avaliar as previsões de consumo de água, será utilizado o Erro Absoluto Médio (MAE - \textit{Mean Absolute Error}), seguindo a fundamentação de \cite{barkat2024smart}. O MAE permite mensurar a magnitude média do erro nas previsões em relação aos valores reais consumidos:
-
-\begin{equation}
-MAE = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|
-\end{equation}
-Onde $y_i$ representa o consumo real e $\hat{y}_i$ o valor previsto pelo modelo.
-
 \subsubsection{Autonomia Energética}
 A eficiência do hardware será validada através da medição do consumo de corrente em diferentes estados de operação (\textit{Deep Sleep}, captura de imagem e transmissão). A autonomia estimada ($A$) em dias será calculada pela relação entre a capacidade da bateria ($C_{bat}$) e o consumo médio diário ($I_{médio}$):
 
 \begin{equation}
 A = \frac{C_{bat}}{I_{médio} \times 24}
 \end{equation}
-
-
-\subsection{Hipótese}
-\label{sec:hipotese}
-
-\subsubsection{Redução de Tamanho de Imagens e Tempo de Transmissão de Mensagens}
-
-Conforme evidenciado por \cite{almeida2022iot}, o tamanho da imagem está intrinsecamente ligado ao sucesso na transmissão de dados via rede LoRaWan. Diante de tal afirmação, denota-se a necessidade de implementar soluções com o objetivo de mitigar tal desafio.
-
-Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e posteriormente aplicando o algoritmo de limiarização adaptativa de Otsu (apresentado resultado na imagem abaixo), onde o foco é enviar apenas a informação da imagem e não os detalhes, apresenta-se uma redução substancial no tamanho das imagens.
-
-\begin{figure}[htbp]
-    \centering % Centraliza a imagem na página
-    \includegraphics[width=0.7\textwidth]{Binaria.png}
-    \caption{Resultado da limiarização adaptativa de Otsu aplicada ao hidrómetro.}
-    \label{fig:resultado_binario}
-\end{figure}
-
-Conforme apresentado na tabela 2, aplicando os algoritmos citados anteriormente, alcançamos significativos avanços em relação a redução do tamanho da imagem enviada.
-
-\begin{table}[h!]
-    \centering
-    \caption{Níveis de compressão utilizando algoritmo PNG: 320 x 240 px (Média Consolidada em bytes)}
-    \vspace{2mm}
-    \begin{tabular}{cccc}
-        \toprule
-        \textbf{Nível} & \textbf{Original (3 ch)} & \textbf{Escala Cinza (1 ch)} & \textbf{Binarizada (1 ch)} \\ 
-        \midrule
-        0 & 231.074 & 77.226 & 77.226 \\
-        1 & 62.523  & 27.251 & 5.298  \\
-        2 & 61.164  & 26.381 & 4.922  \\
-        3 & 57.720  & 25.474 & 4.531  \\
-        4 & 56.776  & 24.530 & 4.044  \\
-        5 & 54.664  & 23.793 & 3.822  \\
-        6 & 52.669  & 23.254 & 3.528  \\
-        7 & 51.946  & 23.044 & 3.425  \\
-        8 & 50.805  & 22.737 & 3.158  \\
-        9 & 50.325  & 22.639 & 2.971  \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-Ao relevar dos dados apresentados, esperamos que aplicando os tais algoritmos conseguiremos reduzir as imagens geradas pelo ESP32-CAM em até 95\% em relação ao seu tamanho original.
-
-A escolha da compressão por PNG foi realizada por conta da melhor adaptabilidade do algoritmo para comprimir imagens binarizadas, coisa que o JPG não lida tão bem, não apresentando ganhos significativos na binarização da imagem.
-
-Conforme apresentado por \citeonline{jebril2018overcoming}, uma imagem com tamanho aproximado de 3000 bytes levaria algo entorno de 22 segundos para ser completamente enviada ao destinatário, levando em consideração todos os tratamentos aplicados a imagem que estamos adotando, espera-se conseguirmos realizar o envio de imagens sob as mesmas configurações de SF em um tempo menor ou igual ao demonstrado por Jebril e demais.
-
-\section*{Resultados de Compressão JPEG em OpenCV}
-
-% --- Tabela 1 ---
-\begin{table}[ht]
-    \centering
-    \caption{Tamanho do arquivo para a imagem 20260511203832.jpg (160x120 px)}
-    \begin{tabular}{@{}cccc@{}}
-        \toprule
-        Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
-        0  & 1086 & 691  & 1565 \\
-        10 & 1591 & 1192 & 2264 \\
-        20 & 1994 & 1603 & 3073 \\
-        30 & 2226 & 1828 & 3790 \\
-        40 & 2336 & 1942 & 4302 \\
-        50 & 2432 & 2045 & 4776 \\
-        60 & 2634 & 2243 & 5258 \\
-        70 & 2878 & 2479 & 5824 \\
-        80 & 3056 & 2675 & 6692 \\
-        90 & 3701 & 3310 & 8407 \\ \bottomrule
-    \end{tabular}
-\end{table}
-
-% --- Tabela 2 ---
-\begin{table}[ht]
-    \centering
-    \caption{Tamanho do arquivo para a imagem 20260511204204.jpg (160x120 px)}
-    \begin{tabular}{@{}cccc@{}}
-        \toprule
-        Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
-        0  & 1123 & 722  & 1467 \\
-        10 & 1517 & 1110 & 2172 \\
-        20 & 1850 & 1443 & 2838 \\
-        30 & 2030 & 1614 & 3440 \\
-        40 & 2268 & 1861 & 3872 \\
-        50 & 2392 & 1996 & 4271 \\
-        60 & 2520 & 2114 & 4655 \\
-        70 & 2664 & 2255 & 5178 \\
-        80 & 2996 & 2585 & 5918 \\
-        90 & 3567 & 3151 & 7422 \\ \bottomrule
-    \end{tabular}
-\end{table}
-
-% --- Tabela 3 ---
-\begin{table}[ht]
-    \centering
-    \caption{Tamanho do arquivo para a imagem 20260511204422.jpg (160x160 px)}
-    \begin{tabular}{@{}cccc@{}}
-        \toprule
-        Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
-        0  & 1106 & 711  & 747  \\
-        10 & 1409 & 1014 & 860  \\
-        20 & 1693 & 1302 & 976  \\
-        30 & 1828 & 1435 & 1089 \\
-        40 & 2061 & 1666 & 1180 \\
-        50 & 2190 & 1805 & 1251 \\
-        60 & 2288 & 1896 & 1337 \\
-        70 & 2407 & 2003 & 1433 \\
-        80 & 2677 & 2295 & 1564 \\
-        90 & 3131 & 2758 & 1856 \\ \bottomrule
-    \end{tabular}
-\end{table}
-
-\subsubsection{OCR}
-
-A considerar o trabalho apresentado por \cite{bravo2025ants}, onde a abordagem é baseada no processamento em borda, para a abordagem em questão, a hipótese mais racional é alcançarmos a acurácia do modelo desenvolvido por Bravo e demais, com um desvio padrão de entorno de 5\%, por conta do modelo apresentar natureza probabilística. Ao voltarmos o olhar ao modelo de processamento centralizado, espera-se uma acurácia equivalente ao modelo de Bravo, a considerar que a captura das imagens também será realizada de forma probabilística, mas sendo processada por ferramentas de amplo uso e teste pela comunidade, que é o caso do framework Tesseract.
 
 \section{Metodologia da pesquisa bibliográfica}
 \label{sec:metodologia_pesquisa}
@@ -560,6 +483,119 @@ O núcleo da investigação consiste na implementação e comparação de dois m
 \end{enumerate}
 
 Esta abordagem dual permitirá a recolha de métricas quantitativas sobre a vida útil estimada da bateria, a acurácia do reconhecimento em diferentes condições de luminosidade e a fiabilidade da transmissão de pacotes pesados em redes LoRaWAN. Assim, a solução deixa de ser meramente uma implementação técnica para tornar-se uma análise de viabilidade para sistemas de \textit{Smart Metering} em larga escala.
+
+\subsection{Hipótese}
+\label{sec:hipotese}
+
+\subsubsection{Redução de Tamanho de Imagens e Tempo de Transmissão de Mensagens}
+
+Conforme evidenciado por \cite{almeida2022iot}, o tamanho da imagem está intrinsecamente ligado ao sucesso na transmissão de dados via rede LoRaWan. Diante de tal afirmação, denota-se a necessidade de implementar soluções com o objetivo de mitigar tal desafio.
+
+Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e posteriormente aplicando o algoritmo de limiarização adaptativa de Otsu (apresentado resultado na imagem abaixo), onde o foco é enviar apenas a informação da imagem e não os detalhes, apresenta-se uma redução substancial no tamanho das imagens.
+
+\begin{figure}[htbp]
+    \centering % Centraliza a imagem na página
+    \includegraphics[width=0.7\textwidth]{Binaria.png}
+    \caption{Resultado da limiarização adaptativa de Otsu aplicada ao hidrómetro.}
+    \label{fig:resultado_binario}
+\end{figure}
+
+Conforme apresentado na tabela 2, aplicando os algoritmos citados anteriormente, alcançamos significativos avanços em relação a redução do tamanho da imagem enviada.
+
+\begin{table}[h!]
+    \centering
+    \caption{Níveis de compressão utilizando algoritmo PNG: 320 x 240 px (Média Consolidada em bytes)}
+    \vspace{2mm}
+    \begin{tabular}{cccc}
+        \toprule
+        \textbf{Nível} & \textbf{Original (3 ch)} & \textbf{Escala Cinza (1 ch)} & \textbf{Binarizada (1 ch)} \\ 
+        \midrule
+        0 & 231.074 & 77.226 & 77.226 \\
+        1 & 62.523  & 27.251 & 5.298  \\
+        2 & 61.164  & 26.381 & 4.922  \\
+        3 & 57.720  & 25.474 & 4.531  \\
+        4 & 56.776  & 24.530 & 4.044  \\
+        5 & 54.664  & 23.793 & 3.822  \\
+        6 & 52.669  & 23.254 & 3.528  \\
+        7 & 51.946  & 23.044 & 3.425  \\
+        8 & 50.805  & 22.737 & 3.158  \\
+        9 & 50.325  & 22.639 & 2.971  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Ao relevar dos dados apresentados, esperamos que aplicando os tais algoritmos conseguiremos reduzir as imagens geradas pelo ESP32-CAM em até 95\% em relação ao seu tamanho original.
+
+A escolha da compressão por PNG foi realizada por conta da melhor adaptabilidade do algoritmo para comprimir imagens binarizadas, coisa que o JPG não lida tão bem, não apresentando ganhos significativos na binarização da imagem.
+
+Conforme apresentado por \citeonline{jebril2018overcoming}, uma imagem com tamanho aproximado de 3000 bytes levaria algo entorno de 22 segundos para ser completamente enviada ao destinatário, levando em consideração todos os tratamentos aplicados a imagem que estamos adotando, espera-se conseguirmos realizar o envio de imagens sob as mesmas configurações de SF em um tempo menor ou igual ao demonstrado por Jebril e demais.
+
+\subsubsection{Resultados de Compressão JPG em OpenCV}
+
+% --- Tabela 1 ---
+\begin{table}[ht]
+    \centering
+    \caption{Tamanho do arquivo para a imagem 20260511203832.jpg (160x120 px)}
+    \begin{tabular}{@{}cccc@{}}
+        \toprule
+        Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
+        0  & 1086 & 691  & 1565 \\
+        10 & 1591 & 1192 & 2264 \\
+        20 & 1994 & 1603 & 3073 \\
+        30 & 2226 & 1828 & 3790 \\
+        40 & 2336 & 1942 & 4302 \\
+        50 & 2432 & 2045 & 4776 \\
+        60 & 2634 & 2243 & 5258 \\
+        70 & 2878 & 2479 & 5824 \\
+        80 & 3056 & 2675 & 6692 \\
+        90 & 3701 & 3310 & 8407 \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+% --- Tabela 2 ---
+\begin{table}[ht]
+    \centering
+    \caption{Tamanho do arquivo para a imagem 20260511204204.jpg (160x120 px)}
+    \begin{tabular}{@{}cccc@{}}
+        \toprule
+        Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
+        0  & 1123 & 722  & 1467 \\
+        10 & 1517 & 1110 & 2172 \\
+        20 & 1850 & 1443 & 2838 \\
+        30 & 2030 & 1614 & 3440 \\
+        40 & 2268 & 1861 & 3872 \\
+        50 & 2392 & 1996 & 4271 \\
+        60 & 2520 & 2114 & 4655 \\
+        70 & 2664 & 2255 & 5178 \\
+        80 & 2996 & 2585 & 5918 \\
+        90 & 3567 & 3151 & 7422 \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+% --- Tabela 3 ---
+\begin{table}[ht]
+    \centering
+    \caption{Tamanho do arquivo para a imagem 20260511204422.jpg (160x160 px)}
+    \begin{tabular}{@{}cccc@{}}
+        \toprule
+        Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
+        0  & 1106 & 711  & 747  \\
+        10 & 1409 & 1014 & 860  \\
+        20 & 1693 & 1302 & 976  \\
+        30 & 1828 & 1435 & 1089 \\
+        40 & 2061 & 1666 & 1180 \\
+        50 & 2190 & 1805 & 1251 \\
+        60 & 2288 & 1896 & 1337 \\
+        70 & 2407 & 2003 & 1433 \\
+        80 & 2677 & 2295 & 1564 \\
+        90 & 3131 & 2758 & 1856 \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{OCR}
+
+A considerar o trabalho apresentado por \cite{bravo2025ants}, onde a abordagem é baseada no processamento em borda, para a abordagem em questão, a hipótese mais racional é alcançarmos a acurácia do modelo desenvolvido por Bravo e demais, com um desvio padrão de entorno de 5\%, por conta do modelo apresentar natureza probabilística. Ao voltarmos o olhar ao modelo de processamento centralizado, espera-se uma acurácia equivalente ao modelo de Bravo, a considerar que a captura das imagens também será realizada de forma probabilística, mas sendo processada por ferramentas de amplo uso e teste pela comunidade, que é o caso do framework Tesseract.
+
 
 \section{Cronograma de trabalho}
 \label{sec:cronograma}
