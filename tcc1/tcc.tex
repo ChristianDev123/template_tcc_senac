@@ -259,97 +259,107 @@ Em contrapartida, para o processamento de OCR externo (em nuvem ou host), será 
 O processamento intensivo exigido pelo OCR requer que a implementação evite qualquer desperdício computacional.\cite{Plauska2023} demonstram que linguagens compiladas como C e C++ garantem um desempenho superior na gestão de CPU e memória SRAM em relação às linguagens interpretadas. Aliando essa eficiência à total compatibilidade do C/C++ com o ecossistema do ESP-IDF, o desenvolvedor obtém um controle de memória altamente preciso. Essa gestão minuciosa e de baixo nível é o fator crítico que viabiliza a execução de algoritmos de extração de características em microcontroladores limitados a poucas centenas de kilobytes de memória.
 
 \subsection{Análise de Viabilidade do Envio de Imagens via LoRaWAN}
-
-Uma das principais incógnitas levantadas por este artigo é a viabilidade do envio das imagens geradas em nós na borda da rede ao gateway (nó central). Como apresentado por \citeonline{almeida2022iot}, a propagação de dados não estruturados via rede LoRaWAN é algo viável, mas com a ressalva de limitações de bits por pacote, maior latência na disponibilização dos dados e a necessidade de algoritmos que orquestrem todo o recebimento e envio de dados pela rede.
-
+ 
+Uma das principais incógnitas levantadas por este artigo é a viabilidade do envio das imagens geradas em nós na borda da rede ao gateway (nó central). Como apresentado por \citeonline{almeida2022iot}, a propagação de dados não estruturados via rede LoRaWAN é algo viável, mas com a ressalva de limitações de bits por pacote, maior latência na disponibilização dos dados e a necessidade de algoritmos que orquestrem todo o recebimento e envio de dados pela rede, incluindo a fragmentação da imagem em múltiplos pacotes e sua posterior remontagem no destino.
+ 
 Diante disso, casa-se perfeitamente a implementação de algoritmos para a redução do tamanho de imagens, a considerar que este é um dos fatores mais influentes na execução de tal abordagem. Um ponto apresentado por \citeonline{almeida2022iot} é a aplicação de algoritmos de compressão como o JPEG e a transformação de imagens em escala de cinza, reduzindo assim as informações a serem enviadas via rede. Outros algoritmos avaliados como benéficos para a otimização desta abordagem são o Bounding Box, ou caixa delimitadora, isto é, o recorte da imagem em uma área de interesse, e a Dilação Morfológica, algoritmo utilizado para unificar conteúdo dentro de uma imagem criando uma ``ilha de informação''. Ambos são amplamente utilizados em modelos de visão computacional com o objetivo de encontrar núcleos de informação em imagens.
-
+ 
 Uma das principais preocupações técnicas no envio de imagens via LoRaWAN diz respeito aos limites regulatórios de \textit{duty cycle} e ao tamanho máximo de \textit{payload} por pacote. Redes LoRaWAN operando na faixa sub-GHz (como a EU868, padrão em grande parte do mundo) estão sujeitas a um \textit{duty cycle} de 1\%, o que equivale a um orçamento de transmissão de apenas 36 segundos por hora, ou 864 segundos por dia, de acordo com \citeonline{jebril2018overcoming}. Além disso, o tamanho máximo de \textit{payload} por pacote varia conforme o \textit{Spreading Factor} (SF) utilizado. Com SF9 e largura de banda de 125~kHz, o limite é de 115 bytes brutos por pacote. Descontando o \textit{overhead} do protocolo LoRaWAN, estimado em 30 bytes (considerando cabeçalho MAC, porta de aplicação e código de integridade), restam 85 bytes úteis por pacote para os dados da imagem.
 
-Para realizar a estimativa, considerou-se uma imagem capturada pela câmera ESP32-CAM na resolução de ($160 \times 120$ pixels), em escala de cinza, com o parâmetro de qualidade configurado em 4 na escala do ESP32-CAM (escala invertida de 4 a 63, onde valores menores correspondem a menor compressão). Essa configuração produziu, em validação empírica, uma imagem comprimida de aproximadamente 3,10~KB (3.182 bytes). Com 3.182 bytes de dados e 85 bytes úteis por pacote, são necessários 38 pacotes para transmitir a imagem completa, conforme a Equação~\ref{eq:pacotes}:
+A escolha do \textit{Spreading Factor} (SF) é determinante nesse contexto, pois influencia diretamente tanto o tempo no ar de cada pacote quanto o tempo de calendário necessário para concluir a transmissão completa da imagem, respeitando o intervalo mínimo imposto pelo \textit{duty cycle} entre pacotes consecutivos. SFs elevados como SF11 e SF12, embora aumentem o alcance, resultam em tempos de calendário de 2,6 e 4,7 horas, respectivamente, para a transmissão de uma única imagem, o que os torna inviáveis para um sistema de monitoramento com capturas periódicas. SF10 apresenta tempo no ar de 43,7~s por transmissão, valor que supera o orçamento horário de 36~s caso os pacotes sejam enviados em sequência imediata, exigindo espaçamento de mais de uma hora entre o início e o fim da transmissão. \citeonline{jebril2018overcoming} demonstraram experimentalmente que SF9 é suficiente para cobrir distâncias de até 4~km sem perda de pacotes, representando o ponto de equilíbrio entre alcance, tempo no ar (23,4~s por imagem) e tempo de calendário (~39 minutos), com o tempo no ar mantido dentro do orçamento horário de 36~s. Por essas razões, SF9 foi adotado como parâmetro de referência neste trabalho.
 
+É importante distinguir o tempo de calendário da transmissão do tempo efetivo em que o sistema permanece ativo. O intervalo de aproximadamente 39 minutos representa o tempo total decorrido para a transmissão de uma imagem, mas não implica que o dispositivo permaneça ligado durante todo esse período. Em uma implementação orientada à eficiência energética, o microcontrolador pode entrar em modo de \textit{deep sleep} entre o envio de cada pacote, acordando apenas para transmitir o pacote seguinte. Para SF9, o intervalo mínimo entre pacotes imposto pelo \textit{duty cycle} de 1\% é de aproximadamente 60,9 segundos, durante os quais o rádio e o processador podem permanecer inativos. Dessa forma, o tempo efetivo em que o sistema permanece acordado por transmissão de imagem se reduz a aproximadamente 25 segundos, considerando o tempo no ar de cada pacote (615,4~ms) acrescido do tempo de processamento e gerenciamento da sequência de envio. Para o cenário de duas capturas diárias, o sistema opera ativamente por cerca de 50 segundos de transmissão de rádio e aproximadamente 4 segundos de ativação da câmera, permanecendo em \textit{deep sleep} durante o restante do dia. Essa característica é compatível com operação por bateria a longo prazo, desde que o consumo em modo de \textit{deep sleep} do microcontrolador utilizado seja suficientemente baixo, requisito atendido por plataformas como o ESP32, cujo consumo nesse modo pode ser inferior a 10~$\mu$A..
+ 
+Para realizar a estimativa, utilizou-se uma imagem obtida diretamente da câmera ESP32-CAM na resolução mínima disponível no dispositivo ($160 \times 120$ pixels), em escala de cinza, com o parâmetro de qualidade configurado em 4 na escala do ESP32-CAM (escala invertida de 4 a 63, onde valores menores correspondem a menor compressão e maior fidelidade de imagem). A imagem resultante, já no formato JPEG gerado pelo próprio sensor, apresentou tamanho de aproximadamente 3,10~KB (3.182 bytes). Com 3.182 bytes de dados e 85 bytes úteis por pacote, são necessários 38 pacotes para transmitir a imagem completa, conforme a Equação~\ref{eq:pacotes}:
+ 
 \begin{equation}
   \label{eq:pacotes}
   N_{\text{pacotes}} = \left\lceil \frac{3{.}182}{85} \right\rceil = \lceil 37{,}44 \rceil = 38 \text{ pacotes}
 \end{equation}
-
-O tempo no ar por pacote foi calculado utilizando a fórmula oficial do LoRa para SF9, largura de banda de 125~kHz, \textit{coding rate} 4/5 e preâmbulo padrão de 8 símbolos, conforme as Equações~\ref{eq:tsym} a \ref{eq:tpacote}:
-
+ 
+O tempo no ar por pacote foi calculado utilizando a fórmula oficial do LoRa para SF9, largura de banda de 125~kHz, \textit{coding rate} 4/5 e preâmbulo padrão de 8 símbolos. O \textit{coding rate} 4/5 foi escolhido por representar o menor \textit{overhead} de redundância disponível no padrão LoRa, resultando no menor tempo no ar possível para o cenário proposto, conforme as Equações~\ref{eq:tsym} a \ref{eq:tpacote}:
+ 
 \begin{equation}
   \label{eq:tsym}
   T_{\text{símbolo}} = \frac{2^{SF}}{BW} = \frac{2^9}{125{.}000} = 4{,}096 \text{ ms}
 \end{equation}
-
+ 
 \begin{equation}
   \label{eq:nsym}
   n_{\text{sym}}^{\text{payload}} = 8 + \max\!\left(\left\lceil \frac{8 \cdot PL - 4 \cdot SF + 28 + 16}{4 \cdot SF} \right\rceil \cdot (CR + 4),\ 0\right)
 \end{equation}
-
-\noindent onde $PL = 115$ bytes (payload total), $SF = 9$, $CR = 1$ (para \textit{coding rate} 4/5),
-resultando em:
-
+ 
+\noindent onde $PL = 115$ bytes (payload total por pacote), $SF = 9$ e $CR = 1$
+(para \textit{coding rate} 4/5), resultando em:
+ 
 \begin{equation}
-  n_{\text{sym}}^{\text{payload}} = 8 + \left\lceil \frac{928}{36} \right\rceil \times 5 = 8 + 26 \times 5 = 138 \text{ símbolos}
+  n_{\text{sym}}^{\text{payload}} = 8 + \left\lceil \frac{8 \times 115 - 4 \times 9 + 28 + 16}{4 \times 9} \right\rceil \times 5
+  = 8 + \left\lceil \frac{928}{36} \right\rceil \times 5
+  = 8 + 26 \times 5 = 138 \text{ símbolos}
 \end{equation}
-
+ 
 \begin{equation}
   \label{eq:tpacote}
-  T_{\text{pacote}} = \left(n_{\text{preamble}} + 4{,}25 + n_{\text{sym}}^{\text{payload}}\right) \times T_{\text{símbolo}}
+  T_{\text{pacote}} = \bigl(n_{\text{preamble}} + 4{,}25 + n_{\text{sym}}^{\text{payload}}\bigr) \times T_{\text{símbolo}}
   = \left(8 + 4{,}25 + 138\right) \times 4{,}096 \approx 615{,}4 \text{ ms}
 \end{equation}
-
+ 
 O tempo total de transmissão estimado para os 38 pacotes é, portanto:
-
+ 
 \begin{equation}
+  \label{eq:ttotal}
   T_{\text{total}} = 38 \times 615{,}4 \approx 23{,}4 \text{ s}
 \end{equation}
-
-Com base nesses parâmetros, é possível calcular o impacto de cada transmissão sobre o orçamento diário de \textit{duty cycle}:
-
+ 
+Com base nesses parâmetros, é possível calcular o impacto de cada transmissão sobre
+o orçamento diário de \textit{duty cycle}:
+ 
 \begin{itemize}
   \item 1 foto por dia: 23,4~s utilizados de 864~s disponíveis $\rightarrow$ 2,7\% do orçamento diário.
   \item 2 fotos por dia: 46,8~s utilizados de 864~s disponíveis $\rightarrow$ 5,4\% do orçamento diário.
 \end{itemize}
-
-Esses valores demonstram que, para o caso de uso proposto, monitoramento com uma a duas capturas diárias, o envio de imagens via LoRaWAN é viável dentro dos limites regulatórios, com margem superior a 94\% do orçamento disponível. O intervalo mínimo entre transmissões, caso o sistema operasse em modo contínuo, seria de aproximadamente 39 minutos, calculado conforme a Equação~\ref{eq:intervalo}:
-
+ 
+Esses valores demonstram que, para o caso de uso proposto, monitoramento com uma a duas capturas diárias  o envio de imagens via LoRaWAN é viável dentro dos limites regulatórios, com margem superior a 94\% do orçamento disponível. O intervalo mínimo entre transmissões, caso o sistema operasse em modo contínuo, seria de aproximadamente 39 minutos, calculado conforme a Equação~\ref{eq:intervalo}:
+ 
 \begin{equation}
   \label{eq:intervalo}
   T_{\text{intervalo}} = \frac{T_{\text{total}}}{DC} = \frac{23{,}4}{0{,}01} = 2{.}340 \text{ s} \approx 39 \text{ min}
 \end{equation}
-
-\citeonline{jebril2018overcoming} confirmam experimentalmente a viabilidade do envio de imagens sobre a camada física LoRa, tendo transmitido imagens com sucesso a distâncias de até 6~km com SF12. Os autores reconhecem a restrição de 36~s/h imposta pelo \textit{duty cycle} de 1\% como a principal limitação, o que motivou o uso direto da camada física LoRa em alguns trabalhos, distinção relevante ao cenário aqui proposto.
-
+ 
+\citeonline{jebril2018overcoming} confirmam experimentalmente a viabilidade do envio de imagens sobre a camada física LoRa, tendo transmitido imagens com sucesso a distâncias de até 6~km com SF12. Em seus experimentos com SF9, os autores registraram um tempo médio por pacote de aproximadamente 613~ms --- valor empiricamente próximo aos 615,4~ms obtidos pela fórmula analítica aplicada neste trabalho, o que corrobora a consistência do modelo de estimativa adotado. É relevante destacar que \citeonline{jebril2018overcoming} optaram por operar diretamente sobre a camada física LoRa (PHY), contornando o protocolo LoRaWAN, em razão das limitações impostas pela camada MAC ao lidar com fragmentação e remontagem de dados de imagem, abordagem distinta da adotada neste trabalho, que opera sobre LoRaWAN e, portanto, está sujeita às restrições regulatórias de \textit{duty cycle} aqui modeladas.
+ 
 A Tabela~\ref{tab:parametros} resume os parâmetros utilizados na estimativa e os resultados obtidos.
-
+ 
 \begin{table}[htbp]
   \centering
   \caption{Parâmetros da Estimativa de Transmissão}
   \label{tab:parametros}
   \begin{tabular}{ll}
     \toprule
-    \textbf{Parâmetro}              & \textbf{Valor}     \\
+    \textbf{Parâmetro}                      & \textbf{Valor}              \\
     \midrule
-    Resolução da imagem             & $160 \times 120$ px \\
-    Canal                           & Escala de cinza    \\
-    Qualidade JPEG                  & 25                 \\
-    Tamanho comprimido              & 3,10~KB (3.182 bytes) \\
-    Taxa de compressão              & $\approx$83\%      \\
-    \textit{Spreading Factor}       & SF9                \\
-    \textit{Overhead} LoRaWAN       & 30 bytes           \\
-    \textit{Payload} útil por pacote & 85 bytes          \\
-    Pacotes necessários             & 38                 \\
-    Tempo no ar total               & 23,4~s             \\
-    Orçamento diário (\textit{duty cycle}) & 864~s/dia   \\
-    Uso para 1 foto/dia             & 2,7\%              \\
-    Uso para 2 fotos/dia            & 5,4\%              \\
-    Intervalo mínimo (modo contínuo) & $\approx$39 min  \\
+    Resolução da imagem                     & $160 \times 120$ px         \\
+    Canal                                   & Escala de cinza             \\
+    Qualidade ESP32-CAM                     & 4 (escala 4--63, invertida) \\
+    Tamanho da imagem (JPEG)                & 3,10~KB (3.182 bytes)       \\
+    \textit{Spreading Factor}               & SF9                         \\
+    Largura de banda                        & 125~kHz                     \\
+    \textit{Coding rate}                    & 4/5                         \\
+    \textit{Overhead} LoRaWAN               & 30 bytes                    \\
+    \textit{Payload} útil por pacote        & 85 bytes                    \\
+    Pacotes necessários                     & 38                          \\
+    Tempo no ar por pacote                  & $\approx$615,4~ms           \\
+    Tempo no ar total                       & $\approx$23,4~s             \\
+    Orçamento diário (\textit{duty cycle})  & 864~s/dia                   \\
+    Uso para 1 foto/dia                     & 2,7\%                       \\
+    Uso para 2 fotos/dia                    & 5,4\%                       \\
+    Intervalo mínimo (modo contínuo)        & $\approx$39 min             \\
     \bottomrule
   \end{tabular}
   \fonte{Os autores (2025).}
 \end{table}
-
-Conclui-se que o envio de imagens comprimidas via LoRaWAN, nas condições descritas, é tecnicamente viável e compatível com os limites regulatórios para o caso de uso de monitoramento com baixa frequência de captura.
+ 
+Conclui-se que o envio de imagens via LoRaWAN, nas condições descritas, é tecnicamente viável e compatível com os limites regulatórios para o caso de uso de monitoramento com baixa frequência de captura. A margem disponível no orçamento de \textit{duty cycle} é superior a 94\% mesmo no cenário de duas capturas diárias, e o modelo analítico adotado é corroborado empiricamente pelos resultados de \citeonline{jebril2018overcoming}. O principal requisito de implementação decorrente desta análise é a adoção de um algoritmo de fragmentação e remontagem de pacotes na camada de aplicação, necessário para viabilizar a transmissão sequencial dos 38 pacotes que compõem a imagem.
 
 \subsection{Metodologia de Avaliação e Métricas de Validação}
 \label{sec:metricas}
