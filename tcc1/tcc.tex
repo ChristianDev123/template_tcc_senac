@@ -394,6 +394,68 @@ A escolha da compressão por PNG foi realizada por conta da melhor adaptabilidad
 
 Conforme apresentado por \citeonline{jebril2018overcoming}, uma imagem com tamanho aproximado de 3000 bytes levaria algo entorno de 22 segundos para ser completamente enviada ao destinatário, levando em consideração todos os tratamentos aplicados a imagem que estamos adotando, espera-se conseguirmos realizar o envio de imagens sob as mesmas configurações de SF em um tempo menor ou igual ao demonstrado por Jebril e demais.
 
+\section*{Resultados de Compressão JPEG em OpenCV}
+
+% --- Tabela 1 ---
+\begin{table}[ht]
+    \centering
+    \caption{Tamanho do arquivo para a imagem 20260511203832.jpg (160x120 px)}
+    \begin{tabular}{@{}cccc@{}}
+        \toprule
+        Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
+        0  & 1086 & 691  & 1565 \\
+        10 & 1591 & 1192 & 2264 \\
+        20 & 1994 & 1603 & 3073 \\
+        30 & 2226 & 1828 & 3790 \\
+        40 & 2336 & 1942 & 4302 \\
+        50 & 2432 & 2045 & 4776 \\
+        60 & 2634 & 2243 & 5258 \\
+        70 & 2878 & 2479 & 5824 \\
+        80 & 3056 & 2675 & 6692 \\
+        90 & 3701 & 3310 & 8407 \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+% --- Tabela 2 ---
+\begin{table}[ht]
+    \centering
+    \caption{Tamanho do arquivo para a imagem 20260511204204.jpg (160x120 px)}
+    \begin{tabular}{@{}cccc@{}}
+        \toprule
+        Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
+        0  & 1123 & 722  & 1467 \\
+        10 & 1517 & 1110 & 2172 \\
+        20 & 1850 & 1443 & 2838 \\
+        30 & 2030 & 1614 & 3440 \\
+        40 & 2268 & 1861 & 3872 \\
+        50 & 2392 & 1996 & 4271 \\
+        60 & 2520 & 2114 & 4655 \\
+        70 & 2664 & 2255 & 5178 \\
+        80 & 2996 & 2585 & 5918 \\
+        90 & 3567 & 3151 & 7422 \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+% --- Tabela 3 ---
+\begin{table}[ht]
+    \centering
+    \caption{Tamanho do arquivo para a imagem 20260511204422.jpg (160x160 px)}
+    \begin{tabular}{@{}cccc@{}}
+        \toprule
+        Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
+        0  & 1106 & 711  & 747  \\
+        10 & 1409 & 1014 & 860  \\
+        20 & 1693 & 1302 & 976  \\
+        30 & 1828 & 1435 & 1089 \\
+        40 & 2061 & 1666 & 1180 \\
+        50 & 2190 & 1805 & 1251 \\
+        60 & 2288 & 1896 & 1337 \\
+        70 & 2407 & 2003 & 1433 \\
+        80 & 2677 & 2295 & 1564 \\
+        90 & 3131 & 2758 & 1856 \\ \bottomrule
+    \end{tabular}
+\end{table}
+
 \subsubsection{OCR}
 
 A considerar o trabalho apresentado por \cite{bravo2025ants}, onde a abordagem é baseada no processamento em borda, para a abordagem em questão, a hipótese mais racional é alcançarmos a acurácia do modelo desenvolvido por Bravo e demais, com um desvio padrão de entorno de 5\%, por conta do modelo apresentar natureza probabilística. Ao voltarmos o olhar ao modelo de processamento centralizado, espera-se uma acurácia equivalente ao modelo de Bravo, a considerar que a captura das imagens também será realizada de forma probabilística, mas sendo processada por ferramentas de amplo uso e teste pela comunidade, que é o caso do framework Tesseract.
