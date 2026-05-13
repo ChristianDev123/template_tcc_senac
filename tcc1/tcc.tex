@@ -262,8 +262,8 @@ O processamento intensivo exigido pelo OCR requer que a implementação evite qu
  
 Uma das principais incógnitas levantadas por este artigo é a viabilidade do envio das imagens geradas em nós na borda da rede ao gateway (nó central). Como apresentado por \citeonline{almeida2022iot}, a propagação de dados não estruturados via rede LoRaWAN é algo viável, mas com a ressalva de limitações de bits por pacote, maior latência na disponibilização dos dados e a necessidade de algoritmos que orquestrem todo o recebimento e envio de dados pela rede, incluindo a fragmentação da imagem em múltiplos pacotes e sua posterior remontagem no destino.
  
-Diante disso, casa-se perfeitamente a implementação de algoritmos para a redução do tamanho de imagens, a considerar que este é um dos fatores mais influentes na execução de tal abordagem. Um ponto apresentado por \citeonline{almeida2022iot} é a aplicação de algoritmos de compressão como o JPEG e a transformação de imagens em escala de cinza, reduzindo assim as informações a serem enviadas via rede. Outros algoritmos avaliados como benéficos para a otimização desta abordagem são o Bounding Box, ou caixa delimitadora, isto é, o recorte da imagem em uma área de interesse, e a Dilação Morfológica, algoritmo utilizado para unificar conteúdo dentro de uma imagem criando uma ``ilha de informação''. Ambos são amplamente utilizados em modelos de visão computacional com o objetivo de encontrar núcleos de informação em imagens.
- 
+Diante disso, casa-se perfeitamente a implementação de algoritmos para a redução do tamanho de imagens, a considerar que este é um dos fatores mais influentes na execução de tal abordagem. Um ponto apresentado por \citeonline{almeida2022iot} é a aplicação de algoritmos de compressão como o JPEG e a transformação de imagens em escala de cinza, reduzindo assim as informações a serem enviadas via rede.
+
 Uma das principais preocupações técnicas no envio de imagens via LoRaWAN diz respeito aos limites regulatórios de \textit{duty cycle} e ao tamanho máximo de \textit{payload} por pacote. Redes LoRaWAN operando na faixa sub-GHz (como a EU868, padrão em grande parte do mundo) estão sujeitas a um \textit{duty cycle} de 1\%, o que equivale a um orçamento de transmissão de apenas 36 segundos por hora, ou 864 segundos por dia, de acordo com \citeonline{jebril2018overcoming}. Além disso, o tamanho máximo de \textit{payload} por pacote varia conforme o \textit{Spreading Factor} (SF) utilizado. Com SF9 e largura de banda de 125~kHz, o limite é de 115 bytes brutos por pacote. Descontando o \textit{overhead} do protocolo LoRaWAN, estimado em 30 bytes (considerando cabeçalho MAC, porta de aplicação e código de integridade), restam 85 bytes úteis por pacote para os dados da imagem.
 
 A escolha do \textit{Spreading Factor} (SF) é determinante nesse contexto, pois influencia diretamente tanto o tempo no ar de cada pacote quanto o tempo de calendário necessário para concluir a transmissão completa da imagem, respeitando o intervalo mínimo imposto pelo \textit{duty cycle} entre pacotes consecutivos. SFs elevados como SF11 e SF12, embora aumentem o alcance, resultam em tempos de calendário de 2,6 e 4,7 horas, respectivamente, para a transmissão de uma única imagem, o que os torna inviáveis para um sistema de monitoramento com capturas periódicas. SF10 apresenta tempo no ar de 43,7~s por transmissão, valor que supera o orçamento horário de 36~s caso os pacotes sejam enviados em sequência imediata, exigindo espaçamento de mais de uma hora entre o início e o fim da transmissão. \citeonline{jebril2018overcoming} demonstraram experimentalmente que SF9 é suficiente para cobrir distâncias de até 4~km sem perda de pacotes, representando o ponto de equilíbrio entre alcance, tempo no ar (23,4~s por imagem) e tempo de calendário (~39 minutos), com o tempo no ar mantido dentro do orçamento horário de 36~s. Por essas razões, SF9 foi adotado como parâmetro de referência neste trabalho.
@@ -501,71 +501,14 @@ Esta abordagem dual permitirá a recolha de métricas quantitativas sobre a vida
 
 Conforme evidenciado por \cite{almeida2022iot}, o tamanho da imagem está intrinsecamente ligado ao sucesso na transmissão de dados via rede LoRaWan. Diante de tal afirmação, denota-se a necessidade de implementar soluções com o objetivo de mitigar tal desafio.
 
-Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e posteriormente aplicando o algoritmo de limiarização adaptativa de Otsu (apresentado resultado na imagem abaixo), onde o foco é enviar apenas a informação da imagem e não os detalhes, apresenta-se uma redução substancial no tamanho das imagens.
+Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e utilizando o padrão JPEG de compressão, apresenta-se uma redução substancial no tamanho das imagens, como evidenciados nas posteriores tabelas. Ao adotarmos a resolução de imagem de 160 x 120 como padrão, constatamos a redução em até 60% em  relação ao tamanho original da imagem. 
 
-\begin{figure}[htbp]
-    \centering % Centraliza a imagem na página
-    \includegraphics[width=0.7\textwidth]{Binaria.png}
-    \caption{Resultado da limiarização adaptativa de Otsu aplicada ao hidrómetro.}
-    \label{fig:resultado_binario}
-\end{figure}
-
-Conforme apresentado na tabela 2, aplicando os algoritmos citados anteriormente, alcançamos significativos avanços em relação a redução do tamanho da imagem enviada.
-
-\begin{table}[h!]
-    \centering
-    \caption{Níveis de compressão utilizando algoritmo PNG: 320 x 240 px (Média Consolidada em bytes)}
-    \vspace{2mm}
-    \begin{tabular}{cccc}
-        \toprule
-        \textbf{Nível} & \textbf{Original (3 ch)} & \textbf{Escala Cinza (1 ch)} & \textbf{Binarizada (1 ch)} \\ 
-        \midrule
-        0 & 231.074 & 77.226 & 77.226 \\
-        1 & 62.523  & 27.251 & 5.298  \\
-        2 & 61.164  & 26.381 & 4.922  \\
-        3 & 57.720  & 25.474 & 4.531  \\
-        4 & 56.776  & 24.530 & 4.044  \\
-        5 & 54.664  & 23.793 & 3.822  \\
-        6 & 52.669  & 23.254 & 3.528  \\
-        7 & 51.946  & 23.044 & 3.425  \\
-        8 & 50.805  & 22.737 & 3.158  \\
-        9 & 50.325  & 22.639 & 2.971  \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-Ao relevar dos dados apresentados, esperamos que aplicando os tais algoritmos conseguiremos reduzir as imagens geradas pelo ESP32-CAM em até 95\% em relação ao seu tamanho original.
-
-A escolha da compressão por PNG foi realizada por conta da melhor adaptabilidade do algoritmo para comprimir imagens binarizadas, coisa que o JPG não lida tão bem, não apresentando ganhos significativos na binarização da imagem.
-
-Conforme apresentado por \citeonline{jebril2018overcoming}, uma imagem com tamanho aproximado de 3000 bytes levaria algo entorno de 22 segundos para ser completamente enviada ao destinatário, levando em consideração todos os tratamentos aplicados a imagem que estamos adotando, espera-se conseguirmos realizar o envio de imagens sob as mesmas configurações de SF em um tempo menor ou igual ao demonstrado por Jebril e demais.
-
-\subsubsection{Resultados de Compressão JPG em OpenCV}
+A adoção do padrão de compressão JPEG neste trabalho, deve-se à menor complexidade de aplicação do padrão dentro do sistema IOT disponibilizado pelo ESP32-CAM, onde a imagem gerada, por padrão, é compactada em JPEG com o objetivo de reduzir o tamanho de buffer alocado para a imagem em memória, em contrapartida, o padrão JPEG foi desenvolvido para utilização de imagens naturais, sendo falho ao tentar processar imagens binarizadas, que criam contornos “quadrados” na imagem, assim não permitindo a adoção da técnica de binarização, com o objetivo de enxugar ainda mais o tamanho das imagens,  antes de realizar o envio.
 
 % --- Tabela 1 ---
-\begin{table}[ht]
+\begin{table}[H]
     \centering
-    \caption{Tamanho do arquivo para a imagem 20260511203832.jpg (160x120 px)}
-    \begin{tabular}{@{}cccc@{}}
-        \toprule
-        Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
-        0  & 1086 & 691  & 1565 \\
-        10 & 1591 & 1192 & 2264 \\
-        20 & 1994 & 1603 & 3073 \\
-        30 & 2226 & 1828 & 3790 \\
-        40 & 2336 & 1942 & 4302 \\
-        50 & 2432 & 2045 & 4776 \\
-        60 & 2634 & 2243 & 5258 \\
-        70 & 2878 & 2479 & 5824 \\
-        80 & 3056 & 2675 & 6692 \\
-        90 & 3701 & 3310 & 8407 \\ \bottomrule
-    \end{tabular}
-\end{table}
-
-% --- Tabela 2 ---
-\begin{table}[ht]
-    \centering
-    \caption{Tamanho do arquivo para a imagem 20260511204204.jpg (160x120 px)}
+    \caption{Comparativo de imagem 160x120}
     \begin{tabular}{@{}cccc@{}}
         \toprule
         Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
@@ -582,10 +525,10 @@ Conforme apresentado por \citeonline{jebril2018overcoming}, uma imagem com taman
     \end{tabular}
 \end{table}
 
-% --- Tabela 3 ---
-\begin{table}[ht]
+% --- Tabela 2 ---
+\begin{table}[H]
     \centering
-    \caption{Tamanho do arquivo para a imagem 20260511204422.jpg (160x160 px)}
+    \caption{Comparativo de imagem 160x160}
     \begin{tabular}{@{}cccc@{}}
         \toprule
         Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
@@ -601,6 +544,10 @@ Conforme apresentado por \citeonline{jebril2018overcoming}, uma imagem com taman
         90 & 3131 & 2758 & 1856 \\ \bottomrule
     \end{tabular}
 \end{table}
+
+Ao relevar dos dados apresentados, esperamos conseguir reduzir as imagens geradas pelo ESP32-CAM em até 60% em relação ao seu tamanho original, utilizando apenas os métodos apresentados.
+
+Conforme apresentado por \citeonline{jebril2018overcoming}, estima-se que uma imagem com tamanho aproximado de 3000 bytes necessite de aproximadamente 22 segundos para ser completamente enviada ao destinatário, levando em consideração todos os tratamentos aplicados a imagem que estamos adotando, espera-se conseguirmos realizar o envio de imagens sob as mesmas configurações de SF em um tempo menor ou igual ao demonstrado por Jebril e demais.
 
 \subsubsection{OCR}
 
