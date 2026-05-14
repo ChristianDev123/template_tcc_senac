@@ -266,7 +266,7 @@ imagens geradas em nós na borda da rede ao gateway (nó central). Como apresent
 por \citeonline{almeida2022iot}, a propagação de dados não estruturados via
 rede LoRaWAN é algo viável, mas com a ressalva de limitações de bits por pacote, maior
 latência na disponibilização dos dados e a necessidade de algoritmos que orquestrem todo
-o recebimento e envio de dados pela rede --- incluindo a fragmentação da imagem em
+o recebimento e envio de dados pela rede, incluindo a fragmentação da imagem em
 múltiplos pacotes e sua posterior remontagem no destino.
  
 Diante disso, casa-se perfeitamente a implementação de algoritmos para a redução do
@@ -291,7 +291,7 @@ adota salto de frequência entre 64 canais de \textit{uplink} e limita o tempo m
 permanência por canal (\textit{dwell time}). Essa restrição é estabelecida pelo Ato
 nº~14.448, de 4 de dezembro de 2017, da ANATEL~\cite{anatel2017}: para sistemas de
 salto em frequência operando nas faixas de 902--907,5~MHz e 915--928~MHz com largura
-de faixa de canal inferior a 250~kHz --- caso do LoRa com 125~kHz ---, o tempo médio
+de faixa de canal inferior a 250~kHz, caso do LoRa com 125~kHz, o tempo médio
 de ocupação de qualquer radiofrequência não deve ser superior a \textbf{0,4~segundos}
 em um intervalo de 14~segundos, com uso mínimo de 35~canais de salto. O AU915
 utiliza 64~canais de \textit{uplink}, satisfazendo amplamente essa condição.
@@ -313,7 +313,7 @@ entre todos os SFs disponíveis para os parâmetros de \textit{payload} deste tr
  
 \begin{table}[htbp]
   \centering
-  \caption{Comparativo entre \textit{Spreading Factors} --- \textit{payload} de 115~bytes, BW~125~kHz, CR~4/5}
+  \caption{Comparativo entre \textit{Spreading Factors} e \textit{payload} de 115~bytes, BW~125~kHz, CR~4/5}
   \label{tab:comparativo_sf}
   \begin{tabular}{ccccccc}
     \toprule
@@ -334,9 +334,9 @@ entre todos os SFs disponíveis para os parâmetros de \textit{payload} deste tr
  
 Da Tabela~\ref{tab:comparativo_sf}, conclui-se que apenas SF7 e SF8 atendem ao
 limite de \textit{dwell time} de 400~ms do Ato nº~14.448 para o \textit{payload} de 115~bytes.
-Entre eles, o SF8 apresenta sensibilidade de recepção 3~dB superior ao SF7 --- o que
+Entre eles, o SF8 apresenta sensibilidade de recepção 3~dB superior ao SF7 o que
 se traduz, conforme a Tabela~\ref{tab:snr_sf} adaptada de \citeonline{adam2022}, em
-um SNR mínimo de $-10$~dB contra $-7,5$~dB do SF7 ---, garantindo aproximadamente
+um SNR mínimo de $-10$~dB contra $-7,5$~dB do SF7, garantindo aproximadamente
 o dobro do alcance em condições equivalentes. Por essa razão, o \textbf{SF8} é adotado
 como parâmetro de referência: é o SF que maximiza o alcance dentro dos limites
 regulatórios brasileiros para o \textit{payload} proposto.
@@ -351,9 +351,9 @@ pacotes; o SF8, sob condições similares, cobre tipicamente até 3--4~km em cen
 urbanos e suburbanos. \citeonline{adam2022} confirmam experimentalmente o uso de
 SF9 e SF10 com sucesso em cenários urbanos com distâncias de até 2,5~km na cidade
 de Tapejara (RS), e demonstram que ajustes de antena resolvem eventuais problemas
-de cobertura em instalações com obstruções. Para o caso de uso proposto ---
+de cobertura em instalações com obstruções. Para o caso de uso proposto
 monitoramento com nós de borda posicionados a distâncias tipicamente inferiores a 2~km
-do \textit{gateway} central ---, o alcance do SF8 é amplamente suficiente. Em
+do \textit{gateway} central, o alcance do SF8 é amplamente suficiente. Em
 instalações onde o alcance seja crítico, a utilização de antenas direcionais ou o
 reposicionamento do \textit{gateway} são medidas prontamente disponíveis, conforme
 demonstrado por \citeonline{adam2022}.
@@ -394,7 +394,7 @@ proposto, conforme as Equações~\ref{eq:tsym} a \ref{eq:tpacote}:
 O valor obtido de 348,7~ms é \textbf{12,8\% inferior ao limite regulatório de 400~ms}
 do Ato nº~14.448 da ANATEL~\cite{anatel2017}, confirmando a plena conformidade
 para operação no Brasil. Para fins de referência, o mesmo cálculo para SF9 com
-idêntico \textit{payload} produziria 615,4~ms --- valor 53,9\% superior ao limite
+idêntico \textit{payload} produziria 615,4~ms, valor 53,9\% superior ao limite
 regulatório e, portanto, não conforme.
  
 \subsubsection{Fragmentação e Orçamento de Transmissão}
@@ -459,7 +459,7 @@ atividade é:
 \begin{itemize}
   \item Rádio ativo (transmissão): $2 \times 38 \times 348{,}7~\text{ms} \approx 26{,}5$~s/dia.
   \item Câmera ativa (captura): $2 \times 2~\text{s} \approx 4$~s/dia.
-  \item \textbf{Total ativo: $\approx$30,5~s/dia} --- o sistema permanece em \textit{deep sleep}
+  \item \textbf{Total ativo: $\approx$30,5~s/dia} o sistema permanece em \textit{deep sleep}
         durante 99,96\% do dia.
 \end{itemize}
  
@@ -468,7 +468,7 @@ prazo, uma vez que o ESP32 apresenta consumo em modo \textit{deep sleep} inferio
 10~$\mu$A~\cite{adam2022}. A corrente ativa durante transmissão LoRa é
 tipicamente inferior a 120~mA; com apenas 30,5~s ativos por dia, a energia consumida
 pelo rádio equivale a aproximadamente $120 \times 10^{-3} \times 30{,}5 \approx 3{,}7$~mAs
-por dia, ou $\sim$0,001~mAh --- valor desprezível diante de qualquer bateria de IoT.
+por dia, ou $\sim$0,001~mAh valor desprezível diante de qualquer bateria de IoT.
 O consumo de \textit{deep sleep}, por sua vez, equivale a $10 \times 10^{-6} \times
 86{.}370 \approx 0{,}864$~As~$\approx$~0,24~mAh por dia, o que permitiria, em
 tese, mais de 4 anos de operação contínua com uma bateria de 1000~mAh, sem
@@ -485,7 +485,7 @@ EU868, o orçamento restante após 2~capturas diárias é de $864 - 26{,}5 \appr
 837{,}5$~s, suficiente para acomodar até $\lfloor 837{,}5 / 0{,}349 \rfloor = 2{.}401$
 pacotes adicionais. Considerando que o total de pacotes por dia é 76 (2~imagens~$\times$
 38~pacotes), o orçamento residual permitiria \textbf{até 32~retransmissões por
-pacote} antes de esgotar o orçamento diário no cenário mais restritivo --- o que
+pacote} antes de esgotar o orçamento diário no cenário mais restritivo, o que
 equivale a tolerar uma taxa de perda de pacotes de até 97\% sem impactar o
 funcionamento do sistema. Na prática, redes LoRaWAN em cenários urbanos operam com
 taxas de entrega superiores a 75\%~\cite{adam2022}, tornando a margem de 97\%
@@ -494,7 +494,7 @@ confirmada.
  
 No contexto regulatório brasileiro real (AU915), onde não há limitação de orçamento
 diário por \textit{duty cycle}, a restrição é apenas o \textit{dwell time} de 400~ms por
-canal por transmissão --- já satisfeita pelo SF8 com 348,7~ms. Nesse cenário, a
+canal por transmissão, já satisfeita pelo SF8 com 348,7~ms. Nesse cenário, a
 transmissão de uma imagem completa requer apenas 13,3~s de rádio ativo, e o sistema
 poderia, em princípio, realizar mais de 270~transmissões completas por hora. A análise
 EU868 apresentada neste trabalho representa, portanto, o cenário absolutamente mais
@@ -506,13 +506,13 @@ do sistema em qualquer implantação LoRaWAN em território brasileiro.
 \citeonline{jebril2018overcoming} confirmam experimentalmente a viabilidade do envio de imagens
 sobre a camada física LoRa, tendo transmitido imagens com sucesso a distâncias de até
 6~km com SF12. Em seus experimentos com SF9, os autores registraram um tempo médio
-por pacote de aproximadamente 613~ms --- valor empiricamente próximo aos 615,4~ms
+por pacote de aproximadamente 613~ms, valor empiricamente próximo aos 615,4~ms
 que a mesma fórmula analítica produziria para SF9 com o mesmo \textit{payload},
 corroborando a consistência do modelo de estimativa adotado neste trabalho para SF8.
 É relevante destacar que \citeonline{jebril2018overcoming} optaram por operar diretamente sobre
 a camada física LoRa (PHY), contornando o protocolo LoRaWAN, em razão das
 limitações impostas pela camada MAC ao lidar com fragmentação e remontagem de dados
-de imagem --- abordagem distinta da adotada neste trabalho, que opera sobre LoRaWAN
+de imagem, abordagem distinta da adotada neste trabalho, que opera sobre LoRaWAN
 e está sujeita às restrições regulatórias aqui modeladas.
  
 A Tabela~\ref{tab:parametros} resume os parâmetros utilizados na estimativa e os
@@ -540,12 +540,12 @@ resultados obtidos.
     Limite \textit{dwell time} AU915 (Ato 14.448)       & 400~ms                      \\
     Conformidade AU915                                  & Sim (348,7~ms $<$ 400~ms)   \\
     Tempo no ar total (1 foto)                          & $\approx$13,3~s             \\
-    Orçamento diário --- cenário EU868 (1\% DC)         & 864~s/dia                   \\
-    Consumo orçamento --- 1 foto/dia                    & 13,3~s (1,5\%)              \\
-    Consumo orçamento --- 2 fotos/dia                   & 26,5~s (3,1\%)              \\
-    Margem de orçamento --- 2 fotos/dia                 & 837,5~s (96,9\%)            \\
+    Orçamento diário - cenário EU868 (1\% DC)         & 864~s/dia                   \\
+    Consumo orçamento - 1 foto/dia                    & 13,3~s (1,5\%)              \\
+    Consumo orçamento - 2 fotos/dia                   & 26,5~s (3,1\%)              \\
+    Margem de orçamento - 2 fotos/dia                 & 837,5~s (96,9\%)            \\
     Retransmissões suportadas por pacote (EU868)        & até 32$\times$              \\
-    Tempo de calendário --- transmissão completa        & $\approx$22~min             \\
+    Tempo de calendário - transmissão completa        & $\approx$22~min             \\
     Fração do dia em \textit{deep sleep} (2 fotos)      & 99,96\%                     \\
     \bottomrule
   \end{tabular}
@@ -554,9 +554,9 @@ resultados obtidos.
  
 Conclui-se que o envio de imagens via LoRaWAN, nas condições descritas, é 
 tecnicamente viável, regulatoriamente conforme e energeticamente adequado
-para operação por bateria em campo. A adoção do SF8 --- motivada pela conformidade
+para operação por bateria em campo. A adoção do SF8, motivada pela conformidade
 com o limite de \textit{dwell time} de 400~ms do Ato nº~14.448 da
-ANATEL~\cite{anatel2017} e pela maximização do alcance dentro desse limite --- produz
+ANATEL~\cite{anatel2017} e pela maximização do alcance dentro desse limite, produz
 resultados superiores ao SF9 em todos os indicadores de desempenho: menor tempo
 total de transmissão (13,3~s contra 23,4~s), menor tempo de calendário (22~min contra
 39~min) e maior margem de orçamento diário (96,9\% contra 94,6\%), ao custo de uma
@@ -566,6 +566,7 @@ decorrente desta análise é a adoção de um algoritmo de fragmentação e remo
 pacotes na camada de aplicação, necessário para viabilizar a transmissão sequencial
 dos 38~pacotes que compõem a imagem e sua posterior reassemblagem no
 \textit{gateway}.
+
 \subsection{Metodologia de Avaliação e Métricas de Validação}
 \label{sec:metricas}
 
