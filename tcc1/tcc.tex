@@ -349,6 +349,25 @@ entre todos os SFs disponíveis para os parâmetros de \textit{payload} deste tr
   \end{tabular}
   \fonte{Os autores (2025). Alcance aproximado com base em \citeonline{adam2022} e \citeonline{jebril2018overcoming}.}
 \end{table}
+
+\begin{table}[htb]
+\centering
+\caption{SNR mínimo necessário por Spreading Factor}
+\label{tab:snr_sf}
+\begin{tabular}{cc}
+\toprule
+\textbf{SF} & \textbf{SNR mínimo (dB)} \\
+\midrule
+7  & $-7{,}5$ \\
+8  & $-10{,}0$ \\
+9  & $-12{,}5$ \\
+10 & $-15{,}0$ \\
+11 & $-17{,}5$ \\
+12 & $-20{,}0$ \\
+\bottomrule
+\end{tabular}
+\legend{Fonte: Adaptado de \citeonline{adam2022}.}
+\end{table}
  
 Da Tabela~\ref{tab:comparativo_sf}, conclui-se que apenas SF7 e SF8 atendem ao
 limite de \textit{dwell time} de 400~ms do Ato nº~14.448 para o \textit{payload} de 115~bytes.
@@ -588,7 +607,7 @@ dos 38~pacotes que compõem a imagem e sua posterior reassemblagem no
 \subsection{Metodologia de Avaliação e Métricas de Validação}
 \label{sec:metricas}
 
-Para avaliar a eficácia do sistema de telemetria proposto e garantir a objetividade dos resultados, serão adotados indicadores quantitativos divididos em quatro dimensões críticas: desempenho de rede, precisão de visão computacional, eficiência energética e acurácia preditiva.
+Para avaliar a eficácia do sistema de telemetria proposto e garantir a objetividade dos resultados, serão adotados indicadores quantitativos divididos em três dimensões críticas: desempenho de rede, precisão de visão computacional, eficiência energética e acurácia preditiva.
 
 \subsubsection{Desempenho da Rede de Comunicação}
 A robustez da transmissão via LoRaWAN será quantificada através da Taxa de Entrega de Pacotes (PDR - \textit{Packet Delivery Ratio}). Conforme a metodologia de \cite{bravo2025ants}, o PDR é definido pela razão entre o número de pacotes recebidos pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor:
@@ -725,7 +744,7 @@ Esta abordagem dual permitirá a recolha de métricas quantitativas sobre a vida
 
 Conforme evidenciado por \cite{almeida2022iot}, o tamanho da imagem está intrinsecamente ligado ao sucesso na transmissão de dados via rede LoRaWan. Diante de tal afirmação, denota-se a necessidade de implementar soluções com o objetivo de mitigar tal desafio.
 
-Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e utilizando o padrão JPEG de compressão, apresenta-se uma redução substancial no tamanho das imagens, como evidenciados nas posteriores tabelas. Ao adotarmos a resolução de imagem de 160 x 120 como padrão, constatamos a redução em até 60% em  relação ao tamanho original da imagem. 
+Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e utilizando o padrão JPEG de compressão, apresenta-se uma redução substancial no tamanho das imagens, como evidenciados nas posteriores tabelas. Ao adotarmos a resolução de imagem de 160 x 120 como padrão, constatamos a redução em até 60\% em  relação ao tamanho original da imagem. 
 
 A adoção do padrão de compressão JPEG neste trabalho, deve-se à menor complexidade de aplicação do padrão dentro do sistema IOT disponibilizado pelo ESP32-CAM, onde a imagem gerada, por padrão, é compactada em JPEG com o objetivo de reduzir o tamanho de buffer alocado para a imagem em memória, em contrapartida, o padrão JPEG foi desenvolvido para utilização de imagens naturais, sendo falho ao tentar processar imagens binarizadas, que criam contornos “quadrados” na imagem, assim não permitindo a adoção da técnica de binarização, com o objetivo de enxugar ainda mais o tamanho das imagens,  antes de realizar o envio.
 
@@ -769,7 +788,7 @@ A adoção do padrão de compressão JPEG neste trabalho, deve-se à menor compl
     \end{tabular}
 \end{table}
 
-Ao relevar dos dados apresentados, esperamos conseguir reduzir as imagens geradas pelo ESP32-CAM em até 60% em relação ao seu tamanho original, utilizando apenas os métodos apresentados.
+Ao relevar dos dados apresentados, esperamos conseguir reduzir as imagens geradas pelo ESP32-CAM em até 60\% em relação ao seu tamanho original, utilizando apenas os métodos apresentados.
 
 Conforme apresentado por \citeonline{jebril2018overcoming}, estima-se que uma imagem com tamanho aproximado de 3000 bytes necessite de aproximadamente 22 segundos para ser completamente enviada ao destinatário, levando em consideração todos os tratamentos aplicados a imagem que estamos adotando, espera-se conseguirmos realizar o envio de imagens sob as mesmas configurações de SF em um tempo menor ou igual ao demonstrado por Jebril e demais.
 
