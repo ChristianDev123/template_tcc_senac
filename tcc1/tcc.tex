@@ -121,8 +121,31 @@
 % RESUMO
 % ---------------------------------------------------------------
 \begin{resumo}
-Este documento apresenta a proposta inicial do Trabalho de Conclusão de Curso (TCC1) desenvolvido no SENAC Santo Amaro. O objetivo deste trabalho é [descrever brevemente o objetivo principal do TCC]. A justificativa para este estudo baseia-se em [descrever brevemente a justificativa]. A revisão bibliográfica abrange [mencionar os principais tópicos]. Como solução proposta, pretende-se [descrever brevemente a solução]. Este trabalho está organizado em três capítulos que apresentam a introdução ao tema, a revisão bibliográfica que fundamenta a pesquisa, o desenvolvimento com a solução proposta e o cronograma de trabalho, seguidos das referências bibliográficas.
-
+Este trabalho busca propor uma análise comparativa entre duas arquiteturas de processamento
+para sistemas de telemetria de hidrômetros analógicos: a computação em borda
+(\textit{Edge Computing}), com inferência de OCR realizada localmente no microcontrolador
+ESP32-CAM por meio da biblioteca TensorFlow Lite for Microcontrollers, e a computação
+em nuvem (\textit{Cloud Computing}), com transmissão da imagem capturada para
+processamento remoto pelo motor Tesseract em conjunto com a biblioteca OpenCV.
+A motivação reside na problemática do desperdício hídrico no Brasil, onde aproximadamente
+40,31\% da água produzida é perdida, e no elevado custo de substituição dos medidores
+convencionais por modelos inteligentes nativos, o que torna o \textit{retrofitting} de
+hidrômetros analógicos uma alternativa economicamente viável. A transmissão dos dados
+entre os nós de borda e o \textit{gateway} central é realizada via rede LoRaWAN,
+utilizando o Spreading Factor SF8, configuração que assegura conformidade com o limite
+regulatório de \textit{dwell time} de 400~ms estabelecido pelo Ato n\textordmasculine~14.448
+da ANATEL, ao mesmo tempo em que maximiza o alcance dentro desse limite. A viabilidade
+do envio de imagens fragmentadas via LoRaWAN foi demonstrada analiticamente, com
+uma imagem de 160$\times$120 pixels em escala de cinza, no formato JPEG com
+aproximadamente 3,10~KB, podendo ser transmitida em 38 pacotes em cerca de 13,3~s
+de rádio ativo, consumindo apenas 1,5\% do orçamento diário no cenário regulatório
+mais restritivo (EU868 com \textit{duty cycle} de 1\%). Os dois fluxos de processamento
+serão avaliados segundo quatro métricas quantitativas: acurácia de leitura OCR (\%),
+latência de ponta a ponta (ms), consumo energético por leitura (mAh) e volume de dados
+transmitidos (bytes/leitura). Espera-se que os resultados orientem a escolha arquitetural
+mais adequada para implantações de \textit{Smart Metering} em larga escala, considerando
+o \textit{trade-off} entre eficiência energética, precisão de reconhecimento e complexidade
+de manutenção do sistema.
 \vspace{\onelineskip}
 
 \noindent
