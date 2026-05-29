@@ -768,26 +768,6 @@ A adoção do padrão de compressão JPEG neste trabalho, deve-se à menor compl
     \end{tabular}
 \end{table}
 
-% --- Tabela 2 ---
-\begin{table}[H]
-    \centering
-    \caption{Comparativo de imagem 160x160}
-    \begin{tabular}{@{}cccc@{}}
-        \toprule
-        Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
-        0  & 1106 & 711  & 747  \\
-        10 & 1409 & 1014 & 860  \\
-        20 & 1693 & 1302 & 976  \\
-        30 & 1828 & 1435 & 1089 \\
-        40 & 2061 & 1666 & 1180 \\
-        50 & 2190 & 1805 & 1251 \\
-        60 & 2288 & 1896 & 1337 \\
-        70 & 2407 & 2003 & 1433 \\
-        80 & 2677 & 2295 & 1564 \\
-        90 & 3131 & 2758 & 1856 \\ \bottomrule
-    \end{tabular}
-\end{table}
-
 Ao relevar dos dados apresentados, esperamos conseguir reduzir as imagens geradas pelo ESP32-CAM em até 60\% em relação ao seu tamanho original, utilizando apenas os métodos apresentados.
 
 Conforme apresentado por \citeonline{jebril2018overcoming}, estima-se que uma imagem com tamanho aproximado de 3000 bytes necessite de aproximadamente 22 segundos para ser completamente enviada ao destinatário, levando em consideração todos os tratamentos aplicados a imagem que estamos adotando, espera-se conseguirmos realizar o envio de imagens sob as mesmas configurações de SF em um tempo menor ou igual ao demonstrado por Jebril e demais.
