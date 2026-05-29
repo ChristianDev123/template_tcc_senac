@@ -149,7 +149,7 @@ de manutenção do sistema.
 \vspace{\onelineskip}
 
 \noindent
-\textbf{Palavras-chave}: Telemetria. ESP32. LoRaWan. Regressão. OCR. ETL.
+\textbf{Palavras-chave}: Telemetria. ESP32. LoRaWan. Regressão. OCR.
 \end{resumo}
 
 % ---------------------------------------------------------------
@@ -225,7 +225,7 @@ A evolução dos sistemas de telemetria para hidrômetros analógicos encontra-s
 
 Entretanto, o processamento intensivo de visão computacional em hardware limitado, como o ESP32-CAM, impõe desafios severos de consumo de memória e validação de modelos de aprendizagem de máquina, podendo impactar drasticamente a autonomia energética do dispositivo \cite{SilvaVilela2021}. Em contrapartida, a abordagem de processamento centralizado (\textit{Cloud Computing}) surge como uma alternativa menos difundida na literatura para o envio de dados não estruturados.
 
-Embora a transmissão de imagens via rede LoRaWAN apresente limitações críticas de largura de banda e maior latência na disponibilização dos dados, esta permite o uso de \textit{frameworks} de OCR mais robustos e estabelecidos, como o motor Tesseract. Esta centralização facilita manutenções e atualizações do algoritmo de inteligência artificial sem a necessidade de desenvolvimento de um complexo \textit{firmware} ou intervenções físicas nos sensores em campo. A relevância deste trabalho reside no estudo comparativo desses dois métodos sob redes de baixa largura de banda.
+Embora a transmissão de imagens via rede LoRaWAN apresente limitações críticas de largura de banda e maior latência na disponibilização dos dados, esta permite o uso de \textit{frameworks} de OCR mais robustos e estabelecidos, como o motor Tesseract. Esta centralização facilita manutenções em software sem a necessidade de desenvolvimento de um complexo \textit{firmware} ou intervenções físicas nos sensores em campo. A relevância deste trabalho reside no estudo comparativo desses dois métodos sob redes de baixa largura de banda.
 
 Academicamente, o estudo preenche uma lacuna ao fornecer dados experimentais sobre o \textit{trade-off} entre processamento local e transmissão remota. Na prática, a pesquisa auxilia na viabilização do \textit{retrofitting} de hidrômetros analógicos, permitindo dotar a infraestrutura atual de inteligência com custos reduzidos em comparação à substituição integral dos medidores convencionais por modelos inteligentes nativos \cite{Stefano2019}.
 
@@ -242,6 +242,45 @@ Comparar a viabilidade técnica, a acurácia e o consumo energético entre o pro
     \item Avaliar e comparar os dois fluxos segundo as métricas: precisão de leitura (\%), latência de processamento (ms), consumo energético por leitura (mAh) e volume de dados transmitidos (bytes/leitura), identificando o \textit{trade-off} entre processamento local e transmissão. % 3. Responde a pergunta central do TCC
 \end{enumerate}
 
+
+\subsection{Hipótese}
+\label{sec:hipotese}
+
+\subsubsection{Redução de Tamanho de Imagens e Tempo de Transmissão de Mensagens}
+
+Conforme evidenciado por \cite{almeida2022iot}, o tamanho da imagem está intrinsecamente ligado ao sucesso na transmissão de dados via rede LoRaWan. Diante de tal afirmação, denota-se a necessidade de implementar soluções com o objetivo de atenuar tal desafio.
+
+Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e utilizando o padrão JPEG de compressão, apresenta-se uma redução substancial no tamanho das imagens, como evidenciados nas posteriores tabelas. Ao adotarmos a resolução de imagem de 160 x 120 como padrão, constatamos a redução em até 60\% em  relação ao tamanho original da imagem. 
+
+A adoção do padrão de compressão JPEG neste trabalho, deve-se à menor complexidade de aplicação do padrão dentro do sistema IOT disponibilizado pelo ESP32-CAM, onde a imagem gerada, por padrão, é compactada em JPEG com o objetivo de reduzir o tamanho de buffer alocado para a imagem em memória, em contrapartida, o padrão JPEG foi desenvolvido para utilização de imagens naturais, sendo falho ao tentar processar imagens binarizadas, que criam contornos “quadrados” na imagem, assim não permitindo a adoção da técnica de binarização, com o objetivo de enxugar ainda mais o tamanho das imagens,  antes de realizar o envio.
+
+% --- Tabela 1 ---
+\begin{table}[H]
+    \centering
+    \caption{Comparativo de imagem 160x120}
+    \begin{tabular}{@{}cccc@{}}
+        \toprule
+        Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
+        0  & 1123 & 722  & 1467 \\
+        10 & 1517 & 1110 & 2172 \\
+        20 & 1850 & 1443 & 2838 \\
+        30 & 2030 & 1614 & 3440 \\
+        40 & 2268 & 1861 & 3872 \\
+        50 & 2392 & 1996 & 4271 \\
+        60 & 2520 & 2114 & 4655 \\
+        70 & 2664 & 2255 & 5178 \\
+        80 & 2996 & 2585 & 5918 \\
+        90 & 3567 & 3151 & 7422 \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+Ao relevar dos dados apresentados, esperamos conseguir reduzir as imagens geradas pelo ESP32-CAM em até 60\% em relação ao seu tamanho original, utilizando apenas os métodos apresentados.
+
+Conforme apresentado por \citeonline{jebril2018overcoming}, estima-se que uma imagem com tamanho aproximado de 3000 bytes necessite de aproximadamente 13 segundos de rádio ativo para ser completamente enviada ao destinatário, levando em consideração todos os tratamentos aplicados e especificações de imagem que estamos adotando, espera-se conseguirmos realizar o envio de imagens sob as mesmas configurações de SF em um tempo menor ou igual ao demonstrado por Jebril e demais.
+
+\subsubsection{OCR}
+
+A considerar o trabalho apresentado por \cite{bravo2025ants}, onde a abordagem é baseada no processamento em borda, para a abordagem em questão, a hipótese mais racional é alcançarmos a acurácia do modelo desenvolvido por Bravo e demais, com um desvio padrão de entorno de 5\%, por conta do modelo apresentar natureza probabilística. Ao voltarmos o olhar ao modelo de processamento centralizado, espera-se uma acurácia equivalente ao modelo de Bravo, a considerar que a captura das imagens também será realizada de forma probabilística, mas sendo processada por ferramentas de amplo uso e teste pela comunidade, que é o caso do framework Tesseract.
 
 % ===============================================================
 % CAPÍTULO 2 - REVISÃO BIBLIOGRÁFICA
@@ -264,9 +303,9 @@ Segundo \citeonline{Ferreira2020}, a vida útil da bateria é influenciada criti
 
 Segundo \cite{Camargo2022}, entorno de 60\% do recurso energético de sistemas IOT são consumidos na comunicação, a escolha efetiva de protocolo de comunicação e otimização de parâmetros como dispersão de sinal, largura de banda e taxa de codificação (destinado a redundância de mensagem, tolerância a erros), entre outros fatores, torna-se uma tarefa de suma importância no desenvolvimento de um sistema IOT otimizado de baixo custo.
 
-O LoRaWan (Long Range Wide Area Network), é um protocolo LPWAN (Low Power Wide Area Network), que possui o objetivo de viabilizar a comunicação em grandes distâncias, conciliado ao baixo consumo energético. Diante disso, o protocolo surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de redução de consumo energético, em contra partida, a baixa largura de banda oferecida por tal solução apoia o desenvolvimento de sistemas baseado em edge-computing, trafegando em rede apenas os dados e metadados prontos para serem tratados em gateway central, assim amplificando o desafio de desenvolver um sistema focado no menor consumo energético em borda.
+O LoRaWan (Long Range Wide Area Network), é um protocolo LPWAN (Low Power Wide Area Network), que possui o objetivo de viabilizar a comunicação em grandes distâncias, conciliado ao baixo consumo energético. Diante disso, o protocolo surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de redução de consumo energético, em contra partida, a baixa largura de banda oferecida por tal solução apoia o desenvolvimento de sistemas baseado em edge-computing, trafegando em rede apenas os dados e metadados prontos para serem tratados em gateway central.
 
-Toda via, surge ao mesclarmos tais conceitos, o desafio de alinhar o menor consumo de recurso energético possível, com o objetivo de prolongar a vida útil de bateria dos dispositivos utilizados, às mais otimizadas soluções de rede, hardware e técnicas de desenvolvimento de software.
+Toda via, surge o desafio de alinhar o menor consumo de recurso energético possível, com o objetivo de prolongar a vida útil de bateria dos dispositivos utilizados, às mais otimizadas soluções de rede, hardware e técnicas de desenvolvimento de software.
 
 \subsection{Software Otimizado em Sistemas Restritos}
 
@@ -276,9 +315,9 @@ Do ponto de vista computacional e eficiência de recursos, o uso nativo do ESP-I
 
 A adoção da tecnologia de OCR neste projeto justifica-se pela necessidade fundamental de transpor a informação visual analógica para o mundo digital de forma autônoma, através da captura e leitura de caracteres na imagem. Ao converter a imagem capturada em texto legível, o sistema computacional ganha a capacidade de enviar apenas os dados necessários \cite{ibm_ocr}.
 
-Para a implementação do OCR na borda, será adotada a abordagem TinyML utilizando a biblioteca TensorFlow Lite for Microcontrollers. Essa ferramenta apresenta baixo custo computacional e de alocação de memória, mantendo um bom desempenho, além de possuir compatibilidade com a arquitetura do ESP32 \citeonline{david2021}. Conforme demonstrado no estudo citado, o consumo de memória RAM varia de acordo com a complexidade do modelo embarcado, exigindo cerca de 9 KB para arquiteturas convolucionais simples, podendo chegar a aproximadamente 82 KB para modelos de visão computacional mais densos
+Para a implementação do OCR na borda, será adotada a abordagem TinyML utilizando a biblioteca TensorFlow Lite for Microcontrollers. Essa ferramenta apresenta baixo custo computacional e de alocação de memória, mantendo um bom desempenho, além de possuir compatibilidade com a arquitetura do ESP32 \citeonline{david2021}. Conforme demonstrado no estudo citado, o consumo de memória RAM varia de acordo com a complexidade do modelo embarcado, exigindo cerca de 9 KB para arquiteturas convolucionais simples, podendo chegar a aproximadamente 82 KB para modelos de visão computacional mais densos.
 
-Em contrapartida, para o processamento de OCR externo (em nuvem ou host), será utilizado o motor Tesseract operando em conjunto com a linguagem Python em um dispositivo à parte. O Tesseract destaca-se como uma opção de médio custo de processamento e baixa taxa de erro. Além disso,tal framework apresenta alta viabilidade e acessibilidade por ser uma ferramenta de código aberto e gratuita, oferecendo vantagens em projetos acadêmicos quando comparada a soluções comerciais pagas, como a Google Vision API \cite{Gribomont2020}.
+Em contrapartida, para o processamento de OCR externo (em nuvem ou host), será utilizado o motor Tesseract operando em conjunto com a linguagem Python em um dispositivo à parte. O Tesseract destaca-se como uma opção de médio custo de processamento e baixa taxa de erro. Além disso, tal framework apresenta alta viabilidade e acessibilidade por ser uma ferramenta de código aberto e gratuita, oferecendo vantagens em projetos acadêmicos quando comparada a soluções comerciais pagas, como a Google Vision API \cite{Gribomont2020}.
 
 O processamento intensivo exigido pelo OCR requer que a implementação evite qualquer desperdício computacional.\cite{Plauska2023} demonstram que linguagens compiladas como C e C++ garantem um desempenho superior na gestão de CPU e memória SRAM em relação às linguagens interpretadas. Aliando essa eficiência à total compatibilidade do C/C++ com o ecossistema do ESP-IDF, o desenvolvedor obtém um controle de memória altamente preciso. Essa gestão minuciosa e de baixo nível é o fator crítico que viabiliza a execução de algoritmos de extração de características em microcontroladores limitados a poucas centenas de kilobytes de memória.
 
@@ -658,7 +697,6 @@ ST03 & Contexto & smart water meter costs and benefits \\
 ST04 & Hardware & "IoT" AND "energy efficiency" \\
 ST05 & Hardware & "ESP32" AND "camera monitoring" \\
 ST06 & Hardware & "ESP32-CAM" AND "analog meter" AND "OCR" \\
-ST07 & Software & "ETL pipeline" AND "IoT" AND "telemetry" \\ 
 ST08 & Software & "automatic meter reading" OCR accuracy "error rate" evaluation \\
 ST09 & Redes & "packet delivery ratio" LoRaWAN "latency" monitoring system \\
 ST010 & Contexto & "water consumption prediction" "mean absolute error" forecasting metrics \\ \bottomrule
@@ -716,16 +754,11 @@ Utilizaremos esse trabalho como referência de borda para realizar uma comparaç
 
 A solução proposta fundamenta-se no desenvolvimento e na análise de um \textbf{Sistema Telemétrico de Baixo Custo para Digitalização de hidrômetros Analógicos}, integrando dispositivos de borda, comunicação de longo alcance e processamento em nuvem. O diferencial desta pesquisa reside na investigação experimental de duas arquiteturas distintas de visão computacional, visando identificar a configuração ideal para cenários de restrição energética e de largura de banda.
 
-O projeto está estruturado em quatro componentes interdependentes:
+O projeto está estruturado em dois componentes interdependentes:
 
 \begin{itemize}
     \item \textbf{Módulo de Captura (Edge Device):} Um dispositivo de hardware acoplado ao hidrômetro.
-    
     \item \textbf{Protocolo de Comunicação:} Utilização de rede LoRaWAN para transmissão de longa distância e baixo consumo.
-    
-    \item \textbf{Pipeline ETL (Extract, Transform, Load):} Uma infraestrutura de backend para tratamento e armazenamento dos dados brutos.
-    
-    \item \textbf{Interface de Monitoramento:} Um dashboard para visualização analítica do consumo.
 \end{itemize}
 
 O núcleo da investigação consiste na implementação e comparação de dois modelos operacionais:
@@ -736,46 +769,6 @@ O núcleo da investigação consiste na implementação e comparação de dois m
 \end{enumerate}
 
 Esta abordagem dual permitirá a recolha de métricas quantitativas sobre a vida útil estimada da bateria, a acurácia do reconhecimento em diferentes condições de luminosidade e a fiabilidade da transmissão de pacotes pesados em redes LoRaWAN. Assim, a solução deixa de ser meramente uma implementação técnica para tornar-se uma análise de viabilidade para sistemas de \textit{Smart Metering} em larga escala.
-
-\subsection{Hipótese}
-\label{sec:hipotese}
-
-\subsubsection{Redução de Tamanho de Imagens e Tempo de Transmissão de Mensagens}
-
-Conforme evidenciado por \cite{almeida2022iot}, o tamanho da imagem está intrinsecamente ligado ao sucesso na transmissão de dados via rede LoRaWan. Diante de tal afirmação, denota-se a necessidade de implementar soluções com o objetivo de mitigar tal desafio.
-
-Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e utilizando o padrão JPEG de compressão, apresenta-se uma redução substancial no tamanho das imagens, como evidenciados nas posteriores tabelas. Ao adotarmos a resolução de imagem de 160 x 120 como padrão, constatamos a redução em até 60\% em  relação ao tamanho original da imagem. 
-
-A adoção do padrão de compressão JPEG neste trabalho, deve-se à menor complexidade de aplicação do padrão dentro do sistema IOT disponibilizado pelo ESP32-CAM, onde a imagem gerada, por padrão, é compactada em JPEG com o objetivo de reduzir o tamanho de buffer alocado para a imagem em memória, em contrapartida, o padrão JPEG foi desenvolvido para utilização de imagens naturais, sendo falho ao tentar processar imagens binarizadas, que criam contornos “quadrados” na imagem, assim não permitindo a adoção da técnica de binarização, com o objetivo de enxugar ainda mais o tamanho das imagens,  antes de realizar o envio.
-
-% --- Tabela 1 ---
-\begin{table}[H]
-    \centering
-    \caption{Comparativo de imagem 160x120}
-    \begin{tabular}{@{}cccc@{}}
-        \toprule
-        Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
-        0  & 1123 & 722  & 1467 \\
-        10 & 1517 & 1110 & 2172 \\
-        20 & 1850 & 1443 & 2838 \\
-        30 & 2030 & 1614 & 3440 \\
-        40 & 2268 & 1861 & 3872 \\
-        50 & 2392 & 1996 & 4271 \\
-        60 & 2520 & 2114 & 4655 \\
-        70 & 2664 & 2255 & 5178 \\
-        80 & 2996 & 2585 & 5918 \\
-        90 & 3567 & 3151 & 7422 \\ \bottomrule
-    \end{tabular}
-\end{table}
-
-Ao relevar dos dados apresentados, esperamos conseguir reduzir as imagens geradas pelo ESP32-CAM em até 60\% em relação ao seu tamanho original, utilizando apenas os métodos apresentados.
-
-Conforme apresentado por \citeonline{jebril2018overcoming}, estima-se que uma imagem com tamanho aproximado de 3000 bytes necessite de aproximadamente 22 segundos para ser completamente enviada ao destinatário, levando em consideração todos os tratamentos aplicados a imagem que estamos adotando, espera-se conseguirmos realizar o envio de imagens sob as mesmas configurações de SF em um tempo menor ou igual ao demonstrado por Jebril e demais.
-
-\subsubsection{OCR}
-
-A considerar o trabalho apresentado por \cite{bravo2025ants}, onde a abordagem é baseada no processamento em borda, para a abordagem em questão, a hipótese mais racional é alcançarmos a acurácia do modelo desenvolvido por Bravo e demais, com um desvio padrão de entorno de 5\%, por conta do modelo apresentar natureza probabilística. Ao voltarmos o olhar ao modelo de processamento centralizado, espera-se uma acurácia equivalente ao modelo de Bravo, a considerar que a captura das imagens também será realizada de forma probabilística, mas sendo processada por ferramentas de amplo uso e teste pela comunidade, que é o caso do framework Tesseract.
-
 
 \section{Cronograma de trabalho}
 \label{sec:cronograma}
@@ -809,15 +802,13 @@ O cronograma a seguir apresenta, no formato de diagrama de Gantt, as atividades 
         % Grupo 1: Revisão e Planejamento
         \ganttgroup{Fase 1: Planejamento}{1}{4} \\
         \ganttbar{Revisão bibliográfica}{1}{3} \\
-        \ganttbar{Definição da Arquitetura ETL e IoT}{2}{4} \\
-        \ganttbar{Seleção e Compra de Componentes}{3}{4} \\
+        \ganttbar{Seleção e Compra de Componentes}{2}{3} \\
         \ganttmilestone{Entrega do projeto}{4} \\
 
         % Grupo 2: Desenvolvimento
         \ganttgroup{Fase 2: Desenvolvimento}{5}{11} \\
-        \ganttbar{Firmware e Telemetria}{5}{7} \\
-        \ganttbar{Configuração do Pipeline ETL}{7}{9} \\
-        \ganttbar{Integração de Dados e Dashboard}{9}{11} \\
+        \ganttbar{Sistema Telemétrico com processamento em borda}{5}{8} \\
+        \ganttbar{Sistema Telemétrico com processamento em nuvem}{9}{11} \\
         \ganttmilestone{Protótipo Operacional}{11} \\
 
         % Grupo 3: Testes e Finalização
@@ -837,10 +828,10 @@ O cronograma a seguir apresenta, no formato de diagrama de Gantt, as atividades 
         \ganttlink{elem8}{elem9}
         \ganttlink{elem9}{elem10}
         \ganttlink{elem11}{elem12}
-        \ganttlink{elem12}{elem13}
-        \ganttlink{elem13}{elem14}
+        % \ganttlink{elem12}{elem13}
+        % \ganttlink{elem13}{elem14}
     \end{ganttchart}
-    \legend{Fonte: Elaborado pelo autor (2025)}
+    \legend{Fonte: Elaborado pelo autor (2026)}
 \end{figure}
 
 % ---------------------------------------------------------------
