@@ -535,39 +535,41 @@ do cenário EU868, é calculado conforme a Equação~\ref{eq:intervalo}:
 1{.}326$~s $\approx 22$~minutos para a transmissão de uma imagem completa.
  
 \subsubsection{Eficiência Energética e Operação por Bateria}
- 
+
 A análise de eficiência energética é central para a viabilidade de nós de borda
 operados por bateria. O ciclo de operação por pacote, sob o regime EU868, divide-se
 conforme a Equação~\ref{eq:ciclo}:
- 
+
 \begin{equation}
   \label{eq:ciclo}
   t_{\text{sleep}} = T_{\text{intervalo}} - T_{\text{pacote}} = 34{,}9 - 0{,}349 \approx 34{,}5 \text{ s por pacote}
 \end{equation}
- 
+
 Durante os 34,5~s de intervalo obrigatório entre cada pacote, o rádio e o
 microcontrolador podem permanecer em modo \textit{deep sleep}, acordando apenas para
 a transmissão seguinte. Para o cenário de duas capturas diárias, o balanço de
 atividade é:
- 
+
 \begin{itemize}
   \item Rádio ativo (transmissão): $2 \times 38 \times 348{,}7~\text{ms} \approx 26{,}5$~s/dia.
   \item Câmera ativa (captura): $2 \times 2~\text{s} \approx 4$~s/dia.
-  \item \textbf{Total ativo: $\approx$30,5~s/dia} o sistema permanece em \textit{deep sleep}
-        durante 99,96\% do dia.
+  \item \textbf{Total ativo: $\approx$30,5~s/dia} (o sistema permanece em \textit{deep sleep}
+        durante 99,96\% do dia).
 \end{itemize}
- 
+
 Esse perfil de operação é inteiramente compatível com alimentação por bateria a longo
 prazo, uma vez que o ESP32 apresenta consumo em modo \textit{deep sleep} inferior a
-10~$\mu$A~\cite{adam2022}. A corrente ativa durante transmissão LoRa é
-tipicamente inferior a 120~mA; com apenas 30,5~s ativos por dia, a energia consumida
-pelo rádio equivale a aproximadamente $120 \times 10^{-3} \times 30{,}5 \approx 3{,}7$~mAs
-por dia, ou $\sim$0,001~mAh valor desprezível diante de qualquer bateria de IoT.
-O consumo de \textit{deep sleep}, por sua vez, equivale a $10 \times 10^{-6} \times
-86{.}370 \approx 0{,}864$~As~$\approx$~0,24~mAh por dia, o que permitiria, em
-tese, mais de 4 anos de operação contínua com uma bateria de 1000~mAh, sem
-considerar auto-descarga. Na prática, o dimensionamento da bateria deve levar em conta
-também o consumo da câmera e o processamento local de pré-processamento de imagem,
+10~$\mu$A~\cite{adam2022}. A corrente ativa durante a transmissão LoRa é
+tipicamente inferior a 120~mA. Com apenas 30,5~s ativos por dia, a carga consumida
+pelo rádio equivale a aproximadamente $120 \times 30{,}5 = 3660$~mAs
+por dia, o que representa $\approx 1{,}02$~mAh diários. 
+
+O consumo em \textit{deep sleep}, por sua vez, equivale a $10 \times 10^{-6} \times
+86{.}370 \approx 0{,}864$~As~$\approx 0{,}24$~mAh por dia. Combinando ambos, o
+consumo diário estimado do microcontrolador e do rádio é de aproximadamente $1{,}26$~mAh. 
+Isso permitiria, em tese, cerca de 2 anos de operação contínua com uma bateria de 1000~mAh, 
+sem considerar a auto-descarga. Na prática, o dimensionamento da bateria deve levar em conta
+também o consumo da câmera e do pré-processamento local de imagem,
 porém a ordem de grandeza demonstra a adequação da abordagem para implantações
 de campo de longa duração.
  
