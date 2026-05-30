@@ -245,7 +245,7 @@ Comparar a viabilidade técnica, a acurácia e o consumo energético entre o pro
 \section{Hipótese}
 \label{sec:hipotese}
 
-\subsubsection{Redução de Tamanho de Imagens e Tempo de Transmissão de Mensagens}
+\subsection{Redução de Tamanho de Imagens e Tempo de Transmissão de Mensagens}
 
 Conforme evidenciado por \cite{almeida2022iot}, o tamanho da imagem está intrinsecamente ligado ao sucesso na transmissão de dados via rede LoRaWan. Diante de tal afirmação, denota-se a necessidade de implementar soluções com o objetivo de atenuar tal desafio.
 
@@ -276,11 +276,15 @@ Ao relevar dos dados apresentados, esperamos conseguir reduzir as imagens gerada
 
 Conforme apresentado por \citeonline{jebril2018overcoming}, estima-se que uma imagem com tamanho aproximado de 3000 bytes necessite de aproximadamente 13 segundos de rádio ativo para ser completamente enviada ao destinatário, levando em consideração todos os tratamentos aplicados e especificações de imagem que estamos adotando, espera-se conseguirmos realizar o envio de imagens sob as mesmas configurações de SF em um tempo menor ou igual ao demonstrado por Jebril e demais.
 
-\subsubsection{OCR}
+\subsection{OCR}
 
 Baseado nos resultados apresentados pelo trabalho de \cite{SilvaVilela2021}, onde a abordagem é baseada no processamento em borda, utilizando um modelo de aprendizado de máquina para realizar o reconhecimento de caracteres, concluiu-se que é possível alcançar 90\% de acurácia no algoritmo de OCR. Em contrapartida, como empiricamente demonstrado por \cite{lederhans2022tratamento} , a utilização de frameworks de OCR generalistas alcançou a acurácia de aproximadamente 93\% de eficiência.
 
 Sob o alicerce dos dois trabalhos, esperamos encontrar valores semelhantes em ambas abordagens, com processamento em borda alcançando 90\% ou mais, e a abordagem em nuvem, alcançando a acurácia de 93\% ou mais.
+
+\subsection{Consumo Energético}
+
+Dado que a medição de consumo energético de um sistema IOT que implementa LoRaWan é impactado por diversos parâmetros, como SF, CR, Payload, entre outros, não é possível comparar tal métrica sem experiência empírica, onde as diferentes abordagens encontram-se sob o mesmo ambiente, mas espera-se que o método de Edge-Computing venha a ser uma solução que apresenta melhores índices de consumo, dado que esta abordagem é caracterizada por maior tempo de processamento e menor tempo de transmissão de dados, como explicado por \cite{Camargo2022}, 60\% do consumo energético de um sistema de IOT reside na transmissão de dados, por outro lado, a abordagem de computação centralizada, espera-se menor tempo de processamento e maior tempo de transmissão de dados, impactando significativamente no consumo energético do sistema.
 
 % ===============================================================
 % CAPÍTULO 2 - REVISÃO BIBLIOGRÁFICA
