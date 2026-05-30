@@ -336,6 +336,24 @@ tamanho de imagens, a considerar que este é um dos fatores mais influentes na e
 de tal abordagem. Um ponto apresentado por \citeonline{almeida2022iot} é
 a aplicação de algoritmos de compressão como o JPEG e a transformação de imagens
 em escala de cinza, reduzindo assim as informações a serem enviadas via rede.
+
+Este trabalho adota uma estratégia argumentativa em duas camadas 
+regulatórias para demonstrar a viabilidade do envio de imagens via 
+LoRaWAN. O cenário de referência primário é o padrão brasileiro 
+\textbf{AU915} (902--928~MHz), regulamentado pela ANATEL pelo Ato 
+n\textordmasculine~14.448 de 2017, que não impõe restrição de 
+\textit{duty cycle}, mas limita o tempo médio de permanência por 
+canal (\textit{dwell time}) a 0,4 segundos em um intervalo de 14 
+segundos. Como cenário conservador de suporte, adota-se 
+paralelamente o plano europeu \textbf{EU868}, que impõe um 
+\textit{duty cycle} de 1\%, equivalente a apenas 864 segundos de 
+transmissão por dia --- restrição significativamente mais severa do 
+que qualquer exigência aplicável no Brasil. Toda conclusão favorável 
+obtida sob as premissas do EU868 é, portanto, necessariamente válida 
+nas condições regulatórias reais brasileiras. Essa dupla análise tem 
+por objetivo garantir que os resultados apresentados possuam validade 
+independentemente do contexto regulatório, oferecendo ao leitor uma 
+avaliação de viabilidade conservadora e auditável.
  
 \subsubsection{Restrições Regulatórias e Escolha do \textit{Spreading Factor}}
  
