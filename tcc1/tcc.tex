@@ -127,8 +127,7 @@ para sistemas de telemetria de hidrômetros analógicos: a computação em borda
 ESP32-CAM por meio da biblioteca TensorFlow Lite for Microcontrollers, e a computação
 em nuvem (\textit{Cloud Computing}), com transmissão da imagem capturada para
 processamento remoto pelo motor Tesseract em conjunto com a biblioteca OpenCV.
-A motivação reside na problemática do desperdício hídrico no Brasil, onde aproximadamente
-40,31\% da água produzida é perdida, e no elevado custo de substituição dos medidores
+A motivação reside na problemática do desperdício hídrico no Brasil e no elevado custo de substituição dos medidores
 convencionais por modelos inteligentes nativos, o que torna o \textit{retrofitting} de
 hidrômetros analógicos uma alternativa economicamente viável. A transmissão dos dados
 entre os nós de borda e o \textit{gateway} central é realizada via rede LoRaWAN,
@@ -243,17 +242,16 @@ Comparar a viabilidade técnica, a acurácia e o consumo energético entre o pro
 \end{enumerate}
 
 
-\subsection{Hipótese}
+\section{Hipótese}
 \label{sec:hipotese}
 
 \subsubsection{Redução de Tamanho de Imagens e Tempo de Transmissão de Mensagens}
 
 Conforme evidenciado por \cite{almeida2022iot}, o tamanho da imagem está intrinsecamente ligado ao sucesso na transmissão de dados via rede LoRaWan. Diante de tal afirmação, denota-se a necessidade de implementar soluções com o objetivo de atenuar tal desafio.
 
-Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e utilizando o padrão JPEG de compressão, apresenta-se uma redução substancial no tamanho das imagens, como evidenciados nas posteriores tabelas. Ao adotarmos a resolução de imagem de 160 x 120 como padrão, constatamos a redução em até 60\% em  relação ao tamanho original da imagem. 
+Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e utilizando o padrão JPEG de compressão, apresenta-se uma redução substancial no tamanho das imagens. Ao adotarmos a resolução de imagem de 160 x 120 como padrão, constatamos a redução em até 60\% em  relação ao tamanho original da imagem. 
 
-A adoção do padrão de compressão JPEG neste trabalho, deve-se à menor complexidade de aplicação do padrão dentro do sistema IOT disponibilizado pelo ESP32-CAM, onde a imagem gerada, por padrão, é compactada em JPEG com o objetivo de reduzir o tamanho de buffer alocado para a imagem em memória, em contrapartida, o padrão JPEG foi desenvolvido para utilização de imagens naturais, sendo falho ao tentar processar imagens binarizadas, que criam contornos “quadrados” na imagem, assim não permitindo a adoção da técnica de binarização, com o objetivo de enxugar ainda mais o tamanho das imagens,  antes de realizar o envio.
-
+A adoção do padrão de compressão JPEG neste trabalho, deve-se a bufferização nativa de imagem comprimida no padrão mencionado pelo módulo ESP32-CAM, com o objetivo de redução de espaço alocado em memória. Em contrapartida, o padrão JPEG foi desenvolvido para utilização em imagens naturais, limitando o processamento de imagens binarizadas, que criam contornos “quadrados” na imagem, assim não permitindo a adoção da técnica de binarização, com o objetivo de enxugar ainda mais o tamanho das imagens,  antes de realizar o envio.
 % --- Tabela 1 ---
 \begin{table}[H]
     \centering
@@ -280,7 +278,9 @@ Conforme apresentado por \citeonline{jebril2018overcoming}, estima-se que uma im
 
 \subsubsection{OCR}
 
-A considerar o trabalho apresentado por \cite{bravo2025ants}, onde a abordagem é baseada no processamento em borda, para a abordagem em questão, a hipótese mais racional é alcançarmos a acurácia do modelo desenvolvido por Bravo e demais, com um desvio padrão de entorno de 5\%, por conta do modelo apresentar natureza probabilística. Ao voltarmos o olhar ao modelo de processamento centralizado, espera-se uma acurácia equivalente ao modelo de Bravo, a considerar que a captura das imagens também será realizada de forma probabilística, mas sendo processada por ferramentas de amplo uso e teste pela comunidade, que é o caso do framework Tesseract.
+Baseado nos resultados apresentados pelo trabalho de \cite{SilvaVilela2021}, onde a abordagem é baseada no processamento em borda, utilizando um modelo de aprendizado de máquina para realizar o reconhecimento de caracteres, concluiu-se que é possível alcançar 90\% de acurácia no algoritmo de OCR. Em contrapartida, como empiricamente demonstrado por \cite{lederhans2022tratamento} , a utilização de frameworks de OCR generalistas alcançou a acurácia de aproximadamente 93\% de eficiência.
+
+Sob o alicerce dos dois trabalhos, esperamos encontrar valores semelhantes em ambas abordagens, com processamento em borda alcançando 90\% ou mais, e a abordagem em nuvem, alcançando a acurácia de 93\% ou mais.
 
 % ===============================================================
 % CAPÍTULO 2 - REVISÃO BIBLIOGRÁFICA
