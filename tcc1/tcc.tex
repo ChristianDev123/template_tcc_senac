@@ -388,8 +388,7 @@ LoRa~\cite{adam2022}.
 A \textit{Packet Delivery Ratio} (PDR) quantifica a robustez da 
 transmissão via LoRaWAN pela razão entre o número de pacotes recebidos 
 pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor, 
-conforme a Equação~\ref{eq:pdr} apresentada na seção de 
-Desenvolvimento~\cite{bravo2025ants}.
+conforme a Equação~\ref{eq:pdr}~\cite{bravo2025ants}.
 
 \subsection{Metodologia de Avaliação e Métricas de Validação}
 \label{sec:metricas}
@@ -400,6 +399,7 @@ Para avaliar a eficácia do sistema de telemetria proposto e garantir a objetivi
 A robustez da transmissão via LoRaWAN será quantificada através da Taxa de Entrega de Pacotes (PDR - \textit{Packet Delivery Ratio}). Conforme a metodologia de \cite{bravo2025ants}, o PDR é definido pela razão entre o número de pacotes recebidos pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor:
 
 \begin{equation}
+\label{eq:pdr}
 PDR = \left( \frac{\text{Pacotes Recebidos}}{\text{Pacotes Enviados}} \right) \times 100
 \end{equation}
 
@@ -848,7 +848,7 @@ dos 38~pacotes que compõem a imagem e sua posterior reassemblagem no
 
 \subsubsection{Características da Imagem de Entrada}
 
-As imagens utilizadas neste experimento foram capturadas pelo módulo ESP32-CAM, um microcontrolador de baixo custo com câmera integrada amplamente utilizado em projetos de IoT (\textit{Internet of Things}). A resolução nativa das capturas é de apenas $160 \times 120$ pixels, o que representa uma limitação significativa para algoritmos de OCR convencionais, que em geral assumem imagens com pelo menos 300 DPI (\textit{dots per inch}) para operar com confiabilidade satisfatória.
+As imagens utilizadas neste experimento foram capturadas pelo módulo ESP32-CAM. A resolução nativa das capturas é de apenas $160 \times 120$ pixels, o que representa uma limitação significativa para algoritmos de OCR convencionais, que em geral assumem imagens com pelo menos 300 DPI (\textit{dots per inch}) para operar com confiabilidade satisfatória.
 
 O display do hidrômetro utilizado consiste em um conjunto de rolinhos mecânicos numerados (odômetro), com separadores verticais físicos entre cada dígito. Essas barras divisórias, embora funcionais no contexto do medidor, introduzem ruído visual relevante para o processo de reconhecimento, uma vez que o OCR pode interpretá-las erroneamente como o dígito ``1''.
 
@@ -864,58 +864,24 @@ O desenvolvimento foi conduzido no ambiente Google Colab, plataforma de computa�
 
 Ambas as ferramentas foram testadas com imagens pré-processadas e com diferentes configurações de parâmetros, conforme descrito nas seções seguintes.
 
-\subsubsection{Evolução do Pipeline de Pré-processamento}
-
-O desenvolvimento seguiu um processo iterativo de experimentação e refinamento, partindo de uma abordagem ingênua e evoluindo até uma solução funcional. As etapas desse processo estão descritas a seguir.
-
-\subsubsubsection{Tentativa Inicial: Tesseract Sem Pré-processamento}
-
-A primeira tentativa consistiu em aplicar o Tesseract diretamente sobre a imagem original capturada pelo ESP32-CAM, configurado para reconhecer apenas dígitos numéricos por meio do parâmetro \texttt{tessedit\_char\_whitelist=0123456789} e do modo de segmentação de página \texttt{--psm 6}. O resultado foi insatisfatório: o motor retornou uma cadeia vazia ou caracteres incorretos, incapaz de identificar qualquer dígito com confiança mínima aceitável. 
-
-\subsubsubsection{Pré-processamento Básico: Ampliação e Binarização}
-
-Na segunda iteração, foi adicionada uma etapa de pré-processamento com as seguintes transformações sequenciais:
-
-\begin{enumerate}
-    \item Conversão para escala de cinza;
-    \item Ampliação da imagem por fator de $3\times$ com interpolação \textit{Lanczos};
-    \item Aumento de contraste via \texttt{ImageEnhance.Contrast} com fator 3,0;
-    \item Binarização automática pelo método de Otsu (\texttt{THRESH\_BINARY + THRESH\_OTSU});
-    \item Detecção e inversão automática de imagens com fundo escuro (\texttt{cv2.bitwise\_not}).
-\end{enumerate}
-
-Essa abordagem melhorou significativamente a qualidade visual da imagem processada, tornando os dígitos visíveis a olho nu. Contudo, o Tesseract ainda retornou resultados inconsistentes, lendo ``3151314185'' em vez do valor correto ``353485'', pois as barras separadoras verticais eram interpretadas como o dígito ``1''.
-
-\subsubsubsection{Remoção de Barras Separadoras}
-
-Para contornar o problema das barras verticais, foi introduzida uma etapa de detecção e remoção baseada. A estratégia consistiu em identificar colunas da imagem binarizada com alta densidade de pixels escuros (superior a 60\% da altura), considerando-as como separadores, e preenchê-las com a cor de fundo (branco). Adicionalmente, foi aplicado um kernel de dilatação horizontal para reconectar fragmentos dos dígitos eventualmente separados pelo processo de remoção.
-
-No entanto, essa abordagem produziu efeito inverso ao esperado: com a remoção excessiva das colunas verticais, partes essenciais dos próprios dígitos foram apagadas, degradando ainda mais a imagem e levando o Tesseract a retornar resultados sem sentido como ``flslalalals'' com confiança de apenas 20\%.
-
-\subsubsubsection{Substituição por EasyOCR}
-
-Diante das limitações do Tesseract, foi avaliado o EasyOCR como alternativa. A biblioteca foi aplicada sobre a imagem pré-processada, com restrição de caracteres ao conjunto numérico (\texttt{allowlist='0123456789'}). Na primeira execução, o EasyOCR retornou ``318'' com confiança de 67\%, um resultado parcialmente correto, pois os dígitos centrais foram reconhecidos, mas os das extremidades não.
-
-Iterações subsequentes buscaram isolar melhor a faixa dos dígitos por meio de \textit{crop} automático baseado em densidade de pixels por linha e coluna, além de ajustes nos parâmetros de agrupamento do EasyOCR (\texttt{width\_ths}, \texttt{ycenter\_ths}). Ainda assim, os resultados permaneceram incompletos, com leituras parciais que não cobriam todos os seis dígitos do display.
-
-\subsubsubsection{Solução Final: Segmentação por Componentes Conectados}
+\subsubsection{Segmentação por Componentes Conectados}
 
 A abordagem que produziu resultados corretos e reproduzíveis foi a segmentação individual dos dígitos por análise de componentes conectados (\textit{connected components analysis}), aplicada ao Tesseract em modo de caractere único. O pipeline final consiste nas seguintes etapas:
 
 \begin{enumerate}
-    \item \textbf{Recorte manual da região de interesse (ROI):} a faixa de pixels correspondente ao display do hidrômetro é extraída da imagem original com base em coordenadas fixas determinadas empiricamente ($y_1 = 38$, $y_2 = 90$, para a imagem de $120 \times 160$ pixels);
+    \item \textbf{Recorte manual da região de interesse (ROI)} 
 
-    \item \textbf{Ampliação por fator de $8\times$} com interpolação \textit{Lanczos};
+    \item \textbf{Ampliação por fator de $8\times$}
 
-    \item \textbf{Equalização de histograma adaptativa (CLAHE):} aplicada com \texttt{clipLimit=5.0} e grade de $4 \times 4$ tiles, para normalizar o contraste localmente e realçar os contornos dos dígitos;
+    \item \textbf{Equalização de histograma adaptativa (CLAHE)} 
 
-    \item \textbf{Binarização pelo método de Otsu} com inversão automática para garantir fundo branco e dígitos pretos;
+    \item \textbf{Binarização pelo método de Otsu} 
 
-    \item \textbf{Análise de componentes conectados:} os pixels escuros (dígitos) são agrupados em regiões conexas. Cada componente é filtrado por área mínima ($\geq 2000$ pixels), altura mínima ($\geq 80$ pixels) e razão de aspecto ($0{,}3 \leq w/h \leq 2{,}0$), eliminando barras e artefatos menores;
+    \item \textbf{Análise de componentes conectados} 
 
-    \item \textbf{Leitura individual por componente:} cada dígito segmentado é recortado com margem de 20 pixels, preenchido com \textit{padding} branco de 30 pixels e enviado ao Tesseract com o modo \texttt{--psm 10} (caractere único), eliminando a ambiguidade causada pelas barras separadoras;
+    \item \textbf{Leitura individual por componente} 
 
-    \item \textbf{Ordenação e concatenação:} os dígitos reconhecidos são ordenados por posição horizontal (da esquerda para a direita) e concatenados para formar a leitura final.
+    \item \textbf{Ordenação e concatenação} 
 \end{enumerate}
 
 \subsubsection{Resultados}
@@ -942,7 +908,7 @@ Componentes conectados + psm 10 & Tesseract & \textbf{353485} & \textbf{Sim} \\
 
 Os experimentos realizados demonstram que o Tesseract OCR é capaz de realizar a leitura de hidrômetros analógicos a partir de imagens de baixa resolução capturadas por ESP32-CAM, desde que acompanhado de um pipeline adequado de pré-processamento e segmentação. A chave para o sucesso foi abandonar a abordagem de leitura da imagem como um todo, que sofria interferência sistemática das barras separadoras, em favor da segmentação e leitura individual de cada dígito.
 
-A solução desenvolvida é caracterizada como uma Prova de Conceito (POC, do inglês \textit{Proof of Concept}). O recorte da região de interesse foi definido empiricamente para o modelo específico de hidrômetro e posicionamento de câmera utilizados, o que é uma prática comum em sistemas reais de leitura automática de medidores (AMR, \textit{Automatic Meter Reading}), nos quais a câmera é instalada em posição fixa e calibrada para o equipamento alvo. A generalização para diferentes modelos de hidrômetro exigiria a implementação de uma etapa de detecção automática da ROI, o que está fora do escopo deste trabalho.
+O recorte da região de interesse foi definido empiricamente para o modelo específico de hidrômetro e posicionamento de câmera utilizados.
 
 \section{Cronograma de trabalho}
 \label{sec:cronograma}
