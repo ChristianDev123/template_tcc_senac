@@ -13,7 +13,7 @@
     oneside,             % para impressão em apenas um lado do papel
     a4paper,             % tamanho do papel
     english,             % idioma adicional
-    brazil               % idioma principal
+    brazil,               % idioma principal
 ]{abntex2}
 
 % ---------------------------------------------------------------
@@ -41,6 +41,7 @@
 \usepackage{siunitx}  % Para alinhar números se desejar
 \usepackage[table]{xcolor}
 \usepackage{adjustbox}
+\usepackage[acronym, automake, nopostdot]{glossaries}
 % ---------------------------------------------------------------
 % CONFIGURAÇÕES DO PDF
 % ---------------------------------------------------------------
@@ -68,7 +69,7 @@
 % ---------------------------------------------------------------
 % INFORMAÇÕES DO DOCUMENTO
 % ---------------------------------------------------------------
-\titulo{Análise Comparativa de Desempenho e Eficiência Energética entre Processamento de OCR em Borda e em Nuvem para Telemetria de Hidrômetros via LoRaWAN.}
+\titulo{Análise Comparativa de Desempenho e Eficiência Energética entre Processamento de OCR em Borda e em Nuvem para Telemetria de Hidrômetros via LoRaWan.}
 \autor{Marcelo Fernandes de Oliveira Junior \\ Gustavo Oliveira dos Santos \\ Christian Lima Santana}
 \local{São Paulo}
 \data{2026}
@@ -92,6 +93,13 @@
 % ---------------------------------------------------------------
 \makeindex
 
+% -----------------------------------------------------------------
+% LISTA DE TERMOS
+% -----------------------------------------------------------------
+\makeglossaries
+
+\input{glossario.tex}
+\input{siglas.tex}
 % ---------------------------------------------------------------
 % INÍCIO DO DOCUMENTO
 % ---------------------------------------------------------------
@@ -125,17 +133,17 @@
 Este trabalho busca propor uma análise comparativa entre duas arquiteturas de processamento
 para sistemas de telemetria de hidrômetros analógicos: a computação em borda
 (\textit{Edge Computing}), com inferência de OCR realizada localmente no microcontrolador
-ESP32-CAM por meio da biblioteca TensorFlow Lite for Microcontrollers, e a computação
+\gls{esp32cam} por meio da biblioteca TensorFlow Lite for Microcontrollers, e a computação
 em nuvem (\textit{Cloud Computing}), com transmissão da imagem capturada para
 processamento remoto pelo motor Tesseract em conjunto com a biblioteca OpenCV.
 A motivação reside na problemática do desperdício hídrico no Brasil e no elevado custo de substituição dos medidores
 convencionais por modelos inteligentes nativos, o que torna o \textit{retrofitting} de
 hidrômetros analógicos uma alternativa economicamente viável. A transmissão dos dados
-entre os nós de borda e o \textit{gateway} central é realizada via rede LoRaWAN,
+entre os nós de borda e o \textit{gateway} central é realizada via rede \gls{lorawan},
 utilizando o Spreading Factor SF8, configuração que assegura conformidade com o limite
 regulatório de \textit{dwell time} de 400~ms estabelecido pelo Ato n\textordmasculine~14.448
 da ANATEL, ao mesmo tempo em que maximiza o alcance dentro desse limite. A viabilidade
-do envio de imagens fragmentadas via LoRaWAN foi demonstrada analiticamente, com
+do envio de imagens fragmentadas via \gls{lorawan} foi demonstrada analiticamente, com
 uma imagem de 160$\times$120 pixels em escala de cinza, no formato JPEG com
 aproximadamente 3,10~KB, podendo ser transmitida em 38 pacotes em cerca de 13,3~s
 de rádio ativo, consumindo apenas 1,5\% do orçamento diário no cenário regulatório
@@ -162,9 +170,9 @@ de manutenção do sistema.
 % ---------------------------------------------------------------
 % LISTA DE TABELAS
 % ---------------------------------------------------------------
-% \pdfbookmark[0]{\listtablename}{lot}
-% \listoftables*
-% \cleardoublepage
+\pdfbookmark[0]{Lista de Abreviaturas e Siglas}{siglas}
+\printglossary[type=\acronymtype, title={Lista de Abreviaturas e Siglas}]
+\cleardoublepage
 
 % ---------------------------------------------------------------
 % SUMÁRIO
@@ -184,7 +192,10 @@ de manutenção do sistema.
 \chapter{Introdução}
 \label{cap:introducao}
 
-A gestão eficiente de recursos hídricos consolidou-se como um dos pilares fundamentais da sustentabilidade urbana contemporânea. Diante de cenários de escassez e estiagens em grandes metrópoles, a digitalização da medição de consumo hídrico apresenta-se como uma ferramenta estratégica na contenção de desperdícios e compreensão de padrões de uso. Entretanto, a modernização da atual infraestrutura enfrenta desafios técnicos e financeiros, especialmente no que tange à manutenção, confiabilidade e custo no médio/longo prazo sob os dispositivos empregados em tal tarefa.
+Diante de um cenário nacional de escassez e estiagens hídricas, a mitigação de desperdícios torna-se uma tarefa de extrema urgência \cite{tratabrasil2025}.
+
+A digitalização da medição de consumo hídrico apresenta-se como uma ferramenta estratégica na contenção de desperdícios e compreensão de padrões de uso. 
+Entretanto, a modernização da atual infraestrutura enfrenta desafios técnicos e financeiros, especialmente no que tange à manutenção, confiabilidade e custo no médio/longo prazo sob os dispositivos empregados em tal tarefa.
 
 Neste contexto, este trabalho tem como objetivo comparar duas formas de implementação de sistemas telemétricos baseados em IOT, mais especificamente, com computação centralizada (Cloud Computing) e com computação em borda (Edge Computing), com o objetivo de definir qual a melhor abordagem na resolução do problema.
 
@@ -192,7 +203,8 @@ Neste contexto, este trabalho tem como objetivo comparar duas formas de implemen
 \section{Contexto}
 \label{sec:contexto}
 
-A problemática da informatização do sistema de medição de consumo hídrico enfrenta três grandes desafios atualmente: o alto custo de substituição de medidores convencionais, a necessidade constante de manutenção em aparelhos destinados a implementação de IOT e a acurácia em modelos de visão computacional desenvolvidos para viabilizar o tráfego de dados. Para melhor entendimento da dimensão do problema, analisaremos sob a ótica de três grandes pilares: gestão de recursos hídricos, desafios na implementação de tecnologia IOT e a atual realidade de mercado.
+A problemática da informatização do sistema de medição de consumo hídrico enfrenta três grandes desafios atualmente: o alto custo de substituição de medidores convencionais, a necessidade constante de manutenção em aparelhos destinados a implementação de IOT e a acurácia em modelos de visão computacional desenvolvidos para viabilizar o tráfego de dados. 
+Para melhor entendimento da dimensão do problema, analisaremos sob a ótica de três grandes pilares: gestão de recursos hídricos, desafios na implementação de tecnologia IOT e a atual realidade de mercado.
 
 \subsection{Manejamento de Recursos Hídricos}
 
@@ -205,7 +217,8 @@ Em ambientes privados e condomínios, a ausência de sistemas de monitoramento e
 
 Dado a natureza da aplicação dos dispositivos IOT, denota-se a necessidade da utilização de baterias como fonte primária de alimentação do sistema. Diante de tal cenário, emerge o questionamento sobre qual o tipo de bateria mais adequado a se implementar. 
 
-Como explicado por \citeonline{hasan2023navigating} , há diversos fatores que impactam na escolha mais racional da bateria utilizada em dispositivos IOT, entre eles: densidade energética, range de temperatura de funcionamento, segurança, eficiência energética, longevidade e custo. Ainda em tal artigo evidência-se, como um forte candidato a este tipo de aplicação a escolha de bateria de íon-lítio, onde com o passar do tempo tornou-se mais viável economicamente e oferecendo bons níveis de todos os parâmetros citados anteriormente, sendo a opção escolhida para implementação em nossos dispositivos.
+Como explicado por \citeonline{hasan2023navigating}, há diversos fatores que impactam na escolha mais racional da bateria utilizada em dispositivos IOT, entre eles: densidade energética, intervalo de temperatura de funcionamento, segurança, eficiência energética, longevidade e custo.
+Ainda em tal artigo evidencia-se, como um forte candidato a este tipo de aplicação a escolha de bateria de íon-lítio, onde com o passar do tempo tornou-se mais viável economicamente e oferecendo bons níveis de todos os parâmetros citados anteriormente, sendo a opção escolhida para implementação em nossos dispositivos.
 
 Ainda sobre as baterias de íon-lítio, a \citeonline{panasonic_cr_standard}, uma das principais fabricantes de baterias deste tipo no mundo, publica abertamente os valores médios de ciclos de recarga suportados por seus produtos sob determinadas condições, no caso de um tipo de bateria de ion-lítio mais comumente utilizado, tal produto varia a quantidade de ciclos de recarga por volta de 1500 a 2000 ciclos.
 
@@ -214,31 +227,39 @@ Portanto, aqui esclarecemos a necessidade de implementar um sistema eficiente en
 
 \subsection{Realidade Mercadológica}
 
-A modernização da gestão hídrica enfrenta um impasse econômico: embora existam medidores inteligentes nativos no mercado, a substituição integral dos parques de hidrômetros analógicos exige um investimento de capital (\textit{CAPEX}) proibitivo ao consumidor médio. Conforme indicado por \citeonline{fortune2025} e \citeonline{polimi2020}, o alto custo inicial exigido por tal solução, constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala. A complexidade de infraestrutura necessária para a substituição física dos medidores limita a viabilidade econômica de projetos em áreas privadas de pequeno e médio porte.
+A modernização da gestão hídrica enfrenta um impasse econômico. Embora existam medidores inteligentes nativos no mercado, a substituição integral dos parques de hidrômetros analógicos está vinculado à um custo inicial proibitivo ao consumidor médio. 
+Conforme indicado por \citeonline{fortune2025} e \citeonline{polimi2020}, o alto custo inicial exigido por tal solução, constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala. 
+A complexidade de infraestrutura necessária para a substituição física dos medidores limita a viabilidade econômica de projetos em áreas privadas de pequeno e médio porte.
 
 Ao acoplar módulos de baixo custo aos medidores já instalados, a digitalização de dispositivos analógicos preexistentes(\textit{dumb meters}), processo conhecido como \textit{retrofitting} permite dotar a infraestrutura atual de inteligência com custos reduzidos e com a mesma eficiencia dos medidores inteligentes que estão no mercado como mencionado por \citeonline{Stefano2019}.
 
 \section{Justificativa}
 \label{sec:justificativa}
 
-A evolução dos sistemas de telemetria para hidrômetros analógicos encontra-se em um impasse arquitetural. De um lado, a literatura atual privilegia a computação em borda (\textit{Edge Computing}), utilizando modelos otimizados para realizar o processamento localmente. Essa abordagem visa minimizar o tráfego de dados, dado que, como explicado por \citeonline{Camargo2022}, cerca de 60\% do recurso energético em sistemas IoT é consumido pela comunicação.
+A evolução dos sistemas de telemetria para hidrômetros analógicos encontra-se em um impasse arquitetural. 
+De um lado, a literatura atual privilegia a computação em borda (\textit{Edge Computing}), utilizando modelos otimizados para realizar o processamento localmente.
+Essa abordagem visa minimizar o tráfego de dados, dado que, como explicado por \citeonline{Camargo2022}, cerca de 60\% do recurso energético em sistemas IoT é consumido pela comunicação.
 
-Entretanto, o processamento intensivo de visão computacional em hardware limitado, como o ESP32-CAM, impõe desafios severos de consumo de memória e validação de modelos de aprendizagem de máquina, podendo impactar drasticamente em acurácia de modelo e autonomia energética do dispositivo \citeonline{SilvaVilela2021}. Em contrapartida, a abordagem de processamento centralizado (\textit{Cloud Computing}) surge como uma alternativa menos difundida na literatura para o envio de dados não estruturados.
+Entretanto, o processamento intensivo de visão computacional em hardware limitado, como o \gls{esp32cam}, impõe desafios severos de consumo de memória e validação de modelos de aprendizagem de máquina, podendo impactar drasticamente em acurácia de modelo e autonomia energética do dispositivo \citeonline{SilvaVilela2021}.
+Em contrapartida, a abordagem de processamento centralizado (\textit{Cloud Computing}) surge como uma alternativa menos difundida na literatura para o envio de dados não estruturados.
 
-Embora a transmissão de imagens via rede LoRaWAN apresente limitações críticas de largura de banda e maior latência na disponibilização dos dados, esta permite o uso de \textit{frameworks} de OCR mais robustos e estabelecidos, como o motor Tesseract. Esta centralização facilita manutenções em software sem a necessidade de desenvolvimento de um complexo \textit{firmware} ou intervenções físicas nos sensores em campo. A relevância deste trabalho reside no estudo comparativo desses dois métodos sob redes de baixa largura de banda.
+Embora a transmissão de imagens via rede \gls{lorawan} apresente limitações críticas de largura de banda e maior latência na disponibilização dos dados, esta permite o uso de \textit{frameworks} de OCR mais robustos e estabelecidos, como o motor Tesseract. 
+Esta centralização facilita manutenções em software sem a necessidade de desenvolvimento de um complexo \textit{firmware} ou intervenções físicas nos sensores em campo. 
+A relevância deste trabalho reside no estudo comparativo desses dois métodos sob redes de baixa largura de banda.
 
-Academicamente, o estudo preenche uma lacuna ao fornecer dados experimentais sobre o \textit{trade-off} entre processamento local e transmissão remota. Na prática, a pesquisa auxilia na viabilização do \textit{retrofitting} de hidrômetros analógicos, permitindo dotar a infraestrutura atual de inteligência com custos reduzidos em comparação à substituição integral dos medidores convencionais por modelos inteligentes nativos \cite{Stefano2019}.
+Academicamente, o estudo preenche uma lacuna ao fornecer dados experimentais sobre o \textit{trade-off} entre processamento local e transmissão remota. 
+Na prática, a pesquisa auxilia na viabilização do \textit{retrofitting} de hidrômetros analógicos, permitindo dotar a infraestrutura atual de inteligência com custos reduzidos em comparação à substituição integral dos medidores convencionais por modelos inteligentes nativos \cite{Stefano2019}.
 
 \section{Objetivo}
 \label{sec:objetivo}
 
-Comparar a viabilidade técnica, a acurácia e o consumo energético entre o processamento de OCR realizado localmente no ESP32-CAM (Edge) e a inferência OCR realizada remotamente em servidor na nuvem (Cloud), utilizando a rede LoRaWAN como meio de transmissão.
+Comparar a viabilidade técnica, a acurácia e o consumo energético entre o processamento de OCR realizado localmente no \gls{esp32cam} (abordagem Edge Computing) e a inferência OCR realizada remotamente em servidor na nuvem (Cloud), utilizando a rede \gls{lorawan} como meio de transmissão.
 
 \subsection{Objetivos secundários}
 
 \begin{enumerate}
-    \item Implementar os dois fluxos de processamento que compõem o experimento comparativo: o fluxo Edge, em que o OCR ocorre localmente no ESP32-CAM; e o fluxo Cloud, em que a imagem é transmitida para processamento remoto. % 1. construção do experimento
-    \item Configurar a rede LoRaWan conectando os nós da rede com o objetivo de reduzir ao máximo o consumo energético; % 2. Configuração da infrastrutura de rede
+    \item Implementar os dois fluxos de processamento que compõem o experimento comparativo: o fluxo Edge, em que o OCR ocorre localmente no \gls{esp32cam}; e o fluxo Cloud, em que a imagem é transmitida para processamento remoto. % 1. construção do experimento
+    \item Configurar a rede \gls{lorawan} conectando os nós da rede com o objetivo de reduzir ao máximo o consumo energético; % 2. Configuração da infrastrutura de rede
     \item Avaliar e comparar os dois fluxos segundo as métricas: precisão de leitura (\%), latência de processamento (ms), consumo energético por leitura (mAh) e volume de dados transmitidos (bytes/leitura), identificando o \textit{trade-off} entre processamento local e transmissão. % 3. Responde a pergunta central do TCC
 \end{enumerate}
 
@@ -248,11 +269,15 @@ Comparar a viabilidade técnica, a acurácia e o consumo energético entre o pro
 
 \subsection{Redução de Tamanho de Imagens e Tempo de Transmissão de Mensagens}
 
-Conforme evidenciado por \citeonline{almeida2022iot}, o tamanho da imagem está intrinsecamente ligado ao sucesso na transmissão de dados via rede LoRaWan. Diante de tal afirmação, denota-se a necessidade de implementar soluções com o objetivo de atenuar tal desafio.
+Conforme evidenciado por \citeonline{almeida2022iot}, o tamanho da imagem está intrinsecamente ligado ao sucesso na transmissão de dados via rede \gls{lorawan}. 
+Diante de tal afirmação, denota-se a necessidade de implementar soluções com o objetivo de atenuar tal desafio.
 
-Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e utilizando o padrão JPEG de compressão, apresenta-se uma redução substancial no tamanho das imagens. Ao adotarmos a resolução de imagem de 160 x 120 como padrão, constatamos a redução em até 60\% em  relação ao tamanho original da imagem. 
+Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e utilizando o padrão JPEG de compressão, apresenta-se uma redução substancial no tamanho das imagens.
+Ao adotarmos a resolução de imagem de 160 x 120 como padrão, constatamos a redução em até 60\% em  relação ao tamanho original da imagem. 
 
-A adoção do padrão de compressão JPEG neste trabalho, deve-se a bufferização nativa de imagem comprimida no padrão mencionado pelo módulo ESP32-CAM, com o objetivo de redução de espaço alocado em memória. Em contrapartida, o padrão JPEG foi desenvolvido para utilização em imagens naturais, limitando o processamento de imagens binarizadas, que criam contornos “quadrados” na imagem, assim não permitindo a adoção da técnica de binarização, com o objetivo de enxugar ainda mais o tamanho das imagens,  antes de realizar o envio.
+A adoção do padrão de compressão JPEG neste trabalho, deve-se a bufferização nativa de imagem comprimida no padrão mencionado pelo módulo \gls{esp32cam}, com o objetivo de redução de espaço alocado em memória.
+Em contrapartida, o padrão JPEG foi desenvolvido para utilização em imagens naturais, limitando o processamento de imagens binarizadas, que criam contornos “quadrados” na imagem, assim não permitindo a adoção da técnica de binarização, com o objetivo de enxugar ainda mais o tamanho das imagens, antes de realizar o envio.
+
 % --- Tabela 1 ---
 \begin{table}[H]
     \centering
@@ -273,7 +298,7 @@ A adoção do padrão de compressão JPEG neste trabalho, deve-se a bufferizaç�
     \end{tabular}
 \end{table}
 
-Ao relevar dos dados apresentados, esperamos conseguir reduzir as imagens geradas pelo ESP32-CAM em até 60\% em relação ao seu tamanho original, utilizando apenas os métodos apresentados.
+Ao relevar dos dados apresentados, esperamos conseguir reduzir as imagens geradas pelo \gls{esp32cam} em até 60\% em relação ao seu tamanho original, utilizando apenas os métodos apresentados.
 
 Conforme apresentado por \citeonline{jebril2018overcoming}, estima-se que uma imagem com tamanho aproximado de 3000 bytes necessite de aproximadamente 13 segundos de rádio ativo para ser completamente enviada ao destinatário, levando em consideração todos os tratamentos aplicados e especificações de imagem que estamos adotando, espera-se conseguirmos realizar o envio de imagens sob as mesmas configurações de SF em um tempo menor ou igual ao demonstrado por Jebril e demais.
 
@@ -285,7 +310,7 @@ Sob o alicerce dos dois trabalhos, esperamos encontrar valores semelhantes em am
 
 \subsection{Consumo Energético}
 
-Dado que a medição de consumo energético de um sistema IOT que implementa LoRaWan é impactado por diversos parâmetros, como SF, CR, Payload, entre outros, não é possível comparar tal métrica sem experiência empírica, onde as diferentes abordagens encontram-se sob o mesmo ambiente, mas espera-se que o método de Edge-Computing venha a ser uma solução que apresenta melhores índices de consumo, dado que esta abordagem é caracterizada por maior tempo de processamento e menor tempo de transmissão de dados, como explicado por \citeonline{Camargo2022}, 60\% do consumo energético de um sistema de IOT reside na transmissão de dados, por outro lado, a abordagem de computação centralizada, espera-se menor tempo de processamento e maior tempo de transmissão de dados, impactando significativamente no consumo energético do sistema.
+Dado que a medição de consumo energético de um sistema IOT que implementa \gls{lorawan} é impactado por diversos parâmetros, como SF, CR, Payload, entre outros, não é possível comparar tal métrica sem experiência empírica, onde as diferentes abordagens encontram-se sob o mesmo ambiente, mas espera-se que o método de Edge-Computing venha a ser uma solução que apresenta melhores índices de consumo, dado que esta abordagem é caracterizada por maior tempo de processamento e menor tempo de transmissão de dados, como explicado por \citeonline{Camargo2022}, 60\% do consumo energético de um sistema de IOT reside na transmissão de dados, por outro lado, a abordagem de computação centralizada, espera-se menor tempo de processamento e maior tempo de transmissão de dados, impactando significativamente no consumo energético do sistema.
 
 Em resumo, o dilema que buscamos respostas neste ponto do trabalho é  “qual método consome menos recurso energético? Será que diminuir o consumo de recursos computacionais é mais vantajoso que reduzir o tempo necessário para transmissão de dados?”, e desta pergunta, pautada sob diversos dados, tende-se a observar que a abordagem tradicional (Edge-Computing) possivelmente entregue mais vantagens neste ponto.
 
@@ -310,7 +335,7 @@ Segundo \citeonline{Ferreira2020}, a vida útil da bateria é influenciada criti
 
 Segundo \citeonline{Camargo2022}, entorno de 60\% do recurso energético de sistemas IOT são consumidos na comunicação, a escolha efetiva de protocolo de comunicação e otimização de parâmetros como dispersão de sinal, largura de banda e taxa de codificação (destinado a redundância de mensagem, tolerância a erros), entre outros fatores, torna-se uma tarefa de suma importância no desenvolvimento de um sistema IOT otimizado de baixo custo.
 
-O LoRaWan (Long Range Wide Area Network), é um protocolo LPWAN (Low Power Wide Area Network), que possui o objetivo de viabilizar a comunicação em grandes distâncias, conciliado ao baixo consumo energético. Diante disso, o protocolo surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de redução de consumo energético, em contra partida, a baixa largura de banda oferecida por tal solução apoia o desenvolvimento de sistemas baseado em edge-computing, trafegando em rede apenas os dados e metadados prontos para serem tratados em gateway central.
+O \gls{lorawan} (Long Range Wide Area Network), é um protocolo LPWAN (Low Power Wide Area Network), que possui o objetivo de viabilizar a comunicação em grandes distâncias, conciliado ao baixo consumo energético. Diante disso, o protocolo surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de redução de consumo energético, em contra partida, a baixa largura de banda oferecida por tal solução apoia o desenvolvimento de sistemas baseado em edge-computing, trafegando em rede apenas os dados e metadados prontos para serem tratados em gateway central.
 
 Toda via, surge o desafio de alinhar o menor consumo de recurso energético possível, com o objetivo de prolongar a vida útil de bateria dos dispositivos utilizados, às mais otimizadas soluções de rede, hardware e técnicas de desenvolvimento de software.
 
@@ -332,12 +357,12 @@ Do ponto de vista computacional e eficiência de recursos, o uso nativo do ESP-I
 
 O processamento intensivo exigido pelo OCR requer que a implementação evite qualquer desperdício computacional. \citeonline{Plauska2023} demonstram que linguagens compiladas como C e C++ garantem um desempenho superior na gestão de CPU e memória SRAM em relação às linguagens interpretadas. Aliando essa eficiência à total compatibilidade do C/C++ com o ecossistema do ESP-IDF, o desenvolvedor obtém um controle de memória altamente preciso. Essa gestão minuciosa e de baixo nível é o fator crítico que viabiliza a execução de algoritmos de extração de características em microcontroladores limitados a poucas centenas de kilobytes de memória.
 
-\subsection{Envio de Imagens via LoRaWAN}
+\subsection{Envio de Imagens via \gls{lorawan}}
 
 Uma das principais incógnitas levantadas por este artigo é a viabilidade 
 do envio das imagens geradas em nós na borda da rede ao gateway (nó 
 central). Como apresentado por \citeonline{almeida2022iot}, a propagação 
-de dados não estruturados via rede LoRaWAN é algo viável, mas com a 
+de dados não estruturados via rede \gls{lorawan} é algo viável, mas com a 
 ressalva de limitações de bits por pacote, maior latência na 
 disponibilização dos dados e a necessidade de algoritmos que orquestrem 
 todo o recebimento e envio de dados pela rede, incluindo a fragmentação 
@@ -351,7 +376,7 @@ como o JPEG e a transformação de imagens em escala de cinza, reduzindo
 assim as informações a serem enviadas via rede.
 
 \subsubsection{Restrições Regulatórias e Parâmetros de Transmissão 
-LoRaWAN}
+\gls{lorawan}}
 
 O \textit{Spreading Factor} (SF) é um parâmetro central do protocolo 
 LoRa que determina a taxa de chirp utilizada na modulação do sinal. 
@@ -369,7 +394,7 @@ de 1\%, o que equivale a um orçamento de transmissão de apenas
 
 O \textit{dwell time} é o tempo máximo de ocupação contínua de uma 
 frequência por transmissão. No Brasil, o padrão regulamentado pela 
-ANATEL para redes LoRaWAN é o AU915, operando na faixa de 
+ANATEL para redes \gls{lorawan} é o AU915, operando na faixa de 
 902--928~MHz. Diferentemente do EU868, o AU915 não impõe restrição 
 de \textit{duty cycle}; em seu lugar, o Ato nº~14.448, de 4 de dezembro 
 de 2017~\cite{anatel2017} estabelece que, para sistemas de salto em 
@@ -390,7 +415,7 @@ o menor \textit{overhead} de redundância disponível no padrão
 LoRa~\cite{adam2022}.
 
 A \textit{Packet Delivery Ratio} (PDR) quantifica a robustez da 
-transmissão via LoRaWAN pela razão entre o número de pacotes recebidos 
+transmissão via \gls{lorawan} pela razão entre o número de pacotes recebidos 
 pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor, 
 conforme a Equação~\ref{eq:pdr}~\cite{bravo2025ants}.
 
@@ -400,7 +425,7 @@ conforme a Equação~\ref{eq:pdr}~\cite{bravo2025ants}.
 Para avaliar a eficácia do sistema de telemetria proposto e garantir a objetividade dos resultados, serão adotados indicadores quantitativos divididos em três dimensões críticas: desempenho de rede, precisão de visão computacional, eficiência energética e acurácia preditiva.
 
 \subsubsection{Desempenho da Rede de Comunicação}
-A robustez da transmissão via LoRaWAN será quantificada através da Taxa de Entrega de Pacotes (PDR - \textit{Packet Delivery Ratio}). Conforme a metodologia de \citeonline{bravo2025ants}, o PDR é definido pela razão entre o número de pacotes recebidos pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor:
+A robustez da transmissão via \gls{lorawan} será quantificada através da Taxa de Entrega de Pacotes (PDR - \textit{Packet Delivery Ratio}). Conforme a metodologia de \citeonline{bravo2025ants}, o PDR é definido pela razão entre o número de pacotes recebidos pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor:
 
 \begin{equation}
 \label{eq:pdr}
@@ -443,14 +468,14 @@ Na etapa de refinamento, aplicou-se a leitura dos resumos (abstracts) e a verifi
 \begin{tabular}{@{}lll@{}}
 \toprule
 \textbf{ID} & \textbf{Eixo Temático} & \textbf{String de Busca} \\ \midrule
-ST01 & Redes & "IoT" AND "LoRaWAN" AND "water waste" \\
+ST01 & Redes & "IoT" AND "\gls{lorawan}" AND "water waste" \\
 ST02 & Contexto & smart water meter market \\
 ST03 & Contexto & smart water meter costs and benefits \\
 ST04 & Hardware & "IoT" AND "energy efficiency" \\
 ST05 & Hardware & "ESP32" AND "camera monitoring" \\
-ST06 & Hardware & "ESP32-CAM" AND "analog meter" AND "OCR" \\
+ST06 & Hardware & "\gls{esp32cam}" AND "analog meter" AND "OCR" \\
 ST08 & Software & "automatic meter reading" OCR accuracy "error rate" evaluation \\
-ST09 & Redes & "packet delivery ratio" LoRaWAN "latency" monitoring system \\
+ST09 & Redes & "packet delivery ratio" \gls{lorawan} "latency" monitoring system \\
 ST010 & Contexto & "water consumption prediction" "mean absolute error" forecasting metrics \\ \bottomrule
 \end{tabular}
 \end{table}
@@ -463,7 +488,7 @@ Nesta seção, analisam-se pesquisas que utilizam IoT e Visão Computacional par
 
 \subsection{Trabalho 1: Solução IoT para Digitalização de Medidores de Consumo por Visão Computacional e MicroML}
 
-\citeonline{SilvaVilela2021} abordou o tema de Soluções IOT para Medidores de Consumo. Para resolvê-lo, foi desenvolvido um sistema utilizando microprocessadores ESP32, baseado no método de Edge-Computing (Computação em Borda), o autor desenvolveu um software próprio, otimizado para microprocessadores, focado em reconhecimento óptico de caracteres (OCR), extraindo os dados, transmitindo-os via rede LoRaWan e armazenando-os localmente, posteriormente, os dados são informados em um simples dashboard apresentando o consumo extraído pelo sistema até o momento. 
+\citeonline{SilvaVilela2021} abordou o tema de Soluções IOT para Medidores de Consumo. Para resolvê-lo, foi desenvolvido um sistema utilizando microprocessadores ESP32, baseado no método de Edge-Computing (Computação em Borda), o autor desenvolveu um software próprio, otimizado para microprocessadores, focado em reconhecimento óptico de caracteres (OCR), extraindo os dados, transmitindo-os via rede \gls{lorawan} e armazenando-os localmente, posteriormente, os dados são informados em um simples dashboard apresentando o consumo extraído pelo sistema até o momento. 
 
 A metodologia utilizada foi a pesquisa experimental, onde houve o desenvolvimento de um sistema que supri a necessidade de extração de dados de maneira digital. 
 
@@ -480,17 +505,17 @@ A metodologia utilizada seguiu os princípios do Design Thinking, incluindo uma 
 
 Os resultados mostraram que a solução é viável e intuitiva, obtendo uma pontuação média de 72 na escala SUS, o que indica uma boa aceitação pelos usuários. No entanto, o trabalho aponta limitações na abrangência dos dados, focando primariamente na taxa de fluxo, e destaca a necessidade de integrar mais tipos de sensores (como pressão e qualidade da água) para análises de Big Data mais robustas. Além disso, a precisão total do sistema de previsão depende de um volume maior de dados históricos que ainda precisam ser coletados. 
 
-O presente trabalho diferencia-se por focar na infraestrutura de comunicação LoRaWAN, visando uma maior eficiência energética e alcance em comparação ao GPRS/3G utilizado pelos autores, além de explorar a integração direta com medidores analógicos já existentes através de telemetria, em vez da substituição completa do hardware de medição. 
+O presente trabalho diferencia-se por focar na infraestrutura de comunicação \gls{lorawan}, visando uma maior eficiência energética e alcance em comparação ao GPRS/3G utilizado pelos autores, além de explorar a integração direta com medidores analógicos já existentes através de telemetria, em vez da substituição completa do hardware de medição. 
 
 \subsection{Trabalho 3: Rede de Sensores Sem Fio Habilitada para LoRa para Leitura e Faturamento de Consumo de Água Usando Reconhecimento Óptico de Caracteres}
 
 \citeonline{bravo2025ants} desenvolveram um sistema automatizado para leitura de hidrômetros analógicos utilizando uma combinação de tecnologias de baixo custo e comunicação de longo alcance. O objetivo central foi mitigar erros humanos e atrasos operacionais comuns em leituras manuais.
 
-A metodologia consistiu na integração de um módulo ESP32-CAM para captura de imagens dos medidores e um algoritmo de OCR para a extração digital dos dados de consumo no próprio dispositivo. Para a transmissão, utilizou-se a tecnologia LoRa (módulo Ra-02), operando em uma topologia de rede que inclui repetidores para estender o alcance e um gateway central para envio dos dados à nuvem. O sistema também implementou estratégias de gerenciamento de energia através de ciclos de (\textit{deep sleep}) programados para aumentar a vida útil da bateria.
+A metodologia consistiu na integração de um módulo \gls{esp32cam} para captura de imagens dos medidores e um algoritmo de OCR para a extração digital dos dados de consumo no próprio dispositivo. Para a transmissão, utilizou-se a tecnologia LoRa (módulo Ra-02), operando em uma topologia de rede que inclui repetidores para estender o alcance e um gateway central para envio dos dados à nuvem. O sistema também implementou estratégias de gerenciamento de energia através de ciclos de (\textit{deep sleep}) programados para aumentar a vida útil da bateria.
 
 Os resultados apontaram uma precisão de 99,71\% no reconhecimento dos dígitos e um alcance de transmissão estável de até 1070 metros em condições de campo aberto. Os autores observaram que medidores mais antigos ou obstruídos podem elevar o tempo de processamento do OCR.
 
-O presente trabalho diferencia-se da abordagem de \citeonline{bravo2025ants} ao deslocar a carga computacional do Reconhecimento Óptico de Caracteres (OCR) do dispositivo final para a nuvem. Enquanto o trabalho correlato executa o processamento localmente no ESP32-CAM, esta pesquisa foca na robustez de um pipeline de processamento remoto. Isso permite a utilização de modelos de visão computacional mais complexos e precisos, que excederiam a capacidade de memória e processamento do hardware local, além de centralizar a lógica de extração de dados para facilitar manutenções e atualizações do algoritmo de IA sem a necessidade de novos firmwares nos sensores. Esta abordagem também visa mitigar as dificuldades de processamento em medidores antigos ou obstruídos, um desafio observado na implementação local de \citeonline{bravo2025ants}.
+O presente trabalho diferencia-se da abordagem de \citeonline{bravo2025ants} ao deslocar a carga computacional do Reconhecimento Óptico de Caracteres (OCR) do dispositivo final para a nuvem. Enquanto o trabalho correlato executa o processamento localmente no \gls{esp32cam}, esta pesquisa foca na robustez de um pipeline de processamento remoto. Isso permite a utilização de modelos de visão computacional mais complexos e precisos, que excederiam a capacidade de memória e processamento do hardware local, além de centralizar a lógica de extração de dados para facilitar manutenções e atualizações do algoritmo de IA sem a necessidade de novos firmwares nos sensores. Esta abordagem também visa mitigar as dificuldades de processamento em medidores antigos ou obstruídos, um desafio observado na implementação local de \citeonline{bravo2025ants}.
 
 Utilizaremos esse trabalho como referência de borda para realizar uma comparação com a abordagem de processamento em nuvem, contribuindo para a discussão sobre o trade-off entre eficiência energética e precisão em sistemas de telemetria de baixo custo.
 % ===============================================================
@@ -508,7 +533,7 @@ O projeto está estruturado em dois componentes interdependentes:
 
 \begin{itemize}
     \item \textbf{Módulo de Captura (Edge Device):} Um dispositivo de hardware acoplado ao hidrômetro.
-    \item \textbf{Protocolo de Comunicação:} Utilização de rede LoRaWAN para transmissão de longa distância e baixo consumo.
+    \item \textbf{Protocolo de Comunicação:} Utilização de rede \gls{lorawan} para transmissão de longa distância e baixo consumo.
 \end{itemize}
 
 O núcleo da investigação consiste na implementação e comparação de dois modelos operacionais:
@@ -518,7 +543,7 @@ O núcleo da investigação consiste na implementação e comparação de dois m
     \item \textbf{Processamento Remoto (Cloud OCR):} O dispositivo envia a imagem capturada (fragmentada e comprimida) para o servidor, onde a imagem recebida é pré-processada pela biblioteca OpenCV para otimização da leitura. Em seguida, a extração de caracteres é feita pelo motor Tesseract. 
 \end{enumerate}
 
-Esta abordagem dual permitirá a recolha de métricas quantitativas sobre a vida útil estimada da bateria, a acurácia do reconhecimento em diferentes condições de luminosidade e a fiabilidade da transmissão de pacotes pesados em redes LoRaWAN. Assim, a solução deixa de ser meramente uma implementação técnica para tornar-se uma análise de viabilidade para sistemas de \textit{Smart Metering} em larga escala.
+Esta abordagem dual permitirá a recolha de métricas quantitativas sobre a vida útil estimada da bateria, a acurácia do reconhecimento em diferentes condições de luminosidade e a fiabilidade da transmissão de pacotes pesados em redes \gls{lorawan}. Assim, a solução deixa de ser meramente uma implementação técnica para tornar-se uma análise de viabilidade para sistemas de \textit{Smart Metering} em larga escala.
 
 \section{POC -- Proof of Concept}
 
@@ -526,11 +551,11 @@ Com o objetivo de validar a viabilidade técnica da solução proposta, serão r
 
 As próximas seções apresentam o desenvolvimento, os resultados e as análises obtidas em cada uma dessas POCs.
 
-\subsection{Viabilidade do Envio de Imagens via LoRaWAN}
+\subsection{Viabilidade do Envio de Imagens via \gls{lorawan}}
 
 Este trabalho adota uma estratégia argumentativa em duas camadas 
 regulatórias para demonstrar a viabilidade do envio de imagens via 
-LoRaWAN. O cenário de referência primário é o padrão brasileiro 
+\gls{lorawan}. O cenário de referência primário é o padrão brasileiro 
 \textbf{AU915} (902--928~MHz), regulamentado pela ANATEL pelo Ato 
 n\textordmasculine~14.448 de 2017, que não impõe restrição de 
 \textit{duty cycle}, mas limita o tempo médio de permanência por 
@@ -548,9 +573,9 @@ avaliação de viabilidade conservadora e auditável.
  
 \subsubsection{Restrições Regulatórias e Escolha do \textit{Spreading Factor}}
  
-Uma das principais preocupações técnicas no envio de imagens via LoRaWAN diz
+Uma das principais preocupações técnicas no envio de imagens via \gls{lorawan} diz
 respeito aos limites regulatórios de transmissão e ao tamanho máximo de \textit{payload}
-por pacote. No Brasil, o padrão regulamentado pela ANATEL para redes LoRaWAN é o
+por pacote. No Brasil, o padrão regulamentado pela ANATEL para redes \gls{lorawan} é o
 AU915, operando na faixa de 902--928~MHz. Diferentemente do plano EU868 (863--870~MHz,
 adotado na Europa), o AU915 não impõe restrição de \textit{duty cycle} de 1\%; em seu lugar,
 adota salto de frequência entre 64 canais de \textit{uplink} e limita o tempo médio de
@@ -685,12 +710,12 @@ regulatório e, portanto, não conforme.
 \subsubsection{Fragmentação e Orçamento de Transmissão}
  
 Para realizar a estimativa, utilizou-se uma imagem obtida diretamente da câmera
-ESP32-CAM na resolução mínima disponível no dispositivo ($160 \times 120$ pixels),
+\gls{esp32cam} na resolução mínima disponível no dispositivo ($160 \times 120$ pixels),
 em escala de cinza, com o parâmetro de qualidade configurado em 4 na escala do
-ESP32-CAM (escala invertida de 4 a 63, onde valores menores correspondem a menor
+\gls{esp32cam} (escala invertida de 4 a 63, onde valores menores correspondem a menor
 compressão e maior fidelidade de imagem). A imagem resultante, já no formato JPEG
 gerado pelo próprio sensor, apresentou tamanho de aproximadamente 3,10~KB
-(3.182~bytes). Descontando o \textit{overhead} do protocolo LoRaWAN, estimado em
+(3.182~bytes). Descontando o \textit{overhead} do protocolo \gls{lorawan}, estimado em
 30~bytes por pacote (cabeçalho MAC, porta de aplicação e código de integridade),
 restam 85~bytes úteis por pacote. O número de pacotes necessários é:
  
@@ -774,7 +799,7 @@ pacotes adicionais. Considerando que o total de pacotes por dia é 76 (2~imagens
 38~pacotes), o orçamento residual permitiria até 32~retransmissões por
 pacote antes de esgotar o orçamento diário no cenário mais restritivo, o que
 equivale a tolerar uma taxa de perda de pacotes de até 97\% sem impactar o
-funcionamento do sistema. Na prática, redes LoRaWAN em cenários urbanos operam com
+funcionamento do sistema. Na prática, redes \gls{lorawan} em cenários urbanos operam com
 taxas de entrega superiores a 75\%, tornando a margem de 97\%
 extremamente conservadora e a viabilidade do mecanismo de retransmissão plenamente
 confirmada \cite{adam2022}.
@@ -786,7 +811,7 @@ transmissão de uma imagem completa requer apenas 13,3~s de rádio ativo, e o si
 poderia, em princípio, realizar mais de 270~transmissões completas por hora. A análise
 EU868 apresentada neste trabalho representa, portanto, o cenário absolutamente mais
 restritivo possível, e sua conclusão favorável é suficiente para garantir a viabilidade
-do sistema em qualquer implantação LoRaWAN em território brasileiro.
+do sistema em qualquer implantação \gls{lorawan} em território brasileiro.
  
 \subsubsection{Validação Experimental e Consistência do Modelo}
  
@@ -797,9 +822,9 @@ por pacote de aproximadamente 613~ms, valor empiricamente próximo aos 615,4~ms
 que a mesma fórmula analítica produziria para SF9 com o mesmo \textit{payload},
 corroborando a consistência do modelo de estimativa adotado neste trabalho para SF8.
 É relevante destacar que \citeonline{jebril2018overcoming} optaram por operar diretamente sobre
-a camada física LoRa (PHY), contornando o protocolo LoRaWAN, em razão das
+a camada física LoRa (PHY), contornando o protocolo \gls{lorawan}, em razão das
 limitações impostas pela camada MAC ao lidar com fragmentação e remontagem de dados
-de imagem, abordagem distinta da adotada neste trabalho, que opera sobre LoRaWAN
+de imagem, abordagem distinta da adotada neste trabalho, que opera sobre \gls{lorawan}
 e está sujeita às restrições regulatórias aqui modeladas.
  
 A Tabela~\ref{tab:parametros} resume os parâmetros utilizados na estimativa e os
@@ -815,12 +840,12 @@ resultados obtidos.
     \midrule
     Resolução da imagem                                 & $160 \times 120$ px         \\
     Canal de cor                                        & Escala de cinza             \\
-    Qualidade ESP32-CAM                                 & 4 (escala 4--63, invertida) \\
+    Qualidade \gls{esp32cam}                                 & 4 (escala 4--63, invertida) \\
     Tamanho da imagem (JPEG)                            & 3,10~KB (3.182 bytes)       \\
     \textit{Spreading Factor}                           & SF8                         \\
     Largura de banda                                    & 125~kHz                     \\
     \textit{Coding rate}                                & 4/5                         \\
-    \textit{Overhead} LoRaWAN                           & 30 bytes/pacote             \\
+    \textit{Overhead} \gls{lorawan}                           & 30 bytes/pacote             \\
     \textit{Payload} útil por pacote                    & 85 bytes                    \\
     Pacotes necessários                                 & 38                          \\
     Tempo no ar por pacote                              & $\approx$348,7~ms           \\
@@ -839,7 +864,7 @@ resultados obtidos.
   \fonte{Os autores (2025).}
 \end{table}
  
-Conclui-se que o envio de imagens via LoRaWAN, nas condições descritas, é 
+Conclui-se que o envio de imagens via \gls{lorawan}, nas condições descritas, é 
 tecnicamente viável, regulatoriamente conforme e energeticamente adequado
 para operação por bateria em campo. A adoção do SF8, motivada pela conformidade
 com o limite de \textit{dwell time} de 400~ms do Ato nº~14.448 da
@@ -858,7 +883,7 @@ dos 38~pacotes que compõem a imagem e sua posterior reassemblagem no
 
 \subsubsection{Características da Imagem de Entrada}
 
-As imagens utilizadas neste experimento foram capturadas pelo módulo ESP32-CAM. A resolução nativa das capturas é de apenas $160 \times 120$ pixels, o que representa uma limitação significativa para algoritmos de OCR convencionais, que em geral assumem imagens com pelo menos 300 DPI (\textit{dots per inch}) para operar com confiabilidade satisfatória.
+As imagens utilizadas neste experimento foram capturadas pelo módulo \gls{esp32cam}. A resolução nativa das capturas é de apenas $160 \times 120$ pixels, o que representa uma limitação significativa para algoritmos de OCR convencionais, que em geral assumem imagens com pelo menos 300 DPI (\textit{dots per inch}) para operar com confiabilidade satisfatória.
 
 O display do hidrômetro utilizado consiste em um conjunto de rolinhos mecânicos numerados (odômetro), com separadores verticais físicos entre cada dígito. Essas barras divisórias, embora funcionais no contexto do medidor, introduzem ruído visual relevante para o processo de reconhecimento, uma vez que o OCR pode interpretá-las erroneamente como o dígito ``1''.
 
@@ -916,7 +941,7 @@ Componentes conectados + psm 10 & Tesseract & \textbf{353485} & \textbf{Sim} \\
 \end{tabular}
 \end{table}
 
-Os experimentos realizados demonstram que o Tesseract OCR é capaz de realizar a leitura de hidrômetros analógicos a partir de imagens de baixa resolução capturadas por ESP32-CAM, desde que acompanhado de um pipeline adequado de pré-processamento e segmentação. A chave para o sucesso foi abandonar a abordagem de leitura da imagem como um todo, que sofria interferência sistemática das barras separadoras, em favor da segmentação e leitura individual de cada dígito.
+Os experimentos realizados demonstram que o Tesseract OCR é capaz de realizar a leitura de hidrômetros analógicos a partir de imagens de baixa resolução capturadas por \gls{esp32cam}, desde que acompanhado de um pipeline adequado de pré-processamento e segmentação. A chave para o sucesso foi abandonar a abordagem de leitura da imagem como um todo, que sofria interferência sistemática das barras separadoras, em favor da segmentação e leitura individual de cada dígito.
 
 O recorte da região de interesse foi definido empiricamente para o modelo específico de hidrômetro e posicionamento de câmera utilizados.
 
@@ -1012,6 +1037,9 @@ O cronograma a seguir apresenta, no formato de diagrama de Gantt, as atividades 
 %
 % Veja o arquivo bibliografia.bib para exemplos de cada tipo.
 % ---------------------------------------------------------------
+\pdfbookmark[0]{Glossário}{glossario}
+\printglossary[type=main, title={Glossário}]
+
 \bibliography{bibliografia}
 
 % ---------------------------------------------------------------
