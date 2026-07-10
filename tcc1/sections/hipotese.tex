@@ -1,0 +1,49 @@
+
+\subsection{Redução de Tamanho de Imagens e Tempo de Transmissão de Mensagens}
+
+Conforme evidenciado por \citeonline{almeida2022iot}, o tamanho da imagem está intrinsecamente ligado ao sucesso na transmissão de dados via rede \gls{lorawan}. 
+Diante de tal afirmação, denota-se a necessidade de implementar soluções com o objetivo de atenuar tal desafio.
+
+Como forma de contorno, aplicando os algoritmos de escala de cinza (reduzindo a imagem à 1 canal de cor) e utilizando o padrão JPEG de compressão, apresenta-se uma redução substancial no tamanho das imagens.
+Ao adotarmos a resolução de imagem de 160 x 120 como padrão, constatamos a redução em até 60\% em  relação ao tamanho original da imagem. 
+
+A adoção do padrão de compressão JPEG neste trabalho, deve-se a bufferização nativa de imagem comprimida no padrão mencionado pelo módulo \gls{esp32cam}, com o objetivo de redução de espaço alocado em memória.
+Em contrapartida, o padrão JPEG foi desenvolvido para utilização em imagens naturais, limitando o processamento de imagens binarizadas, que criam contornos “quadrados” na imagem, assim não permitindo a adoção da técnica de binarização, com o objetivo de enxugar ainda mais o tamanho das imagens, antes de realizar o envio.
+
+% --- Tabela 1 ---
+\begin{table}[H]
+    \centering
+    \caption{Comparativo de imagem 160x120}
+    \begin{tabular}{@{}cccc@{}}
+        \toprule
+        Qualidade & Original (Bytes) & Escala Cinza (Bytes) & Binarizada (Bytes) \\ \midrule
+        0  & 1123 & 722  & 1467 \\
+        10 & 1517 & 1110 & 2172 \\
+        20 & 1850 & 1443 & 2838 \\
+        30 & 2030 & 1614 & 3440 \\
+        40 & 2268 & 1861 & 3872 \\
+        50 & 2392 & 1996 & 4271 \\
+        60 & 2520 & 2114 & 4655 \\
+        70 & 2664 & 2255 & 5178 \\
+        80 & 2996 & 2585 & 5918 \\
+        90 & 3567 & 3151 & 7422 \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+Ao relevar dos dados apresentados, espera-se reduzir as imagens geradas pelo \gls{esp32cam} em até 60\% em relação ao seu tamanho original, utilizando apenas os métodos apresentados.
+
+Conforme apresentado por \citeonline{jebril2018overcoming}, estima-se que uma imagem com tamanho aproximado de 3000 bytes necessite de aproximadamente 13 segundos de rádio ativo para ser completamente enviada ao destinatário, levando em consideração todos os tratamentos aplicados e especificações de imagem que estamos adotando, espera-se conseguirmos realizar o envio de imagens sob as mesmas configurações de \gls{sf} em um tempo menor ou igual ao demonstrado por Jebril e demais.
+
+\subsection{OCR}
+
+Baseado nos resultados apresentados pelo trabalho de \citeonline{SilvaVilela2021}, onde a abordagem é baseada no processamento em borda, utilizando um modelo de aprendizado de máquina para realizar o reconhecimento de caracteres, concluiu-se que é possível alcançar 90\% de acurácia no algoritmo de \gls{ocr}. 
+Em contrapartida, como empiricamente demonstrado por \citeonline{lederhans2022tratamento}, a utilização de frameworks de \gls{ocr} generalistas alcançou a acurácia de aproximadamente 93\% de eficiência.
+
+Sob o alicerce dos dois trabalhos, espera-se encontrar valores semelhantes em ambas abordagens, com processamento em borda alcançando 90\% ou mais, e a abordagem em nuvem, alcançando a acurácia de 93\% ou mais.
+
+\subsection{Consumo Energético}
+
+Dado que a medição de consumo energético de um sistema IOT que implementa \gls{lorawan} é impactado por diversos parâmetros, como \gls{sf}, \gls{cr}, \gls{payload}, entre outros, não é possível comparar tal métrica sem experiência empírica, onde as diferentes abordagens encontram-se sob o mesmo ambiente, mas espera-se que o método de Edge-Computing venha a ser uma solução que apresenta melhores índices de consumo, dado que esta abordagem é caracterizada por maior tempo de processamento e menor tempo de transmissão de dados, como explicado por \citeonline{Camargo2022}, 60\% do consumo energético de um sistema de IOT reside na transmissão de dados. 
+Por outro lado, a abordagem de computação centralizada, espera-se menor tempo de processamento e maior tempo de transmissão de dados, impactando significativamente no consumo energético do sistema.
+
+Em resumo, o dilema que o trabalho enfrenta é pautado pelo questionamento: “qual método consome menos recurso energético? Será que diminuir o consumo de recursos computacionais é mais vantajoso que reduzir o tempo necessário para transmissão de dados?”, e desta pergunta, pautada sob diversos dados, tende-se a observar que a abordagem tradicional (Edge-Computing) possivelmente entregue mais vantagens neste ponto.

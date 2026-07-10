@@ -1,0 +1,14 @@
+
+A evolução dos sistemas de telemetria para hidrômetros analógicos encontra-se em um impasse arquitetural. 
+De um lado, a literatura atual privilegia a computação em borda (\textit{Edge Computing}), utilizando modelos otimizados para realizar o processamento localmente.
+Essa abordagem visa minimizar o tráfego de dados, dado que, como explicado por \citeonline{Camargo2022}, cerca de 60\% do recurso energético em sistemas IoT é consumido pela comunicação.
+
+Entretanto, o processamento intensivo de visão computacional em hardware limitado, como o \gls{esp32cam}, impõe desafios severos de consumo de memória e validação de modelos de aprendizagem de máquina, podendo impactar drasticamente em acurácia de modelo e autonomia energética do dispositivo \citeonline{SilvaVilela2021}.
+Em contrapartida, a abordagem de processamento centralizado (\textit{Cloud Computing}) surge como uma alternativa menos difundida na literatura para o envio de dados não estruturados.
+
+Embora a transmissão de imagens via rede \gls{lorawan} apresente limitações críticas de largura de banda e maior latência na disponibilização dos dados, esta permite o uso de \textit{frameworks} de \gls{ocr} mais robustos e estabelecidos, como o motor Tesseract. 
+Esta centralização facilita manutenções em software sem a necessidade de desenvolvimento de um complexo \textit{firmware} ou intervenções físicas nos sensores em campo. 
+A relevância deste trabalho reside no estudo comparativo desses dois métodos sob redes de baixa largura de banda.
+
+Academicamente, o estudo preenche uma lacuna ao fornecer dados experimentais sobre o \textit{trade-off} entre processamento local e transmissão remota. 
+Na prática, a pesquisa auxilia na viabilização do \textit{retrofitting} de hidrômetros analógicos, permitindo dotar a infraestrutura atual de inteligência com custos reduzidos em comparação à substituição integral dos medidores convencionais por modelos inteligentes nativos \cite{Stefano2019}.

@@ -1,0 +1,32 @@
+
+A problemática da informatização do sistema de medição de consumo hídrico enfrenta três grandes desafios atualmente: 
+o alto custo de substituição de medidores convencionais, a necessidade constante de manutenção em aparelhos destinados a implementação de IOT e a acurácia em modelos de visão computacional desenvolvidos para viabilizar o tráfego de dados. 
+Para melhor entendimento da dimensão do problema, analisaremos sob a ótica de três grandes pilares: gestão de recursos hídricos, desafios na implementação de tecnologia IOT e a atual realidade de mercado.
+
+\subsection{Manejamento de Recursos Hídricos}
+
+Como evidenciado pelo \citeonline{tratabrasil2025}, aproximadamente  40,31\% de toda água produzida por agências de saneamento básico no Brasil é perdida por diversos fatores, entre eles, um dos fatores que se destaca é a perda causada por dificuldades de coleta e acompanhamento de dados fornecidos por hidrômetros, que para o Ministério das Cidades (2003), se qualifica como uma perda comercial. 
+Diante de tal problemática, abre-se a discussão sobre os graves impactos financeiros e no gerenciamento de recursos hídricos aos usuários da rede de distribuição, concessionárias e ao governo.
+
+Em ambientes privados e condomínios, a ausência de sistemas de monitoramento em tempo real impede a detecção precoce de anomalias e vazamentos ocultos. 
+Havendo uma lacuna em ferramentas que auxiliam consumidores e gerentes das redes hídricas efetuarem acompanhamento de dados de forma mais recorrente possibilitando realizar correções de maneira mais tempestiva.
+
+\subsection{Desafios Tecnológicos}
+
+Dado a natureza da aplicação dos dispositivos IOT, denota-se a necessidade da utilização de baterias como fonte primária de alimentação do sistema. 
+Diante de tal cenário, emerge o questionamento sobre qual o tipo de bateria mais adequado a se implementar. 
+
+Como explicado por \citeonline{hasan2023navigating}, há diversos fatores que impactam na escolha mais racional da bateria utilizada em dispositivos IOT, entre eles: densidade energética, intervalo de temperatura de funcionamento, segurança, eficiência energética, longevidade e custo.
+Ainda em tal artigo evidencia-se, como um forte candidato a este tipo de aplicação a escolha de bateria de íon-lítio, onde com o passar do tempo tornou-se mais viável economicamente e oferecendo bons níveis de todos os parâmetros citados anteriormente, sendo a opção escolhida para implementação em nossos dispositivos.
+
+Ainda sobre as baterias de íon-lítio, a \citeonline{panasonic_cr_standard}, uma das principais fabricantes de baterias deste tipo no mundo, publica abertamente os valores médios de ciclos de recarga suportados por seus produtos sob determinadas condições, no caso de um tipo de bateria de ion-lítio mais comumente utilizado, tal produto varia a quantidade de ciclos de recarga por volta de 1500 a 2000 ciclos.
+
+Portanto, aqui esclarecemos a necessidade de implementar um sistema eficiente energeticamente com o objetivo de prolongar a vida útil de um dos mais vitais componentes deste tipo de dispositivos e reduzir a necessidade de manutenção nos aparelhos desenvolvidos.
+
+\subsection{Realidade Mercadológica}
+
+A modernização da gestão hídrica enfrenta um impasse econômico. Embora existam medidores inteligentes nativos no mercado, a substituição integral dos parques de hidrômetros analógicos está vinculado à um custo inicial proibitivo ao consumidor médio. 
+Conforme indicado por \citeonline{fortune2025} e \citeonline{polimi2020}, o alto custo inicial exigido por tal solução, constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala. 
+A complexidade de infraestrutura necessária para a substituição física dos medidores limita a viabilidade econômica de projetos em áreas privadas de pequeno e médio porte.
+
+Ao acoplar módulos de baixo custo aos medidores já instalados, a digitalização de dispositivos analógicos preexistentes(\textit{dumb meters}), processo conhecido como \textit{retrofitting} permite dotar a infraestrutura atual de inteligência com custos reduzidos e com a mesma eficiencia dos medidores inteligentes que estão no mercado como mencionado por \citeonline{Stefano2019}.
