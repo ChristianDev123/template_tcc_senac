@@ -1,7 +1,7 @@
 This is makeindex, version 2.18 [TeX Live 2026] (kpathsea + Thai support).
 Scanning style file ./tcc.ist...........................done (27 attributes redefined, 0 ignored).
-Scanning input file tcc.glo....done (10 entries accepted, 0 rejected).
-Sorting entries....done (33 comparisons).
-Generating output file tcc.gls....done (12 lines written, 0 warnings).
+Scanning input file tcc.glo....done (27 entries accepted, 0 rejected).
+Sorting entries....done (126 comparisons).
+Generating output file tcc.gls....done (19 lines written, 0 warnings).
 Output written in tcc.gls.
 Transcript written in tcc.glg.
