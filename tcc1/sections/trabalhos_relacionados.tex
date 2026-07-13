@@ -1,0 +1,50 @@
+Nesta seção, analisam-se pesquisas que utilizam IoT e Visão Computacional para a digitalização de medidores de consumo, como as soluções de computação de borda propostas por \citeonline{SilvaVilela2021} e \citeonline{bravo2025ants}, além de arquiteturas de sensores inteligentes exploradas por \citeonline{Tedjojuwono2024}. 
+O objetivo é contextualizar as escolhas arquiteturais deste TCC, comparando modelos de processamento (borda vs nuvem) e protocolos de comunicação sem fio. 
+A revisão fundamenta o estado da técnica e destaca os diferenciais desta proposta em termos de infraestrutura de dados e eficiência energética.
+
+\subsection{Trabalho 1: Solução IoT para Digitalização de Medidores de Consumo por Visão Computacional e MicroML}
+
+\citeonline{SilvaVilela2021} abordou o tema de Soluções IOT para Medidores de Consumo. 
+Para resolvê-lo, foi desenvolvido um sistema utilizando microprocessadores ESP32, baseado no método de Edge-Computing (Computação em Borda), o autor desenvolveu um software próprio, otimizado para microprocessadores, focado em \gls{ocr}, extraindo os dados, transmitindo-os via rede \gls{lorawan} e armazenando-os localmente, posteriormente, os dados são informados em um simples dashboard apresentando o consumo extraído pelo sistema até o momento. 
+
+A metodologia utilizada foi a pesquisa experimental, onde houve o desenvolvimento de um sistema que supri a necessidade de extração de dados de maneira digital. 
+
+Os resultados mostraram que o desenvolvimento deste tipo de ferramenta é totalmente viável, e em suma, o experimento foi bem sucedido. 
+No entanto, a solução apresenta limitações, principalmente no que tange o desenvolvimento de dataset, onde não foi implementado tratamento adequado ao enviesamento dos dados. 
+Também existe uma carência em métricas para medição de consumo energético e de processamento pelo sistema.
+
+O presente trabalho diferencia-se por aplicar uma comparação entre uma arquitetura clássica de Edge vs Cloud, e um ponto que atacamos mais profundamente é a apresentação de métricas importantíssimas no desenvolvimento de um sistema IOT além da acurácia de modelo, por exemplo, as métricas de consumo energético e impactos em manutenção por decisões tomadas. 
+
+\subsection{Trabalho 2: Sistema de Gerenciamento Inteligente de Água Utilizando Sensores Baseados em IoT}
+
+\citeonline{Tedjojuwono2024} abordou o tema de sistemas inteligentes para o manejo de recursos hídricos em áreas residenciais. 
+Para resolvê-lo, os autores propuseram o desenvolvimento de um framework que substitui medidores mecânicos por sensores de fluxo eletrônicos integrados a uma arquitetura IoT. 
+O sistema utiliza prototipagem com Arduino Uno e sensores de efeito Hall (YF-S201) para coletar dados de vazão em tempo real, enviando as informações via módulo 3G/GPRS para um servidor de banco de dados centralizado. 
+Os dados processados alimentam uma aplicação web que permite o monitoramento do consumo, faturamento automatizado e a detecção precoce de anomalias na distribuição.
+
+A metodologia utilizada seguiu os princípios do Design Thinking, incluindo uma fase qualitativa de coleta de requisitos através de entrevistas com usuários e a criação de mapas de empatia, seguida pelo desenvolvimento do protótipo e avaliação de usabilidade através da escala SUS (System Usability Scale). 
+
+Os resultados mostraram que a solução é viável e intuitiva, obtendo uma pontuação média de 72 na escala SUS, o que indica uma boa aceitação pelos usuários. 
+No entanto, o trabalho aponta limitações na abrangência dos dados, focando primariamente na taxa de fluxo, e destaca a necessidade de integrar mais tipos de sensores (como pressão e qualidade da água) para análises de Big Data mais robustas. 
+Além disso, a precisão total do sistema de previsão depende de um volume maior de dados históricos que ainda precisam ser coletados. 
+
+O presente trabalho diferencia-se por focar na infraestrutura de comunicação \gls{lorawan}, visando uma maior eficiência energética e alcance em comparação ao GPRS/3G utilizado pelos autores, além de explorar a integração direta com medidores analógicos já existentes através de telemetria, em vez da substituição completa do hardware de medição. 
+
+\subsection{Trabalho 3: Rede de Sensores Sem Fio Habilitada para LoRa para Leitura e Faturamento de Consumo de Água Usando Reconhecimento Óptico de Caracteres}
+
+\citeonline{bravo2025ants} desenvolveram um sistema automatizado para leitura de hidrômetros analógicos utilizando uma combinação de tecnologias de baixo custo e comunicação de longo alcance.
+O objetivo central foi mitigar erros humanos e atrasos operacionais comuns em leituras manuais.
+
+A metodologia consistiu na integração de um módulo \gls{esp32cam} para captura de imagens dos medidores e um algoritmo de \gls{ocr} para a extração digital dos dados de consumo no próprio dispositivo. 
+Para a transmissão, utilizou-se a tecnologia \gls{lora} (módulo Ra-02), operando em uma topologia de rede que inclui repetidores para estender o alcance e um gateway central para envio dos dados à nuvem. 
+O sistema também implementou estratégias de gerenciamento de energia através de ciclos de (\textit{deep sleep}) programados para aumentar a vida útil da bateria.
+
+Os resultados apontaram uma precisão de 99,71\% no reconhecimento dos dígitos e um alcance de transmissão estável de até 1070 metros em condições de campo aberto. 
+Os autores observaram que medidores mais antigos ou obstruídos podem elevar o tempo de processamento do \gls{ocr}.
+
+O presente trabalho diferencia-se da abordagem de \citeonline{bravo2025ants} ao deslocar a carga computacional do \gls{ocr} do dispositivo final para a nuvem. 
+Enquanto o trabalho correlato executa o processamento localmente no \gls{esp32cam}, esta pesquisa foca na robustez de um pipeline de processamento remoto. 
+Isso permite a utilização de modelos de visão computacional mais complexos e precisos, que excederiam a capacidade de memória e processamento do hardware local, além de centralizar a lógica de extração de dados para facilitar manutenções e atualizações do algoritmo de IA sem a necessidade de novos firmwares nos sensores. 
+Esta abordagem também visa mitigar as dificuldades de processamento em medidores antigos ou obstruídos, um desafio observado na implementação local de \citeonline{bravo2025ants}.
+
+Utilizaremos esse trabalho como referência de borda para realizar uma comparação com a abordagem de processamento em nuvem, contribuindo para a discussão sobre o trade-off entre eficiência energética e precisão em sistemas de telemetria de baixo custo.
