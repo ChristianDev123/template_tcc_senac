@@ -1,3 +1,74 @@
+% =================================================================================================
+
+\subsection{LoRa}
+
+Como explicado por \citeonline{Camargo2022}, \gls{lora} é uma tecnologia, patenteada e desenvolvida pela Semtech, que tem como foco viabilizar a transmissão de dados sem fio em longo alcance através de radiofrequência.
+
+A rede \gls{lorawan} é constituída por dispositivos finais, gateways e servidores de rede/aplicação.
+Com o objetivo de realizar um gerenciamento mais fino de consumo energético, a comunicação entre os dispositivos finais e servidores de rede são definidos por três classes como demonstrado na tabela~\ref{tab:tabela_classes}.
+
+\begin{table}[H]
+    \centering
+    \caption{Classes de Configuração LoRa}
+    \label{tab:tabela_classes}
+    \begin{tabular}{|l|p{6cm}|p{6cm}|}
+        \toprule
+        \textbf{Classe} & \textbf{Descrição} & \textbf{Característica} \\
+        \midrule
+        Classe A & O dispositivo final é habilitado à receber downlink imediatamente após ser realizado um envio de mensagem (uplink) & Menor consumo energético e menor tráfego de mensagens \\
+        \midrule
+        Classe B & O dispositivo final é habilitado à receber downlink em períodos agendados e conhecidos & Consumo energético significantemente maior que a classe A, mas viabiliza comunicação mais frequente entre servidor e dispositivo final \\
+        \midrule
+        Classe C & O dispositivo final é continuamente habilitado à receber downlink & Consumo energético muito alto, mas viabiliza a comunicação entre as partes de forma quase ininterrupta  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \caption{Campos contidos em um pacote de Uplink}
+    \label{fig:lora_uplink}
+    \includegraphics[width=0.85\textwidth]{sections/imagens/SemTech_Uplink_Dataframe.png}
+    \small
+    \begin{quote}
+        Fonte: Adaptado de Semtech Corporation \cite{semtech2024an1200}.
+    \end{quote}
+\end{figure}
+
+A figura~\ref{fig:lora_uplink} apresenta a estrutura de pacote de rede que é utilizado na tecnologia LoRa. 
+Tal estrutura é utilizada tanto no envio de dados pelo dispositivo final (uplink), quanto no recebimento de dados (downlink).
+
+\begin{figure}[H]
+    \centering
+    \caption{Campos contidos em Frame Header em Downlink}
+    \label{fig:fhdr_lora_downlink}
+    \includegraphics[width=0.85\textwidth]{sections/imagens/SemTech_Downlink_Dataframe.png}
+    \small
+    \begin{quote}
+        Fonte: Adaptado de Semtech Corporation \cite{semtech2024an1200}.
+    \end{quote}
+\end{figure}
+
+A estrutura do pacote de rede de uplink e downlink é a mesma, mas há diferenças em flags específicas entre os tipos de transmissão de dados. 
+A figura~\ref{fig:fhdr_lora_downlink} apresenta a estrutura do “Frame Header / FHDR“ utilizada em downlink, as estruturas de pacote divergiam-se na flag de classe B, para uplink, onde o dispositivo final informa ao servidor estar no modo de recebimento de mensagens em tempo programado, e no pacote downlink, há a flag de FPeding, onde tal flag é utilizada para informar a existência de mais mensagens à serem enviadas ao servidor/getaway.
+
+Conforme apresentado pela \citeonline{lora_alliance_rp002_105} o tamanho máximo de MACPayload, respeitando o padrão regulatório AU915, que será melhor explicado e abordado posteriormente, em bytes é variável e dependente do tamanho ocupado pelo atributo Fopts, que é utilizado para solicitar alterações de parâmetros de rede ao dispositivo final.
+Não utilizando repetidores de sinal que interligam dispositivos finais com gateways, o tamanho máximo de MACPayload é de 250 bytes, restando em torno de 227 bytes utilizáveis em \gls{payload}.
+
+% =================================================================================================
+
+\subsection{LoRaWan}
+
+% =================================================================================================
+
+\subsection{Edge Computing}
+
+% =================================================================================================
+
+\subsection{Cloud Computing}
+
+% =================================================================================================
+
 \subsection{Hardware de baixo consumo e Eficiência em IoT}
 
 O desenvolvimento de nós de sensoriamento para cidades inteligentes exige hardware que equilibre poder de processamento e autonomia energética.
@@ -14,6 +85,8 @@ O \gls{lorawan}, é um protocolo \gls{lpwan}, que possui o objetivo de viabiliza
 Diante disso, o protocolo surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de redução de consumo energético, em contra partida, a baixa largura de banda oferecida por tal solução apoia o desenvolvimento de sistemas baseado em edge-computing, trafegando em rede apenas os dados e metadados prontos para serem tratados em gateway central.
 
 Toda via, surge o desafio de alinhar o menor consumo de recurso energético possível, com o objetivo de prolongar a vida útil de bateria dos dispositivos utilizados, às mais otimizadas soluções de rede, hardware e técnicas de desenvolvimento de software.
+
+% =================================================================================================
 
 \subsection{Modelagem OCR}
 
@@ -32,6 +105,8 @@ Diante da metodologia de processamento em cloud, será aplicado o framework de \
 Como \citeonline{Gribomont2020} e \citeonline{lederhans2022tratamento} detalham, o Tesseract destaca-se como uma opção de médio custo de processamento e baixa taxa de erro. 
 Além disso, tal framework apresenta alta viabilidade e acessibilidade por ser uma ferramenta open-source, oferecendo vantagens em projetos acadêmicos quando comparada a soluções comerciais pagas, como a Google Vision API.
 
+% =================================================================================================
+
 \subsection{Software Otimizado em Sistemas Restritos}
 
 O desenvolvimento do software para dispositivos IoT exige um rigoroso controle sobre a alocação de recursos, uma vez que a eficiência impacta diretamente ao consumo energético e viabilidade do sistema. 
@@ -44,6 +119,8 @@ O processamento intensivo exigido pelo \gls{ocr} requer que a implementação ev
 \citeonline{Plauska2023} demonstram que linguagens compiladas como C e C++ garantem um desempenho superior na gestão de CPU e memória SRAM em relação às linguagens interpretadas. 
 Aliando essa eficiência à total compatibilidade do C/C++ com o ecossistema do \gls{espidf}, o desenvolvedor obtém um controle de memória altamente preciso. 
 Essa gestão minuciosa e de baixo nível é o fator crítico que viabiliza a execução de algoritmos de extração de características em microcontroladores limitados a poucas centenas de kilobytes de memória.
+
+% =================================================================================================
 
 \subsection{Envio de Imagens via LoRaWan}
 
@@ -62,6 +139,8 @@ mais influentes na execução de tal abordagem. Um ponto apresentado por
 \citeonline{almeida2022iot} é a aplicação de algoritmos de compressão 
 como o JPEG e a transformação de imagens em escala de cinza, reduzindo 
 assim as informações a serem enviadas via rede.
+
+% =================================================================================================
 
 \subsubsection{Restrições Regulatórias e Parâmetros de Transmissão LoRaWan}
 
@@ -106,6 +185,8 @@ transmissão via \gls{lorawan} pela razão entre o número de pacotes recebidos
 pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor, 
 conforme a Equação~\ref{eq:pdr}~\cite{bravo2025ants}.
 
+% =================================================================================================
+
 \subsection{Metodologia de Avaliação e Métricas de Validação}
 \label{sec:metricas}
 
@@ -122,6 +203,8 @@ PDR = \left( \frac{\text{Pacotes Recebidos}}{\text{Pacotes Enviados}} \right) \t
 
 Além do PDR, será medida a latência de ponta a ponta, compreendendo o tempo decorrido desde o disparo da captura da imagem no ESP32 até a disponibilidade do dado processado no \textit{dashboard}.
 
+% =================================================================================================
+
 \subsubsection{Acurácia da Visão Computacional (OCR)}
 A validação do algoritmo de \gls{ocr}, responsável pela extração dos dígitos dos hidrômetros analógicos, será realizada sob diferentes condições de iluminação e ângulos de captura, visando simular cenários reais de instalação. 
 
@@ -134,6 +217,8 @@ Acc_{ocr} = \frac{VP + VN}{VP + VN + FP + FN}
 
 Onde $VP$, $VN$, $FP$ e $FN$ representam, respectivamente, os Verdadeiros Positivos, Verdadeiros Negativos, Falsos Positivos e Falsos Negativos obtidos através da Matriz de Confusão. 
 Esta abordagem quantitativa permite identificar se erros de leitura estão associados a fatores externos, como reflexos na cúpula de vidro do medidor ou distorções de perspectiva.
+
+% =================================================================================================
 
 \subsubsection{Autonomia Energética}
 A eficiência do hardware será validada através da medição do consumo de corrente em diferentes estados de operação (\textit{Deep Sleep}, captura de imagem e transmissão). 
