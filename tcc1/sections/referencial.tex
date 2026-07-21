@@ -88,6 +88,63 @@ A tabela~\ref{tab:parametros_lora} apresenta as definições dos principais par�
 
 \subsection{LoRaWan}
 
+O \gls{lorawan}, é um protocolo de comunicação baseado na tecnologia \gls{lpwan}, que possui o objetivo de viabilizar a comunicação em grandes distâncias, conciliado ao baixo consumo energético.
+O protocolo é open-source e mantido pela LoRa Alliance. 
+Como citado anteriormente, a rede \gls{lorawan} é formada por dispositivos finais, getaways, servidores de rede e servidores de aplicação \cite{Camargo2022}. 
+
+A figura~\ref{fig:stack_layer_lora} apresenta a pilha de elementos das camadas MAC e Física que compõem a arquitetura do protocolo \gls{lorawan}.
+
+\begin{figure}[H]
+    \centering
+    \caption{Pilha de elementos das camadas LoRa/LoRaWan}
+    \label{fig:stack_layer_lora}
+    \includegraphics[width=0.85\textwidth]{sections/imagens/LoRaWan_Pilha_Camadas.png}
+    \small
+    \begin{quote}
+        Fonte: Adaptado de Semtech Corporation \cite{semtech2024an1200_86}.
+    \end{quote}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \caption{Implementação Típica de Rede LoRaWan}
+    \label{fig:implementacao_tipica_lorawan}
+    \includegraphics[width=0.85\textwidth]{sections/imagens/Implementacao_tipica_LoRaWan.png}
+    \small
+    \begin{quote}
+        Fonte: Adaptado de Semtech Corporation \cite{semtech2024an1200_86}.
+    \end{quote}
+\end{figure}
+
+A figura~\ref{fig:implementacao_tipica_lorawan} apresenta a arquitetura típica de uma sistema IOT que utiliza como base o protocolo \gls{lorawan} para viabilizar a comunicação entre os dispositivos. Cada elemento que compõe uma rede \gls{lorawan}, possui uma responsabilidade, tal qual, neste momento, é extremamente válido analisá-las individualmente:
+
+\subsubsection{Dispositivos Finais (End Nodes)}
+
+\citeonline{semtech2024an1200_86} define que dispositivos finais habilitados à LoRaWan são sensores ou atuadores que são conectados à gateways via modulação de rádio frequência LoRa. 
+
+A maioria das aplicações desses dispositivos são autônomos, dependentes de baterias como fonte energética primária e possuem como responsabilidade digitalizar condições físicas como temperatura, captura de imagens, níveis de tremulação, entre outros.
+
+Em relação às possíveis configurações que podem ser aplicadas nos dispositivos finais, como apresentado por \citeonline{Camargo2022}, cada nó pode assumir uma das configurações que a tabela~\ref{tab:tabela_classes} apresenta. Outro parâmetro configurável é o tipo de autenticação dos dispositivos em rede, onde há o padrão \gls{otaa}, onde o próprio dispositivo gerencia a conexão à rede e a \gls{abp}, onde os dispositivos são vinculados de forma manual à uma rede em específico, não passando por processo de entrada implementado no \gls{otaa}.
+
+O LoRaWan utiliza o padrão AES de criptografia onde é aplicado tanto em camada de aplicação quanto em camada de rede.
+
+Os dispositivos finais, corriqueiramente, são desenvolvidos sob microprocessadores, os dispositivos podem tanto utilizar placas que já incluem módulos LoRaWan nativos, quanto serem desenvolvidos sob plataformas como ESP32, Arduíno, Raspberry Pi, entre outras.
+A partir da construção do dispositivo, ou acoplamento de módulos, possibilita-se a captura de dados em ambiente \cite{Camargo2022}.
+
+\begin{figure}[H]
+    \centering
+    \caption{Módulo ESP32CAM integrado com LoRa}
+    \label{fig:esp32cam_lora}
+    \includegraphics[width=0.85\textwidth]{sections/imagens/ESP32CAM_LoRa.jpg}
+    \small
+    \begin{quote}
+        Fonte: \cite{robinson2021stuartcam}.
+    \end{quote}
+\end{figure}
+
+\subsubsection{Getaways}
+\subsubsection{Servidores de Rede e Aplicação}
+
 % =================================================================================================
 
 \subsection{Edge Computing}
@@ -110,8 +167,7 @@ Segundo \citeonline{Ferreira2020}, a vida útil da bateria é influenciada criti
 
 Segundo \citeonline{Camargo2022}, em torno de 60\% do recurso energético de sistemas IOT são consumidos na comunicação, a escolha efetiva de protocolo de comunicação e otimização de parâmetros como dispersão de sinal, largura de banda e taxa de codificação (destinado a redundância de mensagem, tolerância a erros), entre outros fatores, torna-se uma tarefa de suma importância no desenvolvimento de um sistema IOT otimizado de baixo custo.
 
-O \gls{lorawan}, é um protocolo \gls{lpwan}, que possui o objetivo de viabilizar a comunicação em grandes distâncias, conciliado ao baixo consumo energético. 
-Diante disso, o protocolo surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de redução de consumo energético, em contra partida, a baixa largura de banda oferecida por tal solução apoia o desenvolvimento de sistemas baseado em edge-computing, trafegando em rede apenas os dados e metadados prontos para serem tratados em gateway central.
+Diante disso, o protocolo \gls{lorawan} surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de redução de consumo energético, em contra partida, a baixa largura de banda oferecida por tal solução apoia o desenvolvimento de sistemas baseado em edge-computing, trafegando em rede apenas os dados e metadados prontos para serem tratados em gateway central.
 
 Toda via, surge o desafio de alinhar o menor consumo de recurso energético possível, com o objetivo de prolongar a vida útil de bateria dos dispositivos utilizados, às mais otimizadas soluções de rede, hardware e técnicas de desenvolvimento de software.
 
