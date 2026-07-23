@@ -116,7 +116,7 @@ A figura~\ref{fig:stack_layer_lora} apresenta a pilha de elementos das camadas M
     \end{quote}
 \end{figure}
 
-A figura~\ref{fig:implementacao_tipica_lorawan} apresenta a arquitetura típica de uma sistema IOT que utiliza como base o protocolo \gls{lorawan} para viabilizar a comunicação entre os dispositivos. Cada elemento que compõe uma rede \gls{lorawan}, possui uma responsabilidade, tal qual, neste momento, é extremamente válido analisá-las individualmente:
+A figura~\ref{fig:implementacao_tipica_lorawan} apresenta a arquitetura típica de uma sistema \gls{iot} que utiliza como base o protocolo \gls{lorawan} para viabilizar a comunicação entre os dispositivos. Cada elemento que compõe uma rede \gls{lorawan}, possui uma responsabilidade, tal qual, neste momento, é extremamente válido analisá-las individualmente:
 
 \subsubsection{Dispositivos Finais (End Nodes)}
 
@@ -131,9 +131,15 @@ O LoRaWan utiliza o padrão AES de criptografia onde é aplicado tanto em camada
 Os dispositivos finais, corriqueiramente, são desenvolvidos sob microprocessadores, os dispositivos podem tanto utilizar placas que já incluem módulos LoRaWan nativos, quanto serem desenvolvidos sob plataformas como ESP32, Arduíno, Raspberry Pi, entre outras.
 A partir da construção do dispositivo, ou acoplamento de módulos, possibilita-se a captura de dados em ambiente \cite{Camargo2022}.
 
+Como destacado por \citeonline{Sari2022} e \citeonline{Ahmad2021}, o ESP32 destaca-se nesse cenário como uma plataforma robusta de baixo custo, integrando conectividade sem fio e múltiplos modos de operação. 
+Diferente de arquiteturas mais simples, o ESP32 permite a execução de tarefas complexas e segurança criptográfica sem comprometer severamente o ciclo de vida da bateria, desde que devidamente configurado.
+
+Segundo \citeonline{Ferreira2020}, a vida útil da bateria é influenciada criticamente não apenas pelo hardware, mas pela eficiência das rotinas de escrita em periféricos e pela otimização do firmware.
+Diante de tal afirmação destaca-se a função \textit{deep sleep} presente no ESP32 que possui como foco a minimização do consumo energético quando em estado ocioso.
+
 \begin{figure}[H]
     \centering
-    \caption{Módulo ESP32CAM integrado com LoRa}
+    \caption{Módulo ESP32-CAM integrado com LoRa}
     \label{fig:esp32cam_lora}
     \includegraphics[width=0.85\textwidth]{sections/imagens/ESP32CAM_LoRa.jpg}
     \small
@@ -143,6 +149,18 @@ A partir da construção do dispositivo, ou acoplamento de módulos, possibilita
 \end{figure}
 
 \subsubsection{Getaways}
+
+O gateway, como demonstrado na figura~\ref{fig:implementacao_tipica_lorawan}, é um elemento da rede LoRaWan que tem como responsabilidade agrupar dispositivos finais e viabilizar a comunicação entre o dispositivo final e o servidor de rede, \cite{Camargo2022}. 
+
+A comunicação entre o dispositivo final e o gateway é realizada via protocolo LoRaWan, onde o gateway pode realizar a tarefa de registrar tráfego de mensagens. 
+Como explicado por \citeonline{semtech2024an1200_86}, os dispositivos finais ao realizar o envio de uplink, distribuem as suas mensagens à todos os getaways alcançáveis dentro da mesma rede, tal função tem como objetivo garantir a que ao menos um dos gateways da rede receba e transmita a mensagem ao servidor de rede.
+
+Os gateways operam em camada física, convencionalmente, assumem a responsabilidade apenas de viabilizar o tráfego de requisições uplink e downlink e realizar a verificação de integridade do pacote, não realizando processamento intermediário da mensagem para enviá-la ao servidor de rede, \cite{semtech2024an1200_86}.
+
+A comunicação entre o gateway e o servidor de rede, corriqueiramente, é estabelecida utilizando protocolo TCP/IP. Toda comunicação dentro do protocolo LoRaWan é bidirecional, \cite{Camargo2022}.
+
+É possível encontrar gateways prontos de multiplos canais sendo comercializados, mas é plenamente viável desenvolver getaways a partir de módulos e placas de prototipagem como a apresentada na figura~\ref{fig:esp32cam_lora}. 
+
 \subsubsection{Servidores de Rede e Aplicação}
 
 % =================================================================================================
@@ -159,14 +177,7 @@ A partir da construção do dispositivo, ou acoplamento de módulos, possibilita
 
 O desenvolvimento de nós de sensoriamento para cidades inteligentes exige hardware que equilibre poder de processamento e autonomia energética.
 
-Como destacado por \citeonline{Sari2022} e \citeonline{Ahmad2021}, o ESP32 destaca-se nesse cenário como uma plataforma robusta de baixo custo, integrando conectividade sem fio e múltiplos modos de operação. Diferente de arquiteturas mais simples, o ESP32 permite a execução de tarefas complexas e segurança criptográfica sem comprometer severamente o ciclo de vida da bateria, desde que devidamente configurado.
-
-A viabilidade de dispositivos IoT em campo, como medidores de água residenciais, dependem da minimização do consumo em estado de repouso (\textit{deep sleep}). 
-
-Segundo \citeonline{Ferreira2020}, a vida útil da bateria é influenciada criticamente não apenas pelo hardware, mas pela eficiência das rotinas de escrita em periféricos e pela otimização do firmware.
-
-Segundo \citeonline{Camargo2022}, em torno de 60\% do recurso energético de sistemas IOT são consumidos na comunicação, a escolha efetiva de protocolo de comunicação e otimização de parâmetros como dispersão de sinal, largura de banda e taxa de codificação (destinado a redundância de mensagem, tolerância a erros), entre outros fatores, torna-se uma tarefa de suma importância no desenvolvimento de um sistema IOT otimizado de baixo custo.
-
+Segundo \citeonline{Camargo2022}, em torno de 60\% do recurso energético de sistemas \gls{iot} são consumidos na comunicação, a escolha efetiva de protocolo de comunicação e otimização de parâmetros como os citados na tabela~\ref{tab:parametros_lora}, torna-se uma tarefa de suma importância no desenvolvimento de um sistema \gls{iot} otimizado de baixo custo.
 Diante disso, o protocolo \gls{lorawan} surge como uma proposta de comunicação de fácil implementação e que propõe uma solução para a problemática de redução de consumo energético, em contra partida, a baixa largura de banda oferecida por tal solução apoia o desenvolvimento de sistemas baseado em edge-computing, trafegando em rede apenas os dados e metadados prontos para serem tratados em gateway central.
 
 Toda via, surge o desafio de alinhar o menor consumo de recurso energético possível, com o objetivo de prolongar a vida útil de bateria dos dispositivos utilizados, às mais otimizadas soluções de rede, hardware e técnicas de desenvolvimento de software.
@@ -179,7 +190,7 @@ O \gls{ocr} é o processo de digitalização de dados presentes em imagens e ví
 A utilização de tal artifício neste trabalho justifica-se pela necessidade de capacitar o sistema em realizar leitura de valores em imagens extraídas pelos nós sensoriais.
 
 Utilizando a metodologia de processamento na borda (TinyML), será adotado o framework TensorFlow Lite for Microcontrollers, escolhido por sua forte integração com a arquitetura do ESP32 e pela otimização elástica no uso de memória \citeonline{david2021}.
-O pipeline de trabalho consistirá na criação e tratamento do dataset utilizando como base o conjunto público Water Meters Dataset por \citeonline{kucev2020}, associado a capturas locais do próprio sensor, treinamento supervisionado e aplicação do modelo no sistema IoT.
+O pipeline de trabalho consistirá na criação e tratamento do dataset utilizando como base o conjunto público Water Meters Dataset por \citeonline{kucev2020}, associado a capturas locais do próprio sensor, treinamento supervisionado e aplicação do modelo no sistema \gls{iot}.
 O tratamento do dataset incluirá o redimensionamento das imagens, a conversão para escala de cinza, a normalização dos dados e técnicas de data augmentation, visando adequar as entradas às restrições de hardware e melhorar a generalização do aprendizado.
 
 Para o reconhecimento dos dígitos dos hidrômetros, será desenvolvida uma rede neural convolucional (CNN) própria submetida à abordagem de \textit{Transfer Learning} para especialização no cenário estático do projeto. 
@@ -194,7 +205,7 @@ Além disso, tal framework apresenta alta viabilidade e acessibilidade por ser u
 
 \subsection{Software Otimizado em Sistemas Restritos}
 
-O desenvolvimento do software para dispositivos IoT exige um rigoroso controle sobre a alocação de recursos, uma vez que a eficiência impacta diretamente ao consumo energético e viabilidade do sistema. 
+O desenvolvimento do software para dispositivos \gls{iot} exige um rigoroso controle sobre a alocação de recursos, uma vez que a eficiência impacta diretamente ao consumo energético e viabilidade do sistema. 
 Em plataformas com recursos limitados, como o ESP32, as escolhas da linguagem de programação e frameworks são essenciais e determinantes para o sucesso de implementação de tarefas complexas.
 
 Do ponto de vista computacional e eficiência de recursos, o uso nativo do \gls{espidf} (\textit{Espressif IoT Development Framework}) apresenta vantagens significativas em comparação a frameworks de alto nível, como Arduino e MicroPython. 
