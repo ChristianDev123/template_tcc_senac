@@ -121,7 +121,7 @@ redundantes adicionados para tolerância a erros; o valor 4/5 representa
 o menor \textit{overhead} de redundância disponível no padrão 
 \gls{lora}~\cite{adam2022}.
 
-A \textit{Packet Delivery Ratio} (PDR) quantifica a robustez da 
+A \gls{pdr} quantifica a robustez da 
 transmissão via \gls{lorawan} pela razão entre o número de pacotes recebidos 
 pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor, 
 conforme a Equação~\ref{eq:pdr}~\cite{bravo2025ants}.
@@ -134,7 +134,7 @@ conforme a Equação~\ref{eq:pdr}~\cite{bravo2025ants}.
 Para avaliar a eficácia do sistema de telemetria proposto e garantir a objetividade dos resultados, serão adotados indicadores quantitativos divididos em três dimensões críticas: desempenho de rede, precisão de visão computacional, eficiência energética e acurácia preditiva.
 
 \subsubsection{Desempenho da Rede de Comunicação}
-A robustez da transmissão via \gls{lorawan} será quantificada através da Taxa de Entrega de Pacotes (PDR - \textit{Packet Delivery Ratio}). 
+A robustez da transmissão via \gls{lorawan} será quantificada através da Taxa de Entrega de Pacotes (\gls{pdr}). 
 Conforme a metodologia de \citeonline{bravo2025ants}, o PDR é definido pela razão entre o número de pacotes recebidos pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor:
 
 \begin{equation}
@@ -142,7 +142,7 @@ Conforme a metodologia de \citeonline{bravo2025ants}, o PDR é definido pela raz
 PDR = \left( \frac{\text{Pacotes Recebidos}}{\text{Pacotes Enviados}} \right) \times 100
 \end{equation}
 
-Além do PDR, será medida a latência de ponta a ponta, compreendendo o tempo decorrido desde o disparo da captura da imagem no ESP32 até a disponibilidade do dado processado no \textit{dashboard}.
+Além do \gls{pdr}, será medida a latência de ponta a ponta, compreendendo o tempo decorrido desde o disparo da captura da imagem no ESP32 até a disponibilidade do dado processado no \textit{dashboard}.
 
 % =================================================================================================
 
