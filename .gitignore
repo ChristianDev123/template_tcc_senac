@@ -21,6 +21,13 @@
 *.4tc
 *.xdy
 *.html
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
 # Additional caches
 *.run.xml
 *.bcf
@@ -32,6 +39,10 @@ _minted*
 .idea/
 .vscode/
 *.brf
+
+# Arquivos gerados pelo WSL
+*:Zone.Identifier
+**/*.Identifier
 
 # Pasta de arquivos locais (PDFs, livros, materiais de apoio)
 arquivos/

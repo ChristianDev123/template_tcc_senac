@@ -13,8 +13,13 @@ O projeto está estruturado em dois componentes interdependentes:
 O núcleo da investigação consiste na implementação e comparação de dois modelos operacionais:
 
 \begin{enumerate}
-    \item \textbf{Processamento Local (Edge OCR):} O dispositivo de borda realiza a inferência da imagem localmente utilizando a biblioteca Tensorflow Lite Micro. Neste modo, o processamento visual é restrito ao hardware local e apenas o valor numérico da leitura é transmitido.
-    \item \textbf{Processamento Remoto (Cloud OCR):} O dispositivo envia a imagem capturada (fragmentada e comprimida) para o servidor, onde a imagem recebida é pré-processada pela biblioteca OpenCV para otimização da leitura. Em seguida, a extração de caracteres é feita pelo motor Tesseract. 
+    \item \textbf{Processamento Local (Edge OCR):} 
+      \begin{itemize}
+        \item \textbf{Construção e Tratamento do Dataset:} Utilização do conjunto público Water Meters Dataset \citeonline{kucev2020} associado a capturas locais do próprio sensor. O tratamento incluirá redimensionamento das imagens, conversão para escala de cinza, normalização dos dados e data augmentation.
+        \item \textbf{Treinamento e Classificação:} Desenvolvimento de uma rede neural convolucional (CNN) própria submetida à técnica de \textit{Transfer Learning} para reconhecimento dos dígitos dos hidrômetros. Em complemento, algoritmos de árvores de decisão e floresta aleatória atuarão na classificação do objeto alvo.
+        \item \textbf{Otimização e Implantação:} O modelo pré-treinado passará por quantização INT8 e será executado por meio do TensorFlow Lite for Microcontrollers, de onde espera-se obter os valores exatos de medição.
+      \end{itemize}
+    \item \textbf{Processamento Remoto (Cloud OCR):} O dispositivo envia a imagem capturada (fragmentada e comprimida) para o servidor, onde a imagem recebida é pré-processada pela biblioteca OpenCV para otimização da leitura. Em seguida, será aplicado o framework de \gls{ocr} de propósito geral \textit{Tesseract OCR} para a extração de caracteres.
 \end{enumerate}
 
 Esta abordagem dual permitirá a recolha de métricas quantitativas sobre a vida útil estimada da bateria, a acurácia do reconhecimento em diferentes condições de luminosidade e a fiabilidade da transmissão de pacotes pesados em redes \gls{lorawan}. Assim, a solução deixa de ser meramente uma implementação técnica para tornar-se uma análise de viabilidade para sistemas de \textit{Smart Metering} em larga escala.
