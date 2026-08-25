@@ -2,33 +2,39 @@
 % TEMPLATE TCC2 - SENAC SANTO AMARO
 % ---------------------------------------------------------------
 % Trabalho de Conclusão de Curso 2
+% Elaborado para apresentação do trabalho final do TCC
+% Estrutura: Introdução, Revisão Bibliográfica, Metodologia,
+%            Desenvolvimento, Resultados e Análise, Conclusão
 % ---------------------------------------------------------------
 
 \documentclass[
-    12pt,
-    openright,
-    oneside,
-    a4paper,
-    english,
-    brazil
+    12pt,                % tamanho da fonte
+    openright,           % capítulos começam em página ímpar
+    oneside,             % para impressão em apenas um lado do papel
+    a4paper,             % tamanho do papel
+    english,             % idioma adicional
+    brazil               % idioma principal
 ]{abntex2}
 
-\usepackage{lmodern}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage{lastpage}
-\usepackage{indentfirst}
-\usepackage{color}
-\usepackage{graphicx}
-\usepackage{microtype}
-\usepackage{float}
-\usepackage{booktabs}
-\usepackage{multirow}
-\usepackage{longtable}
-\usepackage{amsmath,amssymb}
+% ---------------------------------------------------------------
+% PACOTES
+% ---------------------------------------------------------------
+\usepackage{lmodern}                % Fonte Latin Modern
+\usepackage[T1]{fontenc}            % Seleção de códigos de fonte
+\usepackage[utf8]{inputenc}         % Codificação do documento
+\usepackage{lastpage}               % Usado pela Ficha catalográfica
+\usepackage{indentfirst}            % Indenta o primeiro parágrafo
+\usepackage{color}                  % Controle de cores
+\usepackage{graphicx}               % Inclusão de gráficos
+\usepackage{microtype}              % Melhorias de justificação
+\usepackage{float}                  % Para posicionamento de figuras
+\usepackage{booktabs}               % Tabelas profissionais
+\usepackage{multirow}               % Células mescladas em tabelas
+\usepackage{longtable}              % Tabelas longas
+\usepackage{amsmath,amssymb}        % Símbolos matemáticos
 \usepackage{pgfgantt}               % Diagramas de Gantt
-\usepackage[brazilian,hyperpageref]{backref}
-\usepackage[alf]{abntex2cite}
+\usepackage[brazilian,hyperpageref]{backref}  % Páginas com citações
+\usepackage[alf]{abntex2cite}       % Citações ABNT
 %Adicionados posteriormente:
 \usepackage{tabularx} % Para tabelas com largura ajustada
 \usepackage{booktabs} % Para linhas mais elegantes (estilo acadêmico)
@@ -36,9 +42,9 @@
 \usepackage[table]{xcolor}
 \usepackage{adjustbox}
 \usepackage[acronym, automake, nopostdot]{glossaries}
-
-\definecolor{blue}{RGB}{41,5,195}
-
+% ---------------------------------------------------------------
+% CONFIGURAÇÕES DO PDF
+% ---------------------------------------------------------------
 \makeatletter
 \hypersetup{
     pdftitle={\@title},
@@ -46,21 +52,58 @@
     pdfsubject={TCC2 - SENAC Santo Amaro},
     pdfcreator={LaTeX with abnTeX2},
     pdfkeywords={tcc2}{senac}{santo amaro}{trabalho de conclusão},
-    colorlinks=true,
-    linkcolor=blue,
-    citecolor=blue,
-    filecolor=magenta,
+    colorlinks=true,        % false: links em caixas; true: links coloridos
+    linkcolor=blue,         % cor dos links internos
+    citecolor=blue,         % cor dos links para bibliografia
+    filecolor=magenta,      % cor dos links para arquivos
     urlcolor=blue,
     bookmarksdepth=4
 }
 \makeatother
 
+% ---------------------------------------------------------------
+% CONFIGURAÇÕES DE APARÊNCIA DO PDF FINAL
+% ---------------------------------------------------------------
+\definecolor{blue}{RGB}{41,5,195}
+
+% ---------------------------------------------------------------
+% TAMANHO DA FONTE DAS LEGENDAS (ABNT) -- 10 pt
+% ---------------------------------------------------------------
+% O título (\caption) e a linha de fonte (\legend) de figuras e
+% tabelas devem ficar em 10 pt (o corpo do texto é 12 pt). Por
+% padrão o memoir/abntex2 deixa essas legendas em 12 pt; os comandos
+% abaixo reduzem o título e a fonte para 10 pt.
+\renewcommand{\ABNTEXfontereduzida}{\fontsize{10}{12}\selectfont}
+\captionnamefont{\ABNTEXfontereduzida}   % rótulo "Figura N"/"Tabela N"
+\captiontitlefont{\ABNTEXfontereduzida}  % texto do título da legenda
+\makeatletter
+% Redefine \legend (usado em "Fonte: ...") para sair em 10 pt
+% (a definição original do memoir fixa \normalsize = 12 pt).
+\renewcommand{\legend}[1]{%
+  \M@gettitle{#1}%
+  \memlegendinfo{#1}%
+  \par
+  \begingroup
+    \@parboxrestore
+    \if@minipage
+      \@setminipage
+    \fi
+    \ABNTEXfontereduzida
+    \captiondelim{\mbox{}}%
+    \@makecaption{}{\ignorespaces #1}\par
+  \endgroup}
+\makeatother
+
+% ---------------------------------------------------------------
+% INFORMAÇÕES DO DOCUMENTO
+% ---------------------------------------------------------------
 \titulo{Análise Comparativa de Desempenho e Eficiência Energética entre Processamento de OCR em Borda e em Nuvem para Telemetria de Hidrômetros via LoRaWan.}
 \autor{Marcelo Fernandes de Oliveira Junior \\ Gustavo Oliveira dos Santos \\ Christian Lima Santana}
 \local{São Paulo}
 \data{2026}
 \orientador{Afonso César Lelis Brandão}
-\tipotrabalho{Trabalho de Conclusão de Curso II}
+% \coorientador{Prof. Nome do Coorientador} % Descomente se houver coorientador
+
 \instituicao{%
   SENAC -- Serviço Nacional de Aprendizagem Comercial
   \par
@@ -68,122 +111,276 @@
   \par
   Curso de Bacharelado em Ciência da Computação
 }
-\preambulo{Trabalho de Conclusão de Curso II apresentado ao SENAC Santo Amaro como requisito para conclusão do curso de Bacharelado em Ciência da Computação.}
 
+\tipotrabalho{Trabalho de Conclusão de Curso II}
+
+\preambulo{Trabalho de Conclusão de Curso II apresentado ao SENAC Santo Amaro como requisito parcial para conclusão do curso de Bacharelado em Ciência da Computação.}
+
+% ---------------------------------------------------------------
+% COMPILA O ÍNDICE
+% ---------------------------------------------------------------
 \makeindex
 
 \makeglossaries
 \input{glossario.tex}
 \input{siglas.tex}
-
+% ---------------------------------------------------------------
+% INÍCIO DO DOCUMENTO
+% ---------------------------------------------------------------
 \begin{document}
 
+% Seleciona o idioma do documento
 \selectlanguage{brazil}
+
+% Retira espaço extra obsoleto entre as frases
 \frenchspacing
 
+% ---------------------------------------------------------------
+% ELEMENTOS PRÉ-TEXTUAIS
+% ---------------------------------------------------------------
 \pretextual
 
+% ---------------------------------------------------------------
+% CAPA
+% ---------------------------------------------------------------
 \imprimircapa
+
+% ---------------------------------------------------------------
+% FOLHA DE ROSTO
+% ---------------------------------------------------------------
 \imprimirfolhaderosto
 
+% ---------------------------------------------------------------
+% RESUMO
+% ---------------------------------------------------------------
 \input{sections/resumo.tex}
 
+% ---------------------------------------------------------------
+% ABSTRACT (RESUMO EM LÍNGUA ESTRANGEIRA) -- OBRIGATÓRIO NO TCC2
+% ---------------------------------------------------------------
+% Versão em inglês do resumo. Deve conter o mesmo conteúdo do resumo
+% em português (problema, objetivo, método, resultados e conclusão)
+% e as palavras-chave traduzidas (Keywords). Pela ABNT NBR 14724, o
+% resumo em língua estrangeira vem logo após o resumo em português.
 \begin{resumo}[Abstract]
-This document follows the TCC structure proposed by Wazlawick for Computer Science, emphasizing the research problem, objectives, proposed method, development details, and scientific analysis of results.
+ \begin{otherlanguage*}{english}
+   This document presents the undergraduate final project (TCC2) developed at SENAC Santo Amaro, based on the structure recommended by Raul Sidnei Wazlawick in \textit{Metodologia de Pesquisa para Ciência da Computação}. The focus is on highlighting the problem, the objectives, the method, the development, the results and the scientific contribution of the work, avoiding merely descriptive texts. The document is organized into chapters presenting the introduction to the topic, the literature review that grounds the research, the adopted methodology, the development of the solution, the results and their critical analysis, followed by the conclusion and the bibliographic references.
+
+   \vspace{\onelineskip}
+
+   \noindent
+   \textbf{Keywords}: keyword1. keyword2. keyword3. keyword4. keyword5.
+ \end{otherlanguage*}
 \end{resumo}
 
+% ---------------------------------------------------------------
+% LISTA DE ILUSTRAÇÕES (FIGURAS)
+% ---------------------------------------------------------------
+% Gerada automaticamente a partir das \caption{} das figuras.
+% Toda figura com legenda passa a constar nesta lista.
+\pdfbookmark[0]{\listfigurename}{lof}
+\listoffigures*
+\cleardoublepage
+
+% ---------------------------------------------------------------
+% LISTA DE TABELAS
+% ---------------------------------------------------------------
+% Gerada automaticamente a partir das \caption{} das tabelas.
+\pdfbookmark[0]{\listtablename}{lot}
+\listoftables*
+\cleardoublepage
+
+% ---------------------------------------------------------------
+% LISTA DE ABREVIATURAS E SIGLAS
+% ---------------------------------------------------------------
+% Esta lista deve vir antes do início do trabalho (elementos pré-textuais).
+% Em ordem alfabética, relacione APENAS as abreviaturas e siglas que
+% realmente aparecem no texto. Edite a tabela conforme o seu trabalho.
+\pdfbookmark[0]{Lista de Abreviaturas e Siglas}{siglas}
+% \chapter*{Lista de Abreviaturas e Siglas}
+\printglossary[type=\acronymtype, title={Lista de Abreviaturas e Siglas}]
+\cleardoublepage
+
+\vspace{\onelineskip}
+
+% ---------------------------------------------------------------
+% SUMÁRIO
+% ---------------------------------------------------------------
+\pdfbookmark[0]{\contentsname}{toc}
 \tableofcontents*
 \cleardoublepage
 
+% ---------------------------------------------------------------
+% ELEMENTOS TEXTUAIS
+% ---------------------------------------------------------------
 \textual
 
-% ---------------------------------------------------------------
-% INTRODUÇÃO
-% ---------------------------------------------------------------
+% ===============================================================
+% CAPÍTULO 1 - INTRODUÇÃO
+% ===============================================================
 \chapter{Introdução}
+\label{cap:introducao}
 
+A introdução deve apresentar o tema do trabalho de forma clara, objetiva e \textbf{acessível}, situando \emph{qualquer} leitor --- inclusive quem não é da área de Computação --- no contexto da pesquisa. Comece com uma linguagem simples, compreensível por um público amplo, e só então conduza o leitor, de forma gradual, até o problema técnico específico. Neste capítulo são apresentados a contextualização do problema, a sua formulação, os objetivos e a hipótese que norteiam a pesquisa, bem como a justificativa para a realização do estudo.
+
+\vspace{0.3cm}
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Orientação sobre a linguagem da introdução}
+
+\vspace{0.2cm}
+Escreva a \textbf{abertura} da introdução pensando em um \textbf{público amplo}, e não apenas na banca ou em especialistas. Um bom teste: alguém de outra área --- um colega de outro curso ou um familiar --- deveria entender, já nas primeiras linhas, qual é o assunto e por que ele importa.
+
+\vspace{0.2cm}
+\begin{itemize}
+    \item \textbf{Do geral para o específico (técnica do ``funil'')}: parta do cenário cotidiano e vá afunilando, parágrafo a parágrafo, até o problema técnico que será investigado.
+    \item \textbf{Evite jargão e siglas logo de início}; quando um termo técnico for inevitável, explique-o de forma simples na primeira vez em que aparecer.
+    \item \textbf{Use exemplos concretos ou analogias} do dia a dia para tornar o tema palpável ao leitor leigo.
+    \item \textbf{Reserve o aprofundamento técnico} para a Revisão Bibliográfica e o Desenvolvimento --- a introdução prepara o terreno, não esgota o assunto.
+\end{itemize}
+}}
+
+% ---------------------------------------------------------------
 \section{Contextualização do problema}
-Descreva o cenário atual e a lacuna identificada, embasando o texto em dados, estatísticas, políticas ou práticas profissionais. Evite narrativas históricas extensas e mantenha o foco no problema.
+\label{sec:contexto}
 
-Para citar a orientação do autor, use `\citeonline{Wazlawick2020}` quando precisar reproduzir uma afirmação direta sobre metodologia. Ao resumir outros trabalhos, integre as ideias ao seu texto e utilize `\cite{Silva2022}` como exemplo de citação indireta.
+Descreva o cenário atual e a lacuna identificada, embasando o texto em dados, estatísticas, políticas ou práticas profissionais. Evite narrativas históricas extensas e mantenha o foco no problema, ressaltando a relevância do assunto para a Computação e para a sociedade.
 
+Descreva o ambiente ou domínio em que o problema ocorre, utilizando dados e referências que comprovem a sua existência. Explique quem são os principais afetados e quais são as consequências de não resolvê-lo.
+
+\vspace{0.3cm}
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Orientação sobre citações (ABNT NBR 10520:2023)}
+
+\vspace{0.2cm}
+O aluno deve \textbf{priorizar citações indiretas} (paráfrases), nas quais a ideia do autor é reescrita com as próprias palavras. Citações diretas (transcrições literais) \textbf{não são recomendadas}, exceto quando o texto original for insubstituível --- por exemplo, definições consagradas, leis, normas técnicas ou trechos cuja reformulação alteraria o sentido.
+
+\vspace{0.2cm}
+\textbf{Citação indireta} (recomendada) --- o autor interpreta e reescreve a ideia:
+
+\vspace{0.1cm}
+\textit{Exemplo 1 --- sistema autor-data entre parênteses:}\\
+A definição clara do problema é considerada um fator determinante para o sucesso de qualquer pesquisa na área de Computação \cite{Wazlawick2020}.
+
+\vspace{0.1cm}
+\textit{Exemplo 2 --- autor como parte do texto:}\\
+Para \citeonline{Silva2022}, a escolha de uma metodologia adequada impacta diretamente na qualidade dos resultados obtidos em projetos de software.
+
+\vspace{0.2cm}
+\textbf{Citação direta curta} (até 3 linhas, apenas quando indispensável) --- entre aspas, com indicação de página:
+
+\vspace{0.1cm}
+Segundo \citeonline[p.~42]{Wazlawick2020}, ``a formulação do problema deve ser expressa de forma clara, objetiva e delimitada, evitando ambiguidades que possam comprometer o escopo da pesquisa''.
+
+\vspace{0.2cm}
+\textbf{Citação direta longa} (mais de 3 linhas, apenas quando indispensável) --- recuo de 4\,cm, fonte menor, sem aspas:
+
+\begin{citacao}
+A revisão bibliográfica não consiste em simplesmente listar os trabalhos encontrados, mas em analisá-los criticamente, identificando convergências, divergências e lacunas que justifiquem a realização de uma nova pesquisa \cite[p.~87]{Wazlawick2020}.
+\end{citacao}
+
+\textbf{Resumo}: use citações indiretas como regra. Reserve a citação direta para casos excepcionais em que a transcrição literal seja realmente necessária.
+}}
+
+% ---------------------------------------------------------------
 \section{Formulação do problema}
-Coloque o problema em forma de pergunta clara, delimitando o que será investigado e qual resultado se espera atingir dentro da Computação.
+\label{sec:problema}
 
+Coloque o problema em forma de pergunta clara, delimitando o que será investigado e qual resultado se espera atingir dentro da Computação. A pergunta de pesquisa deve ser específica o suficiente para ser respondida ao longo do trabalho e diretamente derivada da lacuna apresentada na contextualização.
+
+% ---------------------------------------------------------------
 -\section{Objetivos e hipótese}
 \input{sections/objetivo}
 
 \subsection{Hipótese}
 \input{sections/hipotese}
-% Descreva a hipótese que será testada ou o critério usado para afirmar que o objetivo geral foi atingido. Caso não haja hipótese formal, explique como as métricas escolhidas demonstrarão o sucesso esperado.
 
+% ---------------------------------------------------------------
 \section{Justificativa}
-% Ressalte a importância do problema para a Computação, destacando contribuições acadêmicas, sociais ou industriais. Explique como a proposta evita se tornar um “manual de ferramenta”.
+\label{sec:justificativa}
 \input{sections/justificativa}
-
-
-% ---------------------------------------------------------------
-% REVISÃO BIBLIOGRÁFICA
-% ---------------------------------------------------------------
+% ===============================================================
+% CAPÍTULO 2 - REVISÃO BIBLIOGRÁFICA / TRABALHOS RELACIONADOS
+% ===============================================================
 \chapter{Revisão Bibliográfica / Trabalhos Relacionados}
+\label{cap:revisao}
 
-\section{Fundamentos teóricos necessários}
-% Explique os conceitos essenciais, definindo termos e equações quando necessário. Utilize blocos de texto ou pequenos quadros comparativos para sintetizar modelos.
+A revisão bibliográfica tem como finalidade apresentar o embasamento teórico do trabalho, demonstrando o conhecimento do autor sobre o tema e identificando o estado da arte. Este capítulo está organizado em três seções: a \textbf{metodologia da pesquisa bibliográfica} (como as fontes foram levantadas e selecionadas), os \textbf{fundamentos teóricos} (os conceitos, teorias e técnicas que fundamentam a proposta) e os \textbf{trabalhos correlatos} (estudos que enfrentaram o mesmo problema, com suas limitações).
 
-% Um exemplo de citação direta poderia ser `\citeonline{Silva2022}` para reforçar que determinados métodos exigem validação empírica; uma citação indireta pode ser escrita como “vários estudos destacam ...” seguido de `\cite{Wazlawick2020}`.
+% ---------------------------------------------------------------
+\section{Metodologia da pesquisa bibliográfica}
+\label{sec:metodologia_pesquisa_bib}
+\input{sections/metodologia_pesquisa}
+
+% ---------------------------------------------------------------
+\section{Fundamentos teóricos}
+\label{sec:fundamentos}
 \input{sections/referencial}
 
-\section{Técnicas, métodos ou abordagens existentes}
-Apresente abordagens já empregadas no contexto e destaque o que funcionou ou falhou. Inclua uma tabela comparativa simples para clarificar diferenças:
-\begin{table}[htb]
-  \centering
-  \caption{Comparativo de abordagens relacionadas}
-  \begin{tabular}{p{4cm}p{3cm}p{4cm}}
-    \toprule
-    Abordagem & Domínio & Limitação principal \\
-    \midrule
-    Técnica A & IoT & Falta de validação em larga escala \\
-    Técnica B & Redes neurais & Alto custo computacional \\
-    \bottomrule
-  \end{tabular}
-  \legend{Tabela ilustrativa com limitações observadas.}
-\end{table}
-
-\section{Trabalhos correlatos e limitações}
+% ---------------------------------------------------------------
+\section{Trabalhos correlatos}
+\label{sec:trabalhos_correlatos}
 \input{sections/trabalhos_relacionados}
 
-% ---------------------------------------------------------------
-% METODOLOGIA
-% ---------------------------------------------------------------
-\chapter{Metodologia}
-\input{sections/metodologia_pesquisa.tex}
-
-% ---------------------------------------------------------------
-% DESENVOLVIMENTO
-% ---------------------------------------------------------------
+% ===============================================================
+% CAPÍTULO 3 - DESENVOLVIMENTO
+% ===============================================================
 \chapter{Desenvolvimento / Implementação / Experimentos}
-
-\section{Modelagem e arquitetura}
-Apresente diagramas (UML, blocos ou fluxogramas) que mostram como os módulos se relacionam, identificando componentes críticos e como eles atendem ao problema e à metodologia.
-
-\section{Detalhes de implementação}
-Explique escolhas tecnológicas, estruturas de dados e integrações. Inclua trechos de código relevantes ou pseudoexemplos se esclarecerem decisões de pesquisa.
-
-\section{Experimentos e cenários de teste}
-Descreva os cenários planejados, parâmetros testados e por que cada experimento está alinhado aos objetivos. Liste os conjuntos de dados, variações e número de repetições.
-
-\section{Coleta e tratamento de dados}
-Explique como os dados foram coletados (logs, sensores, APIs), armazenados e preparados (limpeza, normalização, anonimização). Registre ferramentas usadas no pré-processamento.
-
-\textit{O desenvolvimento só é pesquisa se estiver claramente ligado ao problema e à metodologia definida.}
+\label{cap:desenvolvimento}
 
 % ---------------------------------------------------------------
-% RESULTADOS
-% ---------------------------------------------------------------
-\chapter{Resultados e Análise}
+\section{Metodologia da pesquisa}
+\label{sec:metodologia_pesquisa}
+\input{sections/proc_exp_metricas}
+% Descreva, de forma rigorosa e reprodutível, como a pesquisa foi conduzida. Informe o tipo de pesquisa (exploratória, empírica, formal etc.) e a hipótese ou o critério de sucesso adotado; detalhe os procedimentos da abordagem proposta, em ordem cronológica (use listas numeradas, diagramas de fluxo ou pseudocódigo para tornar o processo claro); liste as ferramentas, linguagens, bibliotecas, frameworks e ambientes utilizados, justificando cada escolha com base no problema; e explique como os experimentos foram configurados, quais variáveis foram controladas e quais métricas demonstram que a proposta cumpre os objetivos (ex.: acurácia, latência, custo).
 
-\section{Apresentação dos resultados}
-Mostre resultados com tabelas, gráficos e figuras. Diferencie:
+% \begin{table}[htb]
+%   \centering
+%   \caption{Plano de experimentação}
+%   \label{tab:plano_experimentos}
+%   \begin{tabular}{lcc}
+%     \toprule
+%     \textbf{Experimento} & \textbf{Variável controlada} & \textbf{Métrica principal} \\
+%     \midrule
+%     Comparação com baseline & algoritmo & acurácia \\
+%     Escalabilidade & carga & tempo médio \\
+%     \bottomrule
+%   \end{tabular}
+%   \legend{Fonte: Elaborado pelo autor (2025)}
+% \end{table}
+
+% \textit{Propor algo não basta: demonstre como será validado.}
+
+\section{Detalhes da implementação}
+\label{sec:implementacao}
+
+Explique a modelagem e a arquitetura da solução (diagramas UML, blocos ou fluxogramas que mostrem como os módulos se relacionam e atendem ao problema), as escolhas tecnológicas, as estruturas de dados e as integrações. Quando esclarecerem decisões de pesquisa, inclua trechos de código relevantes ou pseudoexemplos. Caso o trabalho envolva dados, descreva também como eles foram coletados (logs, sensores, APIs), armazenados e preparados (limpeza, normalização, anonimização).
+
+% ---------------------------------------------------------------
+% EXEMPLO DE INSERÇÃO DE FIGURA (substitua pela sua imagem)
+% A imagem deve ficar na pasta assets/ (ex.: assets/figures/arquitetura.png).
+% ORDEM ABNT: o título (\caption) vem ACIMA da figura e a fonte
+% (\legend) vem ABAIXO. Por isso \caption e \label aparecem ANTES do
+% \includegraphics. Use \ref{...} para citar a figura no texto.
+% ---------------------------------------------------------------
+\begin{figure}[htb]
+    \centering
+    \caption{Exemplo de inserção de figura --- substitua pelo diagrama da arquitetura da sua solução.}
+    \label{fig:arquitetura}
+    \includegraphics[width=0.35\textwidth]{assets/logo-senac.png}
+    \legend{Fonte: Elaborado pelo autor (2025)}
+\end{figure}
+
+Toda figura deve ser numerada, ter legenda (\verb|\caption|) e indicação de fonte, além de ser citada no texto --- por exemplo, a Figura~\ref{fig:arquitetura}. As figuras com legenda aparecem automaticamente na \textit{Lista de ilustrações}, nos elementos pré-textuais.
+
+\section{Experimentos e cenário de testes (opcional)}
+\label{sec:experimentos}
+
+Esta seção é \textbf{opcional} e deve ser incluída quando o trabalho prevê avaliação experimental. Descreva os cenários planejados, os parâmetros testados e por que cada experimento está alinhado aos objetivos. Liste os conjuntos de dados, as variações e o número de repetições.
+
+\section{Resultados e análises}
+\label{sec:resultados}
+
+Apresente os resultados com tabelas, gráficos e figuras e, sobretudo, \textbf{analise-os} à luz da revisão bibliográfica e da hipótese --- resultados devem ser analisados, não apenas exibidos. Diferencie:
 \begin{itemize}
   \item \textbf{Figura:} imagens, diagramas conceituais ou arquiteturais que ilustram estrutura ou fluxo.
   \item \textbf{Gráfico:} plot de dados (linhas, barras, boxplots) que compara métricas obtidas.
@@ -193,6 +390,7 @@ Exemplo de tabela:
 \begin{table}[htb]
   \centering
   \caption{Comparação de métricas reportadas}
+  \label{tab:metricas}
   \begin{tabular}{lcc}
     \toprule
     Método & Acurácia & Tempo médio (ms) \\
@@ -201,26 +399,23 @@ Exemplo de tabela:
     Baseline & 88\% & 220 \\
     \bottomrule
   \end{tabular}
-  \legend{Tabela exemplificando como comparar métricas.}
+  \legend{Fonte: Elaborado pelo autor (2025)}
 \end{table}
 
-Ao inserir um gráfico (por exemplo `assets/figures/desempenho.png`), use:
+Ao inserir um gráfico (por exemplo \texttt{assets/figures/desempenho.png}), use --- lembrando que, pela ABNT, o \texttt{\textbackslash caption} (título) vem \textbf{acima} da imagem e a fonte (\texttt{\textbackslash legend}) vem \textbf{abaixo}:
 \begin{verbatim}
 \begin{figure}[htb]
   \centering
-  \includegraphics[width=0.8\textwidth]{assets/figures/desempenho.png}
   \caption{Gráfico de comparação das métricas de acurácia.}
   \label{fig:grafico-desempenho}
+  \includegraphics[width=0.8\textwidth]{assets/figures/desempenho.png}
+  \legend{Fonte: Elaborado pelo autor (2025)}
 \end{figure}
 \end{verbatim}
 
-\section{Análise crítica e comparação}
-Discuta as descobertas com base na revisão bibliográfica e na hipótese. Evidencie ganhos e perdas.
+Na sequência, faça a \textbf{análise crítica e comparação}, discutindo as descobertas em relação aos trabalhos correlatos e evidenciando ganhos e perdas; por fim, na \textbf{discussão}, relacione os resultados aos objetivos e à hipótese, explicitando se o critério de sucesso foi atingido.
 
-\section{Discussão}
-Relacione os resultados aos objetivos e à hipótese, explicitando se o critério de sucesso foi atingido.
-
-\textit{Resultados devem ser analisados, não apenas exibidos.}
+\textit{O desenvolvimento só é pesquisa se estiver claramente ligado ao problema e à metodologia definida.}
 
 % ---------------------------------------------------------------
 % CONCLUSÃO
@@ -250,8 +445,82 @@ Para graduação, Wazlawick aceita trabalhos aplicados desde que:
     \item Não seja apenas entrega funcional.
 \end{itemize}
 
+% ---------------------------------------------------------------
+% APRESENTAÇÃO ORAL (BANCA)
+% ---------------------------------------------------------------
+\chapter*{Apresentação oral (banca)}
+\addcontentsline{toc}{chapter}{Apresentação oral (banca)}
+
+Além do documento escrito, o TCC2 é avaliado por uma \textbf{apresentação oral} final perante a banca. Um template pronto em \texttt{Beamer} está disponível no arquivo \texttt{apresentacao\_tcc2.tex}, na mesma pasta deste documento.
+
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Regras da apresentação do TCC2}
+
+\vspace{0.2cm}
+\begin{itemize}
+    \item \textbf{Duração: 30 minutos.} Cronometre os ensaios; ultrapassar o tempo é penalizado. A arguição da banca ($\approx$ 5 min) ocorre após a apresentação, separada desse total.
+    \item \textbf{Cubra o trabalho completo}, seguindo a estrutura do documento escrito: introdução e problema, objetivos e método, desenvolvimento, \textbf{resultados e análise} e conclusão/contribuições.
+    \item \textbf{Dê peso aos resultados:} grande parte do tempo deve ser dedicada a apresentar e \textbf{analisar criticamente} os resultados, não apenas descrevê-los.
+    \item \textbf{Ritmo:} cerca de 1 a 1,5 minuto por slide, totalizando aproximadamente 20 a 26 slides de conteúdo.
+    \item \textbf{Logo do SENAC:} grande no primeiro slide (capa) e pequena no canto superior direito dos demais slides --- já configurado no template.
+    \item \textbf{Demonstração:} se houver demo ao vivo, tenha um plano B com capturas de tela ou vídeo curto.
+    \item \textbf{Slides de apoio (backup):} inclua slides extras após o ``Obrigado'' com detalhes técnicos, trechos de código e tabelas completas para a arguição.
+\end{itemize}
+
+\vspace{0.2cm}
+\textbf{Distribuição de tempo sugerida (30 min):} introdução/problema $\approx$ 4 min; objetivos/método $\approx$ 5 min; desenvolvimento $\approx$ 8 min; resultados/análise $\approx$ 8 min; conclusão $\approx$ 3 min; demonstração $\approx$ 2 min.
+}}
+
+% ---------------------------------------------------------------
+% ELEMENTOS PÓS-TEXTUAIS
+% ---------------------------------------------------------------
 \postextual
 
+% ===============================================================
+% REFERÊNCIAS BIBLIOGRÁFICAS
+% ===============================================================
+% As referências bibliográficas são geradas automaticamente a partir
+% do arquivo bibliografia_tcc2.bib, seguindo o padrão ABNT (NBR 6023).
+%
+% COMO CITAR no texto:
+%   \cite{chave}         -> (SOBRENOME, ano) — citação indireta
+%   \citeonline{chave}   -> Sobrenome (ano) — citação direta no texto
+%
+% TIPOS DE REFERÊNCIA no arquivo .bib:
+%   @book        -> Livros
+%   @article     -> Artigos de periódicos
+%   @inproceedings -> Artigos em anais de eventos
+%   @mastersthesis -> Dissertações de mestrado
+%   @phdthesis   -> Teses de doutorado
+%   @misc        -> Sites, vídeos e outros materiais
+%   @manual      -> Documentação técnica
+% ---------------------------------------------------------------
 \bibliography{bibliografia_tcc2}
+
+% ---------------------------------------------------------------
+% APÊNDICES (se necessário)
+% ---------------------------------------------------------------
+% \begin{apendicesenv}
+% \partapendices
+%
+% \chapter{Nome do Apêndice}
+% \label{ap:apendice1}
+%
+% Conteúdo do apêndice (material elaborado pelo próprio autor).
+%
+% \end{apendicesenv}
+
+% ---------------------------------------------------------------
+% ANEXOS (se necessário)
+% ---------------------------------------------------------------
+% \begin{anexosenv}
+% \partanexos
+%
+% \chapter{Nome do Anexo}
+% \label{an:anexo1}
+%
+% Conteúdo do anexo (material de terceiros).
+%
+% \end{anexosenv}
 
 \end{document}

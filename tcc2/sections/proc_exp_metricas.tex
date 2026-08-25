@@ -1,6 +1,6 @@
 Para avaliar a eficácia do sistema de telemetria proposto e garantir a objetividade dos resultados, serão adotados indicadores quantitativos divididos em três dimensões críticas: desempenho de rede, precisão de visão computacional, eficiência energética e acurácia preditiva.
 
-\subsubsection{Desempenho da Rede de Comunicação}
+\subsection{Desempenho da Rede de Comunicação}
 A robustez da transmissão via \gls{lorawan} será quantificada através da Taxa de Entrega de Pacotes (\gls{pdr}). 
 Conforme a metodologia de \citeonline{bravo2025ants}, o PDR é definido pela razão entre o número de pacotes recebidos pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor:
 
@@ -13,7 +13,7 @@ Além do \gls{pdr}, será medida a latência de ponta a ponta, compreendendo o t
 
 % =================================================================================================
 
-\subsubsection{Acurácia da Visão Computacional (OCR)}
+\subsection{Acurácia da Visão Computacional (OCR)}
 A validação do algoritmo de \gls{ocr}, responsável pela extração dos dígitos dos hidrômetros analógicos, será realizada sob diferentes condições de iluminação e ângulos de captura, visando simular cenários reais de instalação. 
 
 Conforme discutido por \citeonline{barkat2024smart}, a eficácia de modelos de \textit{Deep Learning} aplicados ao monitoramento de água deve ser medida pela sua capacidade de generalização. 
@@ -28,7 +28,7 @@ Esta abordagem quantitativa permite identificar se erros de leitura estão assoc
 
 % =================================================================================================
 
-\subsubsection{Autonomia Energética}
+\subsection{Autonomia Energética}
 A eficiência do hardware será validada através da medição do consumo de corrente em diferentes estados de operação (\textit{Deep Sleep}, captura de imagem e transmissão). 
 A autonomia estimada ($A$) em dias será calculada pela relação entre a capacidade da bateria ($C_{bat}$) e o consumo médio diário ($I_{médio}$):
 
