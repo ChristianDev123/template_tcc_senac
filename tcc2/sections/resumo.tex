@@ -1,14 +1,14 @@
 \begin{resumo}
 Este trabalho busca propor uma análise comparativa entre duas arquiteturas de processamento
-para sistemas de telemetria de hidrômetros analógicos: a computação em borda
-(\textit{Edge Computing}), com inferência de \gls{ocr} realizada localmente no microcontrolador
-\gls{esp32cam} por meio da biblioteca TensorFlow Lite for Microcontrollers, e a computação
-em nuvem (\textit{Cloud Computing}), com transmissão da imagem capturada para
+para sistemas de telemetria de hidrômetros analógicos: \gls{edge_computing} (Computação em Borda), 
+com inferência de \gls{ocr} realizada localmente no microcontrolador \gls{esp32cam} 
+por meio de modelo de aprendizado de máquina treinado de forma supervisionada, 
+e \gls{cloud_computing} (Computação em Nuvem), com transmissão da imagem capturada para
 processamento remoto pelo motor Tesseract em conjunto com a biblioteca OpenCV.
 A motivação reside na problemática do desperdício hídrico no Brasil e no elevado custo de substituição dos medidores
 convencionais por modelos inteligentes nativos, o que torna o \textit{\gls{retrofitting}} de
 hidrômetros analógicos uma alternativa economicamente viável. A transmissão dos dados
-entre os nós de borda e o \textit{gateway} central é realizada via rede \gls{lorawan},
+entre os nós de borda e o gateway central é realizada via rede \gls{lorawan},
 utilizando o Spreading Factor SF8, configuração que assegura conformidade com o limite
 regulatório de \textit{dwell time} de 400~ms estabelecido pelo Ato n\textordmasculine~14.448
 da ANATEL, ao mesmo tempo em que maximiza o alcance dentro desse limite. A viabilidade
@@ -26,5 +26,5 @@ de manutenção do sistema.
 \vspace{\onelineskip}
 
 \noindent
-\textbf{Palavras-chave}: Telemetria. ESP32. LoRaWan. Regressão. OCR.
+\textbf{Palavras-chave}: Telemetria. ESP32. LoRaWan. OCR.
 \end{resumo}

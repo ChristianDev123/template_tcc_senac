@@ -1,0 +1,29 @@
+\begin{resumo}[Abstract]
+ \begin{otherlanguage*}{english}
+    This work aims to propose a comparative analysis between two processing architectures for
+    analog water meter telemetry systems: \gls{edge_computing}, with \gls{ocr} inference performed
+    locally on the \gls{esp32cam} microcontroller through a supervised trained machine learning model,
+    and \gls{cloud_computing}, with the transmission of the captured image for remote processing by the 
+    Tesseract engine combined with the OpenCV library. The motivation lies in the issue of water waste
+    in Brazil and the high cost of replacing conventional meters with native smart models,
+    making the \textit{\gls{retrofitting}} of analog water meters an economically viable alternative.
+    Data transmission between the edge nodes and the central gateway is carried out via a \gls{lorawan} network
+    using Spreading Factor SF8, a configuration that ensures compliance with the regulatory dwell time limit of 400~ms
+    established by ANATEL's Act No.~14.448, while maximizing reach within this limit. 
+    The feasibility of sending fragmented images via \gls{lorawan} was analytically demonstrated,
+    where a 160$\times$120 pixel grayscale image in JPEG format of approximately 3.10~KB can be transmitted in 
+    38 packets in about 13.3~s of active radio time, consuming only 1.5\% of the daily budget under the most 
+    restrictive regulatory scenario (EU868 with a 1\% duty cycle). 
+    The two processing workflows will be evaluated according to 
+    four quantitative metrics: \gls{ocr} reading accuracy (\%), end-to-end latency (ms),
+    energy consumption per reading (mAh), and volume of transmitted data (bytes/reading).
+    The results are expected to guide the choice of the most suitable architecture for 
+    large-scale \textit{Smart Metering} deployments, considering the trade-off between energy efficiency,
+    recognition accuracy, and system maintenance complexity.
+
+   \vspace{\onelineskip}
+
+   \noindent
+\textbf{Keywords}: Telemetry. ESP32. LoRaWan. OCR.
+ \end{otherlanguage*}
+\end{resumo}

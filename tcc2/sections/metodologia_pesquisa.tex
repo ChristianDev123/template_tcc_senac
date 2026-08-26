@@ -1,7 +1,3 @@
-\section{Tipo de pesquisa e hipótese}
-Informe qual tipo de pesquisa será conduzido (exploratória, empírica, formal etc.) e registre as hipóteses que serão avaliadas. Caso não haja hipótese formal, descreva o critério de sucesso esperado.
-
-\section{Procedimentos da abordagem proposta}
 A pesquisa bibliográfica foi conduzida de forma sistemática, estruturando-se em três temas principais: Hardware, Software e Redes. Para a seleção dos trabalhos, utilizaram-se as bases de dados Google Scholar, MDPI e Intechopen.
 
 O processo de seleção seguiu um fluxo de filtragem (funil). Inicialmente, foram identificados 120 artigos por meio da análise de títulos, utilizando strings de busca majoritariamente em inglês, tais como ``iot AND energy efficiency'' e ``ESP32 AND camera monitoring''. Como ferramentas auxiliares na descoberta de conexões entre autores e na triagem inicial de relevância, foram utilizadas as plataformas ResearchRabbit e Gemini Deep Research.
@@ -9,43 +5,20 @@ O processo de seleção seguiu um fluxo de filtragem (funil). Inicialmente, fora
 Na etapa de refinamento, aplicou-se a leitura dos resumos (abstracts) e a verificação de disponibilidade integral dos textos. Foram adotados como critérios de inclusão: artigos publicados entre 2020 e 2026, relevância direta com sistemas de telemetria e foco em implementações práticas. Como critério de exclusão, descartaram-se trabalhos com acesso restrito ou que não apresentassem detalhes técnicos sobre a integração dos eixos propostos.
 
 \begin{table}[H]
-\centering
-\caption{Strings de busca utilizadas no levantamento bibliográfico.}
-\label{tab:strings_busca}
-\begin{tabular}{@{}lll@{}}
-\toprule
-\textbf{ID} & \textbf{Eixo Temático} & \textbf{String de Busca} \\ \midrule
-ST01 & Redes & "IoT" AND "\gls{lorawan}" AND "water waste" \\
-ST02 & Contexto & smart water meter market \\
-ST03 & Contexto & smart water meter costs and benefits \\
-ST04 & Hardware & "IoT" AND "energy efficiency" \\
-ST05 & Hardware & "ESP32" AND "camera monitoring" \\
-ST06 & Hardware & "\gls{esp32cam}" AND "analog meter" AND "OCR" \\
-ST08 & Software & "automatic meter reading" OCR accuracy "error rate" evaluation \\
-ST09 & Redes & "packet delivery ratio" \gls{lorawan} "latency" monitoring system \\
-ST010 & Contexto & "water consumption prediction" "mean absolute error" forecasting metrics \\ \bottomrule
-\end{tabular}
+    \centering
+    \caption{Strings de busca utilizadas no levantamento bibliográfico.}
+    \label{tab:strings_busca}
+    \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{ID} & \textbf{Eixo Temático} & \textbf{String de Busca} \\ \midrule
+        ST01 & Redes & "IoT" AND "\gls{lorawan}" AND "water waste" \\
+        ST02 & Contexto & smart water meter market \\
+        ST03 & Contexto & smart water meter costs and benefits \\
+        ST04 & Hardware & "IoT" AND "energy efficiency" \\
+        ST05 & Hardware & "ESP32" AND "camera monitoring" \\
+        ST06 & Hardware & "\gls{esp32cam}" AND "analog meter" AND "OCR" \\
+        ST08 & Software & "automatic meter reading" OCR accuracy "error rate" evaluation \\
+        ST09 & Redes & "packet delivery ratio" \gls{lorawan} "latency" monitoring system \\
+        ST010 & Contexto & "water consumption prediction" "mean absolute error" forecasting metrics \\ \bottomrule
+    \end{tabular}
 \end{table}
-
-\section{Ferramentas, tecnologias e ambientes}
-Liste softwares, linguagens, bibliotecas, frameworks e ambientes (laboratórios, nuvem, simulação) que serão usados. Justifique a escolha com base no problema e nas métricas.
-
-\section{Procedimentos experimentais e métricas}
-\input{sections/proc_exp_metricas}
-% Explique como os experimentos serão configurados, quais variáveis serão controladas e quais métricas demonstram que a proposta cumpre os objetivos (ex.: acurácia, latência, custo). Inclua tabelas que antecipem o plano de coleta, por exemplo:
-% \begin{table}[htb]
-%   \centering
-%   \caption{Plano de experimentação}
-%   \begin{tabular}{lccc}
-%     \toprule
-%     Experimento & Variável controlada & Métrica principal \\
-%     \midrule
-%     Comparação com baseline & algoritmo & acurácia \\
-%     Escalabilidade & carga & tempo médio \\
-%     \bottomrule
-%   \end{tabular}
-%   \legend{Exemplo de como documentar experimentos.}
-% \end{table}
-
-% \textit{Propor algo não basta: demonstre como será validado.}
-

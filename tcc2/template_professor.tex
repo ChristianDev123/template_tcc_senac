@@ -35,13 +35,7 @@
 \usepackage{pgfgantt}               % Diagramas de Gantt
 \usepackage[brazilian,hyperpageref]{backref}  % Páginas com citações
 \usepackage[alf]{abntex2cite}       % Citações ABNT
-%Adicionados posteriormente:
-\usepackage{tabularx} % Para tabelas com largura ajustada
-\usepackage{booktabs} % Para linhas mais elegantes (estilo acadêmico)
-\usepackage{siunitx}  % Para alinhar números se desejar
-\usepackage[table]{xcolor}
-\usepackage{adjustbox}
-\usepackage[acronym, automake, nopostdot]{glossaries}
+
 % ---------------------------------------------------------------
 % CONFIGURAÇÕES DO PDF
 % ---------------------------------------------------------------
@@ -97,11 +91,11 @@
 % ---------------------------------------------------------------
 % INFORMAÇÕES DO DOCUMENTO
 % ---------------------------------------------------------------
-\titulo{Análise Comparativa de Desempenho e Eficiência Energética entre Processamento de OCR em Borda e em Nuvem para Telemetria de Hidrômetros via LoRaWan.}
-\autor{Marcelo Fernandes de Oliveira Junior \\ Gustavo Oliveira dos Santos \\ Christian Lima Santana}
+\titulo{Título do Trabalho de Conclusão de Curso}
+\autor{Nome Completo do Aluno}
 \local{São Paulo}
-\data{2026}
-\orientador{Afonso César Lelis Brandão}
+\data{2025}
+\orientador{Prof. Nome do Orientador}
 % \coorientador{Prof. Nome do Coorientador} % Descomente se houver coorientador
 
 \instituicao{%
@@ -109,21 +103,18 @@
   \par
   Unidade Santo Amaro
   \par
-  Curso de Bacharelado em Ciência da Computação
+  Curso de [Nome do Curso]
 }
 
 \tipotrabalho{Trabalho de Conclusão de Curso II}
 
-\preambulo{Trabalho de Conclusão de Curso II apresentado ao SENAC Santo Amaro como requisito parcial para conclusão do curso de Bacharelado em Ciência da Computação.}
+\preambulo{Trabalho de Conclusão de Curso II apresentado ao SENAC Santo Amaro como requisito parcial para conclusão do curso de [Nome do Curso].}
 
 % ---------------------------------------------------------------
 % COMPILA O ÍNDICE
 % ---------------------------------------------------------------
 \makeindex
 
-\makeglossaries
-\input{glossario.tex}
-\input{siglas.tex}
 % ---------------------------------------------------------------
 % INÍCIO DO DOCUMENTO
 % ---------------------------------------------------------------
@@ -153,7 +144,14 @@
 % ---------------------------------------------------------------
 % RESUMO
 % ---------------------------------------------------------------
-\input{sections/resumo.tex}
+\begin{resumo}
+Este documento apresenta o Trabalho de Conclusão de Curso (TCC2) desenvolvido no SENAC Santo Amaro, com base na estrutura recomendada por Raul Sidnei Wazlawick em \textit{Metodologia de Pesquisa para Ciência da Computação}. O foco está em evidenciar o problema, os objetivos, o método, o desenvolvimento, os resultados e a contribuição científica do trabalho, evitando textos meramente descritivos. O documento está organizado em capítulos que apresentam a introdução ao tema, a revisão bibliográfica que fundamenta a pesquisa, a metodologia adotada, o desenvolvimento da solução, os resultados e a respectiva análise crítica, seguidos da conclusão e das referências bibliográficas.
+
+\vspace{\onelineskip}
+
+\noindent
+\textbf{Palavras-chave}: palavra1. palavra2. palavra3. palavra4. palavra5.
+\end{resumo}
 
 % ---------------------------------------------------------------
 % ABSTRACT (RESUMO EM LÍNGUA ESTRANGEIRA) -- OBRIGATÓRIO NO TCC2
@@ -162,7 +160,16 @@
 % em português (problema, objetivo, método, resultados e conclusão)
 % e as palavras-chave traduzidas (Keywords). Pela ABNT NBR 14724, o
 % resumo em língua estrangeira vem logo após o resumo em português.
-\input{sections/abstract}
+\begin{resumo}[Abstract]
+ \begin{otherlanguage*}{english}
+   This document presents the undergraduate final project (TCC2) developed at SENAC Santo Amaro, based on the structure recommended by Raul Sidnei Wazlawick in \textit{Metodologia de Pesquisa para Ciência da Computação}. The focus is on highlighting the problem, the objectives, the method, the development, the results and the scientific contribution of the work, avoiding merely descriptive texts. The document is organized into chapters presenting the introduction to the topic, the literature review that grounds the research, the adopted methodology, the development of the solution, the results and their critical analysis, followed by the conclusion and the bibliographic references.
+
+   \vspace{\onelineskip}
+
+   \noindent
+   \textbf{Keywords}: keyword1. keyword2. keyword3. keyword4. keyword5.
+ \end{otherlanguage*}
+\end{resumo}
 
 % ---------------------------------------------------------------
 % LISTA DE ILUSTRAÇÕES (FIGURAS)
@@ -187,12 +194,30 @@
 % Esta lista deve vir antes do início do trabalho (elementos pré-textuais).
 % Em ordem alfabética, relacione APENAS as abreviaturas e siglas que
 % realmente aparecem no texto. Edite a tabela conforme o seu trabalho.
-\pdfbookmark[0]{Lista de Abreviaturas e Siglas}{siglas}
-% \chapter*{Lista de Abreviaturas e Siglas}
-\printglossary[type=\acronymtype, title={Lista de Abreviaturas e Siglas}]
-\cleardoublepage
+\pdfbookmark[0]{Lista de Abreviaturas e Siglas}{loas}
+\chapter*{Lista de Abreviaturas e Siglas}
+
+\noindent A lista a seguir reúne, em ordem alfabética, as abreviaturas e siglas utilizadas neste trabalho, acompanhadas de seus respectivos significados. Substitua, acrescente ou remova linhas conforme a necessidade do seu projeto.
 
 \vspace{\onelineskip}
+
+\begin{center}
+\begin{tabular}{@{}p{3.2cm}p{0.6\textwidth}@{}}
+\toprule
+\textbf{Abreviatura/Sigla} & \textbf{Significado} \\
+\midrule
+ABNT  & Associação Brasileira de Normas Técnicas \\
+API   & \textit{Application Programming Interface} (Interface de Programação de Aplicações) \\
+HTTP  & \textit{Hypertext Transfer Protocol} \\
+REST  & \textit{Representational State Transfer} \\
+SQL   & \textit{Structured Query Language} \\
+TCC   & Trabalho de Conclusão de Curso \\
+UML   & \textit{Unified Modeling Language} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\cleardoublepage
 
 % ---------------------------------------------------------------
 % SUMÁRIO
@@ -279,16 +304,48 @@ A revisão bibliográfica não consiste em simplesmente listar os trabalhos enco
 Coloque o problema em forma de pergunta clara, delimitando o que será investigado e qual resultado se espera atingir dentro da Computação. A pergunta de pesquisa deve ser específica o suficiente para ser respondida ao longo do trabalho e diretamente derivada da lacuna apresentada na contextualização.
 
 % ---------------------------------------------------------------
--\section{Objetivos e hipótese}
-\input{sections/objetivo}
+\section{Objetivos e hipótese}
+\label{sec:objetivos}
 
-\subsection{Hipótese}
-\input{sections/hipotese}
+Os objetivos definem o que o trabalho pretende alcançar. Devem ser claros, mensuráveis e diretamente relacionados ao problema identificado.
+
+\subsection{Objetivo geral}
+
+Declare o propósito principal do TCC2 em uma frase direta, conectando-o ao problema e deixando claro se o foco é compreender, comparar, validar ou propor algo novo.
+
+\textbf{Dica}: utilize verbos no infinitivo como \textit{desenvolver}, \textit{analisar}, \textit{propor}, \textit{avaliar}, \textit{implementar}, \textit{comparar}, entre outros. Evite verbos vagos como \textit{estudar} ou \textit{entender}.
+
+\subsection{Objetivos específicos}
+
+Liste objetivos mensuráveis que estruturam o plano de trabalho. Tente utilizar verbos como revisar, comparar, modelar, quantificar ou validar. Exemplos:
+
+\begin{enumerate}
+    \item Revisar obras-chave sobre [tema] e identificar lacunas;
+    \item Modelar ou prototipar a abordagem proposta;
+    \item Implementar experimentos controlados;
+    \item Avaliar o desempenho por métricas (ex.: acurácia, latência).
+\end{enumerate}
+
+\textbf{Atenção}: cada objetivo específico deve contribuir diretamente para o alcance do objetivo geral. Evite listar objetivos que não tenham relação clara com o problema.
+
+\subsection{Hipótese ou critério de validação}
+
+Descreva a hipótese que será testada ou o critério usado para afirmar que o objetivo geral foi atingido. Caso não haja hipótese formal, explique como as métricas escolhidas demonstrarão o sucesso esperado.
 
 % ---------------------------------------------------------------
 \section{Justificativa}
 \label{sec:justificativa}
-\input{sections/justificativa}
+
+Explicite por que resolver esse problema é importante. A justificativa deve abordar:
+
+\begin{itemize}
+    \item \textbf{Relevância acadêmica}: como este trabalho contribui para o avanço do conhecimento na área;
+    \item \textbf{Relevância prática/profissional}: quais benefícios práticos a solução trará para usuários, organizações ou a sociedade;
+    \item \textbf{Lacuna identificada}: o que ainda não foi resolvido ou explorado suficientemente pelos trabalhos existentes.
+\end{itemize}
+
+Ressalte a importância do problema para a Computação, destacando contribuições acadêmicas, sociais ou industriais. Explique como a proposta evita se tornar um ``manual de ferramenta''.
+
 % ===============================================================
 % CAPÍTULO 2 - REVISÃO BIBLIOGRÁFICA / TRABALHOS RELACIONADOS
 % ===============================================================
@@ -300,17 +357,58 @@ A revisão bibliográfica tem como finalidade apresentar o embasamento teórico 
 % ---------------------------------------------------------------
 \section{Metodologia da pesquisa bibliográfica}
 \label{sec:metodologia_pesquisa_bib}
-\input{sections/metodologia_pesquisa}
+
+Descreva como a pesquisa bibliográfica foi conduzida, incluindo:
+
+\begin{itemize}
+    \item \textbf{Bases de dados consultadas}: Google Scholar, IEEE Xplore, ACM Digital Library, SciELO, Periódicos CAPES, entre outras;
+    \item \textbf{Palavras-chave utilizadas}: liste os termos de busca em português e inglês;
+    \item \textbf{Critérios de inclusão e exclusão}: quais critérios foram usados para selecionar ou descartar trabalhos (período, idioma, relevância, tipo de publicação);
+    \item \textbf{Período de abrangência}: intervalo de anos das publicações consultadas.
+\end{itemize}
+
+Exemplo de descrição:
+
+\textit{A pesquisa bibliográfica foi realizada nas bases Google Scholar, IEEE Xplore e ACM Digital Library, utilizando as palavras-chave ``machine learning'', ``classificação de texto'' e ``processamento de linguagem natural''. Foram selecionados artigos publicados entre 2018 e 2025, em português e inglês, que abordassem diretamente o problema investigado.}
 
 % ---------------------------------------------------------------
 \section{Fundamentos teóricos}
 \label{sec:fundamentos}
-\input{sections/referencial}
+
+Explique os conceitos essenciais, definindo termos e equações quando necessário, e apresente as técnicas, métodos ou abordagens já empregados no contexto do problema, destacando o que funcionou ou falhou. Organize esta seção por temas ou conceitos, não por autor, partindo do mais geral para o mais específico. Utilize blocos de texto ou pequenos quadros comparativos para sintetizar modelos.
+
+Utilize citações para fundamentar cada conceito apresentado. Uma citação direta pode ser empregada, por exemplo, com \citeonline{Silva2022} para reforçar que determinados métodos exigem validação empírica; uma citação indireta pode ser escrita como ``vários estudos destacam \ldots'' seguida de \cite{Wazlawick2020}. Uma tabela comparativa ajuda a clarificar diferenças entre as abordagens existentes:
+
+\begin{table}[htb]
+  \centering
+  \caption{Comparativo de abordagens relacionadas}
+  \label{tab:abordagens}
+  \begin{tabular}{p{4cm}p{3cm}p{4cm}}
+    \toprule
+    \textbf{Abordagem} & \textbf{Domínio} & \textbf{Limitação principal} \\
+    \midrule
+    Técnica A & IoT & Falta de validação em larga escala \\
+    Técnica B & Redes neurais & Alto custo computacional \\
+    \bottomrule
+  \end{tabular}
+  \legend{Fonte: Elaborado pelo autor (2025)}
+\end{table}
 
 % ---------------------------------------------------------------
 \section{Trabalhos correlatos}
 \label{sec:trabalhos_correlatos}
-\input{sections/trabalhos_relacionados}
+
+Liste artigos diretamente relacionados e explique por que cada um não resolve totalmente o problema (ex.: falta de comparação, escopo diferente, dados limitados). Relacione essas lacunas com o que sua pesquisa pretende preencher. Para cada trabalho correlato, descreva:
+
+\begin{enumerate}
+    \item \textbf{Qual problema} o trabalho tentou resolver (e por que é o mesmo problema que o seu);
+    \item A metodologia ou abordagem utilizada para resolvê-lo;
+    \item Os principais resultados obtidos;
+    \item As limitações identificadas na solução proposta;
+    \item Como o \textbf{seu trabalho se diferencia} ou avança em relação a ele.
+\end{enumerate}
+
+\textit{Evite a ``síndrome da intersecção esquecida'': inclua trabalhos que aplicaram a técnica na mesma área.}
 
 % ===============================================================
 % CAPÍTULO 3 - DESENVOLVIMENTO
@@ -321,31 +419,25 @@ A revisão bibliográfica tem como finalidade apresentar o embasamento teórico 
 % ---------------------------------------------------------------
 \section{Metodologia da pesquisa}
 \label{sec:metodologia_pesquisa}
-\input{sections/proc_exp_metricas}
-% Descreva, de forma rigorosa e reprodutível, como a pesquisa foi conduzida. 
-% Informe o tipo de pesquisa (exploratória, empírica, formal etc.) e a hipótese ou o critério de sucesso adotado;
-% detalhe os procedimentos da abordagem proposta, em ordem cronológica 
-% (use listas numeradas, diagramas de fluxo ou pseudocódigo para tornar o processo claro); 
-% liste as ferramentas, linguagens, bibliotecas, frameworks e ambientes utilizados, justificando cada escolha com base no problema;
-% e explique como os experimentos foram configurados, quais variáveis foram controladas e quais métricas demonstram que a proposta cumpre os objetivos 
-% (ex.: acurácia, latência, custo).
 
-% \begin{table}[htb]
-%   \centering
-%   \caption{Plano de experimentação}
-%   \label{tab:plano_experimentos}
-%   \begin{tabular}{lcc}
-%     \toprule
-%     \textbf{Experimento} & \textbf{Variável controlada} & \textbf{Métrica principal} \\
-%     \midrule
-%     Comparação com baseline & algoritmo & acurácia \\
-%     Escalabilidade & carga & tempo médio \\
-%     \bottomrule
-%   \end{tabular}
-%   \legend{Fonte: Elaborado pelo autor (2025)}
-% \end{table}
+Descreva, de forma rigorosa e reprodutível, como a pesquisa foi conduzida. Informe o tipo de pesquisa (exploratória, empírica, formal etc.) e a hipótese ou o critério de sucesso adotado; detalhe os procedimentos da abordagem proposta, em ordem cronológica (use listas numeradas, diagramas de fluxo ou pseudocódigo para tornar o processo claro); liste as ferramentas, linguagens, bibliotecas, frameworks e ambientes utilizados, justificando cada escolha com base no problema; e explique como os experimentos foram configurados, quais variáveis foram controladas e quais métricas demonstram que a proposta cumpre os objetivos (ex.: acurácia, latência, custo).
 
-% \textit{Propor algo não basta: demonstre como será validado.}
+\begin{table}[htb]
+  \centering
+  \caption{Plano de experimentação}
+  \label{tab:plano_experimentos}
+  \begin{tabular}{lcc}
+    \toprule
+    \textbf{Experimento} & \textbf{Variável controlada} & \textbf{Métrica principal} \\
+    \midrule
+    Comparação com baseline & algoritmo & acurácia \\
+    Escalabilidade & carga & tempo médio \\
+    \bottomrule
+  \end{tabular}
+  \legend{Fonte: Elaborado pelo autor (2025)}
+\end{table}
+
+\textit{Propor algo não basta: demonstre como será validado.}
 
 \section{Detalhes da implementação}
 \label{sec:implementacao}
@@ -473,9 +565,25 @@ Além do documento escrito, o TCC2 é avaliado por uma \textbf{apresentação or
 % ---------------------------------------------------------------
 \postextual
 
-\pdfbookmark[0]{Glossário}{glossario}
-\printglossary[type=main, title={Glossário}]
-
+% ===============================================================
+% REFERÊNCIAS BIBLIOGRÁFICAS
+% ===============================================================
+% As referências bibliográficas são geradas automaticamente a partir
+% do arquivo bibliografia_tcc2.bib, seguindo o padrão ABNT (NBR 6023).
+%
+% COMO CITAR no texto:
+%   \cite{chave}         -> (SOBRENOME, ano) — citação indireta
+%   \citeonline{chave}   -> Sobrenome (ano) — citação direta no texto
+%
+% TIPOS DE REFERÊNCIA no arquivo .bib:
+%   @book        -> Livros
+%   @article     -> Artigos de periódicos
+%   @inproceedings -> Artigos em anais de eventos
+%   @mastersthesis -> Dissertações de mestrado
+%   @phdthesis   -> Teses de doutorado
+%   @misc        -> Sites, vídeos e outros materiais
+%   @manual      -> Documentação técnica
+% ---------------------------------------------------------------
 \bibliography{bibliografia_tcc2}
 
 % ---------------------------------------------------------------
