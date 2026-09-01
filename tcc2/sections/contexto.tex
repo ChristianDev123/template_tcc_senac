@@ -1,32 +1,27 @@
+O mundo, neste momento, está passando pelo que pode ser chamado como a era da digitalização, 
+havendo severas transformações no modo de transmissão de dados e informações \cite{Tedjojuwono2024}. 
+Atualmente, a humanidade encontra-se sob influência da expansão da denominada indústria 4.0,
+que tem como foco a digitalização dos processos de manufatura e produção, mas que engloba 
+inclusive o modo de vida e acesso à informações da sociedade sob o braço 
+tecnológico denominado \textit{Cidades Inteligentes}.
 
-A problemática da informatização do sistema de medição de consumo hídrico enfrenta três grandes desafios atualmente: 
-o alto custo de substituição de medidores convencionais, a necessidade constante de manutenção em aparelhos destinados a implementação de IOT e a acurácia em modelos de visão computacional desenvolvidos para viabilizar o tráfego de dados. 
-Para melhor entendimento da dimensão do problema, analisaremos sob a ótica de três grandes pilares: gestão de recursos hídricos, desafios na implementação de tecnologia IOT e a atual realidade de mercado.
+Neste contexto, a utilização de hardware inteligente deixou de ser mero luxo de grandes
+corporações para se tornar o paradigma central na mudança citada anteriormente. Em relação à equipamentos de medição inteligentes,
+também classificados como \gls{smart_metering}, hoje já há uma série de avanços que possibilitam o processamento 
+de dados de maneira mais veloz e eficiente. Mas essa evolução também acompanhou a necessidade de adaptação de infraestrutura, 
+assim agregando altos custos para à transição das tecnologias analógicas para o digital \cite{Stefano2019}.
 
-\subsection{Manejamento de Recursos Hídricos}
+Como apresentado por \citeonline{Stefano2019}, o \gls{retrofitting} é uma das soluções mais difundidas para contornar o 
+alto custo de digitalização de sistemas nativamente analógicos. Tal conceito, tem como objetivo realizar a digitalização 
+de sistemas analógicos reaproveitando o hardware já existente. Essa concepção, é amplamente abordada na academia, havendo grandes teses,
+trabalhos e dissertações sobre o tema.
 
-Como evidenciado pelo \citeonline{tratabrasil2025}, aproximadamente  40,31\% de toda água produzida por agências de saneamento básico no Brasil é perdida por diversos fatores, entre eles, um dos fatores que se destaca é a perda causada por dificuldades de coleta e acompanhamento de dados fornecidos por hidrômetros, que para o Ministério das Cidades (2003), se qualifica como uma perda comercial. 
-Diante de tal problemática, abre-se a discussão sobre os graves impactos financeiros e no gerenciamento de recursos hídricos aos usuários da rede de distribuição, concessionárias e ao governo.
-
-Em ambientes privados e condomínios, a ausência de sistemas de monitoramento em tempo real impede a detecção precoce de anomalias e vazamentos ocultos. 
-Havendo uma lacuna em ferramentas que auxiliam consumidores e gerentes das redes hídricas efetuarem acompanhamento de dados de forma mais recorrente possibilitando realizar correções de maneira mais tempestiva.
-
-\subsection{Desafios Tecnológicos}
-
-Dado a natureza da aplicação dos dispositivos IOT, denota-se a necessidade da utilização de baterias como fonte primária de alimentação do sistema. 
-Diante de tal cenário, emerge o questionamento sobre qual o tipo de bateria mais adequado a se implementar. 
-
-Como explicado por \citeonline{hasan2023navigating}, há diversos fatores que impactam na escolha mais racional da bateria utilizada em dispositivos IOT, entre eles: densidade energética, intervalo de temperatura de funcionamento, segurança, eficiência energética, longevidade e custo.
-Ainda em tal artigo evidencia-se, como um forte candidato a este tipo de aplicação a escolha de bateria de íon-lítio, onde com o passar do tempo tornou-se mais viável economicamente e oferecendo bons níveis de todos os parâmetros citados anteriormente, sendo a opção escolhida para implementação em nossos dispositivos.
-
-Ainda sobre as baterias de íon-lítio, a \citeonline{panasonic_cr_standard}, uma das principais fabricantes de baterias deste tipo no mundo, publica abertamente os valores médios de ciclos de recarga suportados por seus produtos sob determinadas condições, no caso de um tipo de bateria de ion-lítio mais comumente utilizado, tal produto varia a quantidade de ciclos de recarga por volta de 1500 a 2000 ciclos.
-
-Portanto, aqui esclarecemos a necessidade de implementar um sistema eficiente energeticamente com o objetivo de prolongar a vida útil de um dos mais vitais componentes deste tipo de dispositivos e reduzir a necessidade de manutenção nos aparelhos desenvolvidos.
-
-\subsection{Realidade Mercadológica}
-
-A modernização da gestão hídrica enfrenta um impasse econômico. Embora existam medidores inteligentes nativos no mercado, a substituição integral dos parques de hidrômetros analógicos está vinculado à um custo inicial proibitivo ao consumidor médio. 
-Conforme indicado por \citeonline{fortune2025} e \citeonline{polimi2020}, o alto custo inicial exigido por tal solução, constitui o principal entrave para a adoção de tecnologias de telemetria em larga escala. 
-A complexidade de infraestrutura necessária para a substituição física dos medidores limita a viabilidade econômica de projetos em áreas privadas de pequeno e médio porte.
-
-Ao acoplar módulos de baixo custo aos medidores já instalados, a digitalização de dispositivos analógicos preexistentes(\textit{dumb meters}), processo conhecido como \textit{\gls{retrofitting}} permite dotar a infraestrutura atual de inteligência com custos reduzidos e com a mesma eficiencia dos medidores inteligentes que estão no mercado como mencionado por \citeonline{Stefano2019}.
+Diante de tal abordagem para redução de custos, a aplicabilidade da técnica de \gls{retrofitting} enfrenta um impasse.
+Atualmente, na academia encontra-se mais difundido trabalhos que abordam o uso de microcontroladores aliados à tecnologia \gls{lora}
+utilizando o método de processamento em borda, como explicado por \citeonline{SilvaVilela2021}, a utilização deste método 
+traz grandes vantagens em relação à latência e otimização de consumo energético. Em oposição, como \citeonline{Francesco2024} apresenta, 
+o método de processamento em cloud destaca-se por proporcionar maior granularidade de dados, simplificação no desenvolvimento 
+de firmware e acurácia ligeiramente melhor em relação ao conceito de \gls{edge_computing}.Todavia, permanece a dúvida de qual 
+método de processamento utilizar no desenvolvimento de uma solução \gls{iot} baseado na técnica de \gls{retrofitting}. 
+A resolução do problema criará um alicerce, auxiliando o desenvolvimento de futuras ferramentas, que por concepção, apresentará a 
+mesma natureza de problemática.
