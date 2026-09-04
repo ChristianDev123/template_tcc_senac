@@ -36,48 +36,42 @@ As próximas seções apresentam o desenvolvimento, os resultados e as análises
 
 \subsection{Viabilidade do Envio de Imagens via \gls{lorawan}}
 
-Este trabalho adota uma estratégia argumentativa em duas camadas 
-regulatórias para demonstrar a viabilidade do envio de imagens via 
-\gls{lorawan}. O cenário de referência primário é o padrão brasileiro 
-\textbf{AU915} (902--928~MHz), regulamentado pela ANATEL pelo Ato 
-n\textordmasculine~14.448 de 2017, que não impõe restrição de 
-\textit{duty cycle}, mas limita o tempo médio de permanência por 
-canal (\textit{dwell time}) a 0,4 segundos em um intervalo de 14 
-segundos. Como cenário conservador de suporte, adota-se 
-paralelamente o plano europeu \textbf{EU868}, que impõe um 
-\textit{duty cycle} de 1\%, equivalente a apenas 864 segundos de 
-transmissão por dia, restrição significativamente mais severa do 
-que qualquer exigência aplicável no Brasil. Toda conclusão favorável 
-obtida sob as premissas do EU868 é, portanto, necessariamente válida 
-nas condições regulatórias reais brasileiras. Essa dupla análise tem 
-por objetivo garantir que os resultados apresentados possuam validade 
-independentemente do contexto regulatório, oferecendo ao leitor uma 
-avaliação de viabilidade conservadora e auditável.
- 
-\subsubsection{Restrições Regulatórias e Escolha do \textit{Spreading Factor}}
+% Este trabalho adota uma estratégia argumentativa em duas camadas 
+% regulatórias para demonstrar a viabilidade do envio de imagens via 
+% \gls{lorawan}. O cenário de referência primário é o padrão brasileiro 
+% \textbf{AU915} (902--928~MHz), regulamentado pela ANATEL pelo Ato 
+% n\textordmasculine~14.448 de 2017, que não impõe restrição de 
+% \textit{duty cycle}, mas limita o tempo médio de permanência por 
+% canal (\textit{dwell time}) a 0,4 segundos em um intervalo de 14 
+% segundos. Como cenário conservador de suporte, adota-se 
+% paralelamente o plano europeu \textbf{EU868}, que impõe um 
+% \textit{duty cycle} de 1\%, equivalente a apenas 864 segundos de 
+% transmissão por dia, restrição significativamente mais severa do 
+% que qualquer exigência aplicável no Brasil. Toda conclusão favorável 
+% obtida sob as premissas do EU868 é, portanto, necessariamente válida 
+% nas condições regulatórias reais brasileiras. Essa dupla análise tem 
+% por objetivo garantir que os resultados apresentados possuam validade 
+% independentemente do contexto regulatório, oferecendo ao leitor uma 
+% avaliação de viabilidade conservadora e auditável.
+
+Por motivos de que todo hardware LoRa oficialmente vendido no Brasil ser homologado pela Anatel, 
+este trabalho emprega os limites regulatórios brasileiros \textbf{AU915}, 
+regulamentado pela ANATEL pelo Ato n\textordmasculine~14.448 de 2017, aplicado à sistemas de salto 
+em frequência operando nas faixas de 902--907,5~MHz e 915--928~MHz com largura de faixa de canal inferior a 250~kHz,
+assim não impondo restrição de \textit{duty cycle}, mas limitando o tempo médio de permanência por 
+canal (\textit{dwell time}) à 0,4 segundos em um intervalo de 14 segundos.
+
+
+\subsubsection{Restrições Regulatórias e Escolha do SF}
  
 Uma das principais preocupações técnicas no envio de imagens via \gls{lorawan} diz
 respeito aos limites regulatórios de transmissão e ao tamanho máximo de \textit{\gls{payload}}
-por pacote. No Brasil, o padrão regulamentado pela ANATEL para redes \gls{lorawan} é o
-AU915, operando na faixa de 902--928~MHz. Diferentemente do plano EU868 (863--870~MHz,
-adotado na Europa), o AU915 não impõe restrição de \textit{duty cycle} de 1\%; em seu lugar,
-adota salto de frequência entre 64 canais de \textit{uplink} e limita o tempo médio de
-permanência por canal (\textit{dwell time}). Essa restrição é estabelecida pelo Ato
-nº~14.448, de 4 de dezembro de 2017, da ANATEL~\cite{anatel2017}: para sistemas de
-salto em frequência operando nas faixas de 902--907,5~MHz e 915--928~MHz com largura
-de faixa de canal inferior a 250~kHz, caso do \gls{lora} com 125~kHz, o tempo médio
+por pacote. A regulamentação brasileira para funcionamento de tecnologias LoRa, limita o a largura de faixa de canal 
+à 250~hhz, no caso das especificações do \gls{lora}, com 125~kHz, o tempo médio
 de ocupação de qualquer radiofrequência não deve ser superior a \textbf{0,4~segundos}
 em um intervalo de 14~segundos, com uso mínimo de 35~canais de salto. O AU915
 utiliza 64~canais de \textit{uplink}, satisfazendo amplamente essa condição.
- 
-Para fins de análise conservadora do orçamento total de transmissão diária, este
-trabalho adota também os parâmetros do plano EU868 como cenário de referência, no
-qual o \textit{duty cycle} de 1\% equivale a um orçamento de transmissão de apenas
-36~segundos por hora, ou 864~segundos por dia, conforme \citeonline{jebril2018overcoming}. Os
-resultados obtidos sob essa premissa representam, portanto, o limite inferior de
-viabilidade: qualquer conclusão favorável nesse cenário é ainda mais favorável nas
-condições regulatórias reais do Brasil, onde o uso não é limitado por orçamento diário.
- 
+  
 A escolha do \textit{Spreading Factor} (\gls{sf}) é determinante sob duplo critério: o tempo
 no ar por pacote deve ser inferior a 400~ms (conformidade com o Ato nº~14.448) e o
 alcance deve ser suficiente para cobrir a distância entre os nós de borda e o
@@ -214,24 +208,24 @@ O tempo total de transmissão estimado para os 38~pacotes é:
   T_{\text{total}} = 38 \times 348{,}7 \approx 13{,}3 \text{ s}
 \end{equation}
  
-Com base nesses parâmetros, é possível calcular o impacto de cada transmissão sobre
-o orçamento diário no cenário conservador EU868:
+% Com base nesses parâmetros, é possível calcular o impacto de cada transmissão sobre
+% o orçamento diário no cenário conservador EU868:
  
-\begin{itemize}
-  \item 1 foto por dia: 13,3~s utilizados de 864~s disponíveis $\rightarrow$ \textbf{1,5\%} do orçamento diário.
-  \item 2 fotos por dia: 26,5~s utilizados de 864~s disponíveis $\rightarrow$ \textbf{3,1\%} do orçamento diário.
-\end{itemize}
+% \begin{itemize}
+%   \item 1 foto por dia: 13,3~s utilizados de 864~s disponíveis $\rightarrow$ \textbf{1,5\%} do orçamento diário.
+%   \item 2 fotos por dia: 26,5~s utilizados de 864~s disponíveis $\rightarrow$ \textbf{3,1\%} do orçamento diário.
+% \end{itemize}
  
-O intervalo mínimo entre pacotes consecutivos, imposto pelo \textit{duty cycle} de 1\%
-do cenário EU868, é calculado conforme a Equação~\ref{eq:intervalo}:
+% O intervalo mínimo entre pacotes consecutivos, imposto pelo \textit{duty cycle} de 1\%
+% do cenário EU868, é calculado conforme a Equação~\ref{eq:intervalo}:
  
-\begin{equation}
-  \label{eq:intervalo}
-  T_{\text{intervalo}} = \frac{T_{\text{pacote}}}{DC} = \frac{0{,}3487}{0{,}01} \approx 34{,}9 \text{ s}
-\end{equation}
+% \begin{equation}
+%   \label{eq:intervalo}
+%   T_{\text{intervalo}} = \frac{T_{\text{pacote}}}{DC} = \frac{0{,}3487}{0{,}01} \approx 34{,}9 \text{ s}
+% \end{equation}
  
-\noindent resultando em um tempo de calendário total de $38 \times 34{,}9 \approx
-1{.}326$~s $\approx 22$~minutos para a transmissão de uma imagem completa.
+% \noindent resultando em um tempo de calendário total de $38 \times 34{,}9 \approx
+% 1{.}326$~s $\approx 22$~minutos para a transmissão de uma imagem completa.
  
 \subsubsection{Eficiência Energética e Operação por Bateria}
 
@@ -275,26 +269,24 @@ de campo de longa duração.
 \subsubsection{Robustez a Perdas de Pacotes}
  
 A fragmentação da imagem em 38~pacotes introduz a possibilidade de perda de pacotes
-individuais durante a transmissão, o que exigiria retransmissão. No cenário conservador
-EU868, o orçamento restante após 2~capturas diárias é de $864 - 26{,}5 \approx
-837{,}5$~s, suficiente para acomodar até $\lfloor 837{,}5 / 0{,}349 \rfloor = 2{.}401$
-pacotes adicionais. Considerando que o total de pacotes por dia é 76 (2~imagens~$\times$
-38~pacotes), o orçamento residual permitiria até 32~retransmissões por
-pacote antes de esgotar o orçamento diário no cenário mais restritivo, o que
-equivale a tolerar uma taxa de perda de pacotes de até 97\% sem impactar o
-funcionamento do sistema. Na prática, redes \gls{lorawan} em cenários urbanos operam com
-taxas de entrega superiores a 75\%, tornando a margem de 97\%
-extremamente conservadora e a viabilidade do mecanismo de retransmissão plenamente
-confirmada \cite{adam2022}.
+individuais durante a transmissão, o que exigiria retransmissão. 
+% No cenário conservador
+% EU868, o orçamento restante após 2~capturas diárias é de $864 - 26{,}5 \approx
+% 837{,}5$~s, suficiente para acomodar até $\lfloor 837{,}5 / 0{,}349 \rfloor = 2{.}401$
+% pacotes adicionais. Considerando que o total de pacotes por dia é 76 (2~imagens~$\times$
+% 38~pacotes), o orçamento residual permitiria até 32~retransmissões por
+% pacote antes de esgotar o orçamento diário no cenário mais restritivo, o que
+% equivale a tolerar uma taxa de perda de pacotes de até 97\% sem impactar o
+% funcionamento do sistema. Na prática, redes \gls{lorawan} em cenários urbanos operam com
+% taxas de entrega superiores a 75\%, tornando a margem de 97\%
+% extremamente conservadora e a viabilidade do mecanismo de retransmissão plenamente
+% confirmada \cite{adam2022}.
  
-No contexto regulatório brasileiro real (AU915), onde não há limitação de orçamento
-diário por \textit{duty cycle}, a restrição é apenas o \textit{dwell time} de 400~ms por
-canal por transmissão, já satisfeita pelo SF8 com 348,7~ms. Nesse cenário, a
+No contexto regulatório brasileiro real (AU915), já satisfeita pelo SF8 com 348,7~m, a
 transmissão de uma imagem completa requer apenas 13,3~s de rádio ativo, e o sistema
-poderia, em princípio, realizar mais de 270~transmissões completas por hora. A análise
-EU868 apresentada neste trabalho representa, portanto, o cenário absolutamente mais
-restritivo possível, e sua conclusão favorável é suficiente para garantir a viabilidade
-do sistema em qualquer implantação \gls{lorawan} em território brasileiro.
+poderia, em princípio, realizar mais de 270~transmissões completas por hora. 
+Portanto, há viabilidade de implementação com robustez do sistema em qualquer 
+implantação \gls{lorawan} em território brasileiro.
  
 \subsubsection{Validação Experimental e Consistência do Modelo}
  
@@ -335,11 +327,11 @@ resultados obtidos.
     Limite \textit{dwell time} AU915 (Ato 14.448)       & 400~ms                      \\
     Conformidade AU915                                  & Sim (348,7~ms $<$ 400~ms)   \\
     Tempo no ar total (1 foto)                          & $\approx$13,3~s             \\
-    Orçamento diário - cenário EU868 (1\% DC)         & 864~s/dia                   \\
+    % Orçamento diário - cenário EU868 (1\% DC)         & 864~s/dia                   \\
     Consumo orçamento - 1 foto/dia                    & 13,3~s (1,5\%)              \\
     Consumo orçamento - 2 fotos/dia                   & 26,5~s (3,1\%)              \\
     Margem de orçamento - 2 fotos/dia                 & 837,5~s (96,9\%)            \\
-    Retransmissões suportadas por pacote (EU868)        & até 32$\times$              \\
+    % Retransmissões suportadas por pacote (EU868)        & até 32$\times$              \\
     Tempo de calendário - transmissão completa        & $\approx$22~min             \\
     Fração do dia em \textit{deep sleep} (2 fotos)      & 99,96\%                     \\
     \bottomrule
