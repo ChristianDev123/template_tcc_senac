@@ -73,11 +73,32 @@ A comunicação entre o gateway e o servidor de rede, corriqueiramente, é estab
 
 \subsubsection{Servidores de Rede e Aplicação}
 
-Como apresentado por \citeonline{Camargo2022}, servidores de rede e servidores de aplicação, dado a estrutura em que foram desenvolvidos, tanto podem ser implementados sob o mesmo hardware, como podem estar fisicamente distantes, realizando comunicação através de protocolo TCP/IP.
+Como apresentado por \citeonline{Camargo2022}, 
+servidores de rede e servidores de aplicação, 
+dado a estrutura em que foram desenvolvidos, 
+tanto podem ser implementados sob o mesmo hardware,
+como podem estar fisicamente distantes,
+realizando comunicação através de protocolo TCP/IP.
 
-Servidores de rede são responsáveis por receber, descartar duplicatas e descriptografar mensagens enviadas por uplink. Outra responsabilidade do servidor de rede é realizar a configuração de dispositivos finais através de requisições downlink.
+Como explicado pela \citeonline{semtech2024an1200_86}, Servidores de rede são responsáveis por 
+gerenciar dinâmicamente a rede de dispositivos, adaptando o sistema para se ajusta à um cenário
+de constante mudança de parâmetros. Entre as responsabilidade dos servidores de rede estão:
+receber, descartar duplicatas e descriptografar mensagens enviadas por uplink, 
+realizar autenticação, garantir segurança com o protocolo AES,
+confirmar recebimento de mensagens, responder requisições de camada MAC, realizar configuração de 
+dispositivos finais através de requisições downlink, entre outras. 
 
-Servidores de Aplicação são responsáveis por receber pacotes enviados pelo servidor de rede, tratar e disponibilizar ao usuário as informações extraídas pelos dispositivos finais.
+Servidores de Aplicação, por sua vez, são responsáveis por receber 
+pacotes enviados pelo servidor de rede, tratar e disponibilizar
+em formato de informação ao usuário os dados 
+extraídos pelos dispositivos finais. Como a \citeonline{semtech2024an1200_86} explica,
+é uma de suas responsabilidades também gerenciar os \gls{payload}s de 
+downlink à serem enviadas aos dispositivos finais.
 
-Ambos tipos de servidores possuem soluções prontas para implementação tanto em servidor local, como em nuvem. Entre eles destacam-se xxx que tem como característica xxxx e xxx que aplica-se sob o cenário xxxx.
-
+Ambos tipos de servidores possuem diversas soluções
+prontas para implementação tanto em ambiente local, como em nuvem.
+Para servidores de rede destaca-se o Chirp Stack, 
+que tem por foco o gerenciamento de dispositivos de \gls{iot} em rede privada.
+Já para servidores de aplicação Tago IO mostra-se como uma ferramenta robusta,
+com foco corporativo e ampla gama de ferramentas 
+voltadas para gerenciamento de dispositivos \cite{Camargo2022}.

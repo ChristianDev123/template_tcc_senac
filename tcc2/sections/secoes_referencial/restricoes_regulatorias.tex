@@ -1,0 +1,42 @@
+
+A propagação de ondas de radio são rigorosamente reguladas por orgãos
+competentes à homologação de dispositivos de comunicação, onde há regras de funcionamento
+definidas por cada país. No caso do Brasil
+a ANATEL (Agência Nacional de Telecomunicações), é a responsável 
+por regular, fiscalizar e homologar dispositivos com o foco de estabelecer redes de comunicação.
+Na Europa, cada país há um orgão interno voltado à regulação de aparelhos de comunicação, 
+mas por convenção, todos os países-membros da união europeia desenvolvem suas regulações 
+junto da BEREC (Body of European Regulators for Electronic Communications).
+
+O \textit{duty cycle} é a relação entre o tempo em que um dispositivo 
+ocupa um canal de rádio e o tempo total de observação. No plano europeu 
+EU868 (863--870~MHz), há a imposição de \textit{duty cycle} máximo 
+de 1\%, o que equivale a um orçamento de transmissão de apenas 
+36~segundos por hora, ou 864~segundos por dia \cite{jebril2018overcoming}.
+
+O \textit{dwell time} é o tempo máximo de ocupação contínua de uma 
+frequência por transmissão. No Brasil, o padrão regulamentado pela 
+ANATEL para redes \gls{lorawan} é o AU915, operando na faixa de 
+902--928~MHz. Diferentemente do EU868, o AU915 não impõe restrição 
+de \textit{duty cycle}; em seu lugar, o Ato nº~14.448, de 4 de dezembro 
+de 2017~\cite{anatel2017} estabelece que, para sistemas de salto em 
+frequência operando nas faixas de 902--907,5~MHz e 915--928~MHz com 
+largura de faixa de canal inferior a 250~kHz, caso do \gls{lora} com 
+125~kHz, o tempo médio de ocupação de qualquer radiofrequência não 
+deve ser superior a \textbf{0,4~segundos} em um intervalo de 
+14~segundos, com uso mínimo de 35~canais de salto. O AU915 utiliza 
+64~canais de \textit{uplink}, satisfazendo amplamente essa condição.
+
+Valores mais altos de \gls{sf} aumentam a sensibilidade do receptor e o 
+alcance da transmissão, porém elevam proporcionalmente o tempo que o 
+sinal permanece no ar (\textit{time on air}), impactando diretamente 
+o consumo energético e a capacidade da rede~\cite{adam2022}.
+
+O tempo no ar por pacote ($T_{\text{pacote}}$) é calculado a partir 
+do \gls{sf}, da \gls{bw}, do \gls{cr} e do tamanho do \textit{\gls{payload}}, 
+conforme a formulação oficial do \gls{lora}. 
+Como explicado anteriormente, o \gls{cr} expressa a proporção de bits 
+redundantes adicionados para tolerância a erros; o valor 4/5 representa 
+o menor \textit{overhead} de redundância disponível no padrão 
+\gls{lora}~\cite{adam2022}.
+
