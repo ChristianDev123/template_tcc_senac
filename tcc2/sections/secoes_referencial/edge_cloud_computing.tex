@@ -32,27 +32,35 @@ sistêmica e menor complexidade no desenvolvimento de firmware.
     \centering     
     \caption{Vantagem e Desvantagens na Adoção de Métodos de Processamento}
     \label{tab:vant_desvant_edge_cloud}
-    \begin{tabular}{|c|c|c|} 
+    \begin{tabular}{|c|p{6cm}|p{6cm}|} 
     \hline 
     \textbf{Método} & \textbf{Vantagens} & \textbf{Desvantagens} \\ 
     \hline 
         Edge Computing & 
-        Menor latência na transmissão de mensagens;
-        Menor tráfego de mensagens em rede;
-        Foco em segurança de dados & 
-        Possível altos custos iniciais;
-        Capacidade computacional limitada;
-        Dificuldades de execução de modelos de machine learning;
-        Dificuldades em escalabilidade; \\
-    \hline 
+        \begin{itemize}
+            \item Menor latência na transmissão de mensagens;
+            \item Menor tráfego de mensagens em rede;
+            \item Foco em segurança de dados;
+        \end{itemize} 
+        & 
+        \begin{itemize}
+            \item Possível altos custos iniciais;
+            \item Capacidade computacional limitada;
+            \item Dificuldades de execução de modelos de machine learning;
+            \item Dificuldades em escalabilidade;
+        \end{itemize} \\ \hline 
         Cloud Computing & 
-        Maior poder computacional disponível;
-        Escalabilidade;
-        Possível menor custo inicial; & 
-        Alta latência;
-        Maior risco em segurança de dados;
-        Maior quantidade de pacotes enviados à rede; \\ 
-    \hline 
+        \begin{itemize}
+            \item Maior poder computacional disponível;
+            \item Escalabilidade;
+            \item Possível menor custo inicial;     
+        \end{itemize}
+        & 
+        \begin{itemize}
+            \item Alta latência;
+            \item Maior risco em segurança de dados;
+            \item Maior quantidade de pacotes enviados à rede; 
+        \end{itemize} \\ \hline 
     \end{tabular} 
     \begin{quote}
         Fonte: Adaptado de \citeonline{andriulo2024edge}.
