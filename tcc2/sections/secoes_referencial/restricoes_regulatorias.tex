@@ -1,21 +1,22 @@
-Ao redor do mundo, protocolos de transmissão que utilizam ondas de 
-rádio como meio de propagação de sinal, tem seu funcionamento 
-regulado por órgãos competentes à homologação de dispositivos de comunicação.
-No Brasil, a ANATEL (Agência Nacional de Telecomunicações) é a 
-responsável por regular, fiscalizar e homologar dispositivos com o foco 
+Ao redor do mundo, protocolos de transmissão que utilizam 
+ondas de rádio como meio de propagação de sinal,
+tem seu funcionamento regulado por órgãos competentes 
+à homologação de dispositivos de comunicação.
+No Brasil, a ANATEL (Agência Nacional de Telecomunicações) 
+é a responsável por regular, fiscalizar e 
+homologar dispositivos com o foco 
 de estabelecer redes de comunicação. 
-Na Europa, cada país tem um órgão interno voltado à regulação de aparelhos 
-de comunicação, mas por convenção, todos os países-membros da União Europeia 
-desenvolvem suas regulações junto da 
-BEREC (Body of European Regulators for Electronic Communications). 
 
-O AU915 é a restrição imposta pela ANATEL no ato nº 14.448, estabelecida em 
-4 de dezembro de 2017~\cite{anatel2017}, em que se adota o padrão australiano de radiocomunicação. 
-Por mais que o Brasil adotou o padrão americano de distribuição de canais o 
-\gls{ism}, o AU915 foi escolhido por conta da já existente infraestrutura de rádio 
+O AU915 é a restrição imposta pela ANATEL no ato nº 14.448,
+estabelecida em 4 de dezembro de 2017~\cite{anatel2017}, 
+em que se adota o padrão australiano de radiocomunicação. 
+Visto que o Brasil adotou o padrão americano de distribuição 
+de canais o \gls{ism}, o AU915 foi escolhido por conta da já 
+existente implantação de infraestrutura de rádio 
 que ocupavam parcialmente as faixas sub 915Mhz, 
-portanto, o padrão americano (US915) que funciona em uma faixa de frequência 
-entre 902 e 928 Mhz, tornou-se inadequado para implantação em território brasileiro.
+portanto, o padrão americano (US915) que funciona em uma faixa 
+de frequência entre 902 e 928 Mhz, 
+tornou-se inadequado para implantação em território brasileiro.
 
 O \gls{ism}, foi desenvolvido em Atlanta em 1947, elaborado pela 
 FCC (Federal Communications Comission), com o objetivo de delimitar 
@@ -65,7 +66,7 @@ como mostrado na tabela~\ref{tab:downlink_freq_channel}, os canais são numerado
       1  & 915,4  \\ \hline
       2  & 915,6  \\ \hline
       … &  …  \\ \hline
-      67 & 967,8 \\ \hline
+      63 & 967,8 \\ \hline
   \end{tabular}
 \end{table}
 
@@ -85,7 +86,7 @@ como mostrado na tabela~\ref{tab:downlink_freq_channel}, os canais são numerado
 \end{table}
 
 O termo salto de frequência especificado pelo AU915, trata-se de um padrão de envio 
-de pacotes de canais de frequência. Na tecnologia LoRa, adota-se dois padrões de envio, 
+de pacotes em canais de frequência. Na tecnologia LoRa, adota-se dois padrões de envio, 
 o \gls{css}, onde o uplink é transmitido em um canal escolhido de forma pseudo aleatório 
 dentro dos limites regulatórios especificados, em que cada pacote é enviado de forma atomizada, 
 em downlink a mensagem é enviada no mesmo canal em que recebeu uplink, 
@@ -99,7 +100,7 @@ Outro importante ponto, para adequação aos limites regulatórios brasileiros
 o \gls{sf}. Como explicado pela \citeonline{lora_alliance_rp002_105}, \gls{dr} 
 é um indicador de velocidade de transmissão de dados em pacote, 
 assim como o \gls{sf}, organizado em classes que vão de 0 à 15, 
-onde quanto menor a classe menor é a taxa de transmissão de dados 
+onde quanto menor a classe, menor é a taxa de transmissão de dados 
 em bit por requisição. Este indicador está extremamente vinculado ao \gls{sf}, 
 de forma que quanto menor a classe de \gls{sf}, maior é a classe de \gls{dr}, 
 evidenciando assim, menor tempo de pacote no ar, e, por contrário, 
@@ -167,7 +168,7 @@ e sob um data rate especificado em uma tabela. A tabela~\ref{tab:rx1_datarate_ma
 
 \begin{table}[H]
   \centering
-  \caption{Downlink RX1 Data Rate Mapping (Fonte: \cite{lora_alliance_rp002_105})}
+  \caption{Downlink RX1 Data Rate Mapping}
   \label{tab:rx1_datarate_mapping}
   \renewcommand{\arraystretch}{1.2}
   \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -185,6 +186,9 @@ e sob um data rate especificado em uma tabela. A tabela~\ref{tab:rx1_datarate_ma
     DR9  & DR14 & DR13 & DR12 & DR11 & DR10 & DR9  \\ \hline
     DR10 & DR0  & DR14 & DR13 & DR12 & DR11 & DR10 \\ \hline
   \end{tabular}
+   \begin{quote}
+      Fonte: Adaptado de Lora Alliance, \cite{lora_alliance_rp002_105}.
+  \end{quote}
 \end{table}
 
 
