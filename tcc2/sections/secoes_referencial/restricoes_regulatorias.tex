@@ -1,81 +1,58 @@
-
-% A propagação de ondas de radio são rigorosamente reguladas por orgãos
-% competentes à homologação de dispositivos de comunicação, onde há regras de funcionamento
-% definidas por cada país. No caso do Brasil
-% a ANATEL (Agência Nacional de Telecomunicações), é a responsável 
-% por regular, fiscalizar e homologar dispositivos com o foco de estabelecer redes de comunicação.
-% Na Europa, cada país há um orgão interno voltado à regulação de aparelhos de comunicação, 
-% mas por convenção, todos os países-membros da união europeia desenvolvem suas regulações 
-% junto da BEREC (Body of European Regulators for Electronic Communications).
-
-% O \textit{duty cycle} é a relação entre o tempo em que um dispositivo 
-% ocupa um canal de rádio e o tempo total de observação. No plano europeu 
-% EU868 (863--870~MHz), há a imposição de \textit{duty cycle} máximo 
-% de 1\%, o que equivale a um orçamento de transmissão de apenas 
-% 36~segundos por hora, ou 864~segundos por dia \cite{jebril2018overcoming}.
-
-% O \textit{dwell time} é o tempo máximo de ocupação contínua de uma 
-% frequência por transmissão. No Brasil, o padrão regulamentado pela 
-% ANATEL para redes \gls{lorawan} é o AU915, operando na faixa de 
-% 902--928~MHz. Diferentemente do EU868, o AU915 não impõe restrição 
-% de \textit{duty cycle}; em seu lugar, o Ato nº~14.448, de 4 de dezembro 
-% de 2017~\cite{anatel2017} estabelece que, para sistemas de salto em 
-% frequência operando nas faixas de 902--907,5~MHz e 915--928~MHz com 
-% largura de faixa de canal inferior a 250~kHz, caso do \gls{lora} com 
-% 125~kHz, o tempo médio de ocupação de qualquer radiofrequência não 
-% deve ser superior a \textbf{0,4~segundos} em um intervalo de 
-% 14~segundos, com uso mínimo de 35~canais de salto. O AU915 utiliza 
-% 64~canais de \textit{uplink}, satisfazendo amplamente essa condição.
-
-% Valores mais altos de \gls{sf} aumentam a sensibilidade do receptor e o 
-% alcance da transmissão, porém elevam proporcionalmente o tempo que o 
-% sinal permanece no ar (\textit{time on air}), impactando diretamente 
-% o consumo energético e a capacidade da rede~\cite{adam2022}.
-
-% O tempo no ar por pacote ($T_{\text{pacote}}$) é calculado a partir 
-% do \gls{sf}, da \gls{bw}, do \gls{cr} e do tamanho do \textit{\gls{payload}}, 
-% conforme a formulação oficial do \gls{lora}. 
-% Como explicado anteriormente, o \gls{cr} expressa a proporção de bits 
-% redundantes adicionados para tolerância a erros; o valor 4/5 representa 
-% o menor \textit{overhead} de redundância disponível no padrão 
-% \gls{lora}~\cite{adam2022}.
-
-Ao redor do mundo, protocolos de transmissão que utilizam ondas de rádio 
-como meio de propagação de sinal, tem seu funcionamento regulado por 
-órgãos competentes à homologação de dispositivos de comunicação.
-
-No caso do Brasil, a ANATEL (Agência Nacional de Telecomunicações) é a 
-responsável por regular, fiscalizar e homologar dispositivos com o foco de 
-estabelecer redes de comunicação. 
+Ao redor do mundo, protocolos de transmissão que utilizam ondas de 
+rádio como meio de propagação de sinal, tem seu funcionamento 
+regulado por órgãos competentes à homologação de dispositivos de comunicação.
+No Brasil, a ANATEL (Agência Nacional de Telecomunicações) é a 
+responsável por regular, fiscalizar e homologar dispositivos com o foco 
+de estabelecer redes de comunicação. 
 Na Europa, cada país tem um órgão interno voltado à regulação de aparelhos 
 de comunicação, mas por convenção, todos os países-membros da União Europeia 
-desenvolvem suas regulações junto da BEREC (Body of European 
-Regulators for Electronic Communications). 
+desenvolvem suas regulações junto da 
+BEREC (Body of European Regulators for Electronic Communications). 
 
-O AU915 é a restrição imposta pela ANATEL no ato nº 14.448, estabelecida 
-em 4 de dezembro de 2017~\cite{anatel2017}, em que se adota o 
-padrão australiano de radiocomunicação. 
-Por mais que o Brasil adotou o padrão americano de distribuição de canais \gls{ism}, 
-o AU915 foi escolhido por conta da já existente implantação de infraestrutura 
-de rádio que ocupavam parcialmente as faixas sub 915Mhz, portanto o padrão 
-americano (US915) que funciona em uma faixa de frequência entre 902 e 928 Mhz, 
-tornou-se inadequado para implementação em território brasileiro.
+O AU915 é a restrição imposta pela ANATEL no ato nº 14.448, estabelecida em 
+4 de dezembro de 2017~\cite{anatel2017}, em que se adota o padrão australiano de radiocomunicação. 
+Por mais que o Brasil adotou o padrão americano de distribuição de canais o 
+\gls{ism}, o AU915 foi escolhido por conta da já existente infraestrutura de rádio 
+que ocupavam parcialmente as faixas sub 915Mhz, 
+portanto, o padrão americano (US915) que funciona em uma faixa de frequência 
+entre 902 e 928 Mhz, tornou-se inadequado para implantação em território brasileiro.
 
-O \gls{ism}, foi desenvolvido em Atlanta em 1947, 
-elaborado pela FCC (Federal Communications Comission), 
-com o objetivo de delimitar espectros de radiofrequência 
-para as mais diversas finalidades. 
-Em 1985, o FCC autorizou o uso de livre de espectros 
-de rádio em bandas ISM sem a necessidade de licenciamento para 
-utilização em determinados espectros de frequência.
+O \gls{ism}, foi desenvolvido em Atlanta em 1947, elaborado pela 
+FCC (Federal Communications Comission), com o objetivo de delimitar 
+internacionalmente os espectros de frequências de rádio para as mais diversas 
+finalidades. Em 1985, o FCC autorizou o uso de livre de espectros de rádio 
+em bandas ISM sem a necessidade de licenciamento para utilização em determinados
+espectros de frequência.
 
-Entre as regulações implementadas pelos mais diversos países ao redor do mundo, dois termos ganham grande relevância. 
-O \textit{duty cycle} é a relação entre o tempo em que um dispositivo ocupa um canal de rádio e o tempo total de observação. 
-E o \textit{dwell time} é o tempo máximo de ocupação contínua de uma frequência por transmissão.
+Entre as regulações implementadas pelos mais diversos países ao redor 
+do mundo, dois termos ganham grande relevância. 
+O \textit{duty cycle} é a relação entre o tempo em que um 
+dispositivo ocupa um canal de rádio e o tempo total de observação. 
+E o \textit{dwell time} é o tempo máximo de ocupação 
+contínua de uma frequência por transmissão, \cite{adam2022}.
 
-No plano europeu EU868 (863–870 MHz), por exemplo, há a imposição de duty cycle máximo de 1\%, o que equivale a um orçamento de transmissão de apenas 36 segundos por hora, ou 864 segundos por dia (JEBRIL et al., 2018). 
+No plano europeu EU868 (863–870 MHz), por exemplo, 
+há a imposição de duty cycle máximo de 1\%, o que equivale a 
+um orçamento de transmissão de apenas 36 segundos por hora, 
+ou 864 segundos por dia \cite{jebril2018overcoming}. 
 
-Tendo o AU915 operando entre as faixas de frequência de 915 e 928 MHz, a norma brasileira não impõe restrição de duty cycle, em seu lugar, o Ato nº 14.448 estabelece que, para sistemas de salto em frequência operando nas faixas de 902–907,5 MHz e 915–928 MHz com largura de faixa de canal inferior a 250 kHz, caso do LoRa com 125 kHz, o tempo médio de ocupação de qualquer radiofrequência não deve ser superior a 0,4 segundos em um intervalo de 14 segundos, com uso mínimo de 35 canais de salto. 
+Tendo o AU915 operando entre as faixas de frequência de 915 e 928 MHz, 
+a norma brasileira não impõe restrição de duty cycle, em seu lugar, 
+o Ato nº 14.448 estabelece que, para sistemas de salto em frequência 
+operando nas faixas de 902–907,5 MHz e 915–928 MHz com largura de faixa 
+de canal inferior a 250 kHz, caso do LoRa com 125 kHz, o tempo médio 
+de ocupação de qualquer radiofrequência não deve ser superior a 0,4 segundos 
+em um intervalo de 14 segundos, com uso mínimo de 35 canais de salto. 
+
+O AU915 utiliza 64 canais de uplink e 8 
+canais de downlink que se distribuem entre os espectros de frequência
+delimitados pela restrição regulatória. No caso de uplink, 
+como mostrado pela tabela~\ref{tab:uplink_freq_channel}, 
+os canais são numerados entre 0 e 63 e distribuídos com espaçamentos de 200 Mhz,
+iniciando em 915,2 Mhz até 927,8 Mhz. E no caso de Downlink, 
+como mostrado na tabela~\ref{tab:downlink_freq_channel}, os canais são numerados de 
+0 a 7, e distribuídos entre 923,3 e 927,5 Mhz com espaçamentos de 500 Mhz, 
+\cite{lora_alliance_rp002_105}.
 
 \begin{table}[H]
   \centering
@@ -84,11 +61,11 @@ Tendo o AU915 operando entre as faixas de frequência de 915 e 928 MHz, a norma 
   \begin{tabular}{|c|c|}
     \hline
     \textbf{Canal} & \textbf{Frequência Inicial (Mhz)} \\ \hline
-    0  & 915,2 \\ \hline
-    1  & 915,4  \\ \hline
-    2  & 915,6  \\ \hline
-    … &  …  \\ \hline
-    67 & 927,8 \\ \hline
+      0  & 915,2 \\ \hline
+      1  & 915,4  \\ \hline
+      2  & 915,6  \\ \hline
+      … &  …  \\ \hline
+      67 & 967,8 \\ \hline
   \end{tabular}
 \end{table}
 
@@ -99,13 +76,125 @@ Tendo o AU915 operando entre as faixas de frequência de 915 e 928 MHz, a norma 
   \begin{tabular}{|c|c|}
     \hline
    \textbf{Canal} & \textbf{Frequência Inicial (Mhz)} \\ \hline
-    0  & 923,3 \\ \hline
-    1  & 923,8  \\ \hline
-    2  & 924,3  \\ \hline
-    … &  …  \\ \hline
-    7 & 927,5 \\ \hline
+      0  & 923,3 \\ \hline
+      1  & 923,8  \\ \hline
+      2  & 924,3  \\ \hline
+      … &  …  \\ \hline
+      7 & 927,5 \\ \hline
   \end{tabular}
 \end{table}
 
-O AU915 utiliza 64 canais de uplink e 8 canais de downlink em que tais canais se distribuem de entre os espectros de frequência delimitados pela restrição regulatória. No caso de uplink, como mostrado pela tabela~\ref{tab:uplink_freq_channel}, os canais são numerados entre 0 e 63 e distribuídos com espaçamentos de 200 Mhz, iniciando em 915,2 Mhz até 927,8 Mhz. E no caso de Downlink, como mostrado na tabela~\ref{tab:downlink_freq_channel}, os canais são numerados de 0 a 7, e distribuídos entre 923,3 e 927,5 Mhz com espaçamentos de 500 Mhz. \cite{lora_alliance_rp002_105}.
+O termo salto de frequência especificado pelo AU915, trata-se de um padrão de envio 
+de pacotes de canais de frequência. Na tecnologia LoRa, adota-se dois padrões de envio, 
+o \gls{css}, onde o uplink é transmitido em um canal escolhido de forma pseudo aleatório 
+dentro dos limites regulatórios especificados, em que cada pacote é enviado de forma atomizada, 
+em downlink a mensagem é enviada no mesmo canal em que recebeu uplink, 
+\cite{semtech2024an1200_86}. E o \gls{lr_fhss}, que tem por objetivo ampliar a capacidade 
+de escalonamento do sistema, sendo aplicável apenas em uplink, funcionando de 
+forma à segmentar a mensagem em diversos pacotes e distribuindo em diversos canais, 
+assim prevenindo a sobrecarga de canal, \cite{lora_alliance_rp002_105}.
 
+Outro importante ponto, para adequação aos limites regulatórios brasileiros 
+é a configuração de \gls{dr}, e por consequência, 
+o \gls{sf}. Como explicado pela \citeonline{lora_alliance_rp002_105}, \gls{dr} 
+é um indicador de velocidade de transmissão de dados em pacote, 
+assim como o \gls{sf}, organizado em classes que vão de 0 à 15, 
+onde quanto menor a classe menor é a taxa de transmissão de dados 
+em bit por requisição. Este indicador está extremamente vinculado ao \gls{sf}, 
+de forma que quanto menor a classe de \gls{sf}, maior é a classe de \gls{dr}, 
+evidenciando assim, menor tempo de pacote no ar, e, por contrário, 
+quanto maior a classe \gls{sf}, menor é a classe \gls{dr}. 
+As tabelas~\ref{tab:uplink_datarate} e \ref{tab:lora_downlink_datarates} demonstram como cada 
+classe de \gls{dr} impacta no funcionamento de um sistema baseado em tecnologia \gls{lora}.
+
+\begin{table}[H]
+  \centering
+  \caption{Taxas de transmissão Uplink e configurações LoRaWAN.}
+  \label{tab:uplink_datarate}
+  \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{\begin{tabular}[c]{@{}c@{}}Uplink\\ Data Rate\end{tabular}} & \textbf{Configuration} & \textbf{\begin{tabular}[c]{@{}c@{}}Indicative\\ Physical Bit\\ Rate [bit/sec]\end{tabular}} \\ \hline
+    0     & LoRa: SF12 / 125 kHz                & 250   \\ \hline
+    1     & LoRa: SF11 / 125 kHz                & 440   \\ \hline
+    2     & LoRa: SF10 / 125 kHz                & 980   \\ \hline
+    3     & LoRa: SF9 / 125 kHz                 & 1760  \\ \hline
+    4     & LoRa: SF8 / 125 kHz                 & 3125  \\ \hline
+    5     & LoRa: SF7 / 125 kHz                 & 5470  \\ \hline
+    6     & LoRa: SF8 / 500 kHz                 & 12500 \\ \hline
+    7     & LR-FHSS CR1/3: 1.523 MHz BW         & 162   \\ \hline
+    8     & RFU                                 &       \\ \hline
+    9     & LoRa: SF6 / 125 kHz                 & 9375  \\ \hline
+    10    & LoRa: SF5 / 125 kHz                 & 15625 \\ \hline
+    11-14 & RFU                                 &       \\ \hline
+    15    & Defined in [TS001]$^3$              &       \\ \hline
+  \end{tabular}
+  \begin{quote}
+      Fonte: Adaptado de Lora Alliance, \cite{lora_alliance_rp002_105}.
+  \end{quote}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \caption{Parâmetros de Downlink Data Rate}
+  \label{tab:lora_downlink_datarates}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{\begin{tabular}[c]{@{}c@{}}Downlink\\ Data Rate\end{tabular}} & 
+    \textbf{Configuration} & 
+    \textbf{\begin{tabular}[c]{@{}c@{}}Indicative\\ Physical Bit\\ Rate [bit/sec]\end{tabular}} \\ \hline
+    0 & LoRa: SF5 / 500 kHz & 62500 \\ \hline
+    1-7 & RFU & \\ \hline
+    8 & LoRa: SF12 / 500 kHz & 980 \\ \hline
+    9 & LoRa: SF11 / 500 kHz & 1760 \\ \hline
+    10 & LoRa: SF10 / 500 kHz & 3900 \\ \hline
+    11 & LoRa: SF9 / 500 kHz & 7000 \\ \hline
+    12 & LoRa: SF8 / 500 kHz & 12500 \\ \hline
+    13 & LoRa: SF7 / 500 kHz & 21900 \\ \hline
+    14 & LoRa: SF6 / 500 kHz & 37500 \\ \hline
+    15 & Defined in [TS001]$^3$ & \\ \hline
+  \end{tabular}
+  \begin{quote}
+      Fonte: Adaptado de Lora Alliance, \cite{lora_alliance_rp002_105}.
+  \end{quote}
+\end{table}
+
+O \gls{dr}, impacta também na configuração de recebimento de mensagens. 
+Como explicado anteriormente, ao enviar uma requisição uplink, 
+e o dispositivo final estiver em classe A, o servidor de rede, ao receber a mensagem, 
+devolverá uma requisição downlink. Essa última requisição será lida em uma janela de tempo especifica, 
+e sob um data rate especificado em uma tabela. A tabela~\ref{tab:rx1_datarate_mapping}, especifica as possíveis configurações da janela de recebimento (chamada de RX1), que entram em conformidade com o AU915.
+
+\begin{table}[H]
+  \centering
+  \caption{Downlink RX1 Data Rate Mapping (Fonte: \cite{lora_alliance_rp002_105})}
+  \label{tab:rx1_datarate_mapping}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline
+    \textbf{Uplink Data Rate} & \multicolumn{6}{c|}{\textbf{Downlink Data Rate}} \\ \hline
+    \texttt{RX1DROffset} & \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} \\ \hline
+    DR0  & DR8  & DR8  & DR8  & DR8  & DR8  & DR8  \\ \hline
+    DR1  & DR9  & DR8  & DR8  & DR8  & DR8  & DR8  \\ \hline
+    DR2  & DR10 & DR9  & DR8  & DR8  & DR8  & DR8  \\ \hline
+    DR3  & DR11 & DR10 & DR9  & DR8  & DR8  & DR8  \\ \hline
+    DR4  & DR12 & DR11 & DR10 & DR9  & DR8  & DR8  \\ \hline
+    DR5  & DR13 & DR12 & DR11 & DR10 & DR9  & DR8  \\ \hline
+    DR6  & DR13 & DR13 & DR12 & DR11 & DR10 & DR9  \\ \hline
+    DR7  & DR9  & DR8  & DR8  & DR8  & DR8  & DR8  \\ \hline
+    DR9  & DR14 & DR13 & DR12 & DR11 & DR10 & DR9  \\ \hline
+    DR10 & DR0  & DR14 & DR13 & DR12 & DR11 & DR10 \\ \hline
+  \end{tabular}
+\end{table}
+
+
+Outro fator importante à determinar dentro de um sistema lora é o \gls{eirp}, 
+que é o valor em dBm que representa a potência do sinal de rádio emitido pelo hardware. 
+O valor máximo permitido pela regulação AU915 é de +30 dBm. 
+O \gls{eirp} é determinado pela fórmula~\ref{eq:max_eirp}, 
+onde o parâmetro \textit{TXPower} é configurável via software no dispositivo final.
+
+\begin{equation}
+\label{eq:max_eirp}
+\text{Max EIRP} - 2 \times \text{TXPower}
+\end{equation}
