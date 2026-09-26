@@ -136,7 +136,7 @@ qat_model.fit(
 DIR_SAIDA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Modelos")
 os.makedirs(DIR_SAIDA, exist_ok=True)
 
-caminho_unet_h5 = os.path.join(DIR_SAIDA, "modelo_medidor_qat.h5")
+caminho_unet_h5 = os.path.join(DIR_SAIDA, "modelo_medidor.h5")
 qat_model.save(caminho_unet_h5)
 
 # ==========================================
@@ -161,7 +161,7 @@ converter.inference_output_type = tf.int8
 
 tflite_quant_model = converter.convert()
 
-caminho_unet_tflite = os.path.join(DIR_SAIDA, "modelo_medidor_esp32.tflite")
+caminho_unet_tflite = os.path.join(DIR_SAIDA, "modelo_medidor.tflite")
 with open(caminho_unet_tflite, "wb") as f:
     f.write(tflite_quant_model)
 

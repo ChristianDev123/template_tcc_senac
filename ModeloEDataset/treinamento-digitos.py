@@ -84,7 +84,7 @@ qat_model.fit(
 DIR_SAIDA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Modelos")
 os.makedirs(DIR_SAIDA, exist_ok=True)
 
-caminho_h5 = os.path.join(DIR_SAIDA, "modelo_digitos_qat.h5")
+caminho_h5 = os.path.join(DIR_SAIDA, "modelo_digitos.h5")
 qat_model.save(caminho_h5)
 
 # ==========================================
@@ -104,7 +104,7 @@ converter.inference_output_type = tf.int8
 
 tflite_quant_model = converter.convert()
 
-caminho_tflite = os.path.join(DIR_SAIDA, "classificador_digitos.tflite")
+caminho_tflite = os.path.join(DIR_SAIDA, "modelo_digitos.tflite")
 with open(caminho_tflite, "wb") as f:
     f.write(tflite_quant_model)
 
