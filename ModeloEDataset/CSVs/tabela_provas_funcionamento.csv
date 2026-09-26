@@ -1,0 +1,16 @@
+Fonte,Arquivo,Veredito,Latência (ms),Área (px),IoU (%),Dice (%)
+Mundo Real,image.jpg,Mal Posicionado (Muito Distante),534.47,279,N/A,N/A
+Mundo Real,image1.jpg,Inexistente (Ou Ruído),80.08,49,N/A,N/A
+Mundo Real,image10.jpg,Identificável,76.05,272,N/A,N/A
+Mundo Real,image11.jpg,Identificável,76.77,272,N/A,N/A
+Mundo Real,image12.jpg,Inexistente (Ou Ruído),77.76,15,N/A,N/A
+Mundo Real,image13.jpg,Mal Posicionado (Muito Distante),75.79,236,N/A,N/A
+Mundo Real,image14.jpg,Inexistente (Ou Ruído),75.62,16,N/A,N/A
+Mundo Real,image2.jpeg,Mal Posicionado (Muito Distante),76.78,288,N/A,N/A
+Mundo Real,image3.jpg,Identificável,73.73,356,N/A,N/A
+Mundo Real,image4.jpg,Mal Posicionado (Ângulo/Corte Incorreto),72.21,214,N/A,N/A
+Mundo Real,image5.jpg,Inexistente (Ou Ruído),71.28,61,N/A,N/A
+Mundo Real,image6.jpg,Identificável,74.82,497,N/A,N/A
+Mundo Real,image7.jpeg,Identificável,75.16,632,N/A,N/A
+Mundo Real,image8.jpg,Inexistente (Ou Ruído),73.33,56,N/A,N/A
+Mundo Real,image9.jpg,Identificável,73.69,361,N/A,N/A
