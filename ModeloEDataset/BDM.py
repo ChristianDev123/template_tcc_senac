@@ -10,6 +10,30 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import tensorflow_model_optimization as tfmot
 from tensorflow.keras.utils import load_img, img_to_array
+import tensorflow.keras.backend as K # <- Necessário para as funções customizadas
+
+# Trava as sementes matemáticas para garantir amostras 100% idênticas em todos os testes
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
+tf.random.set_seed(SEED)
+
+# ==========================================
+# FUNÇÕES CUSTOMIZADAS DO MODELO
+# ==========================================
+def dice_coef(y_true, y_pred, smooth=1e-6):
+    y_true_f = K.flatten(tf.cast(y_true, tf.float32))
+    y_pred_f = K.flatten(y_pred)
+    intersection = K.sum(y_true_f * y_pred_f)
+    return (2. * intersection + smooth) / (K.sum(y_true_f) + K.sum(y_pred_f) + smooth)
+
+def dice_loss(y_true, y_pred):
+    return 1.0 - dice_coef(y_true, y_pred)
+
+def bce_dice_loss(y_true, y_pred):
+    bce = tf.keras.losses.binary_crossentropy(y_true, y_pred)
+    bce = tf.reduce_mean(bce)
+    return bce + dice_loss(y_true, y_pred)
 
 # ==========================================
 # 1. CONFIGURAÇÕES E DIRETÓRIOS
@@ -42,32 +66,21 @@ def calcular_dice(y_true, y_pred):
     return (2. * intersection / (y_true.sum() + y_pred.sum())) * 100 if (y_true.sum() + y_pred.sum()) > 0 else 100.0
 
 def validar_hidrometro(predicao_binaria):
-
-    # Converte a matriz binária (0.0 e 1.0) para formato de imagem de 8 bits (0 e 255)
     mask_uint8 = (predicao_binaria.squeeze() * 255).astype(np.uint8)
-    
-    # Cria um elemento estruturante (um retângulo de 15x15 pixels). 
-    # Esse bloco varre a imagem conectando pixels laranjas que estejam próximos.
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 15))
     mask_corrigida = cv2.morphologyEx(mask_uint8, cv2.MORPH_CLOSE, kernel)
     
-    # Dilatação extra se a máscara ainda estiver muito falha
-    # mask_corrigida = cv2.dilate(mask_corrigida, kernel, iterations=1)
-    
-    # Encontra os contornos na máscara já fundida e corrigida
     contornos, _ = cv2.findContours(mask_corrigida, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     if not contornos:
         return "Inexistente", None
 
-    # Foca apenas no maior objeto detectado
     maior_contorno = max(contornos, key=cv2.contourArea)
     area_contorno = cv2.contourArea(maior_contorno)
     
     if area_contorno < 80: 
         return "Inexistente (Ou Ruído)", None
         
-    # Obtém as coordenadas da caixa delimitadora
     x, y, w, h = cv2.boundingRect(maior_contorno)
     proporcao = w / float(h)
     
@@ -84,28 +97,29 @@ def validar_hidrometro(predicao_binaria):
 # 3. CARREGAMENTO DO MODELO QAT
 # ==========================================
 print("-> Carregando modelo QAT...")
-with tfmot.quantization.keras.quantize_scope():
-    model = tf.keras.models.load_model(DIR_MODELO)
 
-# ==========================================
-# 4. LOOP DE TESTE UNIFICADO
-# ==========================================
+# Dicionário informando ao Keras como reconstruir as funções customizadas
+custom_objects = {
+    'dice_coef': dice_coef,
+    'dice_loss': dice_loss,
+    'bce_dice_loss': bce_dice_loss
+}
+
+with tfmot.quantization.keras.quantize_scope():
+    model = tf.keras.models.load_model(DIR_MODELO, custom_objects=custom_objects)
+
 # ==========================================
 # 4. LOOP DE TESTE UNIFICADO
 # ==========================================
 print("-> Iniciando inferência e validação...")
 dados_tabela = []
 
-# Assumindo que seu dataset principal de treino está nas pastas "images" e "masks"
 DIR_IMG_DATASET = os.path.join(DIRETORIO_ATUAL, "dataset", "images")
 DIR_MASK_DATASET = os.path.join(DIRETORIO_ATUAL, "dataset", "masks")
 
 pastas_para_testar = [
-    # Puxa 20 imagens aleatórias do dataset completo para validar a generalização
     {"img_dir": DIR_IMG_DATASET, "mask_dir": DIR_MASK_DATASET, "tipo": "Amostra Dataset", "amostra": 20},
-    # Lê todas as imagens da pasta de teste dedicada
     {"img_dir": DIR_IMG_TESTE, "mask_dir": DIR_MASK_TESTE, "tipo": "Dataset Teste", "amostra": None},
-    # Lê todas as fotos do mundo real
     {"img_dir": DIR_IMG_REAIS, "mask_dir": None, "tipo": "Mundo Real", "amostra": None}
 ]
 
@@ -113,22 +127,14 @@ for config in pastas_para_testar:
     if not os.path.exists(config["img_dir"]): 
         continue
     
-    # Filtra apenas os arquivos de imagem válidos
     arquivos_validos = [f for f in sorted(os.listdir(config["img_dir"])) if f.endswith(('.png', '.jpg', '.jpeg'))]
     
-    # Aplica o sorteio aleatório se um limite de amostragem foi definido
     if config.get("amostra") and len(arquivos_validos) > config["amostra"]:
         arquivos = random.sample(arquivos_validos, config["amostra"])
     else:
         arquivos = arquivos_validos
     
     for arquivo in arquivos:
-        caminho_img = os.path.join(config["img_dir"], arquivo)
-        caminho_mask = os.path.join(config["mask_dir"], arquivo) if config["mask_dir"] else None
-    
-    for arquivo in arquivos:
-        if not arquivo.endswith(('.png', '.jpg', '.jpeg')): continue
-        
         caminho_img = os.path.join(config["img_dir"], arquivo)
         caminho_mask = os.path.join(config["mask_dir"], arquivo) if config["mask_dir"] else None
         
@@ -150,7 +156,6 @@ for config in pastas_para_testar:
         tem_mascara = caminho_mask and os.path.exists(caminho_mask)
         
         if tem_mascara:
-            # Fluxo 1: Com Gabarito (Apenas Métricas)
             mask_array = img_to_array(load_img(caminho_mask, color_mode="grayscale", target_size=IMG_SIZE)) / 255.0
             mask_binaria = np.where(mask_array > 0.5, 1.0, 0.0)
             
@@ -167,10 +172,8 @@ for config in pastas_para_testar:
             axs[2].set_title(f'Predição (IoU: {iou:.1f}%)')
             
         else:
-            # Fluxo 2: Mundo Real (Validação Estrutural)
             status_deteccao, bbox = validar_hidrometro(pred_binaria)
             
-            # Desenha um retângulo vermelho na imagem original se encontrar o visor
             img_display = cv2.cvtColor((img_array.squeeze() * 255).astype(np.uint8), cv2.COLOR_GRAY2RGB)
             if bbox:
                 x, y, w, h = bbox
@@ -202,7 +205,6 @@ for config in pastas_para_testar:
 # ==========================================
 df_resultados = pd.DataFrame(dados_tabela)
 
-# Salva o arquivo dentro da nova pasta configurada
 caminho_csv = os.path.join(DIR_CSVS, "tabela_provas_funcionamento.csv")
 df_resultados.to_csv(caminho_csv, index=False)
 

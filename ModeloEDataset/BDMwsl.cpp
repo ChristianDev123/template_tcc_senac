@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "tensorflow/lite/micro/all_ops_resolver.h"
+#include "tensorflow/lite/micro/micro_mutable_op_resolver.h"
 #include "tensorflow/lite/micro/micro_interpreter.h"
 #include "tensorflow/lite/micro/micro_log.h"
 #include "tensorflow/lite/schema/schema_generated.h"
@@ -8,13 +8,12 @@
 #include "modelo_medidor.h"
 
 // Memória de trabalho (Tensor Arena)
-constexpr int kTensorArenaSize = 150 * 1024;
+constexpr int kTensorArenaSize = 5000 * 1024;
 uint8_t tensor_arena[kTensorArenaSize];
 
 int main(int argc, char* argv[]) {
     MicroPrintf("-> Iniciando Teste do Modelo no WSL (Linux Nativo)\n");
 
-    // 1. Carrega o modelo (Atenção: substitua 'modelo_medidor_tflite' pelo nome exato do array no seu .h)
     const tflite::Model* model = tflite::GetModel(modelo_medidor_tflite);
     if (model->version() != TFLITE_SCHEMA_VERSION) {
         MicroPrintf("ERRO: Versao do schema %d nao suportada. Esperada: %d",
@@ -22,13 +21,26 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // 2. Resolve as operações suportadas
-    tflite::AllOpsResolver resolver;
+    // O novo padrão: declaramos apenas as operações matemáticas que a sua CNN usa
+    tflite::MicroMutableOpResolver<15> resolver;
+    resolver.AddConv2D();
+    resolver.AddMaxPool2D();
+    resolver.AddReshape();
+    resolver.AddFullyConnected();
+    resolver.AddSoftmax();
+    resolver.AddRelu();
+    resolver.AddAdd();
+    resolver.AddConcatenation();
+    resolver.AddLogistic();
+    resolver.AddResizeBilinear();
+    resolver.AddResizeNearestNeighbor();
+    resolver.AddQuantize();
+    resolver.AddDequantize();
+    resolver.AddPad();
+    resolver.AddTransposeConv();
 
-    // 3. Inicializa o interpretador
     tflite::MicroInterpreter interpreter(model, resolver, tensor_arena, kTensorArenaSize);
 
-    // 4. Aloca memória
     if (interpreter.AllocateTensors() != kTfLiteOk) {
         MicroPrintf("ERRO FATAL: Falha ao alocar memoria (Arena pequena demais).");
         return 1;
@@ -41,11 +53,7 @@ int main(int argc, char* argv[]) {
     MicroPrintf("   - Entrada esperada: %d bytes (Tipo: %d)", input->bytes, input->type);
     MicroPrintf("   - Saida esperada: %d bytes (Tipo: %d)\n", output->bytes, output->type);
 
-    // ==========================================
-    // INJEÇÃO DE DADOS E INFERÊNCIA
-    // ==========================================
-    MicroPrintf("-> Executando inferencia com matriz preta/vazia...");
-
+    MicroPrintf("-> Executando inferencia com matriz de teste...");
     for (int i = 0; i < input->bytes; i++) {
         input->data.int8[i] = 0;
     }
