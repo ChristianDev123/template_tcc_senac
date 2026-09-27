@@ -3,6 +3,7 @@ os.environ['TF_USE_LEGACY_KERAS'] = '1'
 
 import time
 import cv2
+import random
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -15,14 +16,14 @@ from tensorflow.keras.utils import load_img, img_to_array
 # ==========================================
 DIRETORIO_ATUAL = os.path.dirname(os.path.abspath(__file__))
 
-DIR_MODELO = os.path.join(DIRETORIO_ATUAL, "Modelos", "modelo_medidor_qat.h5")
+DIR_MODELO = os.path.join(DIRETORIO_ATUAL, "Modelos", "modelo_medidor.h5")
 DIR_IMG_TESTE = os.path.join(DIRETORIO_ATUAL, "dataset", "test_images")
 DIR_MASK_TESTE = os.path.join(DIRETORIO_ATUAL, "dataset", "test_masks")
 DIR_IMG_REAIS = os.path.join(DIRETORIO_ATUAL, "dataset", "imagens_reais")
 DIR_RESULTADOS = os.path.join(DIRETORIO_ATUAL, "resultados_visuais")
 DIR_CSVS = os.path.join(DIRETORIO_ATUAL, "CSVs")
 
-IMG_SIZE = (192, 192)
+IMG_SIZE = (384, 384)
 
 os.makedirs(DIR_RESULTADOS, exist_ok=True)
 os.makedirs(DIR_IMG_REAIS, exist_ok=True)
@@ -89,18 +90,41 @@ with tfmot.quantization.keras.quantize_scope():
 # ==========================================
 # 4. LOOP DE TESTE UNIFICADO
 # ==========================================
+# ==========================================
+# 4. LOOP DE TESTE UNIFICADO
+# ==========================================
 print("-> Iniciando inferência e validação...")
 dados_tabela = []
 
+# Assumindo que seu dataset principal de treino está nas pastas "images" e "masks"
+DIR_IMG_DATASET = os.path.join(DIRETORIO_ATUAL, "dataset", "images")
+DIR_MASK_DATASET = os.path.join(DIRETORIO_ATUAL, "dataset", "masks")
+
 pastas_para_testar = [
-    {"img_dir": DIR_IMG_TESTE, "mask_dir": DIR_MASK_TESTE, "tipo": "Dataset Teste"},
-    {"img_dir": DIR_IMG_REAIS, "mask_dir": None, "tipo": "Mundo Real"}
+    # Puxa 20 imagens aleatórias do dataset completo para validar a generalização
+    {"img_dir": DIR_IMG_DATASET, "mask_dir": DIR_MASK_DATASET, "tipo": "Amostra Dataset", "amostra": 20},
+    # Lê todas as imagens da pasta de teste dedicada
+    {"img_dir": DIR_IMG_TESTE, "mask_dir": DIR_MASK_TESTE, "tipo": "Dataset Teste", "amostra": None},
+    # Lê todas as fotos do mundo real
+    {"img_dir": DIR_IMG_REAIS, "mask_dir": None, "tipo": "Mundo Real", "amostra": None}
 ]
 
 for config in pastas_para_testar:
-    if not os.path.exists(config["img_dir"]): continue
+    if not os.path.exists(config["img_dir"]): 
+        continue
     
-    arquivos = sorted(os.listdir(config["img_dir"]))
+    # Filtra apenas os arquivos de imagem válidos
+    arquivos_validos = [f for f in sorted(os.listdir(config["img_dir"])) if f.endswith(('.png', '.jpg', '.jpeg'))]
+    
+    # Aplica o sorteio aleatório se um limite de amostragem foi definido
+    if config.get("amostra") and len(arquivos_validos) > config["amostra"]:
+        arquivos = random.sample(arquivos_validos, config["amostra"])
+    else:
+        arquivos = arquivos_validos
+    
+    for arquivo in arquivos:
+        caminho_img = os.path.join(config["img_dir"], arquivo)
+        caminho_mask = os.path.join(config["mask_dir"], arquivo) if config["mask_dir"] else None
     
     for arquivo in arquivos:
         if not arquivo.endswith(('.png', '.jpg', '.jpeg')): continue

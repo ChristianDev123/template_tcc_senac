@@ -10,9 +10,9 @@ modelos_para_converter = [
         "array_name": "modelo_medidor_tflite"
     },
     {
-        "tflite": "modelo_digitos.tflite",
-        "header": "modelo_digitos.h",
-        "array_name": "modelo_digitos_tflite"
+        "tflite": "modelo_multihead.tflite",
+        "header": "modelo_multihead.h",
+        "array_name": "modelo_multihead_tflite"
     }
 ]
 

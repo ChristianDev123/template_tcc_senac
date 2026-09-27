@@ -15,7 +15,7 @@ DIRETORIO_ATUAL = os.path.dirname(os.path.abspath(__file__))
 
 DIR_IMG = os.path.join(DIRETORIO_ATUAL, "dataset", "images")
 DIR_MASK = os.path.join(DIRETORIO_ATUAL, "dataset", "masks")
-IMG_SIZE = (192, 192)
+IMG_SIZE = (384, 384)
 
 # ==========================================
 # 2. CARREGAMENTO DOS DADOS E SEPARAÇÃO
@@ -129,7 +129,7 @@ print("\n-> Iniciando Treinamento com QAT")
 qat_model.fit(
     dataset_treino, 
     validation_data=dataset_val, 
-    epochs=3000, 
+    epochs=400, 
     callbacks=callbacks_treino
 )
 

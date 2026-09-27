@@ -1,16 +1,36 @@
 Fonte,Arquivo,Veredito,Latência (ms),Área (px),IoU (%),Dice (%)
-Mundo Real,image.jpg,Mal Posicionado (Muito Distante),534.47,279,N/A,N/A
-Mundo Real,image1.jpg,Inexistente (Ou Ruído),80.08,49,N/A,N/A
-Mundo Real,image10.jpg,Identificável,76.05,272,N/A,N/A
-Mundo Real,image11.jpg,Identificável,76.77,272,N/A,N/A
-Mundo Real,image12.jpg,Inexistente (Ou Ruído),77.76,15,N/A,N/A
-Mundo Real,image13.jpg,Mal Posicionado (Muito Distante),75.79,236,N/A,N/A
-Mundo Real,image14.jpg,Inexistente (Ou Ruído),75.62,16,N/A,N/A
-Mundo Real,image2.jpeg,Mal Posicionado (Muito Distante),76.78,288,N/A,N/A
-Mundo Real,image3.jpg,Identificável,73.73,356,N/A,N/A
-Mundo Real,image4.jpg,Mal Posicionado (Ângulo/Corte Incorreto),72.21,214,N/A,N/A
-Mundo Real,image5.jpg,Inexistente (Ou Ruído),71.28,61,N/A,N/A
-Mundo Real,image6.jpg,Identificável,74.82,497,N/A,N/A
-Mundo Real,image7.jpeg,Identificável,75.16,632,N/A,N/A
-Mundo Real,image8.jpg,Inexistente (Ou Ruído),73.33,56,N/A,N/A
-Mundo Real,image9.jpg,Identificável,73.69,361,N/A,N/A
+Amostra Dataset,id_931_value_295_293.jpg,Gabarito Validado,582.9,485,8.28,15.29
+Amostra Dataset,id_975_value_452_487.jpg,Gabarito Validado,86.08,384,3.41,6.59
+Amostra Dataset,id_583_value_321_933.jpg,Gabarito Validado,82.57,470,6.51,12.23
+Amostra Dataset,id_542_value_312_2.jpg,Gabarito Validado,85.55,1136,7.72,14.34
+Amostra Dataset,id_450_value_529_891.jpg,Gabarito Validado,80.8,1098,5.04,9.6
+Amostra Dataset,id_1120_value_208_354.jpg,Gabarito Validado,81.29,2234,35.35,52.23
+Amostra Dataset,id_781_value_343_38.jpg,Gabarito Validado,82.06,891,32.0,48.48
+Amostra Dataset,id_783_value_30_899.jpg,Gabarito Validado,82.79,1337,30.07,46.24
+Amostra Dataset,id_1200_value_112_622.jpg,Gabarito Validado,79.79,795,9.65,17.59
+Amostra Dataset,id_1032_value_776_247.jpg,Gabarito Validado,81.75,1589,26.38,41.75
+Amostra Dataset,id_895_value_136_653.jpg,Gabarito Validado,81.29,52,0.28,0.57
+Amostra Dataset,id_989_value_37_391.jpg,Gabarito Validado,81.39,488,18.66,31.45
+Amostra Dataset,id_1194_value_681_894.jpg,Gabarito Validado,84.14,1045,10.01,18.2
+Amostra Dataset,id_1175_value_97_817.jpg,Gabarito Validado,83.65,2332,52.92,69.22
+Amostra Dataset,id_1087_value_69_608.jpg,Gabarito Validado,78.3,0,N/A,N/A
+Amostra Dataset,id_715_value_105_786.jpg,Gabarito Validado,80.29,210,0.57,1.13
+Amostra Dataset,id_749_value_88_113.jpg,Gabarito Validado,79.24,205,4.23,8.12
+Amostra Dataset,id_580_value_168_358.jpg,Gabarito Validado,78.98,223,0.35,0.69
+Amostra Dataset,id_399_value_314_514.jpg,Gabarito Validado,79.59,1405,41.49,58.64
+Amostra Dataset,id_897_value_506_616.jpg,Gabarito Validado,81.07,382,11.28,20.27
+Mundo Real,image.jpg,Mal Posicionado (Muito Distante),83.36,833,N/A,N/A
+Mundo Real,image1.jpg,Inexistente (Ou Ruído),82.4,162,N/A,N/A
+Mundo Real,image10.jpg,Mal Posicionado (Muito Distante),83.67,423,N/A,N/A
+Mundo Real,image11.jpg,Mal Posicionado (Muito Distante),79.1,480,N/A,N/A
+Mundo Real,image12.jpg,Inexistente (Ou Ruído),81.59,2,N/A,N/A
+Mundo Real,image13.jpg,Mal Posicionado (Muito Distante),83.39,878,N/A,N/A
+Mundo Real,image14.jpg,Inexistente (Ou Ruído),82.69,155,N/A,N/A
+Mundo Real,image2.jpeg,Identificável,84.27,713,N/A,N/A
+Mundo Real,image3.jpg,Mal Posicionado (Muito Distante),84.26,298,N/A,N/A
+Mundo Real,image4.jpg,Inexistente (Ou Ruído),82.27,65,N/A,N/A
+Mundo Real,image5.jpg,Identificável,83.96,559,N/A,N/A
+Mundo Real,image6.jpg,Identificável,81.46,1401,N/A,N/A
+Mundo Real,image7.jpeg,Identificável,79.99,919,N/A,N/A
+Mundo Real,image8.jpg,Mal Posicionado (Muito Distante),84.75,614,N/A,N/A
+Mundo Real,image9.jpg,Identificável,81.1,869,N/A,N/A

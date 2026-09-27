@@ -1,0 +1,17 @@
+Arquivo | Leitura (Dual Model)
+----------------------------------------
+image.jpg: 499394
+image1.jpg: FALHA_LOCALIZACAO
+image10.jpg: 994443
+image11.jpg: 114941
+image12.jpg: FALHA_LOCALIZACAO
+image13.jpg: 111998
+image14.jpg: FALHA_LOCALIZACAO
+image2.jpeg: 673994
+image3.jpg: 881139
+image4.jpg: FALHA_LOCALIZACAO
+image5.jpg: 113894
+image6.jpg: 499352
+image7.jpeg: 000039
+image8.jpg: 000001
+image9.jpg: 400001
