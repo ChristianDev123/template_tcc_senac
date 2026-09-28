@@ -1,0 +1,38 @@
+Arquivo | Multi-Head (conf) | CTC Orig (conf) | CTC Sint (conf) | Status
+------------------------------------------------------------------------------------------
+image.jpg | 565355 (0.57) |  (0.00) | 3 (0.46) | DIVERGEM
+image1.jpg | 925555 (0.37) | 3 (0.37) | 956 (0.52) | DIVERGEM
+image10.jpg | 000007 (0.42) | 1 (0.99) | 1990010 (0.35) | DIVERGEM
+image11.jpg | 5400614 (0.27) | 33 (0.65) | 933456 (0.53) | DIVERGEM
+image12.jpg | FALHA_LOCALIZACAO
+image13.jpg | 402163 (0.49) | 8 (0.74) | 943 (0.65) | DIVERGEM
+image14.jpg | FALHA_LOCALIZACAO
+image2.jpeg | 7775552 (0.32) | 95 (0.59) | 9 (0.96) | DIVERGEM
+image3.jpg | 8098851 (0.35) | 36 (0.66) | 910336 (0.58) | DIVERGEM
+image4.jpg | 1283557 (0.52) | 933 (0.33) | 70337 (0.55) | DIVERGEM
+image5.jpg | 605994 (0.42) | 5000232 (0.48) | 000025 (0.81) | DIVERGEM
+image6.jpg | 000077 (0.70) | 00009 (0.57) | 0001013 (0.53) | DIVERGEM
+image7.jpeg | 000005 (0.90) | 00000 (0.48) | 000002 (0.67) | DIVERGEM
+image8.jpg | 000101 (0.39) | 0010103 (0.50) | 00002 (1.00) | DIVERGEM
+image9.jpg | 600001 (0.41) | 1 (0.95) | 360340031 (0.50) | DIVERGEM
+
+==========================================================================================
+RESUMO
+==========================================================================================
+Imagens processadas: 15 | falhas de localização (U-Net): 2
+Os 3 modelos concordam em 0/13 (0.0%)
+
+Arquivos com divergência (revisar):
+  image.jpg: MH=565355 | CTC-O= | CTC-S=3
+  image1.jpg: MH=925555 | CTC-O=3 | CTC-S=956
+  image10.jpg: MH=000007 | CTC-O=1 | CTC-S=1990010
+  image11.jpg: MH=5400614 | CTC-O=33 | CTC-S=933456
+  image13.jpg: MH=402163 | CTC-O=8 | CTC-S=943
+  image2.jpeg: MH=7775552 | CTC-O=95 | CTC-S=9
+  image3.jpg: MH=8098851 | CTC-O=36 | CTC-S=910336
+  image4.jpg: MH=1283557 | CTC-O=933 | CTC-S=70337
+  image5.jpg: MH=605994 | CTC-O=5000232 | CTC-S=000025
+  image6.jpg: MH=000077 | CTC-O=00009 | CTC-S=0001013
+  image7.jpeg: MH=000005 | CTC-O=00000 | CTC-S=000002
+  image8.jpg: MH=000101 | CTC-O=0010103 | CTC-S=00002
+  image9.jpg: MH=600001 | CTC-O=1 | CTC-S=360340031

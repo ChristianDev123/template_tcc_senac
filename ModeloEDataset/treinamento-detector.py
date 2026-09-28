@@ -31,10 +31,6 @@ def dice_loss(y_true, y_pred):
     return 1.0 - dice_coef(y_true, y_pred)
 
 def bce_dice_loss(y_true, y_pred):
-    # BCE ajuda a estabilizar o gradiente no início do treino, quando a
-    # máscara é esparsa (área do dígito pequena em relação à imagem toda).
-    # Dice puro nessas condições costuma ter gradiente fraco e favorece
-    # a rede "colapsar" prevendo quase tudo zero.
     bce = tf.keras.losses.binary_crossentropy(y_true, y_pred)
     bce = tf.reduce_mean(bce)
     return bce + dice_loss(y_true, y_pred)
@@ -166,7 +162,7 @@ def build_callbacks(nome_checkpoint):
     return [
         TempoEstimadoCallback(),
         tf.keras.callbacks.ModelCheckpoint(nome_checkpoint, save_best_only=True, monitor='val_loss'),
-        tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=15, restore_best_weights=True)
+        tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=25, restore_best_weights=True)
     ]
 
 # ==========================================
