@@ -7,6 +7,24 @@ import pandas as pd
 import tensorflow as tf
 import tensorflow_model_optimization as tfmot
 from tensorflow.keras.utils import load_img, img_to_array
+import tensorflow.keras.backend as K
+
+# ==========================================
+# 0. FUNÇÕES CUSTOMIZADAS DA U-NET
+# ==========================================
+def dice_coef(y_true, y_pred, smooth=1e-6):
+    y_true_f = K.flatten(tf.cast(y_true, tf.float32))
+    y_pred_f = K.flatten(y_pred)
+    intersection = K.sum(y_true_f * y_pred_f)
+    return (2. * intersection + smooth) / (K.sum(y_true_f) + K.sum(y_pred_f) + smooth)
+
+def dice_loss(y_true, y_pred):
+    return 1.0 - dice_coef(y_true, y_pred)
+
+def bce_dice_loss(y_true, y_pred):
+    bce = tf.keras.losses.binary_crossentropy(y_true, y_pred)
+    bce = tf.reduce_mean(bce)
+    return bce + dice_loss(y_true, y_pred)
 
 # ==========================================
 # 1. CONFIGURAÇÕES E DIRETÓRIOS
@@ -25,16 +43,22 @@ os.makedirs(DIR_CSVS, exist_ok=True)
 os.makedirs(DIR_RECORTES, exist_ok=True)
 
 # ==========================================
-# 2. CARREGAMENTO DOS DOIS MODELOS (Dual TinyML)
+# 2. CARREGAMENTO DOS DOIS MODELOS
 # ==========================================
-print("-> Carregando Redes Neurais (U-Net e CNN de Dígitos)...")
-with tfmot.quantization.keras.quantize_scope():
-    unet_model = tf.keras.models.load_model(os.path.join(DIR_MODELOS, "modelo_medidor.h5"))
-    digit_model = tf.keras.models.load_model(os.path.join(DIR_MODELOS, "modelo_digitos.h5"))
+print("-> Carregando Redes Neurais (U-Net e CNN Multi-Head)...")
+custom_objects = {
+    'dice_coef': dice_coef,
+    'dice_loss': dice_loss,
+    'bce_dice_loss': bce_dice_loss
+}
 
-# ==========================================
-# 3. FUNÇÕES DE PROCESSAMENTO
-# ==========================================
+with tfmot.quantization.keras.quantize_scope():
+    # Carrega a U-Net injetando a matemática customizada
+    unet_model = tf.keras.models.load_model(os.path.join(DIR_MODELOS, "modelo_medidor.h5"), custom_objects=custom_objects)
+    
+    # Carrega o modelo Multi-Head treinado (certifique-se de que o nome do ficheiro está correto)
+    digit_model = tf.keras.models.load_model(os.path.join(DIR_MODELOS, "modelo_multihead.h5"))
+
 # ==========================================
 # 3. FUNÇÕES DE PROCESSAMENTO
 # ==========================================
@@ -59,68 +83,40 @@ def extrair_coordenadas_unet(caminho_img):
         
     return cv2.boundingRect(maior_contorno)
 
-def pad_and_resize(img_slice, target_size=48):
-    """Protege as proporções originais colando o recorte num fundo quadrado."""
-    h, w = img_slice.shape
-    if h == 0 or w == 0:
-        return np.zeros((target_size, target_size), dtype=np.uint8)
-        
-    max_dim = max(h, w)
-    top = (max_dim - h) // 2
-    bottom = max_dim - h - top
-    left = (max_dim - w) // 2
-    right = max_dim - w - left
+def classificar_visor_multihead(recorte_visor, nome_arquivo):
+    # Salva o recorte bruto para debug
+    cv2.imwrite(os.path.join(DIR_RECORTES, f"visor_original_{nome_arquivo}"), recorte_visor)
     
-    cor_fundo = int(np.median(img_slice))
-    img_quadrada = cv2.copyMakeBorder(img_slice, top, bottom, left, right, cv2.BORDER_CONSTANT, value=cor_fundo)
+    # 1. Redimensiona a imagem inteira para as dimensões exatas que a Multi-Head exige
+    # Largura: 168px, Altura: 48px
+    visor_resized = cv2.resize(recorte_visor, (168, 48), interpolation=cv2.INTER_AREA)
     
-    return cv2.resize(img_quadrada, (target_size, target_size), interpolation=cv2.INTER_AREA)
-
-def classificar_fatias(recorte_visor, nome_arquivo):
-    altura, largura = recorte_visor.shape
-    largura_fatia = largura // 6
+    # 2. Equaliza o contraste
+    visor_norm = cv2.normalize(visor_resized, None, 0, 255, cv2.NORM_MINMAX)
+    cv2.imwrite(os.path.join(DIR_RECORTES, f"visor_rede_{nome_arquivo}"), visor_norm)
+    
+    # 3. Prepara o tensor (1, 48, 168, 1)
+    tensor_input = visor_norm.astype(np.float32) / 255.0
+    tensor_input = np.expand_dims(tensor_input, axis=(0, -1))
+    
+    # 4. Inferência - A rede devolve 7 arrays (as 7 cabeças), cada um com 11 probabilidades
+    predicoes = digit_model.predict(tensor_input, verbose=0)
+    
     leitura_final = ""
     
-    cv2.imwrite(os.path.join(DIR_RECORTES, f"visor_{nome_arquivo}"), recorte_visor)
-    
-    for i in range(6):
-        # 1. Corte matemático simples e previsível
-        inicio_x = i * largura_fatia
-        fim_x = (i + 1) * largura_fatia if i < 5 else largura
-        
-        fatia_img = recorte_visor[:, inicio_x:fim_x]
-        
-        # 2. Elimina a linha de plástico nas extremidades do rolete
-        margem = int(fatia_img.shape[1] * 0.12)
-        if margem > 0 and fatia_img.shape[1] > margem * 2:
-            fatia_img = fatia_img[:, margem:-margem]
-        
-        # 3. Redimensiona para o novo modelo de 48x48 protegendo a proporção
-        fatia_48x48 = pad_and_resize(fatia_img, 48)
-        
-        # 4. Melhora o contraste (resolve o problema dos números desbotados)
-        fatia_48x48 = cv2.normalize(fatia_48x48, None, 0, 255, cv2.NORM_MINMAX)
-        
-        # (Opcional) Se a CNN aprendeu com fundo preto e números brancos, descomente abaixo:
-        # fatia_48x48 = cv2.bitwise_not(fatia_48x48)
-        
-        cv2.imwrite(os.path.join(DIR_RECORTES, f"fatia_{i}_{nome_arquivo}"), fatia_48x48)
-        
-        # 5. Inferência
-        fatia_normalizada = fatia_48x48.astype(np.float32) / 255.0
-        fatia_tensor = np.expand_dims(fatia_normalizada, axis=(0, -1))
-        
-        predicao = digit_model.predict(fatia_tensor, verbose=0)[0]
-        digito = np.argmax(predicao)
-        
-        leitura_final += str(digito)
-        
+    # Avalia a predição de cada um dos 7 roletes
+    for pred in predicoes:
+        digito = np.argmax(pred[0])
+        # A classe 10 é o "X" (vazio/borda).
+        if digito != 10: 
+            leitura_final += str(digito)
+            
     return leitura_final
 
 # ==========================================
 # 4. PIPELINE DE EXECUÇÃO
 # ==========================================
-print("\n-> Iniciando Extração (Pipeline Dual)...\n")
+print("\n-> Iniciando Extração (Pipeline Dual Multi-Head)...\n")
 
 dados_csv = []
 
@@ -148,6 +144,7 @@ with open(ARQUIVO_TXT, "w", encoding="utf-8") as arquivo_txt:
         img_original = cv2.imread(caminho_img, cv2.IMREAD_GRAYSCALE)
         h_orig, w_orig = img_original.shape
         
+        # Mapeia as coordenadas da U-Net (384x384) de volta para o tamanho real da foto
         fator_x = w_orig / 384.0
         fator_y = h_orig / 384.0
         
@@ -158,7 +155,8 @@ with open(ARQUIVO_TXT, "w", encoding="utf-8") as arquivo_txt:
         
         recorte_visor = img_original[y_real:y_real+h_real, x_real:x_real+w_real]
         
-        leitura = classificar_fatias(recorte_visor, arquivo)
+        # Chama a nova função adaptada para o modelo de 7 cabeças
+        leitura = classificar_visor_multihead(recorte_visor, arquivo)
         
         linha = f"{arquivo}: {leitura}"
         print(linha)

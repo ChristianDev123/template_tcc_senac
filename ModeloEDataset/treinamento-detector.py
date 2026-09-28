@@ -49,10 +49,6 @@ DIR_MASK = os.path.join(DIRETORIO_ATUAL, "dataset", "masks")
 DIR_CSVS = os.path.join(DIRETORIO_ATUAL, "CSVs")
 IMG_SIZE = (384, 384)
 
-# Épocas divididas em duas fases: treino float (ponto flutuante) e depois
-# fine-tuning com QAT (quantization-aware training). Fazer QAT direto do
-# zero, a partir de pesos aleatórios, costuma convergir pior do que treinar
-# primeiro em float e só então "ligar" a quantização simulada.
 EPOCAS_PRETREINO_FLOAT = 250
 EPOCAS_FINETUNE_QAT = 100
 

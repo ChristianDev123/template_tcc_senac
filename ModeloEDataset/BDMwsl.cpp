@@ -4,25 +4,23 @@
 #include "tensorflow/lite/micro/micro_log.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
-// O ficheiro gerado pelo comando xxd
 #include "modelo_medidor.h"
 
-// Memória de trabalho (Tensor Arena)
-constexpr int kTensorArenaSize = 5000 * 1024;
+constexpr int kTensorArenaSize = 25 * 1024 * 1024;
 uint8_t tensor_arena[kTensorArenaSize];
 
 int main(int argc, char* argv[]) {
-    MicroPrintf("-> Iniciando Teste do Modelo no WSL (Linux Nativo)\n");
+    MicroPrintf("-> Iniciando Teste do Novo Modelo no WSL (Linux Nativo)\n");
 
-    const tflite::Model* model = tflite::GetModel(modelo_medidor_tflite);
+    // NOME DA VARIÁVEL ATUALIZADO AQUI:
+    const tflite::Model* model = tflite::GetModel(Modelos_modelo_medidor_tflite);
+
     if (model->version() != TFLITE_SCHEMA_VERSION) {
-        MicroPrintf("ERRO: Versao do schema %d nao suportada. Esperada: %d",
-            model->version(), TFLITE_SCHEMA_VERSION);
+        MicroPrintf("ERRO: Versao do schema %d nao suportada.", model->version());
         return 1;
     }
 
-    // O novo padrão: declaramos apenas as operações matemáticas que a sua CNN usa
-    tflite::MicroMutableOpResolver<15> resolver;
+    tflite::MicroMutableOpResolver<25> resolver;
     resolver.AddConv2D();
     resolver.AddMaxPool2D();
     resolver.AddReshape();
@@ -39,6 +37,14 @@ int main(int argc, char* argv[]) {
     resolver.AddPad();
     resolver.AddTransposeConv();
 
+    resolver.AddMul();
+    resolver.AddSub();
+    resolver.AddPack();
+    resolver.AddUnpack();
+    resolver.AddStridedSlice();
+    resolver.AddMean();
+    resolver.AddShape();
+
     tflite::MicroInterpreter interpreter(model, resolver, tensor_arena, kTensorArenaSize);
 
     if (interpreter.AllocateTensors() != kTfLiteOk) {
@@ -49,9 +55,14 @@ int main(int argc, char* argv[]) {
     TfLiteTensor* input = interpreter.input(0);
     TfLiteTensor* output = interpreter.output(0);
 
+    if (input == nullptr || output == nullptr) {
+        MicroPrintf("ERRO: Ponteiros de entrada ou saida nulos!");
+        return 1;
+    }
+
     MicroPrintf("-> Modelo pronto!");
-    MicroPrintf("   - Entrada esperada: %d bytes (Tipo: %d)", input->bytes, input->type);
-    MicroPrintf("   - Saida esperada: %d bytes (Tipo: %d)\n", output->bytes, output->type);
+    MicroPrintf("   - Entrada esperada: %d bytes (Tipo: %d)", (int)input->bytes, (int)input->type);
+    MicroPrintf("   - Saida esperada: %d bytes (Tipo: %d)\n", (int)output->bytes, (int)output->type);
 
     MicroPrintf("-> Executando inferencia com matriz de teste...");
     for (int i = 0; i < input->bytes; i++) {
@@ -64,7 +75,13 @@ int main(int argc, char* argv[]) {
     }
 
     MicroPrintf("-> Inferencia concluida com sucesso!");
-    MicroPrintf("-> Amostra Saida (Pixel 0): %d", output->data.int8[0]);
+
+    if (output->type == kTfLiteInt8) {
+        MicroPrintf("-> Amostra Saida (Pixel 0): %d", output->data.int8[0]);
+    }
+    else {
+        MicroPrintf("-> Amostra Saida (Pixel 0): [Lido com sucesso. Tipo original: %d]", (int)output->type);
+    }
 
     return 0;
 }

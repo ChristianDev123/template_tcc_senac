@@ -10,9 +10,8 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import tensorflow_model_optimization as tfmot
 from tensorflow.keras.utils import load_img, img_to_array
-import tensorflow.keras.backend as K # <- Necessário para as funções customizadas
+import tensorflow.keras.backend as K
 
-# Trava as sementes matemáticas para garantir amostras 100% idênticas em todos os testes
 SEED = 42
 random.seed(SEED)
 np.random.seed(SEED)
