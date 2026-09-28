@@ -28,10 +28,12 @@ Abaixo encontra-se a organização de diretórios e ficheiros do projeto:
 *   **`treinamento-detector.py`**: Treina a rede U-Net com métricas de *Dice Loss* para localizar o visor na imagem.
 *   **`treinamento-digitos-multihead.py`**: Treina a CNN com 7 cabeças de saída independentes para ler todos os dígitos de uma só vez.
 *   **`treinamento-digitos-ctc.py`**: Script de treino experimental utilizando *Connectionist Temporal Classification* (CTC) para a leitura.
+*   **`treinamento-digitos-ctc-sint.py`**: Script de treino experimental utilizanbdo CTC assim como o anterior mas com dados sintéticos para a leitura.
 *   **`gerador_sintetico.py`**: Pipeline de pré-processamento e *Data Augmentation* para gerar variações artificiais que enriquecem o dataset de leitura e extração de digitos.
 *   **`simulador_extracao_dual.py`**: Script Python que simula a pipeline completa: carrega uma imagem, usa a U-Net para recortar a região de interesse, trata a imagem, e injeta na CNN para devolver a leitura final.
-*   **`BDM.py`**: Script unificado de validação e extração de métricas de IoU (Intersection over Union) e Dice para os modelos.
+*   **`BDM.py`**: Script unificado de validação e extração de métricas de IoU (Intersection over Union) e Dice para os modelos tanto em imagens do dataset quanto em imagens externas.
 *   **`BDMwsl.cpp`**: Simulador nativo escrito em C++ puro. Simula as restrições de memória de um microcontrolador através da limitação da *Tensor Arena*, executa as operações *TfLite*, processa matrizes de imagem manualmente e serve de ponte antes de gravar o código no ESP32.
+*   **`diagnostico_modelo.py`**: Script para teste da area lida pelo modelo de recorte.
 *   **`modelo_medidor.h`**: *Dump* em matriz hexadecimal do modelo TFLite (`unsigned char array`), pronto a ser embutido em código C/C++.
 *   **`requirements.txt`**: Ficheiro com as dependências do ambiente Python necessárias para executar os scripts.
 
