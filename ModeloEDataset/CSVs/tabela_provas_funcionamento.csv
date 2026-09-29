@@ -1,4 +1,4 @@
-Fonte;Arquivo;Veredito;LatÃªncia (ms;área (px);IoU (%);Dice (%)
+Fonte;Arquivo;Veredito;Latï¿½ï¿½ncia ;ýýrea (px);IoU (%);Dice (%)
 Amostra Dataset;id_96_value_353_0.jpg;Gabarito Validado;9051.77;0;N/A;N/A
 Amostra Dataset;id_659_value_342_009.jpg;Gabarito Validado;109.33;3357;2.34;4.57
 Amostra Dataset;id_105_value_78_404.jpg;Gabarito Validado;113.62;2470;93.43;96.6

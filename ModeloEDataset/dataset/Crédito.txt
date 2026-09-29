@@ -1,2 +1,0 @@
-Dataset feito por Kucev Roman
-link: https://www.kaggle.com/datasets/tapakah68/yandextoloka-water-meters-dataset

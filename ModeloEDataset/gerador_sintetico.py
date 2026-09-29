@@ -8,12 +8,13 @@ import random
 # ==========================================
 DIRETORIO_ATUAL = os.path.dirname(os.path.abspath(__file__))
 DIR_DIGITOS_ANTIGOS = os.path.join(DIRETORIO_ATUAL, "dataset", "num")
-DIR_VISORES_NOVOS = os.path.join(DIRETORIO_ATUAL, "dataset", "visores")
 
-TOTAL_GERAR = 1500
+# Nova pasta dedicada para não misturar com as imagens reais (blackout)
+DIR_VISORES_SINTETICOS = os.path.join(DIRETORIO_ATUAL, "dataset", "visores_sinteticos")
+
+TOTAL_GERAR = 1500  # Aumentado para gerar um bom volume de dados
 ALTURA_DIGITO = 48
 LARGURA_DIGITO = 24
-
 LARGURA_MAXIMA = 168 
 
 # ==========================================
@@ -30,14 +31,14 @@ for i in range(10):
     if len(banco_imagens[str(i)]) == 0:
         raise ValueError(f"A pasta do número {i} está vazia ou não existe em {DIR_DIGITOS_ANTIGOS}!")
 
-print(f"-> Gerando {TOTAL_GERAR} visores (misturando 6 e 7 dígitos)...")
+print(f"-> Gerando {TOTAL_GERAR} visores sintéticos...")
 
 # ==========================================
-# 3. MONTAGEM DOS VISORES "FRANKENSTEIN"
+# 3. MONTAGEM DOS VISORES
 # ==========================================
 for _ in range(TOTAL_GERAR):
-    # Sorteia se este hidrômetro específico terá 6 ou 7 números
-    qtd_digitos = random.choice([6, 7])
+    # Sorteia tamanhos de 5 a 8 dígitos para treinar o CTC com sequências variáveis
+    qtd_digitos = random.choice([5, 6, 7, 8])
     sequencia = "".join([str(random.randint(0, 9)) for _ in range(qtd_digitos)])
     
     fatias = []
@@ -51,29 +52,24 @@ for _ in range(TOTAL_GERAR):
             
         fatias.append(img)
     
-    # Junta as fatias. Se tiver 6 dígitos = 144px. Se 7 = 168px.
     visor_base = np.hstack(fatias)
     
-    if qtd_digitos == 6:
-        # Preenche a largura que falta com fundo cinza para não esticar os números
+    # Preenchimento de fundo PRETO (0) para alinhar com as imagens reais em blackout
+    if visor_base.shape[1] < LARGURA_MAXIMA:
         falta_largura = LARGURA_MAXIMA - visor_base.shape[1]
         pad_esq = falta_largura // 2
         pad_dir = falta_largura - pad_esq
-        
-        cor_fundo = int(np.median(visor_base))
-        visor_completo = cv2.copyMakeBorder(visor_base, 0, 0, pad_esq, pad_dir, cv2.BORDER_CONSTANT, value=cor_fundo)
-        
-        # Adiciona o Token 'X' para o nome da pasta ter sempre 7 caracteres (ex: "830015X")
-        nome_pasta = sequencia + "X"
+        visor_completo = cv2.copyMakeBorder(visor_base, 0, 0, pad_esq, pad_dir, cv2.BORDER_CONSTANT, value=0)
     else:
-        visor_completo = visor_base
-        nome_pasta = sequencia
+        # Se ultrapassar a largura (ex: 8 dígitos = 192px), redimensiona para caber
+        visor_completo = cv2.resize(visor_base, (LARGURA_MAXIMA, ALTURA_DIGITO))
         
-    pasta_destino = os.path.join(DIR_VISORES_NOVOS, nome_pasta)
+    # O "X" foi removido. A pasta terá exatamente a sequência numérica gerada.
+    pasta_destino = os.path.join(DIR_VISORES_SINTETICOS, sequencia)
     os.makedirs(pasta_destino, exist_ok=True)
     
     hash_aleatorio = random.randint(10000, 99999)
     caminho_salvar = os.path.join(pasta_destino, f"sintetico_{hash_aleatorio}.jpg")
     cv2.imwrite(caminho_salvar, visor_completo)
 
-print(f"\n-> Sucesso! Imagens geradas na pasta: {DIR_VISORES_NOVOS}")
+print(f"\n-> Sucesso! Imagens sintéticas limpas salvas em: {DIR_VISORES_SINTETICOS}")
