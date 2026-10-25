@@ -1,19 +1,29 @@
 \begin{resumo}[Abstract]
  \begin{otherlanguage*}{english}
-  This work aims to propose a comparative analysis between two processing methods for \gls{smart_metering} systems:
-  \gls{edge_computing}, with \gls{ocr} inference performed locally on the \gls{esp32cam} microcontroller through a 
-  supervised trained machine learning model, and \gls{cloud_computing}, with the transmission of the captured image 
-  for remote processing by the Tesseract engine combined with the OpenCV library. The motivation lies in the high cost of replacing
-  various conventional meters, widely used in residential and private environments, with native smart models, which 
-  favors \textit{\gls{retrofitting}} as a more economically viable alternative. Data transmission between edge nodes and the central
-  gateway is carried out via a \gls{lorawan} network using Spreading Factor SF8, a configuration that ensures compliance with the 
-  regulatory dwell time limit of 400~ms established by ANATEL's Act No.~14.448, while maximizing reach within this limit. 
-  The feasibility of sending fragmented images via \gls{lorawan} was analytically demonstrated, where a 160$\times$120 pixel 
-  grayscale image in JPEG format of approximately 3.10~KB can be transmitted in 38 packets in about 13.3~s of active radio time. 
-  The two processing workflows will be evaluated according to three quantitative metrics: \gls{ocr} reading accuracy (\%), end-to-end latency (ms),
-  and energy consumption per reading (mAh). The results are expected to guide the choice of the most suitable architecture 
-  for large-scale \textit{Smart Metering} deployments, considering the trade-off between energy efficiency, recognition accuracy,
-  and system maintenance complexity.
+    This work aims to propose a comparative analysis between two processing methods
+    for \gls{smart_metering} systems: \gls{edge_computing}, 
+    with OCR inference performed locally on the \gls{esp32cam} microcontroller 
+    using a machine learning model trained in a supervised manner 
+    and quantized to 8-bit integers, 
+    and \gls{cloud_computing}, with inference performed in a remote environment 
+    through a model trained in a supervised manner and quantized to 32-bit floating point.
+    The motivation lies in the high replacement cost of the most diverse conventional meters, 
+    widely used in residential and private environments, 
+    by native smart models. This favors \textit{\gls{retrofitting}} 
+    as a more economically viable alternative. 
+    Data transmission between the edge nodes and the central gateway is carried out via a \gls{lorawan} network,
+    using Spreading Factor SF8, a configuration that ensures compliance with the
+    dwell time regulatory limit of 400~ms established by ANATEL Act No.~14.448,
+    while maximizing range within that limit. The feasibility
+    of sending fragmented images via \gls{lorawan} was demonstrated analytically, with
+    a 160$\times$120 pixel grayscale image, compressed using the JPEG algorithm to
+    approximately 3.10~KB, which can be transmitted in 38 packets in about 13.3~s
+    of active radio time. The two processing flows
+    will be evaluated according to three quantitative metrics: \gls{ocr} reading accuracy (\%),
+    end-to-end latency (ms), energy consumption per reading (mAh). 
+    The objective of this work is to present results that guide the most appropriate architectural choice
+    for large-scale \textit{Smart Metering} deployments, considering
+    the \textit{trade-off} between energy efficiency, recognition precision, and system maintenance complexity.
   \vspace{\onelineskip}
   \noindent
   \textbf{Keywords}: Smart Metering. ESP32. LoRaWan. OCR.
