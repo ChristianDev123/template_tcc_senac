@@ -2,10 +2,10 @@
 \label{sec:ocr}
 
 \subsection{Fundamentos e Escopo}
-O Reconhecimento Óptico de Caracteres (\textit{Optical Character Recognition} -- OCR) é um subcampo da Visão Computacional e da Inteligência Artificial dedicado à conversão de imagens contendo texto (impresso, manuscrito ou gravado) em dados legíveis por máquina \cite{wang2023survey}. Originalmente voltado à digitalização de documentos, o escopo foi ampliado pelo \textit{Deep Learning} para aplicações industriais e de IoT, como a leitura automatizada de medidores de utilidades públicas em ambientes não controlados \cite{ieee2026water}.
+O Reconhecimento Óptico de Caracteres (\textit{Optical Character Recognition} -- OCR) é um subcampo da Visão Computacional e da Inteligência Artificial dedicado à conversão de imagens contendo texto (impresso, manuscrito ou gravado) em dados legíveis por máquina \cite{chen2021survey}. Originalmente voltado à digitalização de documentos, o escopo foi ampliado pelo \textit{Deep Learning} para aplicações industriais e de IoT, como a leitura automatizada de medidores de utilidades públicas em ambientes não controlados \cite{jawas2018water}.
 
 \subsection{Pipeline Tradicional}
-Um sistema clássico de OCR opera em etapas interdependentes \cite{wang2023survey}:
+Um sistema clássico de OCR opera em etapas interdependentes \cite{chen2021survey}:
 \begin{enumerate}
     \item \textbf{Aquisição e pré-processamento}: melhoria de contraste, correção de inclinação (\textit{deskewing}), remoção de ruído e binarização; em dispositivos embarcados, etapas de segmentação semântica podem isolar a Região de Interesse (ROI) antes do reconhecimento.
     \item \textbf{Localização e segmentação de texto}: identificação das regiões de texto.
@@ -14,7 +14,7 @@ Um sistema clássico de OCR opera em etapas interdependentes \cite{wang2023surve
 \end{enumerate}
 
 \subsection{Evolução Tecnológica: dos Métodos Heurísticos ao Deep Learning}
-A literatura descreve três gerações principais \cite{wang2023survey}:
+A literatura descreve três gerações principais \cite{chen2021survey}:
 
 \paragraph{Primeira geração (Template Matching).}
 Sobreposição pixel a pixel com gabaritos estáticos; alta vulnerabilidade a variações de escala, rotação e fontes.
@@ -23,16 +23,16 @@ Sobreposição pixel a pixel com gabaritos estáticos; alta vulnerabilidade a va
 Uso de descritores como HOG e SIFT, combinados com SVM ou MLP; dependência de \textit{feature engineering}.
 
 \paragraph{Terceira geração (End-to-End Deep Learning).}
-Elimina a segmentação explícita de caracteres; modelos \textit{end-to-end} aprendem simultaneamente representações visuais e dependência contextual sequencial \cite{shi2015crnn}.
+Elimina a segmentação explícita de caracteres; modelos \textit{end-to-end} aprendem simultaneamente representações visuais e dependência contextual sequencial \cite{shi2017crnn}.
 
 \subsection{Arquitetura CRNN e a Perda CTC}
-Para sequências de comprimento variável (palavras, placas, dígitos em visores), a arquitetura padrão é a CRNN (\textit{Convolutional Recurrent Neural Network}) combinada com a perda CTC (\textit{Connectionist Temporal Classification}) \cite{shi2015crnn, graves2006ctc}.
+Para sequências de comprimento variável (palavras, placas, dígitos em visores), a arquitetura padrão é a CRNN (\textit{Convolutional Recurrent Neural Network}) combinada com a perda CTC (\textit{Connectionist Temporal Classification}) \cite{shi2017crnn, graves2006ctc}.
 
 \paragraph{Extrator convolucional (CNN).}
-Camadas convolucionais extraem mapas de características bidimensionais, reduzindo a altura e preservando o eixo horizontal como sequência temporal de caracteres \cite{shi2015crnn}.
+Camadas convolucionais extraem mapas de características bidimensionais, reduzindo a altura e preservando o eixo horizontal como sequência temporal de caracteres \cite{shi2017crnn}.
 
 \paragraph{Modelagem de contexto.}
-Tradicionalmente usam-se LSTMs/GRUs bidirecionais; em \textit{Edge AI}, porém, LSTMs impõem gargalos de memória e restrições em \textit{runtimes} C++, sendo por vezes substituídas por convoluções temporais 1D de núcleos largos que emulam o campo receptivo contextual sem o custo da recorrência \cite{shi2015crnn}.
+Tradicionalmente usam-se LSTMs/GRUs bidirecionais; em \textit{Edge AI}, porém, LSTMs impõem gargalos de memória e restrições em \textit{runtimes} C++, sendo por vezes substituídas por convoluções temporais 1D de núcleos largos que emulam o campo receptivo contextual sem o custo da recorrência \cite{shi2017crnn}.
 
 \paragraph{CTC.}
 A CTC introduz um \textit{token} oculto de espaçamento (\textit{blank}) e marginaliza todos os alinhamentos temporais válidos, permitindo treinar com sequências de tamanhos diferentes e evitando o colapso de repetições consecutivas (ex.: dígitos idênticos adjacentes) \cite{graves2006ctc}.
@@ -41,4 +41,4 @@ A CTC introduz um \textit{token} oculto de espaçamento (\textit{blank}) e margi
 A transição de modelos de OCR de servidores em nuvem para microcontroladores com SRAM restrita impõe o paradigma do TinyML e da Computação de Borda \cite{ademola2023resource}.
 
 \paragraph{Quantization-Aware Training (QAT).}
-O QAT simula a perda de precisão da conversão de FP32 para INT8 durante o treinamento, permitindo que os pesos da rede se adaptem e mitiguem a degradação de acurácia. Em sistemas de OCR para medidores, modelos quantizados alcançam tamanhos da ordem de centenas de kB e inferência subsegundo em hardware embarcado \cite{ademola2023resource, ieee2026water}.
+O QAT simula a perda de precisão da conversão de FP32 para INT8 durante o treinamento, permitindo que os pesos da rede se adaptem e mitiguem a degradação de acurácia. Em sistemas de OCR para medidores, modelos quantizados alcançam tamanhos da ordem de centenas de kB e inferência subsegundo em hardware embarcado \cite{ademola2023resource, jawas2018water}.
