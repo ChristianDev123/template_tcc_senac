@@ -1,0 +1,156 @@
+\subsubsection{Machine Learning}
+
+Segundo \citeonline{SilvaVilela2021}, Machine Learning pode ser 
+definida como um ramo da \gls{ia} responsável por capacitar computadores
+à simular aprendizado com base em processamento de dados. 
+Esta técnica está em ascensão atualmente, sendo amplamente aplicado em softwares que 
+tem por objetivo a identificação de padrões, como é o caso do \gls{ocr},
+detecção de phishing em e-mails, detecção de uso fraudulento de cartões de crédito, 
+entre outras aplicações.
+
+Tal subconjunto, tem por característica a distinção de métodos de aprendizagem, 
+tendo como os mais difundidos os métodos supervisionado, 
+não supervisionado e semi-supervisionado.
+
+\subsubsubsection{Aprendizado Supervisionado}
+
+Neste método de aprendizagem, o objetivo é ensinar ao modelo de \gls{ia}, 
+através de objetos previamente rotulados, à identificar características de modo à 
+classificar novos objetos, \cite{SilvaVilela2021}. 
+Entre os algoritmos mais importantes para a aplicação deste tipo de 
+método de treinamento estão:
+
+\begin{enumerate}
+	\item k-Nearest Neighbours;
+    \item Regressão Linear;
+    \item Máquina de Vetores de Suporte (SVM);
+    \item Regressão Linear;
+    \item Árvore de Decisão e Floresta Aleatória;
+    \item Redes Neurais;
+\end{enumerate}
+
+Observação, estes algoritmos não necessariamente são concorrentes, 
+portanto em único modelo pode haver implementação de um ou mais 
+dos algoritmos citados, \cite{SilvaVilela2021}.
+
+\subsubsection{Deep Learning}
+
+Deep Learning, ou aprendizado profundo, é uma técnica que se encontra 
+como em um subcampo do Machine Learning, onde seu desenvolvimento foi pautado 
+na simulação do processo de aprendizagem humano. 
+No caso utilizando como base o algoritmo de redes neurais, 
+construindo estruturas conectadas, de forma à emular o comportamento do cérebro humano, 
+\cite{jesus2023inteligencia}.
+
+
+\subsubsection{Redes Neurais}
+
+Como apresentado por \citeonline{jesus2023inteligencia}, 
+redes neurais são estruturas baseadas em grafos, que são representadas em camadas, 
+cada camada é compostas por nós, denominado neurônios, e arestas, 
+denominada sinapses. a estrutura básica de uma rede neural possui 3 camadas: 
+entrada, camada intermediária, saída, onde, respectivamente, são responsáveis 
+por executar as funções de receber os dados externos, 
+processar os dados e entregar o resultado.
+
+A técnica de redes neurais apresenta derivações amplamente utilizadas como alicerce 
+no desenvolvimento de sistemas baseados em Deep Learning.
+
+\subsubsubsection{Redes Neurais Convolucionais}
+
+As \gls{cnn}, são amplamente aplicadas em processamento de dados não estruturados, 
+como imagens, vídeos e áudios. Tal técnica tem como característica o 
+processamento de pequenos trechos de dados por vez, ao contrário 
+de outras técnicas que tentam realizar o processamento de forma atômica, 
+\cite{jesus2023inteligencia}.
+
+Como apresentado por \citeonline{Atika2022ImageSegmentation}, 
+o desenvolvimento de uma CNN será apoiada na implementação de uma arquitetura, 
+tal técnica abrange uma vasta quantidade de arquiteturas que foram 
+desenvolvidas para auxiliar e alcançar melhores resultados à 
+determinadas aplicações do software.
+Dado o objetivo da implementação de CNN neste trabalho, 
+destaca-se a arquitetura U-Net. 
+
+Como \citeonline{Atika2022ImageSegmentation} explica,
+a arquitetura U-Net tem por objetivo a definição de bordas dentro de imagens, 
+onde é amplamente utilizado na biomedicina com o foco de delimitar 
+estruturas presentes em imagens, tal característica justifica a aplicação 
+deste método com o objetivo de definir \gls{roi}. 
+A arquitetura U-Net é caracterizada pela presença de três etapas de 
+processamento: Contração, Gargalo e Expansão. 
+A camada de contração é composta por vários blocos, 
+onde cada bloco recebe uma entrada e aplica uma camada de convolução seguida por 
+uma camada de operação de max-pooling, cada uma das camadas são matrizes, 
+que respectivamente, apresentam a estrutura 3x3 e 2x2.
+
+Um adendo, as camadas que constroem a arquitetura U-Net utilizam função de ativação ReLu 
+apresentada na equação~\ref{eq:relu_def}.
+
+\begin{equation}
+    f(x) = \text{ReLU}(x) = \max(0, x) = 
+    \begin{cases} 
+        x, & \text{se } x > 0 \\ 
+        0, & \text{se } x \le 0 
+    \end{cases}
+    \label{eq:relu_def}
+\end{equation}
+
+\subsubsection{Quantização e QAT}
+
+Quantização é um método de simplificação dos parâmetros de um modelo de \gls{rna}. 
+Como o \citeonline{ferreira2022compressao} explica, a aplicação de tal técnica, 
+traz como benefício a redução do tamanho de modelos, 
+viabilizando a utilização em equipamentos de baixo poder computacional, 
+além do aumento de velocidade de inferência e simplificação de cálculos realizados pelo processador, 
+frente à um modelo que na maioria dos casos possuem seus parâmetros representados em pontos 
+flutuantes de 32 bits. 
+
+\gls{qat} é a aplicação da técnica de quantização pré-treinamento, 
+treinando o modelo à reconhecer padrões em imagens utilizando parâmetros de baixa precisão.
+
+\subsubsection{OCR - Fundamentos e Escopo}
+O \gls{ocr} é um subcampo da Visão Computacional e da Inteligência Artificial 
+dedicado à conversão de imagens contendo texto (impresso, manuscrito ou gravado) 
+em dados legíveis por máquina \cite{chen2021survey}. 
+Originalmente voltado à digitalização de documentos, 
+o escopo foi ampliado pelo \textit{Deep Learning} 
+para aplicações industriais e de IoT, \cite{jawas2018water}, 
+
+\subsubsubsection{Pipeline Tradicional}
+Um sistema clássico de OCR opera em etapas interdependentes \cite{chen2021survey}:
+\begin{enumerate}
+    \item \textbf{Aquisição e pré-processamento}: melhoria de contraste, correção de inclinação (\textit{deskewing}), remoção de ruído e binarização; em dispositivos embarcados, etapas de segmentação semântica podem isolar a Região de Interesse (ROI) antes do reconhecimento.
+    \item \textbf{Localização e segmentação de texto}: identificação das regiões de texto.
+    \item \textbf{Reconhecimento de caracteres}: classificação dos segmentos ou da sequência completa.
+    \item \textbf{Pós-processamento}: dicionários, correção ortográfica ou verificação sintática para mitigar erros residuais.
+\end{enumerate}
+
+\subsubsubsection{Evolução Tecnológica: dos Métodos Heurísticos ao Deep Learning}
+A literatura descreve três gerações principais \cite{chen2021survey}:
+
+\subparagraph{Primeira geração (Template Matching).}
+Sobreposição pixel a pixel com gabaritos estáticos; 
+alta vulnerabilidade a variações de escala, rotação e fontes.
+
+\subparagraph{Segunda geração (Características manuais + classificadores clássicos).}
+Uso de descritores como HOG e SIFT, 
+combinados com SVM ou MLP; dependência de \textit{feature engineering}.
+
+\subparagraph{Terceira geração (End-to-End Deep Learning).}
+Elimina a segmentação explícita de caracteres; 
+modelos \textit{end-to-end} aprendem simultaneamente representações 
+visuais e dependência contextual sequencial \cite{shi2017crnn}.
+
+\subsubsection{Arquitetura CRNN e CTC}
+A \gls{ctc}, é uma técnica utilizada para 
+inferência de classificação em sequências de 
+comprimento variável (palavras, placas, valores, entre outros),
+que introduz um \textit{token} oculto de espaçamento (\textit{blank}) 
+e marginaliza todos os alinhamentos temporais válidos, 
+permitindo dotar modelos com a capacidade de inferir sequências de classes, ao mesmo tempo que
+evita o colapso de repetições consecutivas (ex.: dígitos idênticos adjacentes) \cite{shi2017crnn, graves2006ctc}.
+ 
+a arquitetura \gls{crnn}, é amplamente utilizada em aplicações que necessitam de realizar
+inferência de classes em sequência, tal arquitetura combina a arquitetura \gls{cnn} e 
+\gls{rnn} com a perda \gls{ctc}.
