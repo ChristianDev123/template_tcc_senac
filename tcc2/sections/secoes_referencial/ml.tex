@@ -143,14 +143,20 @@ modelos \textit{end-to-end} aprendem simultaneamente representações
 visuais e dependência contextual sequencial \cite{shi2017crnn}.
 
 \subsubsection{Arquitetura CRNN e CTC}
-A \gls{ctc}, é uma técnica utilizada para 
-inferência de classificação em sequências de 
-comprimento variável (palavras, placas, valores, entre outros),
-que introduz um \textit{token} oculto de espaçamento (\textit{blank}) 
-e marginaliza todos os alinhamentos temporais válidos, 
-permitindo dotar modelos com a capacidade de inferir sequências de classes, ao mesmo tempo que
-evita o colapso de repetições consecutivas (ex.: dígitos idênticos adjacentes) \cite{shi2017crnn, graves2006ctc}.
- 
-a arquitetura \gls{crnn}, é amplamente utilizada em aplicações que necessitam de realizar
-inferência de classes em sequência, tal arquitetura combina a arquitetura \gls{cnn} e 
-\gls{rnn} com a perda \gls{ctc}.
+\label{subsubsec:crnn_ctc}
+
+A arquitetura \gls{crnn} (\textit{Convolutional Recurrent Neural Network}) é amplamente utilizada em aplicações que exigem inferência de classes em sequência, pois combina um extrator convolucional (\gls{cnn}) para obter representações visuais, uma camada recorrente (\gls{rnn}) para modelar dependências contextuais ao longo do eixo horizontal e a função de perda \gls{ctc} para alinhar as previsões da rede à sequência de rótulos sem a necessidade de segmentação explícita dos caracteres \cite{shi2017crnn}.
+
+A \gls{ctc} (\textit{Connectionist Temporal Classification}) resolve o problema central de sequências de comprimento variável: em geral, não se sabe \textit{onde} cada caractere começa e termina na imagem, e o número de \textit{frames} produzidos pela CNN é maior do que o número de caracteres da palavra ou número a ser reconhecido \cite{graves2006ctc}. Para lidar com isso, a CTC introduz dois mecanismos fundamentais: um \textit{token} oculto de espaçamento (\textit{blank}) e uma função de colapso que mapeia a sequência de previsões da rede para o rótulo final \cite{graves2006ctc, hannun2017ctc}.
+
+\subparagraph{O \textit{token} \textit{blank} e o colapso de repetições.}
+A cada passo de tempo, a rede produz uma distribuição de probabilidade sobre o alfabeto acrescido do símbolo especial \textit{blank} (\(\epsilon\)). O \textit{blank} representa a ausência de emissão de caractere naquele instante, funcionando como um separador entre caracteres idênticos adjacentes \cite{graves2006ctc}. Após a rede produzir a sequência completa de previsões, aplica-se uma função de colapso \(\mathcal{B}\) que (i) remove caracteres repetidos consecutivos e (ii) remove os \textit{blanks} \cite{hannun2017ctc}. Por exemplo, a sequência de caminho \(--h--e--l--l--o--\) colapsa para \(\text{``hello''}\); sem o \textit{blank}, as repetições de ``l'' seriam indistinguíveis de um único ``l'' \cite{hannun2017ctc}.
+
+\subparagraph{Marginalização de alinhamentos.}
+O treinamento da CTC não exige um alinhamento pré-definido entre os \textit{frames} e os caracteres. Em vez disso, a função de perda calcula a probabilidade da sequência de rótulos correta como a soma das probabilidades de \textbf{todos os caminhos de alinhamento válidos} que, após o colapso, produzem aquele rótulo \cite{graves2006ctc}. Essa marginalização é feita de forma eficiente pelo algoritmo \textit{forward-backward}, que explora a estrutura do problema para evitar a enumeração explícita de todos os caminhos, que seria computacionalmente inviável \cite{graves2006ctc, hannun2017ctc}. Assim, a rede pode ser treinada diretamente com pares (imagem, transcrição), sem anotações de posição caractere a caractere.
+
+\subparagraph{Inferência.}
+No momento da inferência, a rede produz, para cada passo de tempo, a classe mais provável (ou uma distribuição sobre as classes). A sequência final é obtida pelo colapso das previsões, opcionalmente combinado com busca em feixe (\textit{beam search}) para explorar múltiplos alinhamentos e melhorar a acurácia \cite{hannun2017ctc}. O artigo de Hannun (2017) apresenta uma explicação visual detalhada desse processo, incluindo exemplos passo a passo de como o \textit{blank} e o colapso atuam em sequências reais \cite{hannun2017ctc}.
+
+\subparagraph{Por que a CTC é adequada ao OCR.}
+Em OCR de palavras, números de medidores ou placas, o número de caracteres varia e não há garantia de que cada caractere ocupe exatamente um número fixo de \textit{frames} na saída da CNN. A CTC elimina a necessidade de segmentação manual e permite que a CRNN seja treinada de ponta a ponta com sequências de comprimentos diferentes, mantendo a coerência entre as previsões vizinhas e evitando o colapso de repetições idênticas \cite{shi2017crnn, graves2006ctc}.
