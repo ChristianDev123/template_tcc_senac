@@ -1,7 +1,7 @@
 Como explicado por \citeonline{Camargo2022}, \gls{lora} é uma tecnologia, patenteada e desenvolvida pela Semtech, que tem como foco viabilizar a transmissão de dados sem fio em longo alcance através de radiofrequência.
 
 A rede \gls{lorawan} é constituída por dispositivos finais, gateways e servidores de rede/aplicação.
-Com o objetivo de realizar um gerenciamento mais fino de consumo energético, a comunicação entre os dispositivos finais e servidores de rede são definidos por três classes como demonstrado na tabela~\ref{tab:tabela_classes}.
+Com o objetivo de realizar um gerenciamento mais fino de consumo energético, a comunicação entre os dispositivos finais e servidores de rede é definida por três classes como demonstrado na tabela~\ref{tab:tabela_classes}.
 
 \begin{table}[H]
     \centering
@@ -11,11 +11,11 @@ Com o objetivo de realizar um gerenciamento mais fino de consumo energético, a 
         \toprule
         \textbf{Classe} & \textbf{Descrição} & \textbf{Característica} \\
         \midrule
-        Classe A & O dispositivo final é habilitado à receber downlink imediatamente após ser realizado um envio de mensagem (uplink). & Menor consumo energético e menor tráfego de mensagens. \\
+        Classe A & O dispositivo final é habilitado a receber downlink imediatamente após ser realizado um envio de mensagem (uplink). & Menor consumo energético e menor tráfego de mensagens. \\
         \midrule
-        Classe B & O dispositivo final é habilitado à receber downlink em períodos agendados e conhecidos. & Consumo energético significantemente maior que a classe A, mas viabiliza comunicação mais frequente entre servidor e dispositivo final. \\
+        Classe B & O dispositivo final é habilitado a receber downlink em períodos agendados e conhecidos. & Consumo energético significativamente maior que a classe A, mas viabiliza comunicação mais frequente entre servidor e dispositivo final. \\
         \midrule
-        Classe C & O dispositivo final é continuamente habilitado à receber downlink. & Consumo energético muito alto, mas viabiliza a comunicação entre as partes de forma quase ininterrupta.  \\
+        Classe C & O dispositivo final é continuamente habilitado a receber downlink. & Consumo energético muito alto, mas viabiliza a comunicação entre as partes de forma quase ininterrupta.  \\
         \bottomrule
     \end{tabular}
     \begin{quote}
@@ -34,8 +34,8 @@ Com o objetivo de realizar um gerenciamento mais fino de consumo energético, a 
     \end{quote}
 \end{figure}
 
-A figura~\ref{fig:lora_uplink} apresenta a estrutura de pacote de rede que é utilizado na tecnologia LoRa. 
-Tal estrutura é utilizada tanto no envio de dados pelo dispositivo final (uplink), quanto no recebimento de dados (downlink).
+A figura~\ref{fig:lora_uplink} apresenta a estrutura de pacote de rede que é utilizada na tecnologia LoRa. 
+Tal estrutura é utilizada tanto no envio de dados pelo dispositivo final (uplink) quanto no recebimento de dados (downlink).
 
 \begin{figure}[H]
     \centering
@@ -49,12 +49,12 @@ Tal estrutura é utilizada tanto no envio de dados pelo dispositivo final (uplin
 \end{figure}
 
 A estrutura do pacote de rede de uplink e downlink é a mesma, mas há diferenças em flags específicas entre os tipos de transmissão de dados. 
-A figura~\ref{fig:fhdr_lora_downlink} apresenta a estrutura do “Frame Header / FHDR“ utilizada em downlink, as estruturas de pacote divergiam-se na flag de classe B, para uplink, onde o dispositivo final informa ao servidor estar no modo de recebimento de mensagens em tempo programado, e no pacote downlink, há a flag de FPeding, onde tal flag é utilizada para informar a existência de mais mensagens à serem enviadas pelo servidor/getaway.
+A figura~\ref{fig:fhdr_lora_downlink} apresenta a estrutura do ``Frame Header / FHDR'' utilizada em downlink. As estruturas de pacote divergem na flag de classe B, no uplink, por meio da qual o dispositivo final informa ao servidor estar no modo de recebimento de mensagens em tempo programado, e, no pacote downlink, na flag FPending, utilizada para informar a existência de mais mensagens a serem enviadas pelo servidor/gateway.
 
-Conforme apresentado pela \citeonline{lora_alliance_rp002_105} o tamanho máximo de MACPayload, respeitando o padrão regulatório AU915, que será melhor explicado e abordado posteriormente, em bytes é variável e dependente do tamanho ocupado pelo atributo Fopts, que é utilizado para solicitar alterações de parâmetros de rede ao dispositivo final.
+Conforme apresentado pela \citeonline{lora_alliance_rp002_105} o tamanho máximo de MACPayload, respeitando o padrão regulatório AU915, que será mais bem explicado e abordado posteriormente, em bytes, é variável e dependente do tamanho ocupado pelo atributo Fopts, que é utilizado para solicitar alterações de parâmetros de rede ao dispositivo final.
 Não utilizando repetidores de sinal que interligam dispositivos finais com gateways, o tamanho máximo de MACPayload é de 250 bytes, restando em torno de 227 bytes utilizáveis em \gls{payload}.
 
-Para viabilizar a modulação LoRa em dispositivo final, é necessário realizar a configuração de três fundamentais parâmetros. 
+Para viabilizar a modulação LoRa em dispositivo final, é necessário realizar a configuração de três parâmetros fundamentais. 
 A tabela~\ref{tab:parametros_lora} apresenta as definições dos principais parâmetros que ajustam o funcionamento da rede \gls{lorawan}.
 
 \begin{table}[H]
@@ -69,10 +69,10 @@ A tabela~\ref{tab:parametros_lora} apresenta as definições dos principais par�
         \gls{bw} & Determina a capacidade máxima de transmissão em determinado período de tempo (medido em kHz).\\
         \midrule
         
-        \gls{sf} & Determina o alcânce de sinal de rádio, o SF é determinado por classes onde quanto maior a classe maior a área de alcance do sinal.\\
+        \gls{sf} & Determina o alcance do sinal de rádio; o SF é determinado por classes, nas quais, quanto maior a classe, maior a área de alcance do sinal.\\
         \midrule
         
-        \gls{cr} & Número de Bits destinado à redundância de dados, utilizado para possibilitar recuperação da mensagem em caso de erros na transmissão.\\
+        \gls{cr} & Número de bits destinados à redundância de dados, utilizado para possibilitar recuperação da mensagem em caso de erros na transmissão.\\
         \bottomrule
     \end{tabular}
     \begin{quote}

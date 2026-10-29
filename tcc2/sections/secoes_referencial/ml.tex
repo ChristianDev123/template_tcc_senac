@@ -2,21 +2,21 @@
 
 Segundo \citeonline{SilvaVilela2021}, Machine Learning pode ser 
 definida como um ramo da \gls{ia} responsável por capacitar computadores
-à simular aprendizado com base em processamento de dados. 
+a simular aprendizado com base em processamento de dados. 
 Essa técnica está em ascensão atualmente, sendo amplamente aplicada em softwares que 
-tem por objetivo a identificação de padrões, como é o caso do \gls{ocr},
+têm por objetivo a identificação de padrões, como é o caso do \gls{ocr},
 detecção de phishing em e-mails, detecção de uso fraudulento de cartões de crédito, 
 entre outras aplicações.
 
-Tal subconjunto, tem por característica a distinção de métodos de aprendizagem, 
+Tal subconjunto tem por característica a distinção de métodos de aprendizagem, 
 tendo como os mais difundidos os métodos supervisionado, 
-não supervisionado e semi-supervisionado.
+não supervisionado e semissupervisionado.
 
 \subsubsubsection{Aprendizado Supervisionado}
 
 Neste método de aprendizagem, o objetivo é ensinar ao modelo de \gls{ia}, 
-através de objetos previamente rotulados, à identificar características de modo à 
-classificar novos objetos, \cite{SilvaVilela2021}. 
+através de objetos previamente rotulados, a identificar características de modo a 
+classificar novos objetos \cite{SilvaVilela2021}. 
 Entre os algoritmos mais importantes para a aplicação deste tipo de 
 método de treinamento estão:
 
@@ -29,27 +29,27 @@ método de treinamento estão:
     \item Redes Neurais;
 \end{enumerate}
 
-Observação, estes algoritmos não necessariamente são concorrentes, 
-portanto em único modelo pode haver implementação de um ou mais 
-dos algoritmos citados, \cite{SilvaVilela2021}.
+Observação: estes algoritmos não necessariamente são concorrentes; 
+portanto, em um único modelo, pode haver implementação de um ou mais 
+dos algoritmos citados \cite{SilvaVilela2021}.
 
 \subsubsection{Deep Learning}
 
 Deep Learning, ou aprendizado profundo, é uma técnica que se encontra 
-em um subcampo do Machine Learning, onde seu desenvolvimento foi pautado 
+em um subcampo do Machine Learning, cujo desenvolvimento foi pautado 
 na simulação do processo de aprendizagem humana. 
-No caso utilizando como base o algoritmo de redes neurais, 
-construindo estruturas conectadas, de forma à emular o comportamento do cérebro humano, 
+Nesse caso, utiliza-se como base o algoritmo de redes neurais, 
+construindo estruturas conectadas de forma a emular o comportamento do cérebro humano 
 \cite{jesus2023inteligencia}.
 
 
 \subsubsection{Redes Neurais}
 
 Como apresentado por \citeonline{jesus2023inteligencia}, 
-redes neurais são estruturas baseadas em grafos, que são representadas em camadas, 
-cada camada é compostas por nós, denominado neurônios, e arestas, 
-denominada sinapses. a estrutura básica de uma rede neural possui 3 camadas: 
-entrada, camada intermediária, saída, onde, respectivamente, são responsáveis 
+redes neurais são estruturas baseadas em grafos, representadas em camadas; 
+cada camada é composta por nós, denominados neurônios, e arestas, 
+denominadas sinapses. A estrutura básica de uma rede neural possui três camadas: 
+entrada, camada intermediária e saída, que são, respectivamente, responsáveis 
 por executar as funções de receber os dados externos, 
 processar os dados e entregar o resultado.
 
@@ -58,61 +58,61 @@ no desenvolvimento de sistemas baseados em Deep Learning.
 
 \subsubsubsection{Redes Neurais Convolucionais}
 
-Atualmente as redes neurais convolucionais, são amplamente aplicadas em processamento de dados não estruturados, 
+Atualmente, as redes neurais convolucionais são amplamente aplicadas em processamento de dados não estruturados, 
 como imagens, vídeos e áudios. Tal técnica tem como característica o 
 processamento de pequenos trechos de dados por vez, ao contrário 
-de outras técnicas que tentam realizar o processamento de forma atômica, 
+de outras técnicas que tentam realizar o processamento de forma atômica 
 \cite{jesus2023inteligencia}.
 
 Como apresentado por \citeonline{Atika2022ImageSegmentation}, 
-o desenvolvimento de uma \gls{cnn} inicia na definição da arquitetura em implementação. 
+o desenvolvimento de uma \gls{cnn} inicia-se pela definição da arquitetura em implementação. 
 Tal técnica abrange uma vasta quantidade de arquiteturas que foram 
-desenvolvidas para auxiliar e alcançar melhores resultados à 
+desenvolvidas para auxiliar e alcançar melhores resultados para 
 determinados requisitos do software.
 
 \subsubsubsection{Camadas que Constituem uma CNN} 
-Uma \gls{cnn} é constituída por três principais camadas : camada de entrada de dados, 
+Uma \gls{cnn} é constituída por três principais camadas: camada de entrada de dados, 
 camada de saída, também denominada camada densa, 
-onde cada um de seus neurônios estão conectados à camada anterior, e diversas outras 
+na qual cada um de seus neurônios está conectado à camada anterior, e diversas outras 
 camadas intermediárias, 
-denominada por alguns autores como camada oculta, \cite{ayeni2022convolutional}. 
+denominadas por alguns autores camadas ocultas \cite{ayeni2022convolutional}. 
 
-As camadas intermediárias de uma CNN, 
-apresentam comportamento de aprofundamento em reconhecimento de abstrações à cada camada sobreposta, 
+As camadas intermediárias de uma CNN 
+apresentam comportamento de aprofundamento em reconhecimento de abstrações a cada camada sobreposta, 
 de tal forma que as camadas iniciais são responsáveis por identificar traços, 
-contornos, linhas, e etc, 
-quanto camadas finais possuem a responsabilidade de identificar objetos, 
+contornos, linhas etc., 
+enquanto as camadas finais possuem a responsabilidade de identificar objetos, 
 rostos e valores, por exemplo. 
 Tais camadas são desenvolvidas com a intercalação de camadas de convolução e pooling (agrupamento), 
-de forma que cada cada entrada de uma camada é a saída da camada anterior.
+de forma que cada entrada de uma camada é a saída da camada anterior.
 
 \paragraph{Camada Convolucional}
 Como \citeonline{ayeni2022convolutional} explica, 
 a camada convolucional é a camada responsável por processar imagens de forma 
-à encontrar padrões ao aplicar um filtro (kernel/neurônio) à cada trecho 
+a encontrar padrões ao aplicar um filtro (kernel/neurônio) a cada trecho 
 da imagem de entrada, denominado campo perceptivo. 
 O neurônio é responsável por aplicar operações de multiplicação sobre o campo perceptivo, 
-gerando um único valor à cada trecho de imagem processada, 
-e então posteriormente os valores calculados pelos neurônios são 
-armazenados em uma estrutura de três dimensões, \cite{ayeni2022convolutional}.
+gerando um único valor para cada trecho de imagem processado, 
+e, posteriormente, os valores calculados pelos neurônios são 
+armazenados em uma estrutura de três dimensões \cite{ayeni2022convolutional}.
 
 A aplicação de escala de cinza sobre uma imagem antes de 
-submetê-la ao modelo de \gls{cnn}, justifica-se, dado que, 
+submetê-la ao modelo de \gls{cnn} justifica-se dado que, 
 ao reduzir a complexidade de processamento de cores de uma imagem, 
-que comumente dispõem do padrão \gls{rgb}, de três canais de dados, 
-impacta-se diretamente sobre a percepção de profundidade do modelo, \cite{ayeni2022convolutional}. 
+que comumente dispõe do padrão \gls{rgb}, de três canais de dados, 
+impacta-se diretamente sobre a percepção de profundidade do modelo \cite{ayeni2022convolutional}. 
 
 \paragraph{Camada de Pooling}
 Segundo \citeonline{ayeni2022convolutional}, 
 a camada de pooling possui a responsabilidade de filtrar características predominantes 
 encontradas na camada de convolução. 
 Tal camada possui a importantíssima função de otimizar processamento, 
-descartando dados menos significantes 
+descartando dados menos significativos 
 e mitigando o fenômeno de overfitting.
 As camadas de pooling possuem diversas derivações, que são 
-escolhidas e implementadas à fim de otimizar resultados alcançados pelo modelo, 
-mas a derivação mais aplicada sobre CNN 's é a Max Pooling.
-As camadas de Pooling, possuem por característica uma dimensão 
+escolhidas e implementadas a fim de otimizar resultados alcançados pelo modelo, 
+mas a derivação mais aplicada sobre CNNs é a Max Pooling.
+As camadas de Pooling possuem por característica uma dimensão 
 menor em relação às camadas convolucionais, 
 normalmente representada por uma matriz dois por dois.
 
@@ -129,20 +129,20 @@ igual à quantidade de classes de classificação.
 Dado o objetivo da implementação de CNN neste trabalho, 
 destaca-se a arquitetura U-Net. 
 
-Como \citeonline{Atika2022ImageSegmentation} explica,
+Como \citeonline{Atika2022ImageSegmentation} explicam,
 a arquitetura U-Net tem por objetivo a definição de bordas dentro de imagens, 
-onde é amplamente utilizado na biomedicina com o foco de delimitar 
-estruturas presentes em imagens, tal característica é explorada à fim de definir 
+sendo amplamente utilizada na biomedicina com o foco de delimitar 
+estruturas presentes em imagens; tal característica é explorada a fim de definir 
 regiões de interesse dentro de uma imagem.
 
 A arquitetura U-Net é caracterizada pela presença de três etapas de 
 processamento: Contração, Gargalo e Expansão. 
 A camada de contração é composta por vários blocos, 
-onde cada bloco recebe uma entrada e aplica uma camada de convolução seguida por 
-uma camada de operação de max-pooling, cada uma das camadas são matrizes, 
-que respectivamente, apresentam a estrutura 3x3 e 2x2.
+nos quais cada bloco recebe uma entrada e aplica uma camada de convolução seguida por 
+uma camada de operação de max-pooling; essas camadas são matrizes 
+que, respectivamente, apresentam a estrutura 3x3 e 2x2.
 
-Um adendo, as camadas que constroem a arquitetura U-Net utilizam função de ativação ReLu 
+Como adendo, as camadas que constroem a arquitetura U-Net utilizam a função de ativação ReLU 
 apresentada na equação~\ref{eq:relu_def}.
 
 \begin{equation}
@@ -157,15 +157,15 @@ apresentada na equação~\ref{eq:relu_def}.
 \subsubsection{Quantização e QAT}
 
 Quantização é um método de simplificação dos parâmetros de um modelo de \gls{rna}. 
-Como o \citeonline{ferreira2022compressao} explica, a aplicação de tal técnica, 
+Como \citeonline{ferreira2022compressao} explica, a aplicação de tal técnica 
 traz como benefício a redução do tamanho de modelos, 
 viabilizando a utilização em equipamentos de baixo poder computacional, 
 além do aumento de velocidade de inferência e simplificação de cálculos realizados pelo processador, 
-frente à um modelo que na maioria dos casos possuem seus parâmetros representados em pontos 
+frente a um modelo que, na maioria dos casos, possui seus parâmetros representados em pontos 
 flutuantes de 32 bits. 
 
 \gls{qat} é a aplicação da técnica de quantização pré-treinamento, 
-treinando o modelo à reconhecer padrões em imagens utilizando parâmetros de baixa precisão.
+treinando o modelo a reconhecer padrões em imagens utilizando parâmetros de baixa precisão.
 
 \subsubsection{OCR - Fundamentos e Escopo}
 O \gls{ocr} é um subcampo da Visão Computacional e da Inteligência Artificial 
@@ -173,7 +173,7 @@ dedicado à conversão de imagens contendo texto (impresso, manuscrito ou gravad
 em dados legíveis por máquina \cite{chen2021survey}. 
 Originalmente voltado à digitalização de documentos, 
 o escopo foi ampliado pelo \textit{Deep Learning} 
-para aplicações industriais e de IoT, \cite{jawas2018water}, 
+para aplicações industriais e de IoT \cite{jawas2018water}.
 
 \subsubsubsection{Pipeline Tradicional}
 Um sistema clássico de OCR opera em etapas interdependentes \cite{chen2021survey}:
@@ -206,7 +206,7 @@ visuais e dependência contextual sequencial \cite{shi2017crnn}.
 A arquitetura \gls{crnn} é amplamente utilizada em aplicações que exigem 
 inferência de classes em sequência, 
 pois combina um extrator convolucional (\gls{cnn}) 
-à fim de obter representações visuais, 
+a fim de obter representações visuais, 
 uma camada recorrente (\gls{rnn}), com o objetivo de modelar dependências contextuais ao longo do eixo horizontal, 
 e a função de perda \gls{ctc}, com a finalidade de alinhar as previsões da rede à sequência de rótulos sem a necessidade de 
 segmentação explícita dos caracteres \cite{shi2017crnn}.
@@ -237,7 +237,7 @@ sem o \textit{blank}, as repetições de ``l'' seriam indistinguíveis de
 um único ``l'' \cite{hannun2017ctc}.
 
 \subparagraph{Marginalização de alinhamentos.}
-O treinamento da CTC não exige um alinhamento pré-definido entre 
+O treinamento da CTC não exige um alinhamento predefinido entre 
 os \textit{frames} e os caracteres. Em vez disso, 
 a função de perda calcula a probabilidade da sequência de rótulos correta como 
 a soma das probabilidades de todos os caminhos de alinhamento válidos que, após o colapso, 

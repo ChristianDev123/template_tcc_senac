@@ -21,12 +21,12 @@ O núcleo da investigação consiste na implementação e comparação de dois m
       \begin{itemize}
         \item \textbf{Construção e Tratamento do Dataset:} Utilização do conjunto público Water Meters Dataset \citeonline{kucev2020} associado a capturas locais do próprio sensor. O tratamento incluirá redimensionamento das imagens, conversão para escala de cinza, normalização dos dados e data augmentation.
         \item \textbf{Treinamento e Classificação:} Desenvolvimento de uma rede neural convolucional (CNN) própria submetida à técnica de \textit{Transfer Learning} para reconhecimento dos dígitos dos hidrômetros. Em complemento, algoritmos de árvores de decisão e floresta aleatória atuarão na classificação do objeto alvo.
-        \item \textbf{Otimização e Implantação:} O modelo pré-treinado passará por quantização INT8 e será executado por meio do TensorFlow Lite for Microcontrollers, de onde espera-se obter os valores exatos de medição.
+        \item \textbf{Otimização e Implantação:} O modelo pré-treinado passará por quantização INT8 e será executado por meio do TensorFlow Lite for Microcontrollers, de onde se espera obter os valores exatos de medição.
       \end{itemize}
     \item \textbf{Processamento Remoto (Cloud OCR):} O dispositivo envia a imagem capturada (fragmentada e comprimida) para o servidor, onde a imagem recebida é pré-processada pela biblioteca OpenCV para otimização da leitura. Em seguida, será aplicado o framework de \gls{ocr} de propósito geral \textit{Tesseract OCR} para a extração de caracteres.
 \end{enumerate}
 
-Esta abordagem dual permitirá a recolha de métricas quantitativas sobre a vida útil estimada da bateria, a acurácia do reconhecimento em diferentes condições de luminosidade e a fiabilidade da transmissão de pacotes pesados em redes \gls{lorawan}. Assim, a solução deixa de ser meramente uma implementação técnica para tornar-se uma análise de viabilidade para sistemas de \textit{Smart Metering} em larga escala.
+Esta abordagem dual permitirá a coleta de métricas quantitativas sobre a vida útil estimada da bateria, a acurácia do reconhecimento em diferentes condições de luminosidade e a confiabilidade da transmissão de pacotes pesados em redes \gls{lorawan}. Assim, a solução deixa de ser meramente uma implementação técnica para tornar-se uma análise de viabilidade para sistemas de \textit{Smart Metering} em larga escala.
 
 \section{POC -- Proof of Concept}
 
@@ -54,20 +54,20 @@ As próximas seções apresentam o desenvolvimento, os resultados e as análises
 % independentemente do contexto regulatório, oferecendo ao leitor uma 
 % avaliação de viabilidade conservadora e auditável.
 
-Por motivos de que todo hardware LoRa oficialmente vendido no Brasil ser homologado pela Anatel, 
+Pelo fato de todo hardware LoRa oficialmente vendido no Brasil ser homologado pela ANATEL, 
 este trabalho emprega os limites regulatórios brasileiros \textbf{AU915}, 
-regulamentado pela ANATEL pelo Ato n\textordmasculine~14.448 de 2017, aplicado à sistemas de salto 
+regulamentado pela ANATEL pelo Ato n\textordmasculine~14.448 de 2017, aplicado a sistemas de salto 
 em frequência operando nas faixas de 902--907,5~MHz e 915--928~MHz com largura de faixa de canal inferior a 250~kHz,
 assim não impondo restrição de \textit{duty cycle}, mas limitando o tempo médio de permanência por 
-canal (\textit{dwell time}) à 0,4 segundos em um intervalo de 14 segundos.
+canal (\textit{dwell time}) a 0,4 segundos em um intervalo de 14 segundos.
 
 
 \subsubsection{Restrições Regulatórias e Escolha do SF}
  
 Uma das principais preocupações técnicas no envio de imagens via \gls{lorawan} diz
 respeito aos limites regulatórios de transmissão e ao tamanho máximo de \textit{\gls{payload}}
-por pacote. A regulamentação brasileira para funcionamento de tecnologias LoRa, limita o a largura de faixa de canal 
-à 250~hhz, no caso das especificações do \gls{lora}, com 125~kHz, o tempo médio
+por pacote. A regulamentação brasileira para funcionamento de tecnologias LoRa limita a largura de faixa de canal 
+a 250~kHz; no caso das especificações do \gls{lora}, com 125~kHz, o tempo médio
 de ocupação de qualquer radiofrequência não deve ser superior a \textbf{0,4~segundos}
 em um intervalo de 14~segundos, com uso mínimo de 35~canais de salto. O AU915
 utiliza 64~canais de \textit{uplink}, satisfazendo amplamente essa condição.
@@ -121,7 +121,7 @@ entre todos os SFs disponíveis para os parâmetros de \textit{\gls{payload}} de
  
 Da Tabela~\ref{tab:comparativo_sf}, conclui-se que apenas SF7 e SF8 atendem ao
 limite de \textit{dwell time} de 400~ms do Ato nº~14.448 para o \textit{\gls{payload}} de 115~bytes.
-Entre eles, o SF8 apresenta sensibilidade de recepção 3~dB superior ao SF7 o que
+Entre eles, o SF8 apresenta sensibilidade de recepção 3~dB superior ao SF7, o que
 se traduz, conforme a Tabela~\ref{tab:snr_sf} adaptada de \citeonline{adam2022}, em
 um SNR mínimo de $-10$~dB contra $-7,5$~dB do SF7, garantindo aproximadamente
 o dobro do alcance em condições equivalentes. Por essa razão, o \textbf{SF8} é adotado
@@ -138,7 +138,7 @@ pacotes; o SF8, sob condições similares, cobre tipicamente até 3--4~km em cen
 urbanos e suburbanos. \citeonline{adam2022} confirmam experimentalmente o uso de
 SF9 e SF10 com sucesso em cenários urbanos com distâncias de até 2,5~km na cidade
 de Tapejara (RS), e demonstram que ajustes de antena resolvem eventuais problemas
-de cobertura em instalações com obstruções. Para o caso de uso proposto
+de cobertura em instalações com obstruções. Para o caso de uso proposto, que consiste no
 monitoramento com nós de borda posicionados a distâncias tipicamente inferiores a 2~km
 do \textit{gateway} central, o alcance do SF8 é amplamente suficiente. Em
 instalações onde o alcance seja crítico, a utilização de antenas direcionais ou o
@@ -163,7 +163,7 @@ proposto, conforme as Equações~\ref{eq:tsym} a \ref{eq:tpacote}:
   n_{\text{sym}}^{\text{Payload}} = 8 + \max\!\left(\left\lceil \frac{8 \cdot PL - 4 \cdot SF + 28 + 16}{4 \cdot SF} \right\rceil \cdot (CR + 4),\ 0\right)
 \end{equation}
  
-\noindent onde $PL = 115$~bytes (\gls{payload} total por pacote), $SF = 8$ e $CR = 1$
+\noindent em que $PL = 115$~bytes (\gls{payload} total por pacote), $SF = 8$ e $CR = 1$
 (para \textit{coding rate} 4/5), resultando em:
  
 \begin{equation}
@@ -189,7 +189,7 @@ regulatório e, portanto, não conforme.
 Para realizar a estimativa, utilizou-se uma imagem obtida diretamente da câmera
 \gls{esp32cam} na resolução mínima disponível no dispositivo ($160 \times 120$ pixels),
 em escala de cinza, com o parâmetro de qualidade configurado em 4 na escala do
-\gls{esp32cam} (escala invertida de 4 a 63, onde valores menores correspondem a menor
+\gls{esp32cam} (escala invertida de 4 a 63, em que valores menores correspondem a menor
 compressão e maior fidelidade de imagem). A imagem resultante, já no formato JPEG
 gerado pelo próprio sensor, apresentou tamanho de aproximadamente 3,10~KB
 (3.182~bytes). Descontando o \textit{overhead} do protocolo \gls{lorawan}, estimado em
@@ -261,7 +261,7 @@ O consumo em \textit{deep sleep}, por sua vez, equivale a $10 \times 10^{-6} \ti
 86{.}370 \approx 0{,}864$~As~$\approx 0{,}24$~mAh por dia. Combinando ambos, o
 consumo diário estimado do microcontrolador e do rádio é de aproximadamente $1{,}26$~mAh. 
 Isso permitiria, em tese, cerca de 2 anos de operação contínua com uma bateria de 1000~mAh, 
-sem considerar a auto-descarga. Na prática, o dimensionamento da bateria deve levar em conta
+sem considerar a autodescarga. Na prática, o dimensionamento da bateria deve levar em conta
 também o consumo da câmera e do pré-processamento local de imagem,
 porém a ordem de grandeza demonstra a adequação da abordagem para implantações
 de campo de longa duração.
@@ -282,7 +282,7 @@ individuais durante a transmissão, o que exigiria retransmissão.
 % extremamente conservadora e a viabilidade do mecanismo de retransmissão plenamente
 % confirmada \cite{adam2022}.
  
-No contexto regulatório brasileiro real (AU915), já satisfeita pelo SF8 com 348,7~m, a
+No contexto regulatório brasileiro real (AU915), cuja exigência já é satisfeita pelo SF8 com 348,7~ms, a
 transmissão de uma imagem completa requer apenas 13,3~s de rádio ativo, e o sistema
 poderia, em princípio, realizar mais de 270~transmissões completas por hora. 
 Portanto, há viabilidade de implementação com robustez do sistema em qualquer 
@@ -328,8 +328,8 @@ resultados obtidos.
     Conformidade AU915                                  & Sim (348,7~ms $<$ 400~ms)   \\
     Tempo no ar total (1 foto)                          & $\approx$13,3~s             \\
     % Orçamento diário - cenário EU868 (1\% DC)         & 864~s/dia                   \\
-    Consumo orçamento - 1 foto/dia                    & 13,3~s (1,5\%)              \\
-    Consumo orçamento - 2 fotos/dia                   & 26,5~s (3,1\%)              \\
+    Consumo do orçamento - 1 foto/dia                    & 13,3~s (1,5\%)              \\
+    Consumo do orçamento - 2 fotos/dia                   & 26,5~s (3,1\%)              \\
     Margem de orçamento - 2 fotos/dia                 & 837,5~s (96,9\%)            \\
     % Retransmissões suportadas por pacote (EU868)        & até 32$\times$              \\
     Tempo de calendário - transmissão completa        & $\approx$22~min             \\
@@ -351,7 +351,7 @@ redução de 2,5~dB no SNR mínimo necessário, suficientemente coberta pelas co
 de enlace típicas para o caso de uso proposto. O principal requisito de implementação
 decorrente desta análise é a adoção de um algoritmo de fragmentação e remontagem de
 pacotes na camada de aplicação, necessário para viabilizar a transmissão sequencial
-dos 38~pacotes que compõem a imagem e sua posterior reassemblagem no
+dos 38~pacotes que compõem a imagem e sua posterior remontagem no
 \textit{gateway}.
 
 \subsection{Reconhecimento Óptico de Caracteres Aplicado ao Hidrômetro}
