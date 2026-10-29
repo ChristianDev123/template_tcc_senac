@@ -3,7 +3,7 @@
 Segundo \citeonline{SilvaVilela2021}, Machine Learning pode ser 
 definida como um ramo da \gls{ia} responsável por capacitar computadores
 à simular aprendizado com base em processamento de dados. 
-Esta técnica está em ascensão atualmente, sendo amplamente aplicado em softwares que 
+Essa técnica está em ascensão atualmente, sendo amplamente aplicada em softwares que 
 tem por objetivo a identificação de padrões, como é o caso do \gls{ocr},
 detecção de phishing em e-mails, detecção de uso fraudulento de cartões de crédito, 
 entre outras aplicações.
@@ -36,8 +36,8 @@ dos algoritmos citados, \cite{SilvaVilela2021}.
 \subsubsection{Deep Learning}
 
 Deep Learning, ou aprendizado profundo, é uma técnica que se encontra 
-como em um subcampo do Machine Learning, onde seu desenvolvimento foi pautado 
-na simulação do processo de aprendizagem humano. 
+em um subcampo do Machine Learning, onde seu desenvolvimento foi pautado 
+na simulação do processo de aprendizagem humana. 
 No caso utilizando como base o algoritmo de redes neurais, 
 construindo estruturas conectadas, de forma à emular o comportamento do cérebro humano, 
 \cite{jesus2023inteligencia}.
@@ -58,25 +58,83 @@ no desenvolvimento de sistemas baseados em Deep Learning.
 
 \subsubsubsection{Redes Neurais Convolucionais}
 
-As \gls{cnn}, são amplamente aplicadas em processamento de dados não estruturados, 
+Atualmente as redes neurais convolucionais, são amplamente aplicadas em processamento de dados não estruturados, 
 como imagens, vídeos e áudios. Tal técnica tem como característica o 
 processamento de pequenos trechos de dados por vez, ao contrário 
 de outras técnicas que tentam realizar o processamento de forma atômica, 
 \cite{jesus2023inteligencia}.
 
 Como apresentado por \citeonline{Atika2022ImageSegmentation}, 
-o desenvolvimento de uma CNN será apoiada na implementação de uma arquitetura, 
-tal técnica abrange uma vasta quantidade de arquiteturas que foram 
+o desenvolvimento de uma \gls{cnn} inicia na definição da arquitetura em implementação. 
+Tal técnica abrange uma vasta quantidade de arquiteturas que foram 
 desenvolvidas para auxiliar e alcançar melhores resultados à 
-determinadas aplicações do software.
+determinados requisitos do software.
+
+\subsubsubsection{Camadas que Constituem uma CNN} 
+Uma \gls{cnn} é constituída por três principais camadas : camada de entrada de dados, 
+camada de saída, também denominada camada densa, 
+onde cada um de seus neurônios estão conectados à camada anterior, e diversas outras 
+camadas intermediárias, 
+denominada por alguns autores como camada oculta, \cite{ayeni2022convolutional}. 
+
+As camadas intermediárias de uma CNN, 
+apresentam comportamento de aprofundamento em reconhecimento de abstrações à cada camada sobreposta, 
+de tal forma que as camadas iniciais são responsáveis por identificar traços, 
+contornos, linhas, e etc, 
+quanto camadas finais possuem a responsabilidade de identificar objetos, 
+rostos e valores, por exemplo. 
+Tais camadas são desenvolvidas com a intercalação de camadas de convolução e pooling (agrupamento), 
+de forma que cada cada entrada de uma camada é a saída da camada anterior.
+
+\paragraph{Camada Convolucional}
+Como \citeonline{ayeni2022convolutional} explica, 
+a camada convolucional é a camada responsável por processar imagens de forma 
+à encontrar padrões ao aplicar um filtro (kernel/neurônio) à cada trecho 
+da imagem de entrada, denominado campo perceptivo. 
+O neurônio é responsável por aplicar operações de multiplicação sobre o campo perceptivo, 
+gerando um único valor à cada trecho de imagem processada, 
+e então posteriormente os valores calculados pelos neurônios são 
+armazenados em uma estrutura de três dimensões, \cite{ayeni2022convolutional}.
+
+A aplicação de escala de cinza sobre uma imagem antes de 
+submetê-la ao modelo de \gls{cnn}, justifica-se, dado que, 
+ao reduzir a complexidade de processamento de cores de uma imagem, 
+que comumente dispõem do padrão \gls{rgb}, de três canais de dados, 
+impacta-se diretamente sobre a percepção de profundidade do modelo, \cite{ayeni2022convolutional}. 
+
+\paragraph{Camada de Pooling}
+Segundo \citeonline{ayeni2022convolutional}, 
+a camada de pooling possui a responsabilidade de filtrar características predominantes 
+encontradas na camada de convolução. 
+Tal camada possui a importantíssima função de otimizar processamento, 
+descartando dados menos significantes 
+e mitigando o fenômeno de overfitting.
+As camadas de pooling possuem diversas derivações, que são 
+escolhidas e implementadas à fim de otimizar resultados alcançados pelo modelo, 
+mas a derivação mais aplicada sobre CNN 's é a Max Pooling.
+As camadas de Pooling, possuem por característica uma dimensão 
+menor em relação às camadas convolucionais, 
+normalmente representada por uma matriz dois por dois.
+
+\paragraph{Camada Totalmente Conectada}
+Como \citeonline{ayeni2022convolutional} explica, 
+a camada denominada Fully-Connected (Totalmente Conectada) possui a função de interpretar 
+abstrações mais complexas da imagem e classificá-las. 
+Essa camada possui todos os seus parâmetros conectados 
+com os parâmetros da camada anterior, 
+corriqueiramente resultando em um número de nós de saída 
+igual à quantidade de classes de classificação.
+
+\subsubsubsection{Arquitetura U-Net}
 Dado o objetivo da implementação de CNN neste trabalho, 
 destaca-se a arquitetura U-Net. 
 
 Como \citeonline{Atika2022ImageSegmentation} explica,
 a arquitetura U-Net tem por objetivo a definição de bordas dentro de imagens, 
 onde é amplamente utilizado na biomedicina com o foco de delimitar 
-estruturas presentes em imagens, tal característica justifica a aplicação 
-deste método com o objetivo de definir \gls{roi}. 
+estruturas presentes em imagens, tal característica é explorada à fim de definir 
+regiões de interesse dentro de uma imagem.
+
 A arquitetura U-Net é caracterizada pela presença de três etapas de 
 processamento: Contração, Gargalo e Expansão. 
 A camada de contração é composta por vários blocos, 
@@ -145,18 +203,68 @@ visuais e dependência contextual sequencial \cite{shi2017crnn}.
 \subsubsection{Arquitetura CRNN e CTC}
 \label{subsubsec:crnn_ctc}
 
-A arquitetura \gls{crnn} (\textit{Convolutional Recurrent Neural Network}) é amplamente utilizada em aplicações que exigem inferência de classes em sequência, pois combina um extrator convolucional (\gls{cnn}) para obter representações visuais, uma camada recorrente (\gls{rnn}) para modelar dependências contextuais ao longo do eixo horizontal e a função de perda \gls{ctc} para alinhar as previsões da rede à sequência de rótulos sem a necessidade de segmentação explícita dos caracteres \cite{shi2017crnn}.
+A arquitetura \gls{crnn} é amplamente utilizada em aplicações que exigem 
+inferência de classes em sequência, 
+pois combina um extrator convolucional (\gls{cnn}) 
+à fim de obter representações visuais, 
+uma camada recorrente (\gls{rnn}), com o objetivo de modelar dependências contextuais ao longo do eixo horizontal, 
+e a função de perda \gls{ctc}, com a finalidade de alinhar as previsões da rede à sequência de rótulos sem a necessidade de 
+segmentação explícita dos caracteres \cite{shi2017crnn}.
 
-A \gls{ctc} (\textit{Connectionist Temporal Classification}) resolve o problema central de sequências de comprimento variável: em geral, não se sabe \textit{onde} cada caractere começa e termina na imagem, e o número de \textit{frames} produzidos pela CNN é maior do que o número de caracteres da palavra ou número a ser reconhecido \cite{graves2006ctc}. Para lidar com isso, a CTC introduz dois mecanismos fundamentais: um \textit{token} oculto de espaçamento (\textit{blank}) e uma função de colapso que mapeia a sequência de previsões da rede para o rótulo final \cite{graves2006ctc, hannun2017ctc}.
+A \gls{ctc} resolve o problema central de sequências de comprimento variável: 
+em geral, não se sabe \textit{onde} cada caractere começa e termina na imagem, 
+e o número de \textit{frames} produzidos pela CNN é maior do que o número de caracteres 
+da palavra ou número a ser reconhecido \cite{graves2006ctc}. 
+Para lidar com isso, a técnica CTC introduz dois mecanismos fundamentais: 
+um \textit{token} oculto de espaçamento (\textit{blank}) e uma 
+função de colapso que mapeia a sequência de previsões da rede 
+para o rótulo final \cite{graves2006ctc, hannun2017ctc}.
 
 \subparagraph{O \textit{token} \textit{blank} e o colapso de repetições.}
-A cada passo de tempo, a rede produz uma distribuição de probabilidade sobre o alfabeto acrescido do símbolo especial \textit{blank} (\(\epsilon\)). O \textit{blank} representa a ausência de emissão de caractere naquele instante, funcionando como um separador entre caracteres idênticos adjacentes \cite{graves2006ctc}. Após a rede produzir a sequência completa de previsões, aplica-se uma função de colapso \(\mathcal{B}\) que (i) remove caracteres repetidos consecutivos e (ii) remove os \textit{blanks} \cite{hannun2017ctc}. Por exemplo, a sequência de caminho \(--h--e--l--l--o--\) colapsa para \(\text{``hello''}\); sem o \textit{blank}, as repetições de ``l'' seriam indistinguíveis de um único ``l'' \cite{hannun2017ctc}.
+A cada passo de tempo, 
+a rede produz uma distribuição de probabilidade sobre o alfabeto 
+acrescido do símbolo especial \textit{blank} (\(\epsilon\)). 
+O \textit{blank} representa a ausência de emissão de caractere naquele instante, 
+funcionando como um separador entre caracteres idênticos adjacentes 
+\cite{graves2006ctc}. 
+Após a rede produzir a sequência completa de previsões, 
+aplica-se uma função de colapso \(\mathcal{B}\) 
+que (i) remove caracteres repetidos consecutivos e 
+(ii) remove os \textit{blanks} \cite{hannun2017ctc}. 
+Por exemplo, a sequência de caminho \(--h--e--l--l--o--\) colapsa 
+para \(\text{``hello''}\); 
+sem o \textit{blank}, as repetições de ``l'' seriam indistinguíveis de 
+um único ``l'' \cite{hannun2017ctc}.
 
 \subparagraph{Marginalização de alinhamentos.}
-O treinamento da CTC não exige um alinhamento pré-definido entre os \textit{frames} e os caracteres. Em vez disso, a função de perda calcula a probabilidade da sequência de rótulos correta como a soma das probabilidades de \textbf{todos os caminhos de alinhamento válidos} que, após o colapso, produzem aquele rótulo \cite{graves2006ctc}. Essa marginalização é feita de forma eficiente pelo algoritmo \textit{forward-backward}, que explora a estrutura do problema para evitar a enumeração explícita de todos os caminhos, que seria computacionalmente inviável \cite{graves2006ctc, hannun2017ctc}. Assim, a rede pode ser treinada diretamente com pares (imagem, transcrição), sem anotações de posição caractere a caractere.
+O treinamento da CTC não exige um alinhamento pré-definido entre 
+os \textit{frames} e os caracteres. Em vez disso, 
+a função de perda calcula a probabilidade da sequência de rótulos correta como 
+a soma das probabilidades de todos os caminhos de alinhamento válidos que, após o colapso, 
+produzem aquele rótulo \cite{graves2006ctc}. 
+Essa marginalização é feita de forma eficiente pelo algoritmo \textit{forward-backward}, 
+que explora a estrutura do problema para evitar a 
+enumeração explícita de todos os caminhos, 
+que seria computacionalmente inviável \cite{graves2006ctc, hannun2017ctc}. 
+Assim, a rede pode ser treinada diretamente com pares (imagem, transcrição), 
+sem anotações de posição caractere a caractere.
 
 \subparagraph{Inferência.}
-No momento da inferência, a rede produz, para cada passo de tempo, a classe mais provável (ou uma distribuição sobre as classes). A sequência final é obtida pelo colapso das previsões, opcionalmente combinado com busca em feixe (\textit{beam search}) para explorar múltiplos alinhamentos e melhorar a acurácia \cite{hannun2017ctc}. O artigo de Hannun (2017) apresenta uma explicação visual detalhada desse processo, incluindo exemplos passo a passo de como o \textit{blank} e o colapso atuam em sequências reais \cite{hannun2017ctc}.
+No momento da inferência, a rede produz, para cada passo de tempo, 
+a classe mais provável (ou uma distribuição sobre as classes). 
+A sequência final é obtida pelo colapso das previsões, 
+opcionalmente combinado com busca em feixe (\textit{beam search}) 
+para explorar múltiplos alinhamentos e melhorar a acurácia \cite{hannun2017ctc}. 
+O artigo de Hannun (2017) apresenta uma explicação visual detalhada desse processo, 
+incluindo exemplos passo a passo de como o \textit{blank} e o 
+colapso atuam em sequências reais \cite{hannun2017ctc}.
 
 \subparagraph{Por que a CTC é adequada ao OCR.}
-Em OCR de palavras, números de medidores ou placas, o número de caracteres varia e não há garantia de que cada caractere ocupe exatamente um número fixo de \textit{frames} na saída da CNN. A CTC elimina a necessidade de segmentação manual e permite que a CRNN seja treinada de ponta a ponta com sequências de comprimentos diferentes, mantendo a coerência entre as previsões vizinhas e evitando o colapso de repetições idênticas \cite{shi2017crnn, graves2006ctc}.
+Em OCR de palavras, números de medidores ou placas, 
+o número de caracteres varia e não há garantia de que 
+cada caractere ocupe exatamente um número fixo de \textit{frames} 
+na saída da CNN. 
+A CTC elimina a necessidade de segmentação manual e permite que a 
+CRNN seja treinada de ponta a ponta com sequências de comprimentos diferentes, 
+mantendo a coerência entre as previsões vizinhas e evitando 
+o colapso de repetições idênticas \cite{shi2017crnn, graves2006ctc}.
