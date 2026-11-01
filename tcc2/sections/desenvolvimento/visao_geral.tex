@@ -92,7 +92,7 @@ O protótipo foi montado com componentes de baixo custo. A Tabela~\ref{tab:hardw
         \midrule
         \gls{esp32cam} (AI-Thinker) & Nó sensor. Microcontrolador ESP32 a 240~MHz com 4~MB de PSRAM e
         câmera integrada. Captura a imagem e, no fluxo em borda, executa os modelos de \gls{ocr}. \\
-        Radioenge RD49C & Módulo \gls{lorawan} ligado ao \gls{esp32cam} por UART
+        Radioenge RD49C & Módulo \gls{lorawan} homologado pela ANATEL, ligado ao \gls{esp32cam} por UART
         (GPIO~15 e GPIO~14) e controlado por comandos AT. Opera no plano AU915 com potência de até
         +20~dBm. \\
         Heltec/TTGO LoRa32 V2 & Receptor. Rádio LoRa configurado no mesmo canal e na mesma taxa do
@@ -160,7 +160,7 @@ Seção~\ref{sec:fundamentos} e devem ser consideradas na interpretação dos re
     \item \textbf{Receptor de canal único no lugar de um \textit{gateway}}: o receptor LoRa32
     escuta um único canal, fixo, e não implementa as funções de um \textit{gateway}
     \gls{lorawan} multicanal. Por isso, o transmissor também foi configurado para usar um
-    único canal, como detalhado adiante.
+    único canal (Seção~\ref{subsec:enlace}).
     \item \textbf{Ausência de servidor de rede}: não há servidor de rede nem servidor de
     aplicação dedicados. O dispositivo usa ativação \gls{abp}, com chaves de sessão
     configuradas previamente, e o próprio computador descriptografa o \textit{payload} com a

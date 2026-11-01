@@ -1,0 +1,270 @@
+\subsection{Enlace LoRaWAN}
+\label{subsec:enlace}
+
+Esta seção descreve a configuração do enlace de rádio, o formato das mensagens trocadas
+nos dois fluxos, o preparo e a fragmentação da imagem e o tratamento dos quadros
+recebidos pelo servidor. Os mesmos parâmetros de rádio foram usados nos dois fluxos.
+
+\subsubsection{Estudo preliminar e escolha da configuração de rádio}
+\label{subsubsec:estudo_preliminar_enlace}
+
+Na fase inicial do trabalho, a viabilidade do envio de imagens foi estimada
+analiticamente para o plano AU915 com canais de 125~kHz e \gls{sf}~8. Nessa configuração,
+o Ato n\textordmasculine~14.448 da ANATEL enquadra o \gls{lora} como sistema de salto em
+frequência, que deve usar no mínimo 35 canais e limitar o tempo médio de ocupação de cada
+canal a 0,4~s em um intervalo de 14~s \cite{anatel2017}. Para respeitar esse limite, cada
+pacote foi restrito a 115~bytes na camada física; com isso, uma imagem JPEG de 3.182~bytes
+exigiria 38 pacotes de 348,7~ms cada, totalizando cerca de 13,3~s de rádio ativo.
+
+Essa configuração foi abandonada na implementação por dois motivos. Primeiro, o salto
+entre pelo menos 35 canais é incompatível com o receptor disponível, que escuta um único
+canal (Seção~\ref{subsec:simplificacoes}). Segundo, o limite de 400~ms por transmissão
+restringe o tamanho do bloco de dados: um pacote com 181~bytes de \textit{payload},
+tamanho adotado adiante, ocuparia 543~ms de rádio com 125~kHz.
+
+Por isso, o enlace foi configurado para operar com largura de banda de 500~kHz, no
+\textit{data rate} DR6 do plano AU915, que corresponde a SF8 com 500~kHz
+(Tabela~\ref{tab:uplink_datarate}) e a um \textit{payload} máximo de 222~bytes
+\cite{radioenge2022}. Com essa largura de banda, o rádio se enquadra no item~10.3 do mesmo
+Ato, destinado a sistemas de modulação digital (Seção~\ref{subsec:restricoes_regulatorias}),
+cujos três requisitos são verificados a seguir: largura de faixa a 6~dB de, no mínimo,
+500~kHz; potência de pico máxima de 1~W; e densidade espectral de potência máxima de 8~dBm
+em qualquer faixa de 3~kHz.
+
+O módulo Radioenge RD49C transmite com potência máxima de +20~dBm (100~mW), sem comando AT
+que permita ajustá-la \cite{radioenge2022}, abaixo do limite de 1~W. Supondo que essa potência se distribua de forma plana pelos 500~kHz, a densidade
+espectral fica em torno de
+$20 - 10\log_{10}(500/3) \approx -2{,}2$~dBm em 3~kHz, abaixo do limite de 8~dBm. Por ser
+enquadrado no item~10.3, o sistema dispensa o salto de frequência e o limite de ocupação
+por canal exigidos para os canais de 125~kHz, o que permite usar um canal fixo. O módulo é
+homologado pela ANATEL (certificado n\textordmasculine~02021-18-07215), mas duas ressalvas
+se aplicam: a largura de faixa a 6~dB do sinal \gls{lora} com 500~kHz nominais não consta
+do manual e deve ser confirmada nos ensaios de homologação, e antenas com ganho superior a
+6~dBi exigiriam a redução da potência (item 10.5).
+
+O canal escolhido foi o de 915,9~MHz, o primeiro canal de 500~kHz do plano AU915: canal
+64 na numeração da especificação \cite{lora_alliance_rp002_105}, que começa em zero, e
+canal 65 na numeração do manual do módulo, que começa em um. No módulo, ele foi
+selecionado pela máscara de canais (\texttt{AT+CHMASK}), e o \textit{data rate} foi fixado
+em DR6 com o ajuste adaptativo de taxa (ADR) desativado, pois o comando \texttt{AT+DR} só
+tem efeito com o ADR desligado \cite{radioenge2022}. A Tabela~\ref{tab:parametros_enlace} reúne os parâmetros
+usados por todos os componentes do enlace.
+
+\begin{table}[H]
+    \centering
+    \caption{Parâmetros do enlace LoRaWAN}
+    \label{tab:parametros_enlace}
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+        \toprule
+        \textbf{Parâmetro} & \textbf{Valor} \\
+        \midrule
+        Plano de canais & AU915 \\
+        Canal & Fixo, 915,9~MHz (canal 64), sem salto de frequência \\
+        \textit{Data rate} & DR6: \gls{sf}~8, \gls{bw} de 500~kHz, ADR desativado \\
+        Camada física & \gls{cr} 4/5, preâmbulo de 8 símbolos, CRC ativado, cabeçalho
+        explícito, palavra de sincronismo \texttt{0x34} \\
+        Potência de transmissão & +20~dBm (fixa no módulo) \\
+        Ativação & \gls{abp} \\
+        \textit{Payload} máximo em DR6 & 222~bytes \\
+        Portas de aplicação & FPort~1 (blocos de imagem) e FPort~2 (leitura do \gls{ocr}) \\
+        Bloco de imagem & 175~bytes de dados + 6~bytes de cabeçalho = 181~bytes \\
+        Intervalo entre pacotes & 7~s \\
+        \bottomrule
+    \end{tabularx}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{table}
+
+\subsubsection{Formato das mensagens}
+\label{subsubsec:formato_mensagens}
+
+Cada mensagem \gls{lorawan} acrescenta 13~bytes ao conteúdo da aplicação: o cabeçalho MAC
+(1~byte), o endereço do dispositivo (4~bytes), o campo de controle (1~byte), o contador de
+quadros FCnt (2~bytes), a porta de aplicação FPort (1~byte) e o código de integridade MIC
+(4~bytes). O conteúdo da aplicação (FRMPayload) é criptografado com a chave de sessão de
+aplicação (AppSKey). Os dois fluxos usam portas diferentes, o que permite ao servidor
+distinguir as mensagens sem nenhum outro campo. A Tabela~\ref{tab:formato_payload}
+apresenta o formato do conteúdo de cada porta.
+
+\begin{table}[H]
+    \centering
+    \caption{Formato do \textit{payload} de aplicação em cada fluxo}
+    \label{tab:formato_payload}
+    \begin{tabularx}{\textwidth}{@{}llX@{}}
+        \toprule
+        \textbf{Campo} & \textbf{Tamanho} & \textbf{Conteúdo} \\
+        \midrule
+        \multicolumn{3}{@{}l}{\textit{FPort 1 --- bloco de imagem (fluxo em nuvem)}} \\
+        Identificador da leitura & 2 bytes & Número aleatório sorteado a cada captura \\
+        Índice do bloco & 2 bytes & Posição do bloco na imagem, a partir de 0 \\
+        Total de blocos & 2 bytes & Número de blocos da imagem \\
+        Dados & até 175 bytes & Trecho do arquivo JPEG \\
+        \midrule
+        \multicolumn{3}{@{}l}{\textit{FPort 2 --- leitura (fluxo em borda)}} \\
+        Identificador da leitura & 2 bytes & Número aleatório sorteado a cada leitura \\
+        Indicadores & 1 byte & Bit 7: janela dos dígitos encontrada; bits 0 a 6: número
+        $N$ de dígitos \\
+        Dígitos & $N$ bytes & Um caractere ASCII por rolete: \texttt{0} a \texttt{9};
+        \texttt{?} para dígito não classificado; \texttt{-} quando a janela não foi
+        encontrada \\
+        \bottomrule
+    \end{tabularx}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{table}
+
+Os campos numéricos são gravados em \textit{big-endian}. O identificador da leitura
+impede que blocos de capturas diferentes sejam misturados na remontagem, e o par
+índice--total permite ao servidor saber quais blocos faltam. No fluxo em borda, com o
+medidor de seis roletes usado nos testes, a mensagem tem $3 + 6 = 9$~bytes e é enviada
+em um único \textit{uplink}.
+
+\subsubsection{Preparo da imagem e fragmentação}
+\label{subsubsec:preparo_imagem}
+
+No fluxo em nuvem, a câmera é configurada na resolução QQVGA ($160 \times 120$ pixels) em
+tons de cinza, de modo que cada quadro bruto ocupa 19.200~bytes (um byte por pixel). Esse
+quadro é comprimido em JPEG pelo próprio \gls{esp32cam}, por software, com qualidade 90
+em uma escala de 1 a 100.
+
+A escolha do formato foi apoiada por uma prova de conceito em C++ com a biblioteca
+OpenCV, que mediu o tamanho de três imagens de hidrômetro em $160 \times 120$ pixels
+após a compressão JPEG em diferentes qualidades, em três versões: colorida, em tons de
+cinza e binarizada pelo método de Otsu. A Tabela~\ref{tab:poc_compressao} mostra as
+médias obtidas para algumas qualidades.
+
+\begin{table}[H]
+    \centering
+    \caption{Tamanho médio do JPEG de três imagens de $160 \times 120$ pixels}
+    \label{tab:poc_compressao}
+    \begin{tabular}{@{}cccc@{}}
+        \toprule
+        \textbf{Qualidade JPEG} & \textbf{Colorida (bytes)} & \textbf{Tons de cinza (bytes)}
+        & \textbf{Binarizada (bytes)} \\
+        \midrule
+        30 & 2.028 & 1.626 & 2.773 \\
+        50 & 2.338 & 1.949 & 3.433 \\
+        80 & 2.910 & 2.518 & 4.725 \\
+        90 & 3.466 & 3.073 & 5.895 \\
+        \bottomrule
+    \end{tabular}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{table}
+
+A conversão para tons de cinza reduziu o arquivo em relação à imagem colorida, enquanto a
+binarização o aumentou em quase o dobro, pois as bordas abruptas entre preto e branco são
+pouco compressíveis pelo JPEG. Por isso, a imagem é transmitida em tons de cinza, sem
+binarização. A qualidade 90 foi mantida para que a compressão não prejudicasse o
+reconhecimento dos dígitos no servidor. Nas 60 leituras das duas corridas de medição do fluxo em nuvem, o JPEG variou de 3.323
+a 4.568~bytes (mediana de 4.323~bytes), pois o tamanho depende da cena e da iluminação.
+Para o dimensionamento, adotou-se como referência uma imagem de 4.300~bytes, valor
+definido a partir das primeiras capturas, antes das corridas de medição, e próximo da
+mediana observada depois.
+
+O arquivo JPEG é dividido em blocos de 175~bytes, que recebem o cabeçalho de 6~bytes da
+Tabela~\ref{tab:formato_payload}, totalizando 181~bytes de \textit{payload}, abaixo do
+máximo de 222~bytes permitido em DR6. Uma versão anterior usava blocos de 100~bytes;
+o aumento para 175~bytes reduziu o número de pacotes por imagem a pouco mais da metade,
+mantendo uma folga de 41~bytes em relação ao máximo.
+
+Os blocos são enviados ao módulo de rádio, um a um, pelo comando \texttt{AT+SENDB} na
+porta~1, com intervalo de 7~s entre eles. O item~10.3 não impõe intervalo mínimo entre
+transmissões em um canal fixo de 500~kHz; o valor de 7~s é conservador e foi mantido para
+não sobrecarregar o módulo. Se o módulo não confirmar a transmissão em até 2~s, o bloco é
+reenviado, até cinco tentativas.
+
+\subsubsection{Tempo no ar}
+\label{subsubsec:tempo_no_ar}
+
+O tempo no ar de cada pacote foi calculado pela fórmula da Semtech para o modem \gls{lora}
+\cite{semtech2013an1200_13}. A duração de um símbolo é dada pela
+Equação~\ref{eq:tsym_enlace}:
+
+\begin{equation}
+    \label{eq:tsym_enlace}
+    T_{\text{sym}} = \frac{2^{SF}}{BW} = \frac{2^{8}}{500\,000~\text{Hz}} = 0{,}512~\text{ms}
+\end{equation}
+
+O número de símbolos do \textit{payload} é dado pela Equação~\ref{eq:nsym_enlace}:
+
+\begin{equation}
+    \label{eq:nsym_enlace}
+    n_{\text{payload}} = 8 + \max\left(\left\lceil
+    \frac{8 \cdot PL - 4 \cdot SF + 28 + 16 \cdot CRC - 20 \cdot H}{4 \cdot (SF - 2 \cdot DE)}
+    \right\rceil \cdot (CR + 4),\ 0\right)
+\end{equation}
+
+\noindent em que $PL$ é o tamanho do pacote na camada física, em bytes; $CRC = 1$ indica
+CRC ativado; $H = 0$ indica cabeçalho explícito; $DE = 0$ indica a otimização para baixas
+taxas desativada; e $CR = 1$ corresponde ao código 4/5. O tempo no ar do pacote é dado pela
+Equação~\ref{eq:tpacote_enlace}, com preâmbulo de $n_{\text{pre}} = 8$ símbolos:
+
+\begin{equation}
+    \label{eq:tpacote_enlace}
+    T_{\text{pacote}} = (n_{\text{pre}} + 4{,}25 + n_{\text{payload}}) \cdot T_{\text{sym}}
+\end{equation}
+
+Para um bloco de imagem completo, $PL = 13 + 181 = 194$~bytes, o que resulta em
+$n_{\text{payload}} = 8 + \lceil 1564/32 \rceil \cdot 5 = 253$ símbolos e
+$T_{\text{pacote}} = (8 + 4{,}25 + 253) \cdot 0{,}512 \approx 135{,}8$~ms. Para a
+mensagem de leitura do fluxo em borda, $PL = 13 + 9 = 22$~bytes, o que resulta em
+$T_{\text{pacote}} \approx 25{,}7$~ms. A Tabela~\ref{tab:tempo_no_ar} apresenta o número
+de pacotes e os tempos para os tamanhos mínimo, mediano e máximo de JPEG medidos e para a
+mensagem do fluxo em borda.
+
+\begin{table}[H]
+    \centering
+    \caption{Pacotes, tempo de rádio e tempo total de envio por leitura}
+    \label{tab:tempo_no_ar}
+    \begin{tabular}{@{}lcccc@{}}
+        \toprule
+        \textbf{Conteúdo} & \textbf{Tamanho (bytes)} & \textbf{Pacotes} &
+        \textbf{Rádio (s)} & \textbf{Envio total (s)} \\
+        \midrule
+        JPEG, menor medido & 3.323 & 19 & 2,58 & 126 \\
+        JPEG, mediana medida & 4.323 & 25 & 3,36 & 168 \\
+        JPEG, maior medido & 4.568 & 27 & 3,57 & 182 \\
+        Leitura do fluxo em borda & 9 & 1 & 0,03 & 0,03 \\
+        \bottomrule
+    \end{tabular}
+    \legend{Fonte: Elaborado pelos autores (2026). O envio total soma o tempo no ar ao
+    intervalo de 7~s entre pacotes.}
+\end{table}
+
+Os valores mostram que, no fluxo em nuvem, o tempo de rádio é pequeno diante do tempo
+total de envio, que é dominado pelos intervalos de 7~s entre os pacotes. O volume
+transmitido por leitura também difere em mais de duas ordens de grandeza entre os
+fluxos: cerca de 4~KB de imagem contra 9~bytes de leitura. Essa diferença é a base das
+hipóteses H2 e H3.
+
+\subsubsection{Recepção, descriptografia e remontagem}
+\label{subsubsec:recepcao}
+
+O receptor LoRa32 foi configurado com os mesmos parâmetros de camada física do
+transmissor (Tabela~\ref{tab:parametros_enlace}). Para cada quadro recebido com CRC
+válido, ele escreve na porta serial uma linha com o conteúdo do quadro em hexadecimal e o
+RSSI medido. Como não há servidor de rede, o processamento \gls{lorawan} é feito no
+computador pelo \textit{script} \texttt{reconstrutor.py}, em quatro etapas:
+
+\begin{enumerate}
+    \item \textbf{Separação dos campos}: o quadro é dividido em endereço do dispositivo,
+    contador FCnt, porta e conteúdo; quadros de outros endereços são descartados.
+    \item \textbf{Descriptografia}: o conteúdo é descriptografado com a AppSKey, usando o
+    AES-128 em modo contador definido pela especificação \gls{lorawan}, que combina o
+    endereço do dispositivo e o FCnt na geração do fluxo de chaves. O MIC não é verificado,
+    pois o computador não dispõe da chave de rede.
+    \item \textbf{Tratamento por porta}: na porta~2, a leitura é decodificada e validada
+    (tamanho coerente com o número de dígitos e apenas caracteres permitidos). Na porta~1,
+    os blocos são agrupados pelo identificador da leitura, e blocos repetidos são
+    ignorados.
+    \item \textbf{Remontagem e registro}: quando todos os blocos de uma leitura chegam, o
+    arquivo JPEG é gravado e pode seguir para o \gls{ocr}. Se algum bloco faltar, a imagem
+    é gravada como parcial, com zeros no lugar dos dados ausentes. Cada leitura é
+    registrada em um arquivo CSV com os blocos recebidos, o RSSI e os tempos usados nas
+    medições.
+\end{enumerate}
+
+No modo autônomo, usado nas medições, nenhum dos dois firmwares retransmite mensagens
+perdidas: o nó envia a leitura ou a imagem uma única vez e volta a dormir. O firmware do
+fluxo em nuvem aceita um comando de reenvio de blocos específicos, mas ele só foi usado em
+testes manuais. Assim, no fluxo em nuvem, a perda de um único bloco inutiliza a imagem
+inteira, e, no fluxo em borda, a perda do único pacote inutiliza a leitura. Esse
+comportamento é considerado na análise da taxa de entrega.

@@ -1,3 +1,4 @@
+\label{subsec:restricoes_regulatorias}
 Ao redor do mundo, protocolos de transmissão que utilizam 
 ondas de rádio como meio de propagação de sinal
 têm seu funcionamento regulado por órgãos competentes 
@@ -45,12 +46,24 @@ de canal inferior a 250 kHz, caso do LoRa com 125 kHz, o tempo médio
 de ocupação de qualquer radiofrequência não deve ser superior a 0,4 segundos 
 em um intervalo de 14 segundos, com uso mínimo de 35 canais de salto. 
 
-O AU915 utiliza 64 canais de uplink e 8 
+O mesmo Ato prevê, no item 10.3, um segundo enquadramento para equipamentos 
+que operam nessas faixas: o de sistemas que empregam modulação digital. 
+Nesse caso, não há exigência de salto em frequência nem limite de ocupação 
+por canal, mas o equipamento deve atender a três requisitos: largura de faixa 
+a 6 dB de, no mínimo, 500 kHz; potência de pico máxima de 1 W na saída do 
+transmissor; e densidade espectral de potência de, no máximo, 8 dBm em qualquer 
+faixa de 3 kHz. Antenas com ganho superior a 6 dBi exigem a redução da 
+potência de transmissão (item 10.5) \cite{anatel2017}. Como os canais de 125 kHz 
+não atingem a largura de faixa mínima, o enquadramento no item 10.3 só é possível 
+com os canais de 500 kHz do \gls{lora}, o que permite a operação em um canal fixo.
+
+O AU915 utiliza 72 canais de uplink, sendo 64 de 125 kHz e 8 de 500 kHz, e 8 
 canais de downlink que se distribuem entre os espectros de frequência
 delimitados pela restrição regulatória. No caso de uplink, 
 como mostrado pela tabela~\ref{tab:uplink_freq_channel}, 
-os canais são numerados entre 0 e 63 e distribuídos com espaçamentos de 200 kHz,
-iniciando em 915,2 MHz até 927,8 MHz. Já no caso de downlink, 
+os canais de 125 kHz são numerados entre 0 e 63 e distribuídos com espaçamentos de 200 kHz,
+iniciando em 915,2 MHz até 927,8 MHz, enquanto os de 500 kHz são numerados entre 64 e 71 
+e distribuídos com espaçamentos de 1,6 MHz, de 915,9 MHz até 927,1 MHz. Já no caso de downlink, 
 como mostrado na tabela~\ref{tab:downlink_freq_channel}, os canais são numerados de 
 0 a 7 e distribuídos entre 923,3 e 927,5 MHz com espaçamentos de 500 kHz 
 \cite{lora_alliance_rp002_105}. 
