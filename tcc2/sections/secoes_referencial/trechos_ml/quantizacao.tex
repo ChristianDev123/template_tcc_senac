@@ -1,0 +1,16 @@
+Quantização é um método de simplificação dos parâmetros de um modelo de \gls{rna}. 
+Como \citeonline{ferreira2022compressao} explica, a aplicação de tal técnica 
+traz como benefício a redução do tamanho de modelos, 
+viabilizando a utilização em equipamentos de baixo poder computacional, 
+além do aumento de velocidade de inferência e simplificação de cálculos realizados pelo processador, 
+frente a um modelo que, na maioria dos casos, possui seus parâmetros representados em pontos 
+flutuantes de 32 bits. 
+
+A técnica \gls{qat}, com foco em transformação de parâmetros para inteiros de 8 bits,
+simula a perda de precisão da conversão de FP32 para INT8 durante o treinamento, 
+permitindo que os pesos da rede se adaptem e mitiguem a degradação de acurácia.
+Em sistemas de OCR para medidores, 
+modelos quantizados alcançam tamanhos da ordem de centenas de kB e 
+inferência em subsegundo em hardware embarcado 
+\cite{ademola2023resource, jawas2018water}.
+

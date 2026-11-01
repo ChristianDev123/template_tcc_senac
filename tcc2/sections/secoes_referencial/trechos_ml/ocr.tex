@@ -1,0 +1,31 @@
+O \gls{ocr} é um subcampo da Visão Computacional e da Inteligência Artificial 
+dedicado à conversão de imagens contendo texto (impresso, manuscrito ou gravado) 
+em dados legíveis por máquina \cite{chen2021survey}. 
+Originalmente voltado à digitalização de documentos, 
+o escopo foi ampliado pelo \textit{Deep Learning} 
+para aplicações industriais e de IoT \cite{jawas2018water}.
+
+\subsubsubsection{Pipeline Tradicional}
+Um sistema clássico de OCR opera em etapas interdependentes \cite{chen2021survey}:
+\begin{enumerate}
+    \item \textbf{Aquisição e pré-processamento}: melhoria de contraste, correção de inclinação (\textit{deskewing}), remoção de ruído e binarização; em dispositivos embarcados, etapas de segmentação semântica podem isolar a Região de Interesse (ROI) antes do reconhecimento.
+    \item \textbf{Localização e segmentação de texto}: identificação das regiões de texto.
+    \item \textbf{Reconhecimento de caracteres}: classificação dos segmentos ou da sequência completa.
+    \item \textbf{Pós-processamento}: dicionários, correção ortográfica ou verificação sintática para mitigar erros residuais.
+\end{enumerate}
+
+\subsubsubsection{Evolução Tecnológica: dos Métodos Heurísticos ao Deep Learning}
+A literatura descreve três gerações principais \cite{chen2021survey}:
+
+\subparagraph{Primeira geração (Template Matching).}
+Sobreposição pixel a pixel com gabaritos estáticos; 
+alta vulnerabilidade a variações de escala, rotação e fontes.
+
+\subparagraph{Segunda geração (Características manuais + classificadores clássicos).}
+Uso de descritores como HOG e SIFT, 
+combinados com SVM ou MLP; dependência de \textit{feature engineering}.
+
+\subparagraph{Terceira geração (End-to-End Deep Learning).}
+Elimina a segmentação explícita de caracteres; 
+modelos \textit{end-to-end} aprendem simultaneamente representações 
+visuais e dependência contextual sequencial \cite{shi2017crnn}.

@@ -7,7 +7,7 @@ Tradicionalmente usam-se LSTMs/GRUs bidirecionais;
 em \textit{Edge AI}, porém, LSTMs impõem gargalos de memória e restrições 
 em \textit{runtimes} C++, sendo por vezes substituídas por convoluções 
 temporais 1D de núcleos largos que emulam o campo receptivo contextual 
-sem o custo da recorrência \cite{shi2017crnn}.
+sem o custo da recorrência \cite{shi2017crnn}.  
 
 
 \subsection{Edge OCR, Quantização e TinyML}
@@ -15,9 +15,3 @@ A transição de modelos de OCR de servidores em nuvem para microcontroladores c
 SRAM restrita impõe o paradigma do TinyML e da Computação de Borda \cite{ademola2023resource}.
 
 \paragraph{Quantization-Aware Training (QAT).}
-O QAT simula a perda de precisão da conversão de FP32 para INT8 durante o treinamento, 
-permitindo que os pesos da rede se adaptem e mitiguem a degradação de acurácia. 
-Em sistemas de OCR para medidores, 
-modelos quantizados alcançam tamanhos da ordem de centenas de kB e 
-inferência subsegundo em hardware embarcado 
-\cite{ademola2023resource, jawas2018water}.
