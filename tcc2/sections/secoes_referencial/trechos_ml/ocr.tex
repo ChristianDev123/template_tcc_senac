@@ -14,6 +14,9 @@ Um sistema clássico de OCR opera em etapas interdependentes \cite{chen2021surve
     \item \textbf{Pós-processamento}: dicionários, correção ortográfica ou verificação sintática para mitigar erros residuais.
 \end{enumerate}
 
+Em OCR, a leitura de uma palavra ou sequência numérica se beneficia do contexto em ambas as direções: o caractere atual é mais bem interpretado quando se conhece tanto o que veio antes quanto o que veio depois. 
+Por isso, a CRNN emprega tipicamente camadas \textbf{bidirecionais} de LSTM (BiLSTM), que processam a sequência da esquerda para a direita e da direita para a esquerda e concatenam as representações resultantes \cite{shi2017crnn, hannun2017ctc}.
+
 \subsubsubsection{Evolução Tecnológica: dos Métodos Heurísticos ao Deep Learning}
 A literatura descreve três gerações principais \cite{chen2021survey}:
 
