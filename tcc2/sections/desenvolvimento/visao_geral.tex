@@ -1,0 +1,173 @@
+\subsection{Visão geral da solução}
+\label{subsec:visao_geral}
+
+O sistema desenvolvido realiza a leitura automática de hidrômetros analógicos do tipo
+ciclométrico, cujo mostrador é formado por roletes numerados, por meio de um nó sensor
+baseado no \gls{esp32cam}. O nó fotografa o mostrador do medidor e envia o resultado,
+via \gls{lorawan}, até uma estação receptora conectada a um computador, que faz o papel
+de servidor da aplicação.
+
+Para responder à pergunta de pesquisa, o mesmo nó foi implementado em dois fluxos de
+processamento, que diferem no local em que o \gls{ocr} é executado e, por consequência,
+no conteúdo que trafega pelo enlace:
+
+\begin{itemize}
+    \item \textbf{Fluxo em nuvem} (\gls{cloud_computing}): o nó captura a imagem, comprime-a
+    no formato JPEG e a transmite fragmentada em blocos. O servidor remonta a imagem e
+    executa o reconhecimento dos dígitos.
+    \item \textbf{Fluxo em borda} (\gls{edge_computing}): o nó captura a imagem, executa
+    localmente os modelos de reconhecimento e transmite apenas a leitura resultante, em um
+    único pacote de 9 bytes.
+\end{itemize}
+
+Uma decisão central da implementação é que os dois fluxos utilizam os mesmos modelos de
+redes neurais, quantizados em inteiros de 8 bits (INT8), e a mesma lógica de leitura.
+Assim, as diferenças de latência, entrega de pacotes e consumo energético observadas entre
+eles decorrem apenas do local de processamento e do volume de dados transmitido, e não de
+modelos com capacidades distintas. O efeito da quantização sobre a acurácia, objeto da
+hipótese H1, é avaliado à parte, pela comparação entre as versões em ponto flutuante de
+32 bits e em INT8 do mesmo modelo.
+
+A Figura~\ref{fig:arquitetura_geral} apresenta a arquitetura do sistema e o caminho
+percorrido pelos dados em cada fluxo.
+
+\begin{figure}[H]
+    \centering
+    \caption{Arquitetura do sistema e os dois fluxos de processamento}
+    \label{fig:arquitetura_geral}
+    \begin{tikzpicture}[
+        font=\footnotesize,
+        node distance=6mm and 6mm,
+        bloco/.style={draw, rounded corners=2pt, align=center, fill=white,
+                      minimum height=9mm, text width=#1},
+        bloco/.default=6.2cm,
+        seta/.style={-{Stealth[length=2mm]}, thick},
+        rotulo/.style={font=\scriptsize\itshape, align=center}
+    ]
+        \node[bloco] (hidro) {Hidrômetro analógico (mostrador de roletes)};
+        \node[bloco, below=of hidro] (cam)
+            {\textbf{\gls{esp32cam}}\\captura de quadro 160$\times$120 em tons de cinza};
+        \node[bloco=5.4cm, below left=9mm and -2.2cm of cam] (borda)
+            {\textbf{Fluxo em borda}\\segmentação e classificação de dígitos no
+             próprio nó (TFLite Micro, INT8)\\$\rightarrow$ leitura de 9 bytes, FPort 2};
+        \node[bloco=5.4cm, below right=9mm and -2.2cm of cam] (nuvem)
+            {\textbf{Fluxo em nuvem}\\compressão JPEG (qualidade 90, $\approx$4~KB)\\
+             $\rightarrow$ blocos de 175 bytes + 6 bytes de cabeçalho, FPort 1};
+        \node[bloco] (radio) at ($(borda.south)!0.5!(nuvem.south)+(0,-15mm)$)
+            {\textbf{Radioenge RD49C}\\módulo \gls{lorawan} comandado por UART (comandos AT)};
+        \node[draw, dashed, rounded corners=4pt, inner sep=3mm,
+              fit=(cam) (borda) (nuvem) (radio),
+              label={[font=\scriptsize\bfseries, anchor=north west]north west:Nó sensor}] (no) {};
+        \node[bloco, below=13mm of radio] (rx)
+            {\textbf{Receptor LoRa32}\\escuta o canal de 915,9~MHz e repassa os quadros recebidos};
+        \node[bloco, below=of rx] (pc)
+            {\textbf{Computador (servidor)}\\descriptografa o \textit{payload}; lê a leitura
+             (FPort 2) ou remonta o JPEG e executa o \gls{ocr} (FPort 1); registra as medições};
+
+        \draw[seta] (hidro) -- (cam);
+        \draw[seta] (cam.south) -- ++(0,-3mm) -| (borda.north);
+        \draw[seta] (cam.south) -- ++(0,-3mm) -| (nuvem.north);
+        \draw[thick] (borda.south) |- ([yshift=5mm]radio.north);
+        \draw[thick] (nuvem.south) |- ([yshift=5mm]radio.north);
+        \draw[seta] ([yshift=5mm]radio.north) -- (radio.north);
+        \draw[seta] (radio) -- node[rotulo, right=1mm]
+            {\gls{lorawan}, AU915, DR6 (SF8 / 500~kHz), ativação \gls{abp}} (rx);
+        \draw[seta] (rx) -- node[rotulo, right=1mm] {USB-serial} (pc);
+    \end{tikzpicture}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{figure}
+
+\subsection{Componentes de hardware}
+\label{subsec:hardware}
+
+O protótipo foi montado com componentes de baixo custo. A Tabela~\ref{tab:hardware} resume a função de cada um.
+
+\begin{table}[H]
+    \centering
+    \caption{Componentes de hardware do protótipo}
+    \label{tab:hardware}
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+        \toprule
+        \textbf{Componente} & \textbf{Função no sistema} \\
+        \midrule
+        \gls{esp32cam} (AI-Thinker) & Nó sensor. Microcontrolador ESP32 a 240~MHz com 4~MB de PSRAM e
+        câmera integrada. Captura a imagem e, no fluxo em borda, executa os modelos de \gls{ocr}. \\
+        Radioenge RD49C & Módulo \gls{lorawan} ligado ao \gls{esp32cam} por UART
+        (GPIO~15 e GPIO~14) e controlado por comandos AT. Opera no plano AU915 com potência de até
+        +20~dBm. \\
+        Heltec/TTGO LoRa32 V2 & Receptor. Rádio LoRa configurado no mesmo canal e na mesma taxa do
+        transmissor; repassa cada quadro recebido ao computador pela porta serial, junto com o
+        RSSI. \\
+        Computador & Servidor da aplicação. Descriptografa os quadros, remonta as imagens,
+        executa o \gls{ocr} do fluxo em nuvem e registra as medições. Também foi usado no
+        treinamento dos modelos. \\
+        INA219 e Arduino Uno & Instrumentação. Sensor de corrente com resistor \textit{shunt} de
+        0,1~$\Omega$, lido por um Arduino Uno a 100 amostras por segundo, usado para medir o
+        consumo do nó sensor. \\
+        \bottomrule
+    \end{tabularx}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{table}
+
+\subsection{Componentes de software}
+\label{subsec:software}
+
+O código do projeto está reunido em um único repositório\footnote{Disponível em
+\url{https://github.com/Marcelo-122/Codigo-do-TCC2}.} e se divide em firmwares para os
+microcontroladores, escritos em C++ com o \textit{core} Arduino-ESP32 3.0.7, e
+\textit{scripts} em Python executados no computador. A Tabela~\ref{tab:software} relaciona
+os principais componentes.
+
+\begin{table}[H]
+    \centering
+    \caption{Principais componentes de software}
+    \label{tab:software}
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+        \toprule
+        \textbf{Componente} & \textbf{Responsabilidade} \\
+        \midrule
+        \texttt{transmissor\_esp32cam} & Firmware do nó no fluxo em nuvem: captura, compressão JPEG,
+        fragmentação e envio dos blocos pela porta 1 (FPort 1). \\
+        \texttt{transmissor\_ocr\_esp32cam} & Firmware do nó no fluxo em borda: captura, inferência dos
+        modelos com TensorFlow Lite Micro e envio da leitura pela porta 2 (FPort 2). \\
+        \texttt{receptor\_lora32} & Firmware do receptor: escuta o canal e escreve na serial cada
+        quadro recebido. \\
+        \texttt{reconstrutor.py}, \texttt{enlace.py} & Lado do servidor: leitura da serial,
+        descriptografia, remontagem da imagem ou decodificação da leitura e registro das medições. \\
+        \texttt{ocr/pipeline\_nuvem.py} & \gls{ocr} do fluxo em nuvem, com os mesmos modelos e a
+        mesma lógica do firmware de borda. \\
+        \texttt{ModeloEDataset/} & Preparação dos conjuntos de dados, treinamento, quantização e
+        exportação dos modelos para o firmware. \\
+        \texttt{medicoes/} & \textit{Scripts} de medição de corrente e de latência e os dados
+        brutos coletados. \\
+        \bottomrule
+    \end{tabularx}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{table}
+
+Nos dois fluxos, os firmwares do nó compartilham o mesmo rádio, a mesma configuração de
+enlace, o mesmo ciclo de \textit{deep sleep} e o mesmo formato de registro de tempos, de
+modo que as medições de consumo e de latência sejam obtidas pelos mesmos \textit{scripts}
+e possam ser comparadas diretamente.
+
+\subsection{Simplificações em relação a uma implantação real}
+\label{subsec:simplificacoes}
+
+Algumas escolhas do protótipo simplificam a infraestrutura descrita na
+Seção~\ref{sec:fundamentos} e devem ser consideradas na interpretação dos resultados:
+
+\begin{itemize}
+    \item \textbf{Receptor de canal único no lugar de um \textit{gateway}}: o receptor LoRa32
+    escuta um único canal, fixo, e não implementa as funções de um \textit{gateway}
+    \gls{lorawan} multicanal. Por isso, o transmissor também foi configurado para usar um
+    único canal, como detalhado adiante.
+    \item \textbf{Ausência de servidor de rede}: não há servidor de rede nem servidor de
+    aplicação dedicados. O dispositivo usa ativação \gls{abp}, com chaves de sessão
+    configuradas previamente, e o próprio computador descriptografa o \textit{payload} com a
+    chave de aplicação (AppSKey). O código de integridade da mensagem (MIC) não é verificado,
+    pois exigiria a chave de rede. Um protótipo inicial, que injetava os pacotes em um
+    servidor ChirpStack sem uso de rádio, foi descartado.
+    \item \textbf{Ambiente de bancada}: as medições de enlace foram feitas com transmissor e
+    receptor a poucos metros de distância, com sinal forte, de modo que avaliam o
+    comportamento dos fluxos, e não o alcance do enlace.
+\end{itemize}

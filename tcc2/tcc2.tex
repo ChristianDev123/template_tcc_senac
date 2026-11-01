@@ -33,6 +33,7 @@
 \usepackage{longtable}              % Tabelas longas
 \usepackage{amsmath,amssymb}        % Símbolos matemáticos
 \usepackage{pgfgantt}               % Diagramas de Gantt
+\usetikzlibrary{arrows.meta,positioning,fit,calc} % Diagramas do desenvolvimento
 \usepackage[brazilian,hyperpageref]{backref}  % Páginas com citações
 \usepackage[alf]{abntex2cite}       % Citações ABNT
 %Adicionados posteriormente:
@@ -295,25 +296,7 @@ A revisão bibliográfica tem como finalidade apresentar o embasamento teórico 
 
 \section{Detalhes da implementação}
 \label{sec:implementacao}
-
-Explique a modelagem e a arquitetura da solução (diagramas UML, blocos ou fluxogramas que mostrem como os módulos se relacionam e atendem ao problema), as escolhas tecnológicas, as estruturas de dados e as integrações. Quando esclarecerem decisões de pesquisa, inclua trechos de código relevantes ou pseudoexemplos. Caso o trabalho envolva dados, descreva também como eles foram coletados (logs, sensores, APIs), armazenados e preparados (limpeza, normalização, anonimização).
-
-% ---------------------------------------------------------------
-% EXEMPLO DE INSERÇÃO DE FIGURA (substitua pela sua imagem)
-% A imagem deve ficar na pasta assets/ (ex.: assets/figures/arquitetura.png).
-% ORDEM ABNT: o título (\caption) vem ACIMA da figura e a fonte
-% (\legend) vem ABAIXO. Por isso \caption e \label aparecem ANTES do
-% \includegraphics. Use \ref{...} para citar a figura no texto.
-% ---------------------------------------------------------------
-\begin{figure}[htb]
-    \centering
-    \caption{Exemplo de inserção de figura --- substitua pelo diagrama da arquitetura da sua solução.}
-    \label{fig:arquitetura}
-    \includegraphics[width=0.35\textwidth]{assets/logo-senac.png}
-    \legend{Fonte: Elaborado pelo autor (2025)}
-\end{figure}
-
-Toda figura deve ser numerada, ter legenda (\verb|\caption|) e indicação de fonte, além de ser citada no texto --- por exemplo, a Figura~\ref{fig:arquitetura}. As figuras com legenda aparecem automaticamente na \textit{Lista de ilustrações}, nos elementos pré-textuais.
+\input{sections/desenvolvimento/visao_geral}
 
 \section{Experimentos e cenário de testes (opcional)}
 \label{sec:experimentos}
