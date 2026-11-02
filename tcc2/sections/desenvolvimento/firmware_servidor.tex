@@ -1,0 +1,217 @@
+\subsection{Firmware do nó sensor}
+\label{subsec:firmware}
+
+Os dois firmwares do nó, um para cada fluxo, foram escritos para o \gls{esp32cam} com o
+\textit{core} Arduino-ESP32 3.0.7 e compartilham a mesma estrutura: configuração da câmera,
+comunicação com o módulo de rádio, modo autônomo com \textit{deep sleep} e registro dos
+tempos de cada etapa. Além do modo autônomo, ambos aceitam comandos pela porta serial,
+usados nos testes e nas medições: disparo de uma leitura, ativação e desativação do modo
+autônomo, \textit{deep sleep} avulso e repasse de comandos AT ao módulo de rádio.
+
+\subsubsection{Ciclo de operação}
+\label{subsubsec:ciclo_operacao}
+
+No modo autônomo, o nó executa ciclos de leitura separados por períodos de
+\textit{deep sleep}. Ao despertar pelo temporizador, o microcontrolador reinicia, configura
+a câmera em tons de cinza na resolução de $160 \times 120$ pixels, captura um quadro e,
+logo em seguida, desliga a câmera, pois ela não é necessária no restante do ciclo. A
+partir desse ponto, cada fluxo segue um caminho, como resume a
+Tabela~\ref{tab:ciclo_fluxos}.
+
+\begin{table}[H]
+    \centering
+    \caption{Etapas de um ciclo de leitura em cada fluxo}
+    \label{tab:ciclo_fluxos}
+    \begin{tabularx}{\textwidth}{@{}lXX@{}}
+        \toprule
+        \textbf{Etapa} & \textbf{Fluxo em nuvem} & \textbf{Fluxo em borda} \\
+        \midrule
+        Despertar & \multicolumn{2}{l}{Reinício pelo temporizador e configuração da câmera} \\
+        Captura & \multicolumn{2}{l}{Quadro de $160 \times 120$ pixels em cinza; câmera desligada em seguida} \\
+        Processamento & Compressão JPEG e divisão em blocos de 175~bytes & Localização da janela
+        e classificação dos dígitos com TensorFlow Lite Micro \\
+        Envio & Um \textit{uplink} por bloco, com 7~s de intervalo (19 a 27 blocos) & Um único
+        \textit{uplink} de 9~bytes \\
+        Registro & \multicolumn{2}{l}{Linha de fim de ciclo na serial, com os tempos de cada etapa} \\
+        Repouso & \multicolumn{2}{l}{\textit{Deep sleep} até o próximo ciclo} \\
+        \bottomrule
+    \end{tabularx}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{table}
+
+Ao fim de cada ciclo, o firmware escreve na serial uma linha padronizada com o número do
+ciclo, o resultado do envio e a duração de cada etapa (captura, processamento e envio).
+Essa linha é lida pelos \textit{scripts} de medição, o que permite comparar os dois fluxos
+com as mesmas ferramentas.
+
+Antes de entrar em \textit{deep sleep}, o firmware desativa o driver da câmera, coloca o
+sensor em modo de baixo consumo pelo pino de \textit{power-down} (GPIO~32), apaga o LED
+de \textit{flash} (GPIO~4) e mantém o nível desses pinos durante o repouso. O contador de
+ciclos e o estado do modo autônomo ficam na memória RTC, que é preservada durante o
+\textit{deep sleep}. Apenas o ESP32 é colocado em repouso: o módulo Radioenge continua
+alimentado e não recebe comando para entrar em modo suspenso, o que mantém nele a sessão
+\gls{lorawan} e o contador de quadros, mas também mantém o seu consumo durante o repouso,
+como discutido nos resultados. Nas medições, o intervalo de \textit{deep sleep} foi de
+30~s nos dois fluxos.
+
+\subsubsection{Execução dos modelos no microcontrolador}
+\label{subsubsec:tflm}
+
+No fluxo em borda, os modelos são executados com o TensorFlow Lite Micro, na versão
+\texttt{esp-tflite-micro} 1.3.1 com a biblioteca de otimização \texttt{esp-nn} 1.1.0, ambas
+incluídas no \textit{core} 3.0.7. Os dois modelos \texttt{.tflite} ficam na memória
+\textit{flash} como vetores de bytes, e cada um tem o seu próprio interpretador, criado com
+um registro de operadores que contém apenas os operadores usados pelo modelo: sete na
+localização da janela e oito no classificador. O firmware compilado ocupa 563~KB, cerca de
+17\% da memória de programa.
+
+O TensorFlow Lite Micro não aloca memória dinamicamente: cada interpretador recebe uma
+área de trabalho (\textit{arena}) de tamanho fixo, onde ficam os tensores intermediários.
+As duas \textit{arenas} foram alocadas na PSRAM de 4~MB da placa. A
+Tabela~\ref{tab:memoria_tflm} mostra a memória reservada e a efetivamente usada, medida na
+placa durante 61 capturas.
+
+\begin{table}[H]
+    \centering
+    \caption{Uso da PSRAM pelo fluxo em borda}
+    \label{tab:memoria_tflm}
+    \begin{tabular}{@{}lrr@{}}
+        \toprule
+        \textbf{Item} & \textbf{Reservado (bytes)} & \textbf{Usado (bytes)} \\
+        \midrule
+        Buffer de quadro da câmera & --- & $\approx$19.216 \\
+        \textit{Arena} da localização da janela & 2.097.152 & 1.623.852 \\
+        \textit{Arena} do classificador de dígitos & 786.432 & 28.556 \\
+        PSRAM livre após as alocações & \multicolumn{2}{r}{1.289.292} \\
+        \bottomrule
+    \end{tabular}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{table}
+
+O dimensionamento das \textit{arenas} exigiu ajustes durante os testes em placa. A
+primeira estimativa, baseada no maior tensor intermediário do modelo de localização,
+reservou 1~MB, e a alocação falhou: o interpretador mantém vários tensores intermediários
+ativos ao mesmo tempo, e o modelo precisou de cerca de 1,6~MB. A \textit{arena} foi então
+ampliada para 2~MB. A \textit{arena} do classificador, de 768~KB, mostrou-se
+superdimensionada, pois o modelo usa menos de 29~KB. Para evitar novas tentativas na
+placa, foi escrito um \textit{script} que reproduz o planejador de memória do
+TensorFlow Lite Micro a partir do arquivo \texttt{.tflite}; para o modelo de localização,
+ele estimou 1.622.016~bytes, contra 1.623.852~bytes medidos. Esse mesmo \textit{script}
+confirmou que o modelo de localização do pipeline A, que pediu 15,3~MB, não caberia na
+placa.
+
+A leitura no firmware segue os passos descritos na
+Seção~\ref{subsubsec:leitura_roi}. O quadro capturado é copiado para um buffer próprio e a
+câmera é desligada antes da inferência. Para o modelo de localização, o quadro é
+redimensionado por vizinho mais próximo para $192 \times 192$ pixels diretamente no
+tensor de entrada, já convertido para INT8 pela subtração de 128 de cada pixel. Na saída,
+os valores INT8 maiores que zero, que correspondem a probabilidade superior a 0,5, formam
+a máscara, e a caixa é o menor retângulo que a contém. Cada uma das $N$ fatias da caixa é
+redimensionada para $28 \times 28$ pixels e classificada, e o dígito de maior pontuação é
+escrito na leitura. Se a máscara vier vazia, a leitura é enviada com traços no lugar dos
+dígitos.
+
+O tempo de inferência medido na placa foi muito maior do que o esperado para modelos tão
+pequenos. Em 61 capturas, a localização da janela levou mediana de 15.564~ms, com variação
+de apenas 4~ms entre capturas, e a classificação dos seis dígitos levou 1.995~ms, para um
+total de 17.838~ms por leitura. A causa não foi investigada; uma hipótese é que parte dos
+operadores do modelo de localização, como a convolução transposta, não tenha versão
+otimizada na \texttt{esp-nn} e seja executada pelas implementações de referência, em C
+genérico. Durante essas capturas, a temperatura interna do chip permaneceu entre 72 e
+74~°C.
+
+Como discutido na Seção~\ref{subsubsec:leitura_roi}, a solução adotada dispensa o modelo de
+localização e usa uma ROI calibrada na instalação. O firmware usado nas medições, porém,
+ainda executa a localização a cada leitura; a versão com ROI fixa não foi implementada.
+Sem a localização, a leitura no nó ficaria restrita à classificação dos dígitos, de cerca
+de 2~s, o que é uma estimativa, e não uma medição.
+
+\subsubsection{Firmware de depuração e calibração}
+\label{subsubsec:firmware_debug}
+
+Um terceiro firmware, sem rádio, foi usado para posicionar a câmera diante do medidor e
+para medir o desempenho dos modelos na placa. A cada 5~s, ele captura um quadro, executa a
+leitura completa, desenha sobre a imagem a caixa encontrada e as divisões das fatias e
+envia ao computador a imagem anotada, a leitura e métricas de memória, tempo e
+temperatura. Um \textit{script} no computador grava as imagens e as métricas em arquivo.
+Com ele, a câmera foi ajustada à mão até que a janela de dígitos ocupasse o quadro e a
+caixa prevista coincidisse com ela; a partir desse ponto, a leitura do medidor de teste se
+estabilizou. Os dados de memória e de tempo de inferência apresentados nesta seção vêm
+desse firmware.
+
+\subsection{Servidor da aplicação}
+\label{subsec:servidor}
+
+No servidor, a recepção é feita pelo \textit{script} \texttt{reconstrutor.py}, descrito na
+Seção~\ref{subsubsec:recepcao}: no fluxo em borda, a leitura chega pronta na porta~2; no
+fluxo em nuvem, a imagem remontada é gravada em disco. O \gls{ocr} do fluxo em nuvem é
+executado sobre essas imagens pelo \textit{script} \texttt{pipeline\_nuvem.py}.
+
+Para que a única diferença entre os fluxos seja o local do processamento, o servidor
+executa os mesmos arquivos \texttt{.tflite} INT8 do firmware, com o interpretador LiteRT
+2.3.0, e reproduz a mesma lógica: o mesmo redimensionamento por vizinho mais próximo, com
+o mesmo cálculo de índices, a mesma conversão para INT8, o mesmo limiar na máscara e o
+mesmo fatiamento. O acelerador XNNPACK do LiteRT foi desativado, para que os operadores
+sejam executados pelas implementações de referência, como no microcontrolador. A única
+diferença no dado de entrada é a compressão JPEG com qualidade 90, que o fluxo em borda não
+sofre.
+
+\subsubsection{Tempo de inferência no servidor}
+\label{subsubsec:tempo_servidor}
+
+Na implementação atual, o \gls{ocr} do servidor não é disparado automaticamente quando a
+imagem fica completa: ele é executado depois, sobre as imagens gravadas. Por isso, a
+latência medida no fluxo em nuvem termina no momento em que a imagem fica disponível no
+servidor, e o tempo de inferência foi medido à parte. Em um computador com processador
+AMD Ryzen 5 5600GT, as 21 imagens completas recebidas pelo enlace foram lidas cinco vezes
+cada. A Tabela~\ref{tab:tempo_inferencia} compara os tempos com os do microcontrolador.
+
+\begin{table}[H]
+    \centering
+    \caption{Tempo de inferência por leitura no nó e no servidor (mediana)}
+    \label{tab:tempo_inferencia}
+    \begin{tabular}{@{}lrr@{}}
+        \toprule
+        \textbf{Etapa} & \textbf{\gls{esp32cam} (ms)} & \textbf{Servidor (ms)} \\
+        \midrule
+        Localização da janela & 15.564 & 4,30 \\
+        Leitura completa (localização e seis dígitos) & 17.838 & 6,25 \\
+        Leitura com ROI fixa (só os seis dígitos) & $\approx$1.995 & 1,91 \\
+        \bottomrule
+    \end{tabular}
+    \legend{Fonte: Elaborado pelos autores (2026). No servidor, os tempos incluem a
+    decodificação do JPEG; no \gls{esp32cam}, a leitura com ROI fixa corresponde ao tempo
+    medido da classificação dos dígitos.}
+\end{table}
+
+O servidor executa a leitura completa cerca de 2.800 vezes mais rápido que o
+microcontrolador. Diante da latência de envio da imagem, de mais de dois minutos, o tempo
+de inferência no servidor é desprezível, e a omissão dessa etapa na latência medida não
+altera a comparação entre os fluxos.
+
+\subsubsection{Recursos disponíveis apenas no servidor}
+\label{subsubsec:recursos_servidor}
+
+O baixo custo da inferência no servidor permite etapas que seriam caras no
+microcontrolador. Duas foram implementadas e avaliadas:
+
+\begin{itemize}
+    \item \textbf{Correção da inclinação}: a fileira de roletes costuma aparecer levemente
+    inclinada no quadro. O servidor detecta as bordas da imagem (Canny), extrai os segmentos
+    de reta pela transformada de Hough, toma a mediana ponderada pelo comprimento dos
+    ângulos dos segmentos quase horizontais (até $\pm 20^\circ$) e gira o quadro para
+    endireitá-lo antes da leitura.
+    \item \textbf{Votação entre caixas deslocadas}: para tolerar pequenos erros na posição
+    da ROI, o classificador é aplicado a cinco versões da caixa, a original e outras quatro
+    deslocadas de 2~pixels na horizontal e de 1~pixel na vertical, e as pontuações de cada
+    fatia são somadas antes da escolha do dígito. No microcontrolador, isso multiplicaria
+    por cinco os cerca de 2~s da classificação.
+\end{itemize}
+
+A ROI é informada ao servidor como um retângulo em coordenadas do quadro de
+$160 \times 120$ pixels e é calibrada uma vez por instalação. Para isso, um
+\textit{script} auxiliar desenha uma grade de coordenadas sobre o quadro ampliado, a
+partir da qual a janela é lida à mão. Ainda não existe uma ferramenta que faça essa
+calibração de forma automática ou guiada, o que é uma limitação da solução atual. O efeito
+da correção da inclinação, da votação e da precisão da ROI sobre a acurácia é apresentado
+nos resultados.
