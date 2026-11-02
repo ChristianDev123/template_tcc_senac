@@ -77,10 +77,9 @@ usados por todos os componentes do enlace.
 \subsubsection{Formato das mensagens}
 \label{subsubsec:formato_mensagens}
 
-Cada mensagem \gls{lorawan} acrescenta 13~bytes ao conteúdo da aplicação: o cabeçalho MAC
-(1~byte), o endereço do dispositivo (4~bytes), o campo de controle (1~byte), o contador de
-quadros FCnt (2~bytes), a porta de aplicação FPort (1~byte) e o código de integridade MIC
-(4~bytes). O conteúdo da aplicação (FRMPayload) é criptografado com a chave de sessão de
+Como apresentado na imagem~\ref{fig:lora_uplink}, cada mensagem \gls{lorawan} acrescenta 13~bytes ao conteúdo da aplicação, devido aos campos: 
+o cabeçalho MAC, o endereço do dispositivo, o campo de controle FCtrl, o contador FCnt, a porta de aplicação FPort e o código de integridade MIC. 
+O conteúdo da aplicação (FRMPayload) é criptografado com a chave de sessão de
 aplicação (AppSKey). Os dois fluxos usam portas diferentes, o que permite ao servidor
 distinguir as mensagens sem nenhum outro campo. A Tabela~\ref{tab:formato_payload}
 apresenta o formato do conteúdo de cada porta.

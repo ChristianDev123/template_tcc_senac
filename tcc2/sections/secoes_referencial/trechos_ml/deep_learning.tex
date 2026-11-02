@@ -8,18 +8,23 @@ construindo estruturas conectadas de forma a emular o comportamento do cérebro 
 Para o processamento de dados sequenciais ou cronológicos, como linhas de texto em sistemas de reconhecimento de caracteres, as arquiteturas profundas evoluem para estruturas capazes de reter dependências temporais.
 
 \paragraph{O que são LSTMs.}
-A \textit{Long Short-Term Memory} (LSTM) é uma arquitetura de rede neural recorrente proposta por Hochreiter e Schmidhuber (1997) para superar a limitação das RNNs tradicionais em aprender dependências de longo prazo, 
+A \gls{lstm} é uma arquitetura de rede neural recorrente proposta por Hochreiter e Schmidhuber (1997) para superar a limitação das RNNs tradicionais em aprender dependências de longo prazo, 
 problema causado pelo desaparecimento do gradiente durante a retropropagação \cite{hochreiter1997lstm}. 
-A unidade básica da LSTM é a célula de memória, cujo estado interno é controlado por três portas multiplicativas: a \textbf{porta de esquecimento} (\textit{forget gate}), 
+A unidade básica da \gls{lstm} é a célula de memória, cujo estado interno é controlado por três portas multiplicativas: a \textbf{porta de esquecimento} (\textit{forget gate}), 
 que decide quais informações do estado anterior devem ser descartadas; a \textbf{porta de entrada} (\textit{input gate}), 
 que seleciona quais novas informações serão armazenadas no estado da célula; e a \textbf{porta de saída} (\textit{output gate}), 
 que define o que será exposto como saída da célula naquele passo de tempo \cite{hochreiter1997lstm, hannun2017ctc}. 
-Esse mecanismo de portas permite que a LSTM mantenha informações relevantes por muitos passos de tempo e descarte informações irrelevantes, 
+Esse mecanismo de portas permite que a \gls{lstm} mantenha informações relevantes por muitos passos de tempo e descarte informações irrelevantes, 
 o que é essencial para o reconhecimento de sequências textuais, nas quais o contexto de caracteres anteriores e posteriores influencia a interpretação de cada símbolo \cite{shi2017crnn}.
 
 \paragraph{Limitações em \textit{Edge AI} e alternativas convolucionais.}
-Apesar de sua eficácia na modelagem de contexto, as LSTMs impõem desafios significativos em dispositivos de borda com restrições severas de memória e poder computacional. A natureza sequencial da recorrência impede o paralelismo ao longo do eixo temporal, 
-e o estado interno da célula precisa ser mantido entre passos de tempo, o que eleva o consumo de memória e a latência de inferência em microcontroladores \cite{nguyen2026rnn_mcu}. 
-Além disso, a implementação eficiente de operadores recorrentes em \textit{runtimes} C++ para \textit{edge} ainda é limitada, com suporte incompleto em algumas bibliotecas de inferência para microcontroladores \cite{nguyen2026rnn_mcu}. 
-Como alternativa, empregam-se \textbf{convoluções temporais 1D com núcleos largos} (ou convoluções dilatadas), que emulam o campo receptivo contextual da recorrência sem o custo computacional associado ao estado recorrente, 
+Apesar de sua eficácia na modelagem de contexto, as \gls{lstm}s 
+impõem desafios significativos em dispositivos de borda com restrições severas de memória e poder computacional. 
+A natureza sequencial da recorrência impede o paralelismo ao longo do eixo temporal, 
+e o estado interno da célula precisa ser mantido entre passos de tempo, 
+o que eleva o consumo de memória e a latência de inferência em microcontroladores \cite{nguyen2026rnn_mcu}. 
+Além disso, a implementação eficiente de operadores recorrentes em \textit{runtimes} C++ para \gls{edge_computing} ainda é limitada, 
+com suporte incompleto em algumas bibliotecas de inferência para microcontroladores \cite{nguyen2026rnn_mcu}. 
+Como alternativa, empregam-se \textbf{convoluções temporais 1D com núcleos largos} (ou convoluções dilatadas), 
+que emulam o campo receptivo contextual da recorrência sem o custo computacional associado ao estado recorrente, 
 permitindo processamento paralelo e maior eficiência em hardware embarcado \cite{nazre2024tcn, shi2017crnn}.

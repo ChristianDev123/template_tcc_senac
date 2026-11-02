@@ -8,6 +8,30 @@ sendo amplamente utilizada na biomedicina com o foco de delimitar
 estruturas presentes em imagens; tal característica é explorada a fim de definir 
 \gls{roi} dentro de uma imagem.
 
+
+\begin{figure}[H]
+    \caption{Definição de ROI de uma Imagem}
+    \label{fig: roi_definition_unet}
+    \centering
+    % Primeira Imagem
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{sections/imagens/Img_Original_Unet.jpg}
+        \caption{Imagem Original}
+        \label{fig:img1}
+    \end{subfigure}\hfill % O \hfill fica colado no fechamento da primeira subfigura
+    % Segunda Imagem
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{sections/imagens/Img_Mask_Unet.jpg}
+        \caption{ROI Extraída da Imagem Original}
+        \label{fig:img2}
+    \end{subfigure}
+
+    \fonte{Autores (2026).}
+\end{figure}
+
+
 A arquitetura U-Net é caracterizada pela presença de três etapas de 
 processamento: Contração, Gargalo e Expansão. 
 A camada de contração é composta por vários blocos, 

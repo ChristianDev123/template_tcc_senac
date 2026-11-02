@@ -54,22 +54,50 @@ Diante de tal afirmação, destaca-se a função \textit{deep sleep} presente no
     \includegraphics[width=0.85\textwidth]{sections/imagens/ESP32CAM_LoRa.jpg}
     \small
     \begin{quote}
+        \centering
         Fonte: \cite{robinson2021stuartcam}.
     \end{quote}
 \end{figure}
 
 \subsubsection{Gateways}
 
-O gateway, como demonstrado na figura~\ref{fig:implementacao_tipica_lorawan}, é um elemento da rede LoRaWan que tem como responsabilidade agrupar dispositivos finais e viabilizar a comunicação entre o dispositivo final e o servidor de rede \cite{Camargo2022}. 
+O gateway, como demonstrado na figura~\ref{fig:implementacao_tipica_lorawan}, 
+é um elemento da rede LoRaWan que tem como responsabilidade agrupar dispositivos finais 
+e viabilizar a comunicação entre o dispositivo final e o servidor de rede \cite{Camargo2022}. 
 
-A comunicação entre o dispositivo final e o gateway é realizada via protocolo LoRaWan, na qual o gateway pode realizar a tarefa de registrar tráfego de mensagens. 
-Como explicado por \citeonline{semtech2024an1200_86}, os dispositivos finais, ao realizar o envio de uplink, distribuem as suas mensagens a todos os gateways alcançáveis dentro da mesma rede; tal função tem como objetivo garantir que ao menos um dos gateways da rede receba e transmita a mensagem ao servidor de rede.
+A comunicação entre o dispositivo final e o gateway é realizada via protocolo LoRaWan, 
+na qual o gateway pode realizar a tarefa de registrar tráfego de mensagens. 
+Como explicado por \citeonline{semtech2024an1200_86}, 
+os dispositivos finais, ao realizar o envio de uplink, 
+distribuem as suas mensagens a todos os gateways alcançáveis dentro da mesma rede; 
+tal função tem como objetivo garantir que ao menos um dos gateways da rede receba e transmita a mensagem ao servidor de rede.
 
-Os gateways operam na camada física e, convencionalmente, assumem a responsabilidade apenas de viabilizar o tráfego de requisições uplink e downlink e realizar a verificação de integridade do pacote, não realizando processamento intermediário da mensagem para enviá-la ao servidor de rede \cite{semtech2024an1200_86}.
+Os gateways operam na camada física e, convencionalmente, 
+assumem a responsabilidade apenas de viabilizar o tráfego de requisições uplink e 
+downlink e realizar a verificação de integridade do pacote, 
+não realizando processamento intermediário da mensagem para 
+enviá-la ao servidor de rede \cite{semtech2024an1200_86}.
 
-A comunicação entre o gateway e o servidor de rede, corriqueiramente, é estabelecida utilizando protocolo TCP/IP. Toda comunicação dentro do protocolo LoRaWan é bidirecional \cite{Camargo2022}.
+A comunicação entre o gateway e o servidor de rede, 
+corriqueiramente, é estabelecida utilizando protocolo TCP/IP. 
+Toda comunicação dentro do protocolo LoRaWan é bidirecional \cite{Camargo2022}.
 
-É possível encontrar gateways prontos de múltiplos canais sendo comercializados, mas é plenamente viável desenvolver gateways a partir de módulos e placas de prototipagem como a apresentada na figura~\ref{fig:esp32cam_lora}. 
+É possível encontrar gateways prontos de múltiplos canais sendo comercializados, 
+mas é plenamente viável desenvolver gateways a partir de módulos e placas 
+de prototipagem como a apresentada na figura~\ref{fig:esp32cam_lora}. 
+
+\begin{figure}[H]
+    \centering
+    \caption{Gateway LoRaWan compatível com placas Raspberry Pi}
+    \label{fig:lora_uplink}
+    \includegraphics[width=0.85\textwidth]{sections/imagens/gateway-lorawan-radioenge.jpg}
+    \small
+    \begin{quote}
+        \centering
+        Fonte: Catálogo de Produtos \cite{radioenge_gateway_lorawan}.
+    \end{quote}
+\end{figure}
+
 
 \subsubsection{Servidores de Rede e Aplicação}
 
