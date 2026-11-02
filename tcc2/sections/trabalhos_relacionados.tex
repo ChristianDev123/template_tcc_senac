@@ -5,7 +5,7 @@ A revisão fundamenta o estado da técnica e destaca os diferenciais desta propo
 \subsection{Trabalho 1: Solução IoT para Digitalização de Medidores de Consumo por Visão Computacional e MicroML}
 
 \citeonline{SilvaVilela2021} abordou o tema de soluções IoT para Medidores de Consumo. 
-Para resolvê-lo, foi desenvolvido um sistema utilizando microprocessadores ESP32, baseado no método de Edge-Computing (Computação em Borda). O autor desenvolveu um software próprio, otimizado para microprocessadores, focado em \gls{ocr}, extraindo os dados, transmitindo-os via rede \gls{lorawan} e armazenando-os localmente; posteriormente, os dados são apresentados em um simples dashboard apresentando o consumo extraído pelo sistema até o momento. 
+Para resolvê-lo, foi desenvolvido um sistema utilizando microprocessadores ESP32, baseado no método de \gls{edge_computing}. O autor desenvolveu um software próprio, otimizado para microprocessadores, focado em \gls{ocr}, extraindo os dados, transmitindo-os via rede \gls{lorawan} e armazenando-os localmente; posteriormente, os dados são apresentados em um simples dashboard apresentando o consumo extraído pelo sistema até o momento. 
 
 A metodologia utilizada foi a pesquisa experimental, na qual houve o desenvolvimento de um sistema que supre a necessidade de extração de dados de maneira digital. 
 
@@ -32,19 +32,42 @@ O presente trabalho diferencia-se por focar na infraestrutura de comunicação \
 
 \subsection{Trabalho 3: Rede de Sensores Sem Fio Habilitada para LoRa para Leitura e Faturamento de Consumo de Água Usando Reconhecimento Óptico de Caracteres}
 
-\citeonline{bravo2025ants} desenvolveram um sistema automatizado para leitura de hidrômetros analógicos utilizando uma combinação de tecnologias de baixo custo e comunicação de longo alcance.
+\citeonline{bravo2025ants} desenvolveram um sistema automatizado para leitura de hidrômetros 
+analógicos utilizando uma combinação de tecnologias de baixo custo e comunicação de longo alcance.
 O objetivo central foi mitigar erros humanos e atrasos operacionais comuns em leituras manuais.
 
-A metodologia consistiu na integração de um módulo \gls{esp32cam} para captura de imagens dos medidores e um algoritmo de \gls{ocr} para a extração digital dos dados de consumo no próprio dispositivo. 
-Para a transmissão, utilizou-se a tecnologia \gls{lora} (módulo Ra-02), operando em uma topologia de rede que inclui repetidores para estender o alcance e um gateway central para envio dos dados à nuvem. 
-O sistema também implementou estratégias de gerenciamento de energia através de ciclos de \textit{deep sleep} programados para aumentar a vida útil da bateria.
+A metodologia consistiu na integração de um módulo \gls{esp32cam} para captura de 
+imagens dos medidores e um algoritmo de \gls{ocr} 
+para a extração digital dos dados de consumo no próprio dispositivo. 
+Para a transmissão, utilizou-se a tecnologia \gls{lora} (módulo Ra-02), 
+operando em uma topologia de rede que inclui repetidores para estender 
+o alcance e um gateway central para envio dos dados à nuvem. 
+O sistema também implementou estratégias de gerenciamento de energia através 
+de ciclos de \textit{deep sleep} programados para aumentar a vida útil da bateria.
 
-Os resultados apontaram uma precisão de 99,71\% no reconhecimento dos dígitos e um alcance de transmissão estável de até 1070 metros em condições de campo aberto. 
+Os resultados apontaram uma precisão de 99,71\% no reconhecimento 
+dos dígitos e um alcance de transmissão estável de até 1070 metros em condições de campo aberto. 
 Os autores observaram que medidores mais antigos ou obstruídos podem elevar o tempo de processamento do \gls{ocr}.
 
-O presente trabalho diferencia-se da abordagem de \citeonline{bravo2025ants} ao deslocar a carga computacional do \gls{ocr} do dispositivo final para a nuvem. 
-Enquanto o trabalho correlato executa o processamento localmente no \gls{esp32cam}, esta pesquisa foca na robustez de um pipeline de processamento remoto. 
-Isso permite a utilização de modelos de visão computacional mais complexos e precisos, que excederiam a capacidade de memória e processamento do hardware local, além de centralizar a lógica de extração de dados para facilitar manutenções e atualizações do algoritmo de IA sem a necessidade de novos firmwares nos sensores. 
-Esta abordagem também visa mitigar as dificuldades de processamento em medidores antigos ou obstruídos, um desafio observado na implementação local de \citeonline{bravo2025ants}.
+O presente trabalho diferencia-se diante dos seguintes tópicos:
 
-Utilizaremos esse trabalho como referência de borda para realizar uma comparação com a abordagem de processamento em nuvem, contribuindo para a discussão sobre o trade-off entre eficiência energética e precisão em sistemas de telemetria de baixo custo.
+\begin{itemize}
+	\item Metodologia de Pesquisa: \citeonline{bravo2025ants}, aplicaram em seu trabalho a metodologia \gls{dsr}, 
+    desenvolvendo uma solução à problemática da coleta de dados em hidrômetros, 
+    em contrapartida, este trabalho possui como objetivo a comparação entre métodos 
+    de processamento de dados em sistemas IOT.
+	
+    \item Público-Alvo: O trabalho correlato, busca impactar principalmente empresas consorciadas à 
+    distribuição de recursos hídricos. O presente trabalho busca impactar desenvolvedores de sistemas IOT, 
+    ao prover dados comparativos que podem pautar decisões arquitetônicas de novos sistemas.
+	
+    \item Especificação de Restrições Regulatórias: Este trabalho utiliza como base a regulação AU915, 
+    adotada pela ANATEL em 2017. O trabalho de \citeonline{bravo2025ants}, 
+    não define qual restrição regulatória o sistema está seguindo, 
+    o que impacta diretamente sobre a viabilidade de operação do sistema desenvolvido.
+\end{itemize}
+
+Utilizaremos esse trabalho como referência no desenvolvimento do fluxo de borda 
+para realizar uma comparação com a abordagem de processamento em nuvem, 
+contribuindo para a discussão sobre o trade-off entre eficiência 
+energética e precisão em sistemas de telemetria de baixo custo.
