@@ -1,0 +1,358 @@
+Os experimentos foram planejados para responder às três hipóteses da
+Seção~\ref{subsec:hipotese}. A Tabela~\ref{tab:plano_experimentos} relaciona cada
+experimento à hipótese avaliada, aos dados utilizados e às métricas principais. Os
+experimentos de reconhecimento foram executados no computador, sobre conjuntos de imagens
+fixos e versionados no repositório. Os de latência, entrega e consumo foram executados com
+o protótipo em bancada, com os firmwares dos dois fluxos descritos na
+Seção~\ref{subsec:firmware}.
+
+\begin{table}[H]
+    \centering
+    \caption{Plano de experimentação}
+    \label{tab:plano_experimentos}
+    \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.1cm}c>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{3.6cm}@{}}
+        \toprule
+        \textbf{Experimento} & \textbf{Hipótese} & \textbf{Dados e condição} & \textbf{Métricas} \\
+        \midrule
+        Efeito da quantização & H1 & Mesmo classificador em ponto flutuante e em INT8; 7.378
+        recortes de validação e 1.894 imagens de teste independentes & Acurácia por recorte,
+        leitura exata, acurácia por dígito, CER \\
+        \addlinespace
+        Leitura de ponta a ponta & --- & 39 fotos do conjunto de teste comum e 21 fotos de
+        hidrômetros físicos; janela prevista pelo modelo e janela marcada à mão & Leitura exata,
+        acurácia por dígito, CER, Dice e IoU \\
+        \addlinespace
+        Latência e entrega & H2 & Nó em ciclo autônomo com \textit{deep sleep}: 30 leituras no
+        fluxo em nuvem e 34 no fluxo em borda; 30 envios adicionais de imagem com o nó sempre
+        ligado & Latência ponta a ponta, \gls{pdr} por pacote, taxa de entrega por leitura \\
+        \addlinespace
+        Consumo de energia & H3 & Corrente do nó medida em 30 ciclos do fluxo em nuvem e 32
+        do fluxo em borda & Carga por leitura (mAh), corrente acordado e em repouso, autonomia
+        estimada \\
+        \bottomrule
+    \end{tabularx}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{table}
+
+Como os dois fluxos usam os mesmos modelos INT8 e a mesma lógica de leitura
+(Seção~\ref{subsec:visao_geral}), a acurácia do reconhecimento não é uma variável entre
+eles. Por isso, a hipótese H1 é avaliada pela comparação entre as versões em ponto
+flutuante e em INT8 do mesmo modelo, e não entre os fluxos. Já nos experimentos das
+hipóteses H2 e H3, a única variável é o fluxo: o hardware, o enlace, o intervalo de repouso
+e a bancada são os mesmos.
+
+\subsection{Métricas}
+\label{subsec:metricas_experimentos}
+
+\subsubsection{Reconhecimento}
+\label{subsubsec:metricas_ocr}
+
+Para cada imagem, a leitura prevista $\hat{y}$ é comparada com a
+leitura real $y$, ambas sequências de $N$ dígitos. São usadas três métricas sobre um
+conjunto de $M$ imagens: a taxa de leitura exata, que conta apenas as leituras com todos os
+dígitos corretos; a acurácia por dígito, que compara posição a posição; e a taxa de erro de
+caracteres (\textit{character error rate}, CER), baseada na distância de edição de
+Levenshtein $d_{\mathrm{L}}$, isto é, o número mínimo de inserções, remoções e substituições
+que transformam uma sequência na outra:
+
+\begin{equation}
+    \label{eq:leitura_exata}
+    Acc_{\mathrm{leitura}} = \frac{1}{M}\sum_{m=1}^{M} \mathbf{1}\!\left[\hat{y}_m = y_m\right]
+    \qquad
+    Acc_{\mathrm{dígito}} = \frac{\sum_{m}\sum_{k=1}^{N_m} \mathbf{1}\!\left[\hat{y}_{m,k} = y_{m,k}\right]}{\sum_{m} N_m}
+\end{equation}
+
+\begin{equation}
+    \label{eq:cer}
+    CER = \frac{\sum_{m} d_{\mathrm{L}}(\hat{y}_m, y_m)}{\sum_{m} N_m}
+\end{equation}
+
+A taxa de leitura exata é a métrica mais exigente e a que interessa à aplicação: uma
+leitura com um único dígito errado é uma leitura errada. Para o classificador isolado, a
+métrica é a acurácia por recorte, a fração de recortes de um único dígito classificados
+corretamente, acompanhada da acurácia por classe e da matriz de confusão.
+
+A qualidade da localização da janela é medida pela sobreposição entre a máscara prevista
+$P$ e a máscara de referência $G$, pelos coeficientes Dice e IoU (\textit{intersection over
+union}):
+
+\begin{equation}
+    \label{eq:dice_iou}
+    Dice = \frac{2\,|P \cap G|}{|P| + |G|}
+    \qquad
+    IoU = \frac{|P \cap G|}{|P \cup G|}
+\end{equation}
+
+\subsubsection{Latência e entrega}
+\label{subsubsec:metricas_latencia}
+
+A latência ponta a ponta de uma leitura é o intervalo entre
+o disparo no nó e o instante em que o dado fica disponível no servidor: a imagem remontada,
+no fluxo em nuvem, ou a leitura decodificada, no fluxo em borda. A entrega é avaliada de
+duas formas. A primeira é o \gls{pdr} por pacote, definido na Equação~\eqref{eq:pdr}. A
+segunda é a taxa de entrega por leitura, a fração das leituras disparadas cujo dado chegou
+completo ao servidor:
+
+\begin{equation}
+    \label{eq:entrega_leitura}
+    E_{\mathrm{leitura}} = \frac{\text{leituras disponíveis no servidor}}{\text{leituras disparadas}}
+\end{equation}
+
+As duas métricas diferem no fluxo em nuvem: como nenhum dos firmwares retransmite blocos no
+modo autônomo, uma imagem com um único bloco perdido não é remontada, e a leitura se perde
+mesmo com um \gls{pdr} alto. No fluxo em borda, em que cada leitura ocupa um pacote, as duas
+coincidem. As taxas de entrega por leitura dos dois fluxos são comparadas pelo teste exato
+de Fisher, adequado a proporções com amostras pequenas.
+
+\subsubsection{Energia}
+\label{subsubsec:metricas_energia}
+
+A carga consumida em uma leitura é a integral da corrente $i(t)$ ao
+longo de um ciclo completo, de um despertar ao seguinte, incluindo o repouso, calculada pela
+regra do trapézio sobre as amostras e expressa em mAh:
+
+\begin{equation}
+    \label{eq:carga_leitura}
+    Q_{\mathrm{leitura}} = \frac{1}{3600}\int_{t_{\mathrm{despertar},k}}^{t_{\mathrm{despertar},k+1}} i(t)\,dt
+\end{equation}
+
+\noindent com $i$ em mA e $t$ em segundos. Para estimar a autonomia em outros intervalos
+entre leituras, o ciclo é modelado por dois estados: acordado, com corrente média
+$I_{\mathrm{ac}}$ durante $t_{\mathrm{ac}}$, e em repouso, com corrente $I_{\mathrm{rep}}$
+no restante do intervalo $T$. A autonomia $A$, em dias, para uma bateria de capacidade
+$C_{\mathrm{bat}}$ em mAh, é então:
+
+\begin{equation}
+    \label{eq:autonomia_modelo}
+    Q_{\mathrm{leitura}}(T) = \frac{I_{\mathrm{ac}}\,t_{\mathrm{ac}} + I_{\mathrm{rep}}\,(T - t_{\mathrm{ac}})}{3600}
+    \qquad
+    A = \frac{C_{\mathrm{bat}}}{Q_{\mathrm{leitura}}(T)} \cdot \frac{T}{86400}
+\end{equation}
+
+O modelo é ideal: não considera as perdas do regulador, a autodescarga nem a variação da
+capacidade da bateria com a temperatura, de modo que a autonomia calculada é um limite
+superior.
+
+\subsection{Cenário de bancada}
+\label{subsec:bancada}
+
+Todas as medições em hardware foram feitas em 27 de outubro de 2026, em bancada, com o nó
+sensor e o receptor a cerca de 2~m de distância. Nessa condição, o RSSI médio dos quadros
+recebidos ficou entre $-34$ e $-27$~dBm, um sinal muito forte. Como antecipado na
+Seção~\ref{subsec:simplificacoes}, o cenário avalia o comportamento dos fluxos, e não o
+alcance do enlace. O enlace usou a configuração da Tabela~\ref{tab:parametros_enlace} nos
+dois fluxos, e a câmera ficou fixa, apontada para o mostrador de um hidrômetro.
+
+Nos experimentos de latência, entrega e consumo, os dois firmwares operaram no modo
+autônomo com repouso de 30~s (\texttt{AUTO:30}), descrito na
+Seção~\ref{subsubsec:ciclo_operacao}, e sem a janela para receber o comando de parada após
+o despertar. O intervalo de 30~s não representa uma instalação real, em que as leituras
+seriam espaçadas de minutos ou horas; ele foi escolhido para obter pelo menos 30 ciclos de
+cada fluxo em poucas horas de medição. O efeito de intervalos mais longos é obtido pelo
+modelo da Equação~\eqref{eq:autonomia_modelo}.
+
+O nó foi alimentado pelos 5~V da porta USB da placa de gravação ESP32-CAM-MB, que também
+fornecia a serial usada para acompanhar o log do firmware. O computador lia ao mesmo tempo
+a serial do nó e a do receptor, de modo que todos os instantes foram marcados por um único
+relógio, o do computador. A incerteza desses instantes, de alguns milissegundos, é
+desprezível diante das latências medidas.
+
+\subsection{Avaliação do reconhecimento}
+\label{subsec:exp_ocr}
+
+\subsubsection{Efeito da quantização (H1)}
+\label{subsubsec:exp_quantizacao}
+
+O classificador de dígitos treinado (Seção~\ref{subsubsec:classificador}) foi salvo em
+ponto flutuante de 32 bits e, após a quantização (Seção~\ref{subsubsec:quantizacao_ocr}),
+em INT8. As duas versões foram avaliadas sobre os mesmos 7.378 recortes de validação, da
+divisão por foto descrita na Seção~\ref{subsubsec:dados_ocr}, por um \textit{script} que
+apenas carrega os modelos já treinados e mede, sem treinar novamente. Como os pesos de
+origem e os dados são os mesmos, a diferença de acurácia entre as versões isola o efeito
+da quantização.
+
+Como os recortes de validação vêm das mesmas fontes usadas no treino, o modelo INT8 também
+foi avaliado nas pastas de teste do \textit{Word-Wheel Water Meter Dataset}, que ficaram
+fora de todo o treinamento: 1.894 imagens da janela de dígitos, de $200 \times 60$ pixels.
+Cada imagem foi dividida em $N$ fatias iguais, como no firmware, e cada fatia foi
+classificada. Como essas imagens já são recortes retos da janela, esse teste mede o
+classificador e o fatiamento, sem a etapa de localização. O teste foi repetido com o modelo
+ao fim da fase A e com o modelo final, após o ajuste fino da fase B, para verificar se o
+ajuste às imagens do \gls{esp32cam} prejudicou a generalização.
+
+\subsubsection{Leitura de ponta a ponta}
+\label{subsubsec:exp_leitura}
+
+Para avaliar o pipeline completo, da imagem da câmera até a leitura, foram usados dois
+conjuntos de fotos capturadas pelo \gls{esp32cam}, nenhum deles usado no treino ou no
+ajuste dos modelos.
+
+O \textbf{conjunto de teste comum} reúne 39 fotos de um monitor que exibia imagens de
+hidrômetros, com 19 leituras distintas de dois modelos de medidor, um de cinco e outro de
+seis roletes. As fotos foram selecionadas entre 152 capturas, com dois critérios: sem
+rotação de 90° ou 180° e sem nenhum rolete parado entre dois números, caso em que a
+leitura real é ambígua. Por comparação de \textit{hash}, verificou-se que nenhuma delas é
+idêntica às fotos usadas no treino. O gabarito de cada foto foi conferido manualmente,
+sobre uma folha que imprime a leitura esperada sobre a imagem, e para cada foto também foi
+marcada à mão a janela de dígitos.
+
+O \textbf{conjunto de hidrômetros físicos} reúne 21 fotos de medidores reais, de
+diferentes modelos, com cinco a oito roletes, capturadas pelo \gls{esp32cam} no quadro de
+$160 \times 120$ pixels. Ao contrário do conjunto comum, essas fotos têm reflexos no vidro,
+iluminação variada e ângulos diversos. A leitura de cada foto foi anotada manualmente, mas
+a janela de dígitos ainda não foi marcada.
+
+Cada foto foi avaliada nos dois fluxos. No fluxo em borda, o quadro de
+$160 \times 120$ pixels é lido diretamente; no fluxo em nuvem, o mesmo quadro é antes
+codificado em JPEG com qualidade 90 e decodificado, como ocorre na transmissão. Essa
+avaliação é uma emulação em Python, com os mesmos arquivos \texttt{.tflite} INT8, e não a
+execução na placa. No conjunto comum, as fotos foram lidas em três configurações:
+
+\begin{enumerate}
+    \item \textbf{Janela prevista pelo modelo}: o pipeline completo, como no firmware, com
+    a caixa obtida da máscara do modelo de localização.
+    \item \textbf{Janela marcada à mão}: a caixa é informada diretamente e o modelo de
+    localização não é usado. Essa configuração corresponde à ROI calibrada na instalação
+    (Seção~\ref{subsubsec:leitura_roi}) e mede o classificador e o fatiamento quando a
+    janela está correta.
+    \item \textbf{Janela marcada à mão com correção de inclinação}: o quadro é antes
+    endireitado no servidor pelo ângulo estimado com a transformada de Hough, recurso
+    disponível apenas no fluxo em nuvem (Seção~\ref{subsubsec:recursos_servidor}).
+\end{enumerate}
+
+A distinção entre essas configurações é essencial para interpretar os resultados.
+Quando a janela é prevista pelo modelo, o erro da leitura é dominado pelo erro da
+localização: com uma caixa que cobre quase todo o mostrador, as fatias não correspondem
+aos roletes, e nenhum classificador acertaria a leitura. Assim, os resultados da primeira
+configuração medem o modelo de localização, e não a capacidade de leitura do classificador,
+que é medida pelas configurações com a janela marcada à mão. O conjunto de hidrômetros
+físicos, por ainda não ter a janela marcada, foi avaliado apenas na primeira configuração.
+
+Por fim, como a ROI de uma instalação real é calibrada uma única vez e pode ter pequenos
+desvios, foi medida a tolerância da leitura ao erro de posição da janela. Partindo da janela
+marcada à mão nas 39 fotos do conjunto comum, já endireitadas e no fluxo em nuvem, cada uma
+das quatro coordenadas da caixa recebeu um erro inteiro sorteado uniformemente entre $-d$ e
+$+d$ pixels, para $d \in \{0, 1, 2, 3, 4, 6\}$, com três sementes aleatórias. Cada caso foi
+lido com fatias iguais e com a votação entre cinco caixas deslocadas.
+
+\subsection{Latência e entrega (H2)}
+\label{subsec:exp_latencia}
+
+A latência e a entrega foram medidas com o \textit{script} \texttt{latencia\_ponta\_a\_ponta.py},
+com o nó no modo autônomo. Nesse modo, o computador apenas escuta: o disparo é a primeira
+linha que o firmware escreve na serial após o despertar, e o fim é o instante em que a
+imagem é remontada ou a leitura é decodificada. Como o boot da ROM do ESP32 não aparece na
+serial, o disparo marcado ocorre cerca de 0,3 a 0,5~s após o despertar real, o que
+subestima a latência nesse valor nos dois fluxos. No fluxo em nuvem, a latência não inclui a
+execução do \gls{ocr} no servidor, que é feita depois sobre as imagens salvas; como mostra a
+Tabela~\ref{tab:tempo_inferencia}, esse tempo é da ordem de milissegundos e não altera a
+comparação. Foram feitas duas corridas:
+
+\begin{itemize}
+    \item \textbf{Fluxo em nuvem}: 31 despertares, das 9h34 às 11h20, simultâneos à medição
+    de corrente. Em 30 deles o nó enviou uma imagem; no outro, o nó acordou e voltou a dormir
+    sem enviar nada, e esse despertar foi excluído.
+    \item \textbf{Fluxo em borda}: 34 despertares, das 12h59 às 13h27.
+\end{itemize}
+
+Para conferir o \gls{pdr} do fluxo em nuvem com uma contagem exata dos pacotes enviados, foi
+feita uma terceira corrida com o \textit{script} \texttt{reconstrutor.py} no modo controlado.
+Nele, o nó fica sempre ligado, sem \textit{deep sleep}, e o computador envia o comando de
+captura, espera o fim do envio e, após uma pausa de 10~s, dispara a leitura seguinte. Foram
+30 envios, das 14h59 às 16h44. O número de pacotes enviados vem do log do próprio nó, que
+registra cada tentativa de transmissão, e não da lacuna no contador de quadros (FCnt), que
+não detecta perdas no início nem no fim de uma imagem. Cada corrida grava todos os quadros
+recebidos, os logs das duas seriais e as imagens remontadas, que ficam versionadas no
+repositório. O tempo no ar de cada envio é calculado pela Equação~\eqref{eq:tpacote_enlace},
+e não medido.
+
+Em algumas execuções, o receptor deixou de repassar quadros ao computador por 15 a 25
+minutos seguidos, enquanto o nó registrava todos os envios como aceitos pelo módulo. Isso
+ocorreu em uma primeira tentativa do fluxo em borda, das 12h25 às 12h46, e em cinco execuções
+do fluxo em nuvem, das 13h41 às 14h55. Essas execuções foram interrompidas e mantidas no
+repositório em arquivos separados, como registro, mas não entram nas estatísticas: as perdas
+nelas vêm de uma falha do receptor, cuja causa não foi identificada, e não do enlace. Essa
+exclusão é retomada na discussão das limitações.
+
+\subsection{Consumo de energia (H3)}
+\label{subsec:exp_energia}
+
+A corrente do nó foi medida com um sensor INA219, cujo resistor \textit{shunt} de
+0,1~$\Omega$ foi ligado em série na alimentação de 5~V, antes da \gls{esp32cam}. Como o
+Radioenge é alimentado pelo regulador de 3,3~V da própria placa, a medição inclui o nó
+inteiro: microcontrolador, câmera, módulo de rádio, regulador e LED. Um capacitor de
+100~µF, ligado depois do resistor, evita a queda de tensão nos picos de transmissão. O
+INA219 foi lido por I2C por um Arduino Uno, que enviava ao computador uma amostra a cada
+10~ms (100~Hz), com a tensão no resistor e a tensão de alimentação. A
+Figura~\ref{fig:bancada_corrente} mostra a montagem.
+
+\begin{figure}[H]
+    \centering
+    \caption{Montagem da medição de corrente do nó sensor}
+    \label{fig:bancada_corrente}
+    \begin{tikzpicture}[
+        font=\footnotesize,
+        node distance=8mm and 10mm,
+        bloco/.style={draw, rounded corners=2pt, align=center, fill=white,
+                      minimum height=9mm, text width=#1},
+        bloco/.default=3.2cm,
+        seta/.style={-{Stealth[length=2mm]}, thick},
+        rotulo/.style={font=\scriptsize\itshape, align=center}
+    ]
+        \node[bloco] (mb) {\textbf{ESP32-CAM-MB}\\5~V da USB e serial do nó};
+        \node[bloco, right=of mb] (ina) {\textbf{INA219}\\\textit{shunt} de 0,1~$\Omega$};
+        \node[bloco, right=of ina] (cam) {\textbf{\gls{esp32cam}}\\regulador de 3,3~V};
+        \node[bloco, below=of cam] (radio) {\textbf{Radioenge RD49C}};
+        \node[bloco, below=of ina] (uno) {\textbf{Arduino Uno}\\100 amostras/s};
+        \node[bloco, below=of mb] (pc) {\textbf{Computador}\\\texttt{corrente.py}};
+        \node[draw, dashed, rounded corners=4pt, inner sep=2.5mm, fit=(cam) (radio),
+              label={[font=\scriptsize\bfseries, anchor=south east]north east:Nó sensor medido}] {};
+
+        \draw[seta] (mb) -- node[rotulo, above] {5~V} (ina);
+        \draw[seta] (ina) -- node[rotulo, above] {5~V} (cam);
+        \draw[seta] (cam) -- node[rotulo, right] {3,3~V e UART} (radio);
+        \draw[seta] (ina) -- node[rotulo, right] {I2C} (uno);
+        \draw[seta] (uno) -- node[rotulo, above] {USB} (pc);
+        \draw[seta] (mb) -- node[rotulo, left] {USB} (pc);
+    \end{tikzpicture}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{figure}
+
+O INA219 foi configurado com o ganho que admite até 320~mV no resistor (3,2~A), para não
+saturar nos picos de transmissão. A corrente é calculada no computador pela tensão no
+resistor, cujo passo de 10~µV corresponde a 0,1~mA. Com o nó desconectado, a leitura foi de
+0,00~mV, de modo que nenhum \textit{offset} foi descontado. Considerando a tolerância do
+resistor e o \textit{offset} típico do sensor, a incerteza é de cerca de 1~mA mais 1\% da
+leitura, o que torna confiáveis apenas as correntes de repouso acima de alguns
+miliampères. A taxa de 100 amostras por segundo registra cerca de 13 amostras em cada
+pacote de 135,8~ms no ar.
+
+A análise, feita pelo \textit{script} \texttt{corrente.py}, separa os ciclos pelos trechos
+de repouso. O nível de repouso é estimado pela mediana dos 10\% menores valores da
+captura, e todo trecho abaixo de um limiar, de 5~mA ou 50\% acima desse nível, o que for
+maior, com pelo menos 12~s de duração, é considerado repouso. Cada ciclo vai do fim de um
+repouso ao fim do seguinte, e a carga do ciclo é calculada pela
+Equação~\eqref{eq:carga_leitura}. A duração mínima de 12~s foi necessária porque picos
+isolados de uma única amostra, de cerca de 61~mA, partiam alguns trechos de repouso em
+dois e criavam ciclos falsos. Foram feitas duas capturas principais:
+
+\begin{itemize}
+    \item \textbf{Fluxo em nuvem}: 685.000 amostras em 6.850~s, a partir das 9h29. Dos 31
+    ciclos encontrados, um foi excluído: o mesmo despertar sem envio excluído na medição de
+    latência, em que o nó ficou acordado por 0,97~s. Restaram 30 ciclos completos.
+    \item \textbf{Fluxo em borda}: 169.738 amostras em 1.697~s, das 12h22 às 12h49, com 32
+    ciclos completos.
+\end{itemize}
+
+Antes dessas capturas, um teste curto de quatro ciclos com uma versão anterior do firmware
+do fluxo em nuvem, que mantinha a câmera ligada durante todo o envio, foi usado como
+referência para medir o efeito de desligá-la após a captura.
+
+A partir das médias medidas de corrente e tempo acordado de cada fluxo, a autonomia foi
+estimada pela Equação~\eqref{eq:autonomia_modelo} para uma bateria hipotética de
+2.000~mAh e para intervalos de 10~minutos e de 1~hora entre leituras. A corrente de
+repouso medida, de cerca de 24~mA, inclui o Radioenge, que permanece ligado durante o
+\textit{deep sleep} do ESP32 (Seção~\ref{subsubsec:ciclo_operacao}), e os demais
+componentes da placa. A medição que separaria essas parcelas, com o módulo desconectado,
+não foi realizada. Por isso, a estimativa foi repetida com correntes de repouso hipotéticas
+de 5, 1 e 0,1~mA, para mostrar como o resultado depende desse valor.
