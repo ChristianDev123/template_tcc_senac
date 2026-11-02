@@ -57,8 +57,116 @@ exigiu 15.335.424~bytes de memória de trabalho (\textit{arena}) do TensorFlow L
 Arduino-ESP32 3.0.7. O descarte vale para os modelos como foram exportados e não invalida
 a abordagem com CTC, que permanece como possibilidade de trabalho futuro. O pipeline C foi
 descartado por rodar apenas no computador e por ter o classificador treinado com dígitos
-impressos e manuscritos, e não com imagens de hidrômetros. O pipeline B, adotado, é
-descrito a seguir.
+diretamente retirados dos visores \cite{kucev2020} e visores montados sinteticamente com
+dígitos manuscritos \cite{iqbal2019digits}, e não com imagens de hidrômetros puras.
+Devido à complexidade arquitetural e aos desafios de implementação em hardware desses
+modelos,
+os detalhes técnicos dos pipelines A e C são aprofundados a seguir.
+
+\subsubsection{Detalhamento dos modelos explorados (U-Net e CTC)}
+\label{subsubsec:modelos_descartados}
+
+\paragraph{O modelo de localização U-Net (Pipelines A e C).}
+O modelo de localização inicial baseava-se na arquitetura U-Net, projetada para receber
+imagens de \(384 \times 384\) pixels e extrair uma máscara precisa do visor. Em testes
+iniciais em ambiente de desenvolvimento, esta rede apresentou uma sobreposição (IoU)
+frequentemente superior a 95\%. No entanto, ao ser convertido para execução em borda,
+o modelo exigiu cerca de 15 MB de memória RAM (arena), inviabilizando sua execução no
+ESP32-CAM, que dispõe de aproximadamente 4 MB de PSRAM.
+
+O treinamento desta rede foi realizado em duas fases: ponto flutuante e
+\textit{Quantization-Aware Training} (QAT). Para lidar com o forte desbalanceamento entre
+os pixels de fundo e os da janela do visor, adotou-se uma função de perda composta pela
+soma da Entropia Cruzada Binária (BCE) e da \textit{Dice Loss}. Utilizou-se o otimizador
+Adam com taxa de aprendizado inicial de \(1 \times 10^{-3}\), reduzida para
+\(1 \times 10^{-5}\) na fase de quantização. Para aumentar a robustez, aplicou-se aumento
+de dados (\textit{data augmentation}) com espelhamento horizontal, variações de brilho e
+contraste, além de recortes aleatórios. O treinamento ocorreu por até 250 épocas na fase
+flutuante e 100 épocas na fase QAT,
+com parada antecipada (\textit{early stopping}) para evitar sobreajuste.
+
+Na tentativa de contornar o problema de memória, desenvolveu-se uma versão compacta da
+U-Net, reduzindo a profundidade dos filtros e a resolução de entrada para
+\(160 \times 160\) pixels, o que diminuiu a arena de memória para cerca de 1,7~MB. Essa
+versão apresentou um comportamento curioso: em alguns testes, obteve métricas de
+segmentação superiores à versão grande, ignorando ruídos visuais externos (como códigos
+de barras no mostrador). Contudo, o modelo compacto apresentou alta instabilidade. Devido
+à redução agressiva de resolução e ao pós-processamento via contornos conectados, a rede
+falhava em aproximadamente 15\% dos casos, retornando uma máscara vazia. Essa incerteza
+motivou o abandono da U-Net
+em favor da rede codificador--decodificador simples descrita na Seção~\ref{subsubsec:segmentacao}.
+
+
+\begin{figure}[H]
+    \centering
+    \caption{Comparação do desempenho do modelo U-Net Principal (\(384 \times 384\)) e
+    Compacto (\(160 \times 160\)) na segmentação de visores.}
+    \label{fig:comparacao_unet}
+
+    \includegraphics[width=\textwidth]{sections/imagens/testeUNet_1.png}\\[0.1cm]
+    \includegraphics[width=\textwidth]{sections/imagens/testeUNet_2.png}\\[0.1cm]
+    \includegraphics[width=\textwidth]{sections/imagens/testeUNet_3.png}
+
+    \legend{Fonte: Elaborado pelos autores (2026). A primeira coluna mostra a imagem
+    original, a segunda o gabarito (máscara correta) e as duas últimas as previsões dos
+    modelos com seus respectivos IoU.}
+\end{figure}
+
+\paragraph{O reconhecedor CRNN com CTC (Pipeline A).}
+O reconhecedor do pipeline A utilizou uma arquitetura CRNN
+(\textit{Convolutional Recurrent Neural Network}) aliada à perda CTC
+(\textit{Connectionist Temporal Classification}). Para contornar as restrições de memória,
+as camadas recorrentes tradicionais (LSTMs) foram substituídas por convoluções temporais
+1D com \textit{kernels} largos. O modelo recebia a janela de dígitos redimensionada para
+\(48 \times 224\) pixels e previa a sequência completa de até oito dígitos de uma só vez.
+
+O treinamento do modelo CTC utilizou uma abordagem híbrida de dados, combinando imagens
+reais de hidrômetros (recortadas e rotuladas) com imagens sintéticas geradas a partir de
+dígitos manuscritos e impressos. A função de perda foi a própria CTC Loss, que resolve o
+alinhamento temporal sem a necessidade de segmentação prévia. O otimizador utilizado foi
+o Adam (taxa de aprendizado de \(3 \times 10^{-4}\) na fase flutuante e
+\(5 \times 10^{-5}\) na fase QAT), com recorte de norma do gradiente
+(\textit{clipnorm}) fixado em 1.0 para estabilidade. Aplicou-se um aumento de dados
+agressivo para simular condições reais, incluindo ruído gaussiano, variações extremas de
+brilho e contraste, além de oclusões aleatórias (blocos pretos) para simular sujeira no
+visor. O treinamento durou até 600 épocas na fase flutuante e 100 épocas na fase QAT.
+
+A avaliação do modelo CTC em um conjunto de teste composto por 30 imagens reais de
+hidrômetros (executado em servidor) demonstrou a força da abordagem. Conforme detalhado na
+Tabela~\ref{tab:resultado_ctc}, o modelo obteve 86,67\% de acerto completo
+da sequência (26 de 30 imagens) e 94,58\% de acurácia por dígito na posição exata.
+
+\begin{table}[H]
+    \centering
+    \caption{Resumo da avaliação do modelo CRNN com CTC no conjunto de teste}
+    \label{tab:resultado_ctc}
+    \begin{tabular}{@{}lc@{}}
+        \toprule
+        \textbf{Métrica} & \textbf{Resultado} \\
+        \midrule
+        Acurácia da sequência completa (até 8 dígitos) & 86,67\% (26/30) \\
+        Acurácia por dígito (posição exata) & 94,58\% \\
+        Acurácia por dígito (edição/Levenshtein) & 95,42\% \\
+        Acurácia do valor lógico (ignorando zeros à esquerda) & 86,67\% \\
+        \bottomrule
+    \end{tabular}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{table}
+
+\paragraph{Inviabilidade do Pipeline A no hardware alvo.}
+Apesar do excelente desempenho do CTC em software, a arquitetura completa do pipeline A
+não pôde ser executada no ESP32-CAM. O motivo principal não foi o consumo do CTC (que,
+isoladamente, exige cerca de 500 KB de memória, viável para a placa), mas sim a dependência
+do modelo U-Net para recortar a janela. Como a U-Net estourava a memória e utilizava o
+operador \texttt{REDUCE\_PROD} (ausente na biblioteca do microcontrolador), todo o pipeline
+ficou inviabilizado. A arquitetura CRNN com CTC permanece guardada como uma alternativa
+de alta performance para hardwares mais robustos ou trabalhos futuros.
+
+\subsubsection{Detalhes do Pipeline B (Adotado)}
+\label{subsubsec:pipeline_b}
+
+Como as abordagens anteriores falharam em cenários de borda, o pipeline B foi concebido
+para ser leve e independente de modelos pesados de segmentação.
 
 \subsubsection{Conjuntos de dados}
 \label{subsubsec:dados_ocr}
@@ -251,5 +359,5 @@ $160 \times 120$ pixels, em que cada dígito tem aproximadamente 16 pixels de la
 
 Nas medições de latência e consumo em hardware, o firmware de borda ainda executava o
 modelo de localização a cada leitura, com a câmera posicionada à mão para que a janela
-ocupasse a maior parte do quadro e a caixa prevista ficasse próxima dela. Essa configuração é descrita na próxima seção, e o efeito
-de remover a localização é discutido nos resultados.
+ocupasse a maior parte do quadro e a caixa prevista ficasse próxima dela. Essa configuração
+é descrita na próxima seção, e o efeito de remover a localização é discutido nos resultados.
