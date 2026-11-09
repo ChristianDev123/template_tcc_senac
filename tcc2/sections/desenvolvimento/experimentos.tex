@@ -59,7 +59,7 @@ que transformam uma sequência na outra:
     \label{eq:leitura_exata}
     Acc_{\mathrm{leitura}} = \frac{1}{M}\sum_{m=1}^{M} \mathbf{1}\!\left[\hat{y}_m = y_m\right]
     \qquad
-    Acc_{\mathrm{dígito}} = \frac{\sum_{m}\sum_{k=1}^{N_m} \mathbf{1}\!\left[\hat{y}_{m,k} = y_{m,k}\right]}{\sum_{m} N_m}
+    Acc_{\textrm{dígito}} = \frac{\sum_{m}\sum_{k=1}^{N_m} \mathbf{1}\!\left[\hat{y}_{m,k} = y_{m,k}\right]}{\sum_{m} N_m}
 \end{equation}
 
 \begin{equation}
@@ -199,8 +199,15 @@ marcada à mão a janela de dígitos.
 O \textbf{conjunto de hidrômetros físicos} reúne 21 fotos de medidores reais, de
 diferentes modelos, com cinco a oito roletes, capturadas pelo \gls{esp32cam} no quadro de
 $160 \times 120$ pixels. Ao contrário do conjunto comum, essas fotos têm reflexos no vidro,
-iluminação variada e ângulos diversos. A leitura de cada foto foi anotada manualmente, mas
-a janela de dígitos ainda não foi marcada.
+iluminação variada e ângulos diversos. A leitura de cada foto foi anotada manualmente. Para
+cada foto, foram marcados também a inclinação da fileira de roletes, a janela de dígitos no
+quadro endireitado e a polaridade da janela: dígitos escuros em fundo claro ou dígitos
+claros em fundo escuro. A inclinação foi a estimada pela transformada de Hough quando ela
+deixava a fileira reta, em 16 fotos, e corrigida à mão nas outras cinco. A janela foi marcada
+pela geometria da imagem, sobre o quadro ampliado com uma grade de coordenadas, a partir das
+bordas da janela e dos centros dos roletes, de modo que as divisões das fatias caíssem entre
+eles. Todas as marcações foram concluídas antes da execução da leitura e não foram ajustadas
+pelo resultado.
 
 Cada foto foi avaliada nos dois fluxos. No fluxo em borda, o quadro de
 $160 \times 120$ pixels é lido diretamente; no fluxo em nuvem, o mesmo quadro é antes
@@ -225,8 +232,18 @@ Quando a janela é prevista pelo modelo, o erro da leitura é dominado pelo erro
 localização: com uma caixa que cobre quase todo o mostrador, as fatias não correspondem
 aos roletes, e nenhum classificador acertaria a leitura. Assim, os resultados da primeira
 configuração medem o modelo de localização, e não a capacidade de leitura do classificador,
-que é medida pelas configurações com a janela marcada à mão. O conjunto de hidrômetros
-físicos, por ainda não ter a janela marcada, foi avaliado apenas na primeira configuração.
+que é medida pelas configurações com a janela marcada à mão.
+
+O conjunto de hidrômetros físicos, cujas fotos têm inclinações de até cerca de 55°, foi lido
+com a janela prevista pelo modelo e com a janela e a inclinação marcadas à mão. Nesse caso,
+a rotação do quadro foi aplicada nos dois fluxos, o que no firmware exigiria uma rotação com
+ângulo fixo, ainda não implementada. Como variante de diagnóstico, as fotos de fundo escuro
+foram lidas também com os tons da janela invertidos, o que equivale a informar a polaridade
+do medidor na instalação, assim como o número de roletes. Depois da avaliação do conjunto
+completo, os resultados também foram calculados para o subconjunto de fotos que atendem às
+condições de uma instalação adequada: câmera frontal, dígitos escuros em fundo claro e todos
+os dígitos visíveis no quadro. Por ter sido definido após a avaliação, esse subconjunto é
+apresentado como complemento, e o conjunto completo continua sendo a referência.
 
 Por fim, como a ROI de uma instalação real é calibrada uma única vez e pode ter pequenos
 desvios, foi medida a tolerância da leitura ao erro de posição da janela. Partindo da janela

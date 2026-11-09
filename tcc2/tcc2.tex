@@ -1,10 +1,5 @@
 % ---------------------------------------------------------------
-% TEMPLATE TCC2 - SENAC SANTO AMARO
-% ---------------------------------------------------------------
-% Trabalho de Conclusão de Curso 2
-% Elaborado para apresentação do trabalho final do TCC
-% Estrutura: Introdução, Revisão Bibliográfica, Metodologia,
-%            Desenvolvimento, Resultados e Análise, Conclusão
+% TCC2 - SENAC SANTO AMARO
 % ---------------------------------------------------------------
 
 \documentclass[
@@ -34,6 +29,9 @@
 \usepackage{amsmath,amssymb}        % Símbolos matemáticos
 \usepackage{pgfgantt}               % Diagramas de Gantt
 \usetikzlibrary{arrows.meta,positioning,fit,calc} % Diagramas do desenvolvimento
+\usepackage{pgfplots}                % Gráficos dos resultados
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{groupplots}
 \usepackage[brazilian,hyperpageref]{backref}  % Páginas com citações
 \usepackage[alf]{abntex2cite}       % Citações ABNT
 %Adicionados posteriormente:
@@ -104,7 +102,6 @@
 \local{São Paulo}
 \data{2026}
 \orientador{Afonso César Lelis Brandão}
-% \coorientador{Prof. Nome do Coorientador} % Descomente se houver coorientador
 
 \instituicao{%
   SENAC -- Serviço Nacional de Aprendizagem Comercial
@@ -186,9 +183,6 @@
 % ---------------------------------------------------------------
 % LISTA DE ABREVIATURAS E SIGLAS
 % ---------------------------------------------------------------
-% Esta lista deve vir antes do início do trabalho (elementos pré-textuais).
-% Em ordem alfabética, relacione APENAS as abreviaturas e siglas que
-% realmente aparecem no texto. Edite a tabela conforme o seu trabalho.
 \pdfbookmark[0]{Lista de Abreviaturas e Siglas}{siglas}
 % \chapter*{Lista de Abreviaturas e Siglas}
 \printglossary[type=\acronymtype, title={Lista de Abreviaturas e Siglas}]
@@ -238,12 +232,12 @@
 \label{sec:justificativa}
 \input{sections/justificativa}
 % ===============================================================
-% CAPÍTULO 2 - REVISÃO BIBLIOGRÁFICA / TRABALHOS RELACIONADOS
+% CAPÍTULO 2 - REVISÃO BIBLIOGRÁFICA
 % ===============================================================
-\chapter{Revisão Bibliográfica / Trabalhos Relacionados}
+\chapter{Revisão bibliográfica}
 \label{cap:revisao}
 
-A revisão bibliográfica tem como finalidade apresentar o embasamento teórico do trabalho, demonstrando o conhecimento do autor sobre o tema e identificando o estado da arte. Este capítulo está organizado em três seções: a \textbf{metodologia da pesquisa bibliográfica} (como as fontes foram levantadas e selecionadas), os \textbf{fundamentos teóricos} (os conceitos, teorias e técnicas que fundamentam a proposta) e os \textbf{trabalhos correlatos} (estudos que enfrentaram o mesmo problema, com suas limitações).
+Este capítulo apresenta a base teórica do trabalho e o estado da arte sobre o tema. Ele está organizado em três seções: a metodologia da pesquisa bibliográfica, que descreve como as fontes foram levantadas e selecionadas; os fundamentos teóricos sobre \gls{lora}, \gls{lorawan}, computação em borda e em nuvem, restrições regulatórias e aprendizado de máquina aplicado ao \gls{ocr}; e os trabalhos correlatos, que enfrentaram problemas semelhantes ao deste estudo.
 
 % ---------------------------------------------------------------
 \section{Metodologia da pesquisa bibliográfica}
@@ -263,37 +257,13 @@ A revisão bibliográfica tem como finalidade apresentar o embasamento teórico 
 % ===============================================================
 % CAPÍTULO 3 - DESENVOLVIMENTO
 % ===============================================================
-\chapter{Desenvolvimento / Implementação / Experimentos}
+\chapter{Desenvolvimento}
 \label{cap:desenvolvimento}
 
 % ---------------------------------------------------------------
 \section{Metodologia da pesquisa}
 \label{sec:metodologia_pesquisa}
 \input{sections/proc_exp_metricas}
-% Descreva, de forma rigorosa e reprodutível, como a pesquisa foi conduzida. 
-% Informe o tipo de pesquisa (exploratória, empírica, formal etc.) e a hipótese ou o critério de sucesso adotado;
-% detalhe os procedimentos da abordagem proposta, em ordem cronológica 
-% (use listas numeradas, diagramas de fluxo ou pseudocódigo para tornar o processo claro); 
-% liste as ferramentas, linguagens, bibliotecas, frameworks e ambientes utilizados, justificando cada escolha com base no problema;
-% e explique como os experimentos foram configurados, quais variáveis foram controladas e quais métricas demonstram que a proposta cumpre os objetivos 
-% (ex.: acurácia, latência, custo).
-
-% \begin{table}[htb]
-%   \centering
-%   \caption{Plano de experimentação}
-%   \label{tab:plano_experimentos}
-%   \begin{tabular}{lcc}
-%     \toprule
-%     \textbf{Experimento} & \textbf{Variável controlada} & \textbf{Métrica principal} \\
-%     \midrule
-%     Comparação com baseline & algoritmo & acurácia \\
-%     Escalabilidade & carga & tempo médio \\
-%     \bottomrule
-%   \end{tabular}
-%   \legend{Fonte: Elaborado pelo autor (2025)}
-% \end{table}
-
-% \textit{Propor algo não basta: demonstre como será validado.}
 
 \section{Detalhes da implementação}
 \label{sec:implementacao}
@@ -308,97 +278,15 @@ A revisão bibliográfica tem como finalidade apresentar o embasamento teórico 
 
 \section{Resultados e análises}
 \label{sec:resultados}
-
-Apresente os resultados com tabelas, gráficos e figuras e, sobretudo, \textbf{analise-os} à luz da revisão bibliográfica e da hipótese --- resultados devem ser analisados, não apenas exibidos. Diferencie:
-\begin{itemize}
-  \item \textbf{Figura:} imagens, diagramas conceituais ou arquiteturais que ilustram estrutura ou fluxo.
-  \item \textbf{Gráfico:} plot de dados (linhas, barras, boxplots) que compara métricas obtidas.
-\end{itemize}
-
-Exemplo de tabela:
-\begin{table}[htb]
-  \centering
-  \caption{Comparação de métricas reportadas}
-  \label{tab:metricas}
-  \begin{tabular}{lcc}
-    \toprule
-    Método & Acurácia & Tempo médio (ms) \\
-    \midrule
-    Proposta & 92\% & 180 \\
-    Baseline & 88\% & 220 \\
-    \bottomrule
-  \end{tabular}
-  \legend{Fonte: Elaborado pelo autor (2025)}
-\end{table}
-
-Ao inserir um gráfico (por exemplo \texttt{assets/figures/desempenho.png}), use --- lembrando que, pela ABNT, o \texttt{\textbackslash caption} (título) vem \textbf{acima} da imagem e a fonte (\texttt{\textbackslash legend}) vem \textbf{abaixo}:
-\begin{verbatim}
-\begin{figure}[htb]
-  \centering
-  \caption{Gráfico de comparação das métricas de acurácia.}
-  \label{fig:grafico-desempenho}
-  \includegraphics[width=0.8\textwidth]{assets/figures/desempenho.png}
-  \legend{Fonte: Elaborado pelo autor (2025)}
-\end{figure}
-\end{verbatim}
-
-Na sequência, faça a \textbf{análise crítica e comparação}, discutindo as descobertas em relação aos trabalhos correlatos e evidenciando ganhos e perdas; por fim, na \textbf{discussão}, relacione os resultados aos objetivos e à hipótese, explicitando se o critério de sucesso foi atingido.
-
-\textit{O desenvolvimento só é pesquisa se estiver claramente ligado ao problema e à metodologia definida.}
+\input{sections/desenvolvimento/resultados}
 
 % ---------------------------------------------------------------
 % CONCLUSÃO
 % ---------------------------------------------------------------
 \chapter{Conclusão}
 
-\section{Retomada do problema e dos objetivos}
-Retome o problema e destaque o que foi atingido.
-
-\section{Contribuições para a Computação}
-Explique o que a pesquisa trouxe de novo.
-
-\section{Limitações e trabalhos futuros}
-Liste limites e sugira próximos passos coerentes.
-
-% ---------------------------------------------------------------
-% OBSERVAÇÕES DO AUTOR
-% ---------------------------------------------------------------
-\chapter*{Observações importantes}
-\addcontentsline{toc}{chapter}{Observações importantes}
-
-Para graduação, Wazlawick aceita trabalhos aplicados desde que:
-\begin{itemize}
-    \item O problema seja preciso;
-    \item A solução esteja fundamentada;
-    \item Haja análise crítica;
-    \item Não seja apenas entrega funcional.
-\end{itemize}
-
-% ---------------------------------------------------------------
-% APRESENTAÇÃO ORAL (BANCA)
-% ---------------------------------------------------------------
-\chapter*{Apresentação oral (banca)}
-\addcontentsline{toc}{chapter}{Apresentação oral (banca)}
-
-Além do documento escrito, o TCC2 é avaliado por uma \textbf{apresentação oral} final perante a banca. Um template pronto em \texttt{Beamer} está disponível no arquivo \texttt{apresentacao\_tcc2.tex}, na mesma pasta deste documento.
-
-\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
-\textbf{Regras da apresentação do TCC2}
-
-\vspace{0.2cm}
-\begin{itemize}
-    \item \textbf{Duração: 30 minutos.} Cronometre os ensaios; ultrapassar o tempo é penalizado. A arguição da banca ($\approx$ 5 min) ocorre após a apresentação, separada desse total.
-    \item \textbf{Cubra o trabalho completo}, seguindo a estrutura do documento escrito: introdução e problema, objetivos e método, desenvolvimento, \textbf{resultados e análise} e conclusão/contribuições.
-    \item \textbf{Dê peso aos resultados:} grande parte do tempo deve ser dedicada a apresentar e \textbf{analisar criticamente} os resultados, não apenas descrevê-los.
-    \item \textbf{Ritmo:} cerca de 1 a 1,5 minuto por slide, totalizando aproximadamente 20 a 26 slides de conteúdo.
-    \item \textbf{Logo do SENAC:} grande no primeiro slide (capa) e pequena no canto superior direito dos demais slides --- já configurado no template.
-    \item \textbf{Demonstração:} se houver demo ao vivo, tenha um plano B com capturas de tela ou vídeo curto.
-    \item \textbf{Slides de apoio (backup):} inclua slides extras após o ``Obrigado'' com detalhes técnicos, trechos de código e tabelas completas para a arguição.
-\end{itemize}
-
-\vspace{0.2cm}
-\textbf{Distribuição de tempo sugerida (30 min):} introdução/problema $\approx$ 4 min; objetivos/método $\approx$ 5 min; desenvolvimento $\approx$ 8 min; resultados/análise $\approx$ 8 min; conclusão $\approx$ 3 min; demonstração $\approx$ 2 min.
-}}
+\label{cap:conclusao}
+% Capítulo a ser escrito.
 
 % ---------------------------------------------------------------
 % ELEMENTOS PÓS-TEXTUAIS
@@ -409,31 +297,5 @@ Além do documento escrito, o TCC2 é avaliado por uma \textbf{apresentação or
 \printglossary[type=main, title={Glossário}]
 
 \bibliography{bibliografia_tcc2}
-
-% ---------------------------------------------------------------
-% APÊNDICES (se necessário)
-% ---------------------------------------------------------------
-% \begin{apendicesenv}
-% \partapendices
-%
-% \chapter{Nome do Apêndice}
-% \label{ap:apendice1}
-%
-% Conteúdo do apêndice (material elaborado pelo próprio autor).
-%
-% \end{apendicesenv}
-
-% ---------------------------------------------------------------
-% ANEXOS (se necessário)
-% ---------------------------------------------------------------
-% \begin{anexosenv}
-% \partanexos
-%
-% \chapter{Nome do Anexo}
-% \label{an:anexo1}
-%
-% Conteúdo do anexo (material de terceiros).
-%
-% \end{anexosenv}
 
 \end{document}

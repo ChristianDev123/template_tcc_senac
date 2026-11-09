@@ -205,11 +205,6 @@ por foto, e não por recorte, para que dígitos de uma mesma foto não aparecess
 tempo no treino e na validação: 15\% das fotos foram separadas, resultando em 41.660
 recortes de treino e 7.378 de validação.
 
-Uma limitação importante deve ser registrada: as fotos capturadas pelo \gls{esp32cam}
-neste trabalho não são de um hidrômetro físico, mas de um monitor que exibia imagens de
-hidrômetros. Elas reproduzem o sensor, a lente e a compressão da câmera, mas não os
-reflexos no vidro, a iluminação e o ângulo de um medidor instalado.
-
 \subsubsection{Modelo de localização da janela}
 \label{subsubsec:segmentacao}
 
@@ -248,7 +243,7 @@ No uso, a caixa da janela é o menor retângulo que contém os pixels marcados p
 convertido para as coordenadas do quadro de $160 \times 120$ pixels. Como a máscara
 prevista transborda a janela, essa caixa fica muito maior do que deveria. Nas fotos do
 conjunto de teste comum, descrito adiante, a caixa prevista
-teve mediana de $125 \times 85$ pixels, cobrindo quase todo o mostrador, enquanto a janela
+teve mediana de $130 \times 90$ pixels, cobrindo quase todo o mostrador, enquanto a janela
 real mede cerca de $97 \times 18$ pixels. Com essa caixa, cada fatia contém pedaços de
 vários roletes e do mostrador, e a leitura falha.
 
@@ -334,7 +329,9 @@ Como o modelo de localização não encontra a janela com precisão, os resultad
 prevista por ele são próximos de zero. Esses resultados \textbf{não refletem a capacidade
 de leitura do classificador}, e sim o erro da localização: com a caixa errada, as fatias
 não correspondem aos roletes. Quando a janela é informada corretamente, o mesmo
-classificador lê os dígitos com alta acurácia. A Figura~\ref{fig:leitura_caixa_manual}
+classificador lê com alta acurácia os dígitos escuros sobre fundo claro, que predominam no
+treino; a leitura de medidores com dígitos claros em fundo escuro é discutida nos
+resultados (Seção~\ref{subsec:resultado_leitura}). A Figura~\ref{fig:leitura_caixa_manual}
 mostra cinco capturas do \gls{esp32cam} em que a janela foi marcada à mão: todas as cinco
 leituras e os 26 dígitos foram reconhecidos corretamente.
 
