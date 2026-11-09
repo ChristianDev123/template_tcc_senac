@@ -1,15 +1,21 @@
-Para avaliar a eficácia do sistema de telemetria proposto e garantir a objetividade dos resultados, serão adotados indicadores quantitativos divididos em três dimensões críticas: desempenho de rede, precisão de visão computacional, eficiência energética e acurácia preditiva.
+Para avaliar a eficácia do sistema de telemetria proposto e garantir a objetividade dos resultados, 
+foram adotados indicadores quantitativos divididos em três dimensões críticas: desempenho de rede, 
+precisão de visão computacional, eficiência energética e acurácia preditiva.
 
 \subsection{Desempenho da Rede de Comunicação}
 A robustez da transmissão via \gls{lorawan} será quantificada através da \gls{pdr}. 
-Conforme a metodologia de \citeonline{bravo2025ants}, o PDR é definido pela razão entre o número de pacotes recebidos pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor:
+Conforme a metodologia de \citeonline{bravo2025ants}, 
+o PDR é definido pela razão entre o número de pacotes recebidos 
+pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor:
 
 \begin{equation}
 \label{eq:pdr}
 PDR = \left( \frac{\text{Pacotes Recebidos}}{\text{Pacotes Enviados}} \right) \times 100
 \end{equation}
 
-Além do \gls{pdr}, será medida a latência de ponta a ponta, compreendendo o tempo decorrido desde o disparo da captura da imagem no ESP32 até a disponibilidade do dado processado no \textit{dashboard}.
+Além do \gls{pdr}, será medida a latência de ponta a ponta, 
+compreendendo o tempo decorrido desde o disparo da captura da imagem no ESP32 
+até a disponibilidade do dado processado no \textit{dashboard}.
 
 % =================================================================================================
 
