@@ -594,7 +594,6 @@
 
   \vspace{0.1cm}
   \begin{columns}[t]
-    \column{0.3\textwidth}\bignum[senacblue]{72 mil}{parâmetros na CNN}
     \column{0.3\textwidth}\bignum[senacblue]{49 mil}{recortes de dígitos no treino}
     \column{0.3\textwidth}\bignum[senacblue]{INT8}{quantização pós-treino}
   \end{columns}
@@ -749,31 +748,6 @@
   \end{tikzpicture}
 \end{frame}
 
-\begin{frame}{H3 - Energia e autonomia}
-  \begin{columns}[c]
-    \column{0.5\textwidth}
-    \centering
-    \begin{tikzpicture}
-      \begin{axis}[estiloSlides, ybar, width=\linewidth, height=5cm,
-          bar width=1cm, ymin=0, ymax=5.5, enlarge x limits=0.6,
-          symbolic x coords={Nuvem,Borda}, xtick={Nuvem,Borda},
-          ylabel={Carga por leitura (mAh)},
-          nodes near coords, nodes near coords style={font=\footnotesize\bfseries},
-          point meta=explicit symbolic]
-        \addplot[fill=corNuvem, draw=none, bar shift=0pt] coordinates {(Nuvem,4.64) [4,64]};
-        \addplot[fill=corBorda, draw=none, bar shift=0pt] coordinates {(Borda,0.824) [0,82]};
-      \end{axis}
-    \end{tikzpicture}
-    \column{0.47\textwidth}
-    \begin{itemize}\small
-      \item Nuvem acorda \textbf{10$\times$ mais tempo}
-      \item Repouso de \textbf{24~mA} limita a autonomia
-      \item Ganho de autonomia: \textbf{1,0 a 7,0$\times$}, conforme o intervalo
-    \end{itemize}
-    \vspace{0.2cm}
-    \etiqueta{corOk}{CONFIRMADA}
-  \end{columns}
-\end{frame}
 
 \begin{frame}{Comparação dos fluxos}
   \centering
@@ -788,12 +762,9 @@
     Pacotes entregues        & 98,0\%    & 79,4\% \\
     Leituras completas       & 66,7\%    & 79,4\% \\
     Inferência               & 6,25~ms (PC) & $\approx$18~s (ESP32) \\
-    Atualizar o modelo       & só no servidor & regravar o nó \\
     \bottomrule
   \end{tabular}
-
   \vspace{0.3cm}
-  {\scriptsize\color{black!60} Mesmo modelo INT8 nos dois fluxos}
 \end{frame}
 
 
@@ -804,7 +775,7 @@
     \toprule
     \textbf{Hipótese} & \textbf{Evidência} & \textbf{Situação} \\
     \midrule
-    H1 - INT8 reduz acurácia     & 95,46\% $\rightarrow$ 95,38\%, $p=0{,}29$ & \etiqueta{senacorange}{DESPREZÍVEL} \\[2pt]
+    H1 - INT8 reduz acurácia     & 95,46\% $\rightarrow$ 95,38\% & \etiqueta{senacorange}{DESPREZÍVEL} \\[2pt]
     H2 - maior custo no nó (borda) & 18,2 contra 0,7~s; 1,65~MB  & \etiqueta{corOk}{CONFIRMADA} \\[2pt]
     H3 - nuvem com menor autonomia & 4,64 contra 0,82~mAh                   & \etiqueta{corOk}{CONFIRMADA} \\
     \bottomrule
