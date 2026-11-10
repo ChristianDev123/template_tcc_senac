@@ -402,23 +402,6 @@
 % ===============================================================
 \section{Resultados parciais}
 % ===============================================================
-{
-\setbeamercolor{background canvas}{bg=senacblue!6}
-\begin{frame}{Resultados em números}
-  \vspace{0.2cm}
-  \begin{columns}[t]
-    \column{0.32\textwidth}\bignum[corBorda]{10$\times$}{menor latência na borda\\(18,8~s contra 189~s)}
-    \column{0.32\textwidth}\bignum[corBorda]{5,6$\times$}{menos energia por leitura\\(0,82 contra 4,64~mAh)}
-    \column{0.32\textwidth}\bignum[senacblue]{99,6\%}{concordância float × INT8\\nos mesmos dígitos}
-  \end{columns}
-  \vspace{0.6cm}
-  \begin{columns}[t]
-    \column{0.32\textwidth}\bignum[corBorda]{450$\times$}{menos dados no ar\\(9~B contra $\approx$4~KB)}
-    \column{0.32\textwidth}\bignum[senacblue]{97,7\%}{dígitos corretos em\\conjunto independente}
-    \column{0.32\textwidth}\bignum[corFalha]{56\%}{dígitos corretos em\\hidrômetros reais (21 fotos)}
-  \end{columns}
-\end{frame}
-}
 
 \begin{frame}{H1 --- Quantização INT8}
   \begin{columns}[c]
@@ -590,35 +573,6 @@
   {\scriptsize\color{black!60} Mesmo modelo INT8 nos dois fluxos}
 \end{frame}
 
-\begin{frame}{Hidrômetros reais: onde ainda falha}
-  \begin{columns}[c]
-    \column{0.55\textwidth}
-    \centering
-    \begin{tabular}{@{}c@{\hspace{3pt}}c@{}}
-      \includegraphics[width=0.44\linewidth]{assets/apresentacao/esp32_04.jpg} &
-      \includegraphics[width=0.44\linewidth]{assets/apresentacao/esp32_22.jpg} \\
-      \multicolumn{2}{c}{\tiny\color{corOk}\textbf{Fundo claro e frontal: acerta}} \\[3pt]
-      \includegraphics[width=0.44\linewidth]{assets/apresentacao/esp32_02.jpg} &
-      \includegraphics[width=0.44\linewidth]{assets/apresentacao/esp32_21.jpg} \\
-      \multicolumn{2}{c}{\tiny\color{corFalha}\textbf{Fundo escuro ou inclinado: erra}}
-    \end{tabular}
-    \column{0.43\textwidth}
-    \centering
-    \footnotesize
-    \begin{tabular}{lr}
-      \toprule
-      \textbf{Grupo (21 fotos)} & \textbf{Dígitos} \\
-      \midrule
-      Fundo claro, frontal  & 90\% \\
-      Fundo escuro          & 12\% \\
-      \quad invertido       & 43\% \\
-      \bottomrule
-    \end{tabular}
-
-    \vspace{0.3cm}
-    {\scriptsize Fundo escuro é só \textbf{0,9\%} do treino}
-  \end{columns}
-\end{frame}
 
 \begin{frame}{Síntese das hipóteses}
   \centering
@@ -632,52 +586,11 @@
     H3 --- nuvem com menor autonomia & 4,64 contra 0,82~mAh                   & \etiqueta{corOk}{CONFIRMADA} \\
     \bottomrule
   \end{tabular}
-
-  \vspace{0.4cm}
-  {\scriptsize\color{black!60} Rede (complementar): borda 10$\times$ mais rápida; entrega por leitura
-  79\% contra 67\%, sem significância ($p=0{,}27$)}
 \end{frame}
 
 % ===============================================================
 \section{Andamento}
 % ===============================================================
-\begin{frame}{Andamento do trabalho}
-  \begin{columns}[t]
-    \column{0.32\textwidth}
-    {\small\bfseries\color{corOk}Concluído}
-    \begin{itemize}\scriptsize
-      \item Dois fluxos funcionando
-      \item Treino e quantização do OCR
-      \item Medições de bancada
-      \item Testes estatísticos
-      \item Capítulo de desenvolvimento e resultados
-    \end{itemize}
-    \column{0.32\textwidth}
-    {\small\bfseries\color{senacorange}Em andamento}
-    \begin{itemize}\scriptsize
-      \item Conclusão
-      \item Resumo e \textit{abstract}
-      \item Revisão da H1 e da metodologia
-      \item Ajustes no referencial teórico
-    \end{itemize}
-    \column{0.32\textwidth}
-    {\small\bfseries\color{senacblue}Próximos passos}
-    \begin{itemize}\scriptsize
-      \item Suspender o rádio no repouso
-      \item Mais fotos de fundo escuro no treino
-      \item Medir a borda com janela fixa no nó
-      \item Ensaiar a apresentação final
-    \end{itemize}
-  \end{columns}
-
-  \vspace{0.4cm}
-  \centering
-  \begin{tikzpicture}
-    \fill[black!10, rounded corners=2pt] (0,0) rectangle (10.5,0.3);
-    \fill[corOk, rounded corners=2pt] (0,0) rectangle (8.4,0.3);
-    \node[font=\scriptsize\bfseries, anchor=west] at (10.6,0.15) {$\approx$80\% (estimativa)};
-  \end{tikzpicture}
-\end{frame}
 
 \begin{frame}{Conclusão parcial}
   \begin{itemize}
@@ -699,41 +612,11 @@
   \vspace{0.8cm}
   {\Large\bfseries\color{senacblue}Obrigado!\par}
   \vspace{0.3cm}
-  {\normalsize Perguntas e sugestões?\par}
 \end{frame}
 
 % ---------------------------------------------------------------
 % APÊNDICE
 % ---------------------------------------------------------------
 \appendix
-
-\begin{frame}{Apoio --- Autonomia (leitura a cada 1~h)}
-  \centering
-  \begin{tikzpicture}[declare function={autonomia(\i,\a,\r,\T) = 83.3333*\T/(\i*\a + \r*(\T - \a));}]
-    \begin{axis}[estiloSlides, width=0.8\textwidth, height=5.4cm,
-        xmode=log, ymode=log, xmin=0.01, xmax=30, ymin=1, ymax=3000,
-        xtick={0.01,0.1,1,10}, xticklabels={{0,01},{0,1},1,10},
-        ytick={1,10,100,1000}, yticklabels={1,10,100,{1.000}},
-        xlabel={Corrente em repouso (mA)}, ylabel={Autonomia (dias)},
-        legend pos=south west]
-      \addplot[color=corNuvem, line width=1pt, domain=-2:1.4771, samples=60]
-        ({10^x}, {autonomia(84.5,189.9,10^x,3600)});
-      \addlegendentry{Nuvem}
-      \addplot[color=corBorda, line width=1pt, densely dashed, domain=-2:1.4771, samples=60]
-        ({10^x}, {autonomia(114.4,19.45,10^x,3600)});
-      \addlegendentry{Borda}
-      \draw[color=black!55, line width=0.5pt] (axis cs:24,1) -- (axis cs:24,3000)
-        node[pos=0.9, anchor=east, font=\tiny] {medido: 24~mA};
-    \end{axis}
-  \end{tikzpicture}
-
-  {\tiny Bateria hipotética de 2.000~mAh}
-\end{frame}
-
-\begin{frame}{Apoio --- Conjunto físico completo}
-  \centering
-  \includegraphics[height=0.75\textheight]{assets/apresentacao/conjunto_fisico.png}\\
-  {\tiny Verde: dígito correto · vermelho: dígito errado}
-\end{frame}
 
 \end{document}
