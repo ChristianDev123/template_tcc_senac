@@ -369,7 +369,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Modelos Explorados - U-Net}
+\begin{frame}{Modelos Explorados: U-Net}
   \begin{columns}[t]
     \column{0.48\textwidth}
     {\small\bfseries\color{senacblue}Métricas e Perda Composta}
@@ -389,10 +389,34 @@
 
   \vspace{0.4cm}
   \centering
-  {\scriptsize\color{black!70} Parada antecipada (\textit{early stopping}) aplicada para prevenir sobreajuste (\textit{overfitting}).}
 \end{frame}
 
-\begin{frame}{Modelos Explorados - U-Net}
+\begin{frame}{Modelos Explorados — BCE e Dice Loss}
+  \begin{columns}[t]
+    \column{0.48\textwidth}
+    {\small\bfseries\color{senacblue}1. Binary Cross-Entropy (BCE)}
+    \begin{itemize}\small
+      \item \textbf{Avaliação Pixel a Pixel}: Classifica cada pixel individualmente como visor ($1$) ou fundo ($0$).
+      \item \textbf{Fórmula}:
+        $$\mathcal{L}_{\text{BCE}} = - [y \log(\hat{y}) + (1-y) \log(1-\hat{y})]$$
+      \item \textbf{Limitação}: Sofre com \textbf{desbalanceamento de classes}. Se 95\% da imagem for fundo, a rede tende a prever tudo como fundo.
+    \end{itemize}
+
+    \column{0.48\textwidth}
+    {\small\bfseries\color{senacblue}2. Dice Loss (Sobreposição)}
+    \begin{itemize}\small
+      \item \textbf{Avaliação Regional}: Mede a sobreposição volumétrica entre a máscara predita e o gabarito.
+      \item \textbf{Fórmula}:
+        $$\mathcal{L}_{\text{Dice}} = 1 - \frac{2 \sum y \hat{y} + \epsilon}{\sum y + \sum \hat{y} + \epsilon}$$
+      \item \textbf{Vantagem}: Insensível ao tamanho do fundo; foca na região de interesse.
+    \end{itemize}
+  \end{columns}
+
+  \vspace{0.3cm}
+  \centering
+\end{frame}
+
+\begin{frame}{Modelos Explorados: U-Net}
   \begin{columns}[c]
     \column{0.48\textwidth}
     {\small\bfseries\color{senacblue}U-Net Principal ($384 \times 384$)}
@@ -418,10 +442,33 @@
 
   \vspace{0.4cm}
   \centering
-  {\scriptsize\color{black!70} Decisão: substituição da U-Net por rede codificador--decodificador simples.}
 \end{frame}
 
-\begin{frame}{Modelos Explorados - CRNN com CTC}
+\begin{frame}{Modelos Explorados: Filtragem de Ruído por Resolução(U-Net)}
+  \begin{columns}[c]
+    \column{0.52\textwidth}
+    {\small\bfseries\color{senacblue}Efeito da Redução de Resolução ($160 \times 160$)}
+    \begin{itemize}\small
+      \item \textbf{Filtro Passa-Baixas Natural}: A redução de resolução atenua detalhes de alta frequência visual.
+      \item \textbf{Imunidade a Ruídos no Mostrador}: O modelo compacto ignorou elementos externos como códigos de barras e inscrições da carcaça.
+    \end{itemize}
+
+    \column{0.45\textwidth}
+    \centering
+    \IfFileExists{sections/imagens/testeUNet_3.png}{%
+      \includegraphics[width=\linewidth]{sections/imagens/testeUNet_3.png}%
+    }{%
+      \fbox{\scriptsize\color{senacblue}Imagem: testeUNet\_3.png}%
+    }\\[2pt]
+    {\tiny\color{black!70} U-Net 384 ($\text{IoU } 67,7\%$) vs. U-Net 160 ($\text{IoU } 94,5\%$)}
+  \end{columns}
+
+  \vspace{0.3cm}
+  \centering
+  {\scriptsize\color{black!70} Embora reduzisse ruídos pontuais, a U-Net 160 mantinha o risco de máscara vazia (15\% de falha).}
+\end{frame}
+
+\begin{frame}{Modelos Explorados: CRNN com CTC}
   \begin{columns}[t]
     \column{0.48\textwidth}
     {\small\bfseries\color{senacblue}Conceito e Arquitetura}
@@ -445,7 +492,7 @@
   {\scriptsize\color{black!70} Treinamento durou até 600 épocas em Float32 e 100 épocas na fase QAT.}
 \end{frame}
 
-\begin{frame}{Modelos Explorados - CRNN com CTC}
+\begin{frame}{Modelos Explorados: CRNN com CTC}
   \begin{columns}[c]
     \column{0.52\textwidth}
     {\small\bfseries\color{senacblue}Desempenho em Servidor (30 Imagens)}
@@ -469,7 +516,45 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Treinamento}
+\begin{frame}{Modelos Explorados — Posição Exata vs. Levenshtein}
+  \begin{columns}[t]
+    \column{0.48\textwidth}
+    {\small\bfseries\color{senacblue}1. Acurácia por Posição Exata}
+    \begin{itemize}\small
+      \item Compara caractere por caractere no mesmo índice rígido.
+      \item \textbf{Exemplo 1 (Troca de Posição)}:
+        \begin{itemize}\scriptsize
+          \item Real: \texttt{1 2 3 4 5} $\rightarrow$ Previsto: \texttt{1 2 4 3 5}
+          \item Acertos nas posições 0, 1 e 4: \textbf{60,0\%} (3/5).
+        \end{itemize}
+      \item \textbf{Exemplo 2 (Dígito Omitido)}:
+        \begin{itemize}\scriptsize
+          \item Real: \texttt{1 2 3 4 5} $\rightarrow$ Previsto: \texttt{1 2 3 5}
+          \item Deslocamento de índice: \textbf{60,0\%} (3/5).
+        \end{itemize}
+    \end{itemize}
+
+    \column{0.48\textwidth}
+    {\small\bfseries\color{senacblue}2. Distância de Levenshtein (Edição)}
+    \begin{itemize}\small
+      \item Avalia o menor número de inserções, remoções ou substituições.
+      \item \textbf{Exemplo 1 (Substituições)}:
+        \begin{itemize}\scriptsize
+          \item Exige 2 substituições (3 $\leftrightarrow$ 4): Distância = 2 $\rightarrow$ \textbf{60,0\%}.
+        \end{itemize}
+      \item \textbf{Exemplo 2 (Deleção)}:
+        \begin{itemize}\scriptsize
+          \item Exige apenas 1 remoção (falta do '4'): Distância = 1 $\rightarrow$ \textbf{80,0\%}.
+        \end{itemize}
+    \end{itemize}
+  \end{columns}
+
+  \vspace{0.3cm}
+  \centering
+  {\scriptsize\color{black!70} \textbf{Conclusão do Critério:} A Distância de Levenshtein evita que a omissão de um único dígito penalize injustamente o alinhamento dos dígitos subsequentes.}
+\end{frame}
+
+\begin{frame}{Treinamento: Modelo de Classificação de Dígitos}
   \centering
   \includegraphics[width=0.66\textwidth]{sections/imagens/ocr_treino_classificador.png}\\[2pt]
   {\tiny Curvas de treino do classificador de dígitos}
