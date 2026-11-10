@@ -471,15 +471,20 @@
 
 \begin{frame}{Treinamento}
   \centering
-  \includegraphics[width=0.8\textwidth]{sections/imagens/ocr_treino_classificador.png}\\[2pt]
+  \includegraphics[width=0.66\textwidth]{sections/imagens/ocr_treino_classificador.png}\\[2pt]
   {\tiny Curvas de treino do classificador de dígitos}
 
-  \vspace{0.3cm}
+  \vspace{0.1cm}
   \begin{columns}[t]
     \column{0.3\textwidth}\bignum[senacblue]{72 mil}{parâmetros na CNN}
     \column{0.3\textwidth}\bignum[senacblue]{49 mil}{recortes de dígitos no treino}
     \column{0.3\textwidth}\bignum[senacblue]{INT8}{quantização pós-treino}
   \end{columns}
+
+  \vspace{0.25cm}
+  {\tiny\color{black!65}\textbf{Dados:} \textit{Word-Wheel Water Meter Dataset}, Zhao et al.\ (2026), Dryad
+  ($\approx$47 mil recortes) · \textit{Water Meters Dataset}, R.\ Kucev, Kaggle (localização do
+  visor e $\approx$1,5 mil recortes) · fotos próprias da ESP32-CAM\par}
 \end{frame}
 
 \begin{frame}{Leitura no nó}
@@ -498,35 +503,12 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Bancada de testes}
-  \begin{columns}[c]
-    \column{0.42\textwidth}
-    \centering
-    \includegraphics[width=0.85\linewidth]{assets/apresentacao/bancada_quadro.jpg}\\[2pt]
-    {\tiny Quadro capturado pelo nó na bancada}
-    \column{0.56\textwidth}
-    \centering
-    \begin{tikzpicture}[
-        font=\scriptsize,
-        bloco/.style={draw, rounded corners=2pt, align=center, fill=white, minimum height=0.8cm, text width=1.9cm},
-        seta/.style={-{Stealth[length=1.6mm]}, thick}]
-      \node[bloco] (mb) {Fonte USB 5~V};
-      \node[bloco, right=0.5cm of mb] (ina) {\textbf{INA219}\\\textit{shunt} 0,1~$\Omega$};
-      \node[bloco, below=0.5cm of ina] (no) {\textbf{Nó sensor}\\câmera + rádio};
-      \node[bloco, below=0.5cm of mb] (uno) {Arduino\\100 amostras/s};
-      \draw[seta] (mb) -- (ina); \draw[seta] (ina) -- (no); \draw[seta] (ina) -- (uno);
-    \end{tikzpicture}
-
-    \vspace{0.3cm}
-    {\footnotesize 30 ciclos por fluxo · leitura a cada ciclo}
-  \end{columns}
-\end{frame}
 
 % ===============================================================
 \section{Resultados parciais}
 % ===============================================================
 
-\begin{frame}{H1 --- Quantização INT8}
+\begin{frame}{H1 - Quantização INT8}
   \begin{columns}[c]
     \column{0.55\textwidth}
     \centering
@@ -552,7 +534,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{H2 --- Custo computacional no nó}
+\begin{frame}{H2 - Custo computacional no nó}
   \begin{columns}[c]
     \column{0.55\textwidth}
     \centering
@@ -567,7 +549,7 @@
         \addplot[fill=corBorda, draw=none, bar shift=0pt] coordinates {(18.20,Borda) [18,2~s]};
       \end{axis}
     \end{tikzpicture}\\[2pt]
-    {\tiny Borda: captura + OCR · Nuvem: captura da imagem}
+    {\tiny Borda: captura + localização + 6 dígitos · Nuvem: captura + compressão JPEG}
     \column{0.42\textwidth}
     \centering
     {\fontsize{22}{24}\selectfont\bfseries\color{corBorda}1,65~MB\par}
@@ -581,7 +563,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Rede --- Latência}
+\begin{frame}{Rede - Latência}
   \begin{columns}[c]
     \column{0.6\textwidth}
     \centering
@@ -606,7 +588,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Rede --- Entrega}
+\begin{frame}{Rede - Entrega}
   \begin{columns}[c]
     \column{0.6\textwidth}
     \centering
@@ -633,7 +615,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{H3 --- Corrente em um ciclo}
+\begin{frame}{H3 - Corrente em um ciclo}
   \centering
   \begin{tikzpicture}
     \begin{groupplot}[estiloSlides,
@@ -649,7 +631,7 @@
   \end{tikzpicture}
 \end{frame}
 
-\begin{frame}{H3 --- Energia e autonomia}
+\begin{frame}{H3 - Energia e autonomia}
   \begin{columns}[c]
     \column{0.5\textwidth}
     \centering
@@ -704,9 +686,9 @@
     \toprule
     \textbf{Hipótese} & \textbf{Evidência} & \textbf{Situação} \\
     \midrule
-    H1 --- INT8 reduz acurácia     & 95,46\% $\rightarrow$ 95,38\%, $p=0{,}29$ & \etiqueta{senacorange}{DESPREZÍVEL} \\[2pt]
-    H2 --- maior custo no nó (borda) & 18,2 contra 0,7~s; 1,65~MB  & \etiqueta{corOk}{CONFIRMADA} \\[2pt]
-    H3 --- nuvem com menor autonomia & 4,64 contra 0,82~mAh                   & \etiqueta{corOk}{CONFIRMADA} \\
+    H1 - INT8 reduz acurácia     & 95,46\% $\rightarrow$ 95,38\%, $p=0{,}29$ & \etiqueta{senacorange}{DESPREZÍVEL} \\[2pt]
+    H2 - maior custo no nó (borda) & 18,2 contra 0,7~s; 1,65~MB  & \etiqueta{corOk}{CONFIRMADA} \\[2pt]
+    H3 - nuvem com menor autonomia & 4,64 contra 0,82~mAh                   & \etiqueta{corOk}{CONFIRMADA} \\
     \bottomrule
   \end{tabular}
 \end{frame}
