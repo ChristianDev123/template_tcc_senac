@@ -369,19 +369,103 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{OCR em duas etapas}
-  \centering
-  \includegraphics[width=0.95\textwidth]{sections/imagens/testeUNet_1.png}\\[2pt]
-  {\tiny Segmentação do visor (U-Net): original, gabarito e previsões}
-
-  \vspace{0.3cm}
+\begin{frame}{Modelos Explorados - U-Net}
   \begin{columns}[t]
-    \column{0.3\textwidth}\centering
-    {\Large\bfseries\color{senacblue}1}\\{\scriptsize Localiza o visor}
-    \column{0.3\textwidth}\centering
-    {\Large\bfseries\color{senacblue}2}\\{\scriptsize Fatia em dígitos}
-    \column{0.3\textwidth}\centering
-    {\Large\bfseries\color{senacblue}3}\\{\scriptsize CNN 28$\times$28 classifica 0--9}
+    \column{0.48\textwidth}
+    {\small\bfseries\color{senacblue}Métricas e Perda Composta}
+    \begin{itemize}\small
+      \item \textbf{IoU (Intersection over Union)}: mede a sobreposição percentual entre a predição e o gabarito real.
+      \item \textbf{BCE + Dice Loss}: a junção da Entropia Cruzada Binária com a \textit{Dice Loss} trata o forte desbalanceamento entre o fundo e a janela do visor.
+    \end{itemize}
+
+    \column{0.48\textwidth}
+    {\small\bfseries\color{senacblue}Estratégia de Treinamento}
+    \begin{itemize}\small
+      \item \textbf{Duas Fases}: Float32 (até 250 épocas) e QAT (100 épocas).
+      \item \textbf{Otimizador Adam}: tx. de aprendizado $10^{-3} \rightarrow 10^{-5}$ na fase QAT.
+      \item \textbf{Augmentation}: espelhamento horizontal, brilho, contraste e recortes aleatórios.
+    \end{itemize}
+  \end{columns}
+
+  \vspace{0.4cm}
+  \centering
+  {\scriptsize\color{black!70} Parada antecipada (\textit{early stopping}) aplicada para prevenir sobreajuste (\textit{overfitting}).}
+\end{frame}
+
+\begin{frame}{Modelos Explorados — U-Net}
+  \begin{columns}[c]
+    \column{0.48\textwidth}
+    {\small\bfseries\color{senacblue}U-Net Principal ($384 \times 384$)}
+    \begin{itemize}\small
+      \item IoU frequentemente $> 95\%$ em bancada.
+      \item Exigiu \textbf{$\approx 15$~MB de RAM} (arena TFLite).
+    \end{itemize}
+    \vspace{0.1cm}
+    \etiqueta{corFalha}{INVIÁVEL NO ESP32-CAM}\\[2pt]
+    {\tiny Estoura os $\approx 4$~MB de PSRAM do microcontrolador.}
+
+    \column{0.48\textwidth}
+    {\small\bfseries\color{senacblue}U-Net Compacta ($160 \times 160$)}
+    \begin{itemize}\small
+      \item Arena reduzida para \textbf{1,7~MB} (viável em RAM).
+      \item Ignorou ruídos visuais (códigos de barras).
+      \item Falhou em \textbf{15\% dos testes}.
+    \end{itemize}
+    \vspace{0.1cm}
+    \etiqueta{corFalha}{DESCARTADA (INSTÁVEL)}\\[2pt]
+    {\tiny Retornava máscara vazia no pós-processamento.}
+  \end{columns}
+
+  \vspace{0.4cm}
+  \centering
+  {\scriptsize\color{black!70} Decisão: substituição da U-Net por rede codificador--decodificador simples.}
+\end{frame}
+
+\begin{frame}{Modelos Explorados — CRNN com CTC}
+  \begin{columns}[t]
+    \column{0.48\textwidth}
+    {\small\bfseries\color{senacblue}Conceito e Arquitetura}
+    \begin{itemize}\small
+      \item \textbf{CTC Loss}: resolve o alinhamento temporal e reconhece os 8 dígitos sem segmentar a imagem.
+      \item \textbf{Convoluções 1D}: substituem LSTMs por \textit{kernels} largos para economizar memória.
+      \item \textbf{Entrada}: janela em $48 \times 224$ pixels.
+    \end{itemize}
+
+    \column{0.48\textwidth}
+    {\small\bfseries\color{senacblue}Estratégia de Treino}
+    \begin{itemize}\small
+      \item \textbf{Dataset Híbrido}: imagens reais recortadas + síntese manuscrita/impressa.
+      \item \textbf{Adam + Clipnorm}: $3 \times 10^{-4} \rightarrow 5 \times 10^{-5}$ com \texttt{clipnorm=1.0}.
+      \item \textbf{Augmentation Agressivo}: ruído gaussiano, brilho e oclusões (blocos pretos/sujeira).
+    \end{itemize}
+  \end{columns}
+
+  \vspace{0.4cm}
+  \centering
+  {\scriptsize\color{black!70} Treinamento durou até 600 épocas em Float32 e 100 épocas na fase QAT.}
+\end{frame}
+
+\begin{frame}{Modelos Explorados — CRNN com CTC}
+  \begin{columns}[c]
+    \column{0.52\textwidth}
+    {\small\bfseries\color{senacblue}Desempenho em Servidor (30 Imagens)}
+    \begin{itemize}\small
+      \item \textbf{Sequência Completa}: 86,67\% (26/30).
+      \item \textbf{Dígito (Posição Exata)}: 94,58\%.
+      \item \textbf{Dígito (Levenshtein)}: 95,42\%.
+      \item \textbf{Valor Lógico}: 86,67\%.
+    \end{itemize}
+
+    \column{0.44\textwidth}
+    {\small\bfseries\color{senacblue}Inviabilidade no ESP32-CAM}
+    \begin{itemize}\small
+      \item CTC isolado ocupa apenas \textbf{$\approx 500$~KB}.
+      \item \textbf{Gargalo 1}: dependia da U-Net para recortar a janela.
+      \item \textbf{Gargalo 2}: ausência do operador \texttt{REDUCE\_PROD} no TFLite Micro.
+    \end{itemize}
+    \vspace{0.1cm}
+    \etiqueta{senacorange}{PIPELINE A PRESERVADO}\\[2pt]
+    {\tiny Mantido como alternativa de alta performance para a nuvem.}
   \end{columns}
 \end{frame}
 
