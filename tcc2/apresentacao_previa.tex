@@ -177,29 +177,68 @@
     \end{itemize}
     \column{0.48\textwidth}
     \centering
-    \includegraphics[width=0.9\linewidth]{assets/apresentacao/esp32_22.jpg}\\[2pt]
+    \includegraphics[width=0.4\linewidth]{assets/apresentacao/Img_Original_Unet.jpg}\\[2pt]
     {\tiny Hidrômetro visto pela câmera do nó (160$\times$120)}
   \end{columns}
 \end{frame}
 
-\begin{frame}{Introdução - Contexto}
-  \centering
-  \begin{tikzpicture}[
-      font=\small,
-      caixa/.style={draw, rounded corners=3pt, align=center, minimum height=1.1cm, text width=3.1cm, fill=white},
-      seta/.style={-{Stealth[length=2mm]}, thick}]
-    \node[caixa] (cam) {\textbf{Nó sensor}\\ESP32-CAM};
-    \node[caixa, draw=corBorda, line width=1pt, above right=0.2cm and 1.6cm of cam] (b) {\color{corBorda}\textbf{Borda}\\OCR no nó\\envia \textbf{9 bytes}};
-    \node[caixa, draw=corNuvem, line width=1pt, below right=0.2cm and 1.6cm of cam] (n) {\color{corNuvem}\textbf{Nuvem}\\envia a \textbf{imagem}\\OCR no servidor};
-    \node[caixa, right=1.6cm of $(b)!0.5!(n)$] (s) {\textbf{Servidor}\\leitura registrada};
-    \draw[seta] (cam) -- (b); \draw[seta] (cam) -- (n);
-    \draw[seta] (b) -- (s); \draw[seta] (n) -- (s);
-  \end{tikzpicture}
+\begin{frame}[fragile]{Introdução - Contexto}
+    \centering
+    \vfill
+    {\footnotesize Como a adoção de determinado método de processamento 
+            impacta a eficiência energética, acurácia e desempenho 
+            computacional de um sistema IOT voltado à Smart Metering?}
+    \vspace{0.3cm}
+    
+    \resizebox{0.58\textwidth}{!}{%
+    \begin{tikzpicture}[
+        font=\tiny,
+        node distance=3.5mm and 3.5mm,
+        bloco/.style={draw, rounded corners=2pt, align=center, fill=white,
+                      minimum height=6mm, text width=#1},
+        bloco/.default=4.8cm,
+        seta/.style={-{Stealth[length=1.5mm]}, thick},
+        rotulo/.style={font=\tiny\itshape, align=center}
+    ]
+        \node[bloco] (hidro) {Medidor analógico (mostrador de roletes)};
+        \node[bloco, below=of hidro] (cam) 
+            {\textbf{ESP32CAM}\\captura de quadro 160$\times$120 em tons de cinza};
+        
+        \node[bloco=4.2cm, below left=5mm and -1.5cm of cam] (borda) 
+            {\textbf{Fluxo em borda}\\segmentação e classificação de dígitos no 
+             próprio nó};
+             
+        \node[bloco=4.2cm, below right=5mm and -1.5cm of cam] (nuvem) 
+            {\textbf{Fluxo em nuvem}\\compressão JPEG \\
+            segmentação e envio da imagem em 'n' partes};
+             
+        \node[bloco] (radio) at ($(borda.south)!0.5!(nuvem.south)+(0,-8mm)$) 
+            {\textbf{Radioenge RD49C}\\módulo LoRaWan comandado por UART (comandos AT)};
+            
+        \node[draw, dashed, rounded corners=3pt, inner sep=1.8mm,
+              fit=(cam) (borda) (nuvem) (radio),
+              label={[font=\tiny\bfseries, anchor=north west]north west:Nó sensor}] (no) {};
+              
+        \node[bloco, below=7mm of radio] (rx) 
+            {\textbf{Receptor LoRa32}\\escuta o canal de 915,9~MHz e repassa os quadros recebidos};
+            
+        \node[bloco, below=of rx] (pc) 
+            {\textbf{Computador (servidor)}\\descriptografa o \textit{payload}; lê a leitura 
+             (FPort 2) ou remonta o JPEG e executa o OCR (FPort 1); registra as medições};
 
-  \vspace{0.5cm}
-  {\small Qual escolha gasta menos energia, responde mais rápido e erra menos?}
+        \draw[seta] (hidro) -- (cam);
+        \draw[seta] (cam.south) -- ++(0,-1.5mm) -| (borda.north);
+        \draw[seta] (cam.south) -- ++(0,-1.5mm) -| (nuvem.north);
+        \draw[thick] (borda.south) |- ([yshift=2.5mm]radio.north);
+        \draw[thick] (nuvem.south) |- ([yshift=2.5mm]radio.north);
+        \draw[seta] ([yshift=2.5mm]radio.north) -- (radio.north);
+        \draw[seta] (radio) -- node[rotulo, right=1mm] 
+            {LoRaWan, AU915, DR6 (SF8 / 500~kHz), ativação ABP} (rx);
+        \draw[seta] (rx) -- node[rotulo, right=1mm] {USB-serial} (pc);
+    \end{tikzpicture}%
+    }
+    \vfill
 \end{frame}
-
 % ===============================================================
 \section{Objetivos e método}
 % ===============================================================
