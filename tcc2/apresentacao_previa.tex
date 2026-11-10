@@ -185,59 +185,25 @@
 \begin{frame}[fragile]{Introdução - Contexto}
     \centering
     \vfill
-    {\footnotesize Como a adoção de determinado método de processamento 
-            impacta a eficiência energética, acurácia e desempenho 
-            computacional de um sistema IOT voltado à Smart Metering?}
-    \vspace{0.3cm}
-    
-    \resizebox{0.58\textwidth}{!}{%
-    \begin{tikzpicture}[
-        font=\tiny,
-        node distance=3.5mm and 3.5mm,
-        bloco/.style={draw, rounded corners=2pt, align=center, fill=white,
-                      minimum height=6mm, text width=#1},
-        bloco/.default=4.8cm,
-        seta/.style={-{Stealth[length=1.5mm]}, thick},
-        rotulo/.style={font=\tiny\itshape, align=center}
-    ]
-        \node[bloco] (hidro) {Medidor analógico (mostrador de roletes)};
-        \node[bloco, below=of hidro] (cam) 
-            {\textbf{ESP32CAM}\\captura de quadro 160$\times$120 em tons de cinza};
-        
-        \node[bloco=4.2cm, below left=5mm and -1.5cm of cam] (borda) 
-            {\textbf{Fluxo em borda}\\segmentação e classificação de dígitos no 
-             próprio nó};
-             
-        \node[bloco=4.2cm, below right=5mm and -1.5cm of cam] (nuvem) 
-            {\textbf{Fluxo em nuvem}\\compressão JPEG \\
-            segmentação e envio da imagem em 'n' partes};
-             
-        \node[bloco] (radio) at ($(borda.south)!0.5!(nuvem.south)+(0,-8mm)$) 
-            {\textbf{Radioenge RD49C}\\módulo LoRaWan comandado por UART (comandos AT)};
-            
-        \node[draw, dashed, rounded corners=3pt, inner sep=1.8mm,
-              fit=(cam) (borda) (nuvem) (radio),
-              label={[font=\tiny\bfseries, anchor=north west]north west:Nó sensor}] (no) {};
-              
-        \node[bloco, below=7mm of radio] (rx) 
-            {\textbf{Receptor LoRa32}\\escuta o canal de 915,9~MHz e repassa os quadros recebidos};
-            
-        \node[bloco, below=of rx] (pc) 
-            {\textbf{Computador (servidor)}\\descriptografa o \textit{payload}; lê a leitura 
-             (FPort 2) ou remonta o JPEG e executa o OCR (FPort 1); registra as medições};
-
-        \draw[seta] (hidro) -- (cam);
-        \draw[seta] (cam.south) -- ++(0,-1.5mm) -| (borda.north);
-        \draw[seta] (cam.south) -- ++(0,-1.5mm) -| (nuvem.north);
-        \draw[thick] (borda.south) |- ([yshift=2.5mm]radio.north);
-        \draw[thick] (nuvem.south) |- ([yshift=2.5mm]radio.north);
-        \draw[seta] ([yshift=2.5mm]radio.north) -- (radio.north);
-        \draw[seta] (radio) -- node[rotulo, right=1mm] 
-            {LoRaWan, AU915, DR6 (SF8 / 500~kHz), ativação ABP} (rx);
-        \draw[seta] (rx) -- node[rotulo, right=1mm] {USB-serial} (pc);
-    \end{tikzpicture}%
-    }
-    \vfill
+    \begin{columns}[T,onlytextwidth]
+        \column{0.48\textwidth}
+        \begin{itemize}\scriptsize
+          \setlength{\itemsep}{3pt}
+          \item \textbf{Indústria 4.0:} Integração de sistemas ciber-físicos e aquisição inteligente de dados.
+          \item \textbf{Retrofitting:} Adequação de hardware já existente à conectividade proposta pela Industria 4.0.
+        \end{itemize}
+        \column{0.48\textwidth}
+        \begin{itemize}\scriptsize
+          \setlength{\itemsep}{3pt}
+          \item \textbf{Smart Metering:} Monitoramento automatizado e telemetria de recursos hídricos.
+          \item \textbf{Métodos de Processamento:} Comparação entre estratégias em borda (\emph{edge}) e nuvem (\emph{cloud}).
+        \end{itemize}
+      \end{columns}
+      \vspace{0.4cm}
+      {\footnotesize Como a adoção de determinado método de processamento 
+        impacta a eficiência energética, acurácia e desempenho 
+        computacional de um sistema IoT voltado à Smart Metering?}
+      \vfill
 \end{frame}
 % ===============================================================
 \section{Objetivos e método}
@@ -273,13 +239,13 @@
       cab/.style={font=\Large\bfseries, text=senacorange}]
     \node[cartao] (h1) at (0,0) {%
       {\large\bfseries\color{senacorange}H1}\\[2pt]
-      {\scriptsize\bfseries A quantização em INT8 do modelo da borda reduz a acurácia em relação ao modelo em float32}\\[5pt]};
+      {\scriptsize\bfseries A quantização em INT8 do modelo da borda reduz a acurácia em relação ao modelo em float32 aplicado em cloud}\\[5pt]};
     \node[cartao] (h2) at (4.85,0) {%
       {\large\bfseries\color{senacorange}H2}\\[2pt]
-      {\scriptsize\bfseries O processamento local tem custo computacional maior no dispositivo final}\\[5pt]};
+      {\scriptsize\bfseries O processamento local tem custo computacional maior no dispositivo final em comparação ao método de processamento em nuvem}\\[5pt]};
     \node[cartao] (h3) at (9.7,0) {%
       {\large\bfseries\color{senacorange}H3}\\[2pt]
-      {\scriptsize\bfseries A nuvem tem autonomia energética inferior durante a transmissão}\\[5pt]};
+      {\scriptsize\bfseries O método de processamento em nuvem tem autonomia energética inferior durante a transmissão dos dados, em relação ao método de processamento em borda}\\[5pt]};
   \end{tikzpicture}
 \end{frame}
 
@@ -292,15 +258,61 @@
     & \textbf{Métrica} & \textbf{Como medimos} & \textbf{Teste} \\
     \midrule
     \textbf{\color{senacorange}H1} & Acurácia por dígito e leitura exata
-      & 7.378 dígitos de teste, float32 × INT8 & McNemar (pareado) \\
+      & 7.378 dígitos de teste, float32 $\times$ INT8 
+      & \resizebox{\linewidth}{!}{$\tfrac{\text{Dígitos corretos}}{\text{Dígitos lidos}} \Big| \tfrac{\text{Img. corretas}}{\text{Img. lidas}}$} \\
     \textbf{\color{senacorange}H2} & Tempo de processamento e memória no nó
-      & tempo até a leitura (ou imagem) pronta no nó; uso da PSRAM & comparação direta \\
+      & Tempo até a leitura pronta no nó; uso da PSRAM 
+      & \resizebox{\linewidth}{!}{$\text{Acc}_{\text{ocr}} = \frac{VP + VN}{VP + VN + FP + FN}$} \\
     \textbf{\color{senacorange}H3} & Carga por leitura (mAh) e autonomia
-      & INA219 a 100 amostras/s em 30 ciclos por fluxo & razão entre fluxos e modelo de autonomia \\
+      & INA219 a 100 amostras/s em 30 ciclos por fluxo 
+      & $A = \tfrac{C_{\text{bat}}}{I_{\text{médio}} \times 24}$ \\
     \bottomrule
   \end{tabular}
-
   \vspace{0.4cm}
+\end{frame}
+
+\begin{frame}{Metodologia da Pesquisa Bibliográfica}
+  \centering
+  \vspace*{-0.4cm}
+  \begin{tikzpicture}[
+      bloco/.style={draw=senacblue, rounded corners=3pt, fill=senacblue!5, 
+                    text width=10.5cm, align=center, font=\scriptsize, inner sep=3.5pt},
+      setinha/.style={-{Stealth}, thick, text=senacorange}
+    ]
+
+    % Passo 1: Identificação
+    \node[bloco] (p1) at (0,0) {
+      \textbf{1. Identificação Inicial} \quad|\quad \textit{Bases:} Google Scholar, MDPI, Intechopen \quad|\quad \textit{120 artigos}
+    };
+
+    % Seta 1
+    \draw[setinha] (p1.south) -- ++(0,-0.25);
+
+    % Passo 2: Refinamento
+    \node[bloco] (p2) at (0,-1.05) {
+      \textbf{2. Refinamento e Triagem}\\
+      \textit{Inclusão:} 2020–2026, foco prático e telemetria \quad|\quad \textit{Exclusão:} Acesso restrito ou sem detalhes técnicos
+    };
+
+    % Seta 2
+    \draw[setinha] (p2.south) -- ++(0,-0.25);
+
+    % Passo 3: Eixos Temáticos
+    \node[bloco] (p3) at (0,-2.1) {
+      \textbf{3. Eixos Temáticos}\\
+      Categorização estruturada em três frentes: \textbf{Hardware, Software e Redes}
+    };
+
+    % Seta 3
+    \draw[setinha] (p3.south) -- ++(0,-0.25);
+
+    % Passo 4: Strings de Busca
+    \node[bloco] (p4) at (0,-3.15) {
+      \textbf{4. Strings de Busca (ST01 a ST010)}\\
+      Ex: \texttt{"IoT" AND lorawan}, \texttt{"ESP32" AND camera}, \texttt{OCR accuracy "error rate"}
+    };
+
+  \end{tikzpicture}
 \end{frame}
 
 \begin{frame}{Método}
@@ -317,12 +329,6 @@
     \node[etapa, right=0.35cm of d] (e) {\textbf{5}\\Testes estatísticos};
     \draw[seta] (a) -- (b); \draw[seta] (b) -- (c); \draw[seta] (c) -- (d); \draw[seta] (d) -- (e);
   \end{tikzpicture}
-
-  \vspace{0.6cm}
-  {\small Pesquisa experimental e quantitativa \quad·\quad mesmo hardware, mesma imagem, mesmo modelo}
-
-  \vspace{0.2cm}
-  {\scriptsize\color{black!60} Dados brutos e \textit{scripts} versionados no repositório do projeto}
 \end{frame}
 
 % ===============================================================
@@ -346,27 +352,55 @@
 
 \begin{frame}[fragile]{Arquitetura}
   \centering
-  \begin{tikzpicture}[
-      font=\scriptsize,
-      bloco/.style={draw, rounded corners=2pt, align=center, fill=white, minimum height=0.9cm, text width=#1},
-      bloco/.default=2.4cm,
-      seta/.style={-{Stealth[length=1.8mm]}, thick}]
-    \node[bloco=1.8cm] (h) {Hidrômetro};
-    \node[bloco, right=0.5cm of h] (c) {\textbf{ESP32-CAM}\\foto 160$\times$120};
-    \node[bloco=2.6cm, draw=corBorda, line width=1pt, above right=0.15cm and 0.6cm of c] (b) {\color{corBorda}\textbf{Borda}: OCR INT8\\1 pacote de 9~B};
-    \node[bloco=2.6cm, draw=corNuvem, line width=1pt, below right=0.15cm and 0.6cm of c] (n) {\color{corNuvem}\textbf{Nuvem}: JPEG $\approx$4~KB\\24 blocos de 175~B};
-    \node[bloco=2.2cm, right=3.6cm of c] (r) {\textbf{RD49C}\\AU915 · DR6};
-    \node[bloco=2.0cm, right=0.5cm of r] (p) {\textbf{Servidor}\\remonta e lê};
-    \draw[seta] (h) -- (c); \draw[seta] (c) -- (b.west); \draw[seta] (c) -- (n.west);
-    \draw[seta] (b.east) -- (r); \draw[seta] (n.east) -- (r); \draw[seta] (r) -- (p);
-  \end{tikzpicture}
+  \vfill
+  \resizebox{0.70\textwidth}{!}{%
+    \begin{tikzpicture}[
+        font=\tiny,
+        node distance=3.5mm and 3.5mm,
+        bloco/.style={draw, rounded corners=2pt, align=center, fill=white,
+                     minimum height=6mm, text width=#1},
+        bloco/.default=4.8cm,
+        seta/.style={-{Stealth[length=1.5mm]}, thick},
+        rotulo/.style={font=\tiny\itshape, align=center}
+    ]
+        \node[bloco] (hidro) {Medidor analógico (mostrador de roletes)};
+        \node[bloco, below=of hidro] (cam) 
+            {\textbf{ESP32CAM}\\captura de quadro 160$\times$120 em tons de cinza};
+        
+        \node[bloco=4.2cm, below left=5mm and -1.5cm of cam] (borda) 
+            {\textbf{Fluxo em borda}\\segmentação e classificação de dígitos no 
+             próprio nó};
+             
+        \node[bloco=4.2cm, below right=5mm and -1.5cm of cam] (nuvem) 
+            {\textbf{Fluxo em nuvem}\\compressão JPEG \\
+             segmentação e envio da imagem em 'n' partes};
+             
+        \node[bloco] (radio) at ($(borda.south)!0.5!(nuvem.south)+(0,-8mm)$) 
+            {\textbf{Radioenge RD49C}\\módulo LoRaWan comandado por UART (comandos AT)};
+            
+        \node[draw, dashed, rounded corners=3pt, inner sep=1.8mm,
+              fit=(cam) (borda) (nuvem) (radio),
+              label={[font=\tiny\bfseries, anchor=north west]north west:Nó sensor}] (no) {};
+              
+        \node[bloco, below=7mm of radio] (rx) 
+            {\textbf{Receptor LoRa32}\\escuta o canal de 915,9~MHz e repassa os quadros recebidos};
+            
+        \node[bloco, below=of rx] (pc) 
+            {\textbf{Computador (servidor)}\\descriptografa o \textit{payload}; lê a leitura 
+             (FPort 2) ou remonta o JPEG e executa o OCR (FPort 1); registra as medições};
 
-  \vspace{0.5cm}
-  \begin{columns}[t]
-    \column{0.3\textwidth}\centering{\footnotesize\textbf{SF8 / 500~kHz}\\\scriptsize item 10.3 do Ato ANATEL 14.448}
-    \column{0.3\textwidth}\centering{\footnotesize\textbf{7~s entre blocos}\\\scriptsize espera do rádio}
-    \column{0.3\textwidth}\centering{\footnotesize\textbf{AES + MIC}\\\scriptsize ativação ABP}
-  \end{columns}
+        \draw[seta] (hidro) -- (cam);
+        \draw[seta] (cam.south) -- ++(0,-1.5mm) -| (borda.north);
+        \draw[seta] (cam.south) -- ++(0,-1.5mm) -| (nuvem.north);
+        \draw[thick] (borda.south) |- ([yshift=2.5mm]radio.north);
+        \draw[thick] (nuvem.south) |- ([yshift=2.5mm]radio.north);
+        \draw[seta] ([yshift=2.5mm]radio.north) -- (radio.north);
+        \draw[seta] (radio) -- node[rotulo, right=1mm] 
+            {LoRaWan, AU915, DR6 (SF8 / 500~kHz), ativação ABP} (rx);
+        \draw[seta] (rx) -- node[rotulo, right=1mm] {USB-serial} (pc);
+    \end{tikzpicture}%
+  }
+  \vfill
 \end{frame}
 
 \begin{frame}{Modelos Explorados: U-Net}
