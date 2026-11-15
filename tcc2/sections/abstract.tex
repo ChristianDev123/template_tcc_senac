@@ -1,31 +1,31 @@
 \begin{resumo}[Abstract]
  \begin{otherlanguage*}{english}
-    This work aims to propose a comparative analysis between two processing methods
-    for \gls{smart_metering} systems: \gls{edge_computing}, 
-    with OCR inference performed locally on the \gls{esp32cam} microcontroller 
-    using a machine learning model trained in a supervised manner 
-    and quantized to 8-bit integers, 
-    and \gls{cloud_computing}, with inference performed in a remote environment 
-    through a model trained in a supervised manner and quantized to 32-bit floating point.
-    The motivation lies in the high replacement cost of the most diverse conventional meters, 
-    widely used in residential and private environments, 
-    by native smart models. This favors \textit{\gls{retrofitting}} 
-    as a more economically viable alternative. 
-    Data transmission between the edge nodes and the central gateway is carried out via a \gls{lorawan} network,
-    using Spreading Factor SF8, a configuration that ensures compliance with the
-    dwell time regulatory limit of 400~ms established by ANATEL Act No.~14.448,
-    while maximizing range within that limit. The feasibility
-    of sending fragmented images via \gls{lorawan} was demonstrated analytically, with
-    a 160$\times$120 pixel grayscale image, compressed using the JPEG algorithm to
-    approximately 3.10~KB, which can be transmitted in 38 packets in about 13.3~s
-    of active radio time. The two processing flows
-    will be evaluated according to three quantitative metrics: \gls{ocr} reading accuracy (\%),
-    end-to-end latency (ms), energy consumption per reading (mAh). 
-    The objective of this work is to present results that guide the most appropriate architectural choice
-    for large-scale \textit{Smart Metering} deployments, considering
-    the \textit{trade-off} between energy efficiency, recognition precision, and system maintenance complexity.
+    This work compares two processing methods for the automatic reading of conventional
+    water meters in \gls{smart_metering} systems: \gls{edge_computing}, in which \gls{ocr}
+    runs on the \gls{esp32cam} microcontroller itself, and \gls{cloud_computing}, in which
+    the node sends the image and recognition is performed on a server. The motivation is the
+    high cost of replacing conventional meters with smart models, which makes
+    \textit{\gls{retrofitting}} a more viable alternative. Both flows use the same hardware,
+    the same \gls{lorawan} link on the AU915 plan (SF8, 500~kHz, fixed channel), compliant
+    with the 400~ms dwell time limit of ANATEL Act No.~14.448, and the same digit
+    recognition model: a convolutional neural network trained on public datasets and on
+    our own photos and quantized to 8-bit integers (INT8). In the cloud flow, the
+    160$\times$120 pixel grayscale image is compressed to a JPEG of about 4~KB and sent in
+    approximately 24 packets; in the edge flow, only the 9-byte reading is transmitted, in a
+    single packet. Quantization reduced accuracy from 95.46\% to 95.38\% on the validation
+    digits, a non-significant difference (McNemar test, $p = 0.29$), and the INT8 model
+    recognized 97.7\% of the digits and 92.8\% of the complete readings of an independent
+    test set. On the bench, OCR on the node took about 18~s, against 0.7~s to capture and
+    compress the image in the cloud flow. Even so, the edge flow made the reading available
+    on the server in 18.8~s, against 189~s for the cloud flow, and consumed 0.82~mAh per
+    reading, against 4.64~mAh, that is, 5.6 times less. Delivery of complete readings was
+    79.4\% at the edge and 66.7\% in the cloud, a non-significant difference with the
+    samples obtained (Fisher's exact test, $p = 0.27$). We conclude that, in a low-rate
+    network such as \gls{lorawan}, transmitting the image costs more than processing it on
+    the node, which favors the edge in latency and energy, while the cloud makes the system
+    easier to maintain and the model easier to update.
   \vspace{\onelineskip}
   \noindent
-  \textbf{Keywords}: Smart Metering. ESP32. LoRaWan. OCR.
+  \textbf{Keywords}: Smart Metering. Edge computing. ESP32. LoRaWAN. OCR.
  \end{otherlanguage*}
 \end{resumo}

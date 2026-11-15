@@ -1,32 +1,32 @@
 \begin{resumo}
-Este trabalho busca propor uma análise comparativa entre dois métodos de processamento
-para sistemas de \gls{smart_metering} (medição inteligente): \gls{edge_computing} (Computação em Borda), 
-com inferência de \gls{ocr} realizada localmente no microcontrolador \gls{esp32cam} 
-por meio de modelo de aprendizado de máquina treinado de forma supervisionada 
-e quantizado em inteiros de 8 bits, 
-e \gls{cloud_computing} (Computação em Nuvem), com inferência realizada em ambiente 
-remoto através de modelo treinado de forma supervisionada e quantizado em ponto flutuante de 32 bits.
-A motivação reside no elevado custo de substituição dos mais diversos medidores convencionais, 
-amplamente utilizados em ambientes residenciais e privados, 
-por modelos inteligentes nativos, o que favorece o \textit{\gls{retrofitting}} 
-como alternativa mais economicamente viável. 
-A transmissão dos dados entre os nós de borda e o gateway central é realizada via rede \gls{lorawan},
-utilizando o Spreading Factor SF8, configuração que assegura conformidade com o limite
-regulatório de \textit{dwell time} de 400~ms estabelecido pelo Ato n\textordmasculine~14.448
-da ANATEL, ao mesmo tempo em que maximiza o alcance dentro desse limite. A viabilidade
-do envio de imagens fragmentadas via \gls{lorawan} foi demonstrada analiticamente, com
-uma imagem de 160$\times$120 pixels em escala de cinza, comprimida utilizando o algoritmo JPEG com
-aproximadamente 3,10~KB, podendo ser transmitida em 38 pacotes em cerca de 13,3~s
-de rádio ativo. Os dois fluxos de processamento
-serão avaliados segundo três métricas quantitativas: acurácia de leitura \gls{ocr} (\%),
-latência de ponta a ponta (ms) e consumo energético por leitura (mAh). 
-O objetivo deste trabalho é apresentar resultados que orientem a escolha arquitetural
-mais adequada para implantações de \textit{Smart Metering} em larga escala, considerando
-o \textit{trade-off} entre eficiência energética, precisão de reconhecimento e complexidade
-de manutenção do sistema.
+Este trabalho compara dois métodos de processamento para a leitura automática de
+hidrômetros convencionais em sistemas de \gls{smart_metering} (medição inteligente):
+\gls{edge_computing} (Computação em Borda), em que o \gls{ocr} é executado no próprio
+microcontrolador \gls{esp32cam}, e \gls{cloud_computing} (Computação em Nuvem), em que o nó
+envia a imagem e o reconhecimento é feito em um servidor. A motivação é o alto custo de
+substituir os medidores convencionais por modelos inteligentes, o que torna o
+\textit{\gls{retrofitting}} uma alternativa mais viável. Os dois fluxos usam o mesmo
+hardware, o mesmo enlace \gls{lorawan} no plano AU915 (SF8, 500~kHz, canal fixo), em
+conformidade com o limite de \textit{dwell time} de 400~ms do Ato n\textordmasculine~14.448
+da ANATEL, e o mesmo modelo de reconhecimento de dígitos: uma rede neural convolucional
+treinada com conjuntos de dados públicos e fotos próprias e quantizada em inteiros de 8 bits
+(INT8). No fluxo em nuvem, a imagem de 160$\times$120 pixels em tons de cinza é comprimida em
+JPEG, com cerca de 4~KB, e enviada em aproximadamente 24 pacotes; no fluxo em borda, apenas a
+leitura, com 9~bytes, é transmitida em um único pacote. A quantização reduziu a acurácia de
+95,46\% para 95,38\% nos dígitos de validação, diferença não significativa (teste de
+McNemar, $p = 0{,}29$), e o modelo INT8 reconheceu 97,7\% dos dígitos e 92,8\% das leituras
+completas de um conjunto de teste independente. Em bancada, o \gls{ocr} no nó levou cerca de
+18~s, contra 0,7~s para capturar e comprimir a imagem no fluxo em nuvem. Ainda assim, o fluxo
+em borda disponibilizou a leitura no servidor em 18,8~s, contra 189~s do fluxo em nuvem, e
+consumiu 0,82~mAh por leitura, contra 4,64~mAh, ou seja, 5,6 vezes menos. A entrega de
+leituras completas foi de 79,4\% na borda e de 66,7\% na nuvem, diferença não significativa
+com as amostras obtidas (teste exato de Fisher, $p = 0{,}27$). Conclui-se que, em uma rede de
+baixa taxa como o \gls{lorawan}, transmitir a imagem custa mais do que processá-la no nó, o
+que favorece a borda em latência e energia, enquanto a nuvem oferece maior facilidade de
+manutenção e de atualização do modelo.
 
 \vspace{\onelineskip}
 
 \noindent
-\textbf{Palavras-chave}: Smart Metering. ESP32. LoRaWan. OCR.
+\textbf{Palavras-chave}: Smart Metering. Computação em borda. ESP32. LoRaWAN. OCR.
 \end{resumo}
