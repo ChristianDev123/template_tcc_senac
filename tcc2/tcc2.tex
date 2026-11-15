@@ -42,6 +42,50 @@
 \usepackage{adjustbox}
 \usepackage[acronym, automake, nopostdot]{glossaries}
 \usepackage{subcaption}
+\usepackage{listings}
+
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+% ---------------------------------------------------------------
+% CONFIGURAÇÕES DOS Trechos de Código
+% ---------------------------------------------------------------
+
+% Definição de cores personalizadas (fundo cinza claro e cores suaves para destaque)
+\definecolor{codebackground}{rgb}{0.96,0.96,0.96}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codekeyword}{rgb}{0.12,0.38,0.67}
+\definecolor{codestring}{rgb}{0.58,0,0.82}
+\definecolor{codecomment}{rgb}{0.25,0.5,0.35}
+
+% Estilo global para todos os códigos
+\lstdefinestyle{estiloprofissional}{
+    backgroundcolor=\color{codebackground},   % Fundo cinza claro
+    commentstyle=\color{codecomment}\itshape, % Comentários em verde e itálico
+    keywordstyle=\color{codekeyword}\bfseries, % Palavras-chave em azul escuro e negrito
+    stringstyle=\color{codestring},           % Strings em roxo
+    basicstyle=\ttfamily\small,               % Fonte monoespaciada menor (evita estouros)
+    breakatwhitespace=false,                  % Permite quebrar palavras longas se necessário
+    breaklines=true,                          % ATIVA A QUEBRA DE LINHA AUTOMÁTICA (Essencial!)
+    captionpos=b,                             % Legenda na parte inferior
+    keepspaces=true,                          % Mantém a indentação original
+    numbers=left,                             % Número das linhas à esquerda
+    numberstyle=\tiny\color{codegray},        % Estilo dos números das linhas
+    numbersep=8.pt,                           % Espaço entre o número e o código
+    showspaces=false,                         % Oculta espaços visíveis
+    showstringspaces=false,                   % Oculta espaços em strings
+    showtabs=false,                           % Oculta tabulações
+    tabsize=2,                                % Tamanho da tabulação
+    frame=single,                             % Adiciona uma bordinha sutil ao redor do bloco
+    rulecolor=\color{lightgray},              % Cor da bordinha
+    frameround=tttt                           % Cantos ligeiramente arredondados (opcional)
+}
+
+% Aplica o estilo por padrão
+\lstset{style=estiloprofissional}
+
+
 % ---------------------------------------------------------------
 % CONFIGURAÇÕES DO PDF
 % ---------------------------------------------------------------
