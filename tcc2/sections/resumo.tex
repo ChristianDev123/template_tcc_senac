@@ -1,29 +1,28 @@
 \begin{resumo}
-Este trabalho compara dois métodos de processamento para a leitura automática de
-hidrômetros convencionais em sistemas de \gls{smart_metering} (medição inteligente):
-\gls{edge_computing} (Computação em Borda), em que o \gls{ocr} é executado no próprio
-microcontrolador \gls{esp32cam}, e \gls{cloud_computing} (Computação em Nuvem), em que o nó
-envia a imagem e o reconhecimento é feito em um servidor. A motivação é o alto custo de
-substituir os medidores convencionais por modelos inteligentes, o que torna o
-\textit{\gls{retrofitting}} uma alternativa mais viável. Os dois fluxos usam o mesmo
-hardware, o mesmo enlace \gls{lorawan} no plano AU915 (SF8, 500~kHz, canal fixo), em
+A maior parte dos medidores de consumo em uso, como os de água, energia e gás, ainda é
+convencional e exige leitura manual. Substituí-los por medidores inteligentes tem custo
+elevado, o que torna o \textit{\gls{retrofitting}} uma alternativa mais viável: um nó de
+baixo custo, com câmera, fotografa o mostrador do medidor existente, e um modelo de \gls{ocr}
+converte a imagem em leitura, transmitida por uma rede de longo alcance e baixo consumo como
+a \gls{lorawan}. Nessa arquitetura de \gls{smart_metering} (medição inteligente), o
+\gls{ocr} pode ser executado no próprio nó, em \gls{edge_computing} (Computação em Borda), ou
+em um servidor que recebe a imagem, em \gls{cloud_computing} (Computação em Nuvem). Este
+trabalho compara essas duas abordagens. Os dois fluxos foram implementados sobre o mesmo
+hardware, baseado no microcontrolador \gls{esp32cam} e no módulo \gls{lorawan} Radioenge
+RD49C, e sobre o mesmo enlace no plano AU915, configurado em SF8 com canal fixo, em
 conformidade com o limite de \textit{dwell time} de 400~ms do Ato n\textordmasculine~14.448
-da ANATEL, e o mesmo modelo de reconhecimento de dígitos: uma rede neural convolucional
-treinada com conjuntos de dados públicos e fotos próprias e quantizada em inteiros de 8 bits
-(INT8). No fluxo em nuvem, a imagem de 160$\times$120 pixels em tons de cinza é comprimida em
-JPEG, com cerca de 4~KB, e enviada em aproximadamente 24 pacotes; no fluxo em borda, apenas a
-leitura, com 9~bytes, é transmitida em um único pacote. A quantização reduziu a acurácia de
-95,46\% para 95,38\% nos dígitos de validação, diferença não significativa (teste de
-McNemar, $p = 0{,}29$), e o modelo INT8 reconheceu 97,7\% dos dígitos e 92,8\% das leituras
-completas de um conjunto de teste independente. Em bancada, o \gls{ocr} no nó levou cerca de
-18~s, contra 0,7~s para capturar e comprimir a imagem no fluxo em nuvem. Ainda assim, o fluxo
-em borda disponibilizou a leitura no servidor em 18,8~s, contra 189~s do fluxo em nuvem, e
-consumiu 0,82~mAh por leitura, contra 4,64~mAh, ou seja, 5,6 vezes menos. A entrega de
-leituras completas foi de 79,4\% na borda e de 66,7\% na nuvem, diferença não significativa
-com as amostras obtidas (teste exato de Fisher, $p = 0{,}27$). Conclui-se que, em uma rede de
-baixa taxa como o \gls{lorawan}, transmitir a imagem custa mais do que processá-la no nó, o
-que favorece a borda em latência e energia, enquanto a nuvem oferece maior facilidade de
-manutenção e de atualização do modelo.
+da ANATEL. O reconhecimento usa uma rede neural convolucional de classificação de dígitos,
+treinada com conjuntos de dados públicos e fotos próprias e quantizada em inteiros de
+8 bits (INT8), adotando hidrômetros como estudo de caso. No fluxo em borda, o nó executa o
+\gls{ocr} e transmite apenas a leitura, em um único pacote; no fluxo em nuvem, o nó comprime
+a imagem em JPEG e a transmite dividida em vários pacotes, e o mesmo modelo é executado no
+servidor. Os experimentos, realizados em bancada, avaliaram o efeito da quantização sobre a
+acurácia, o custo computacional do processamento no nó, a latência de ponta a ponta, a taxa
+de entrega de pacotes e de leituras e o consumo de energia por leitura, medido com sensor de
+corrente, a partir do qual foi estimada a autonomia do nó. Com isso, o trabalho busca
+orientar a escolha entre as duas abordagens em implantações de \gls{smart_metering},
+considerando o \textit{trade-off} entre precisão de leitura, eficiência energética e
+complexidade de manutenção do sistema.
 
 \vspace{\onelineskip}
 

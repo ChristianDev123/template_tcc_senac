@@ -1,29 +1,28 @@
 \begin{resumo}[Abstract]
  \begin{otherlanguage*}{english}
-    This work compares two processing methods for the automatic reading of conventional
-    water meters in \gls{smart_metering} systems: \gls{edge_computing}, in which \gls{ocr}
-    runs on the \gls{esp32cam} microcontroller itself, and \gls{cloud_computing}, in which
-    the node sends the image and recognition is performed on a server. The motivation is the
-    high cost of replacing conventional meters with smart models, which makes
-    \textit{\gls{retrofitting}} a more viable alternative. Both flows use the same hardware,
-    the same \gls{lorawan} link on the AU915 plan (SF8, 500~kHz, fixed channel), compliant
-    with the 400~ms dwell time limit of ANATEL Act No.~14.448, and the same digit
-    recognition model: a convolutional neural network trained on public datasets and on
-    our own photos and quantized to 8-bit integers (INT8). In the cloud flow, the
-    160$\times$120 pixel grayscale image is compressed to a JPEG of about 4~KB and sent in
-    approximately 24 packets; in the edge flow, only the 9-byte reading is transmitted, in a
-    single packet. Quantization reduced accuracy from 95.46\% to 95.38\% on the validation
-    digits, a non-significant difference (McNemar test, $p = 0.29$), and the INT8 model
-    recognized 97.7\% of the digits and 92.8\% of the complete readings of an independent
-    test set. On the bench, OCR on the node took about 18~s, against 0.7~s to capture and
-    compress the image in the cloud flow. Even so, the edge flow made the reading available
-    on the server in 18.8~s, against 189~s for the cloud flow, and consumed 0.82~mAh per
-    reading, against 4.64~mAh, that is, 5.6 times less. Delivery of complete readings was
-    79.4\% at the edge and 66.7\% in the cloud, a non-significant difference with the
-    samples obtained (Fisher's exact test, $p = 0.27$). We conclude that, in a low-rate
-    network such as \gls{lorawan}, transmitting the image costs more than processing it on
-    the node, which favors the edge in latency and energy, while the cloud makes the system
-    easier to maintain and the model easier to update.
+    Most consumption meters in use, such as water, electricity and gas meters, are still
+    conventional and require manual reading. Replacing them with smart meters is costly,
+    which makes \textit{\gls{retrofitting}} a more viable alternative: a low-cost node with a
+    camera photographs the dial of the existing meter, and an \gls{ocr} model converts the
+    image into a reading, transmitted over a long-range, low-power network such as
+    \gls{lorawan}. In this \gls{smart_metering} architecture, \gls{ocr} can run on the node
+    itself, in \gls{edge_computing}, or on a server that receives the image, in
+    \gls{cloud_computing}. This work compares these two approaches. Both flows were
+    implemented on the same hardware, based on the \gls{esp32cam} microcontroller and the
+    Radioenge RD49C \gls{lorawan} module, and on the same link on the AU915 plan, configured
+    with SF8 and a fixed channel, compliant with the 400~ms dwell time limit of ANATEL Act
+    No.~14.448. Recognition uses a digit classification convolutional neural network,
+    trained on public datasets and on our own photos and quantized to 8-bit integers (INT8),
+    with water meters as a case study. In the edge flow, the node runs \gls{ocr} and
+    transmits only the reading, in a single packet; in the cloud flow, the node compresses
+    the image to JPEG and transmits it split into several packets, and the same model runs
+    on the server. The bench experiments evaluated the effect of quantization on accuracy,
+    the computational cost of processing on the node, end-to-end latency, packet and
+    reading delivery rates, and energy consumption per reading, measured with a current
+    sensor, from which the node's autonomy was estimated. This work thus seeks to guide the
+    choice between the two approaches in \gls{smart_metering} deployments, considering the
+    \textit{trade-off} between reading accuracy, energy efficiency and system maintenance
+    complexity.
   \vspace{\onelineskip}
   \noindent
   \textbf{Keywords}: Smart Metering. Edge computing. ESP32. LoRaWAN. OCR.
