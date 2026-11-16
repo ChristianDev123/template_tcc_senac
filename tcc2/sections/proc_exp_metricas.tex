@@ -147,40 +147,7 @@ utilizado para validação das hipóteses apresentadas na posterior seção de R
 [apresentar métricas retiradas do fluxo e explicar por que abandonamos]
 
 \subsection{Variáveis de Ambiente}
-O presente trabalho implementou os dois fluxos de processamento propostos sob as mesmas variáveis de ambiente, 
-estrutura de rede e hardware utilizado, 
-de tal forma que se distribuem da seguinte forma:
-
-\begin{table}[htbp]
-    \centering
-    \caption{Variáveis de ambiente e parâmetros de configuração do sistema.}
-    \label{tab:variaveis_ambiente}
-    \begin{tabularx}{\textwidth}{lX}
-        \toprule
-        \textbf{Variável de Ambiente / Parâmetro} & \textbf{Configuração / Descrição} \\
-        \midrule
-        \textbf{Restrição Regulatória} & Ato nº 14.448 da ANATEL (Item 10.3, padrão AU915)[cite: 26, 46] \\
-        \addlinespace
-        \textbf{SF, DR, CR} & SF8, Data Rate DR6 (BW 500 kHz), Coding Rate 4/5[cite: 47] \\
-        \addlinespace
-        \textbf{Canal Fixo} & 915,9 MHz (Canal 64 do plano AU915, sem salto de frequência)[cite: 46, 47] \\
-        \addlinespace
-        \textbf{Potência de Transmissão} & +20 dBm (100 mW, fixa no módulo)[cite: 46, 47] \\
-        \addlinespace
-        \textbf{Tamanho de Imagens} & 160 $\times$ 120 pixels em tons de cinza ($\approx$ 4 KB comprimida em JPEG qualidade 90)[cite: 43, 48, 49] \\
-        \addlinespace
-        \textbf{Métodos de Ativação dos Nós (ABP)} & Activation by Personalization (ABP) com chaves de sessão pré-configuradas[cite: 43, 45, 47] \\
-        \addlinespace
-        \textbf{Portas de Aplicação (FPort 1 e 2)} & FPort 1 (blocos de imagem de até 175 bytes) e FPort 2 (leitura OCR de 9 bytes)[cite: 43, 47, 48] \\
-        \bottomrule
-    \end{tabularx}
-\end{table}
-
-\paragraph{Variáveis utilizadas nos modelos de OCR implementados}
-	\begin{itemize}
-		\item \textbf{INT8}
-\item \textbf{FP32}
-	\end{itemize}
+\input{sections/secoes_metodologia_pesquisa/var_de_ambiente}
 
 \subsection{Ambiente de Desenvolvimento}
 \input{sections/secoes_metodologia_pesquisa/ambiente_de_desenvolvimento}

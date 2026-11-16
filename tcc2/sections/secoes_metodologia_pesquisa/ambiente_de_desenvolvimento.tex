@@ -24,19 +24,12 @@ e configuração de ambientes de desenvolvimento.
     \footnotesize Fonte: Autores (2026).
 \end{center}
 
-\paragraph{Python e C (.ino)}
+\paragraph{Python}
 Utilizada como linguagem base no desenvolvimento de inúmeros projetos de Inteligência Artificial, 
 a linguagem Python foi escolhida neste trabalho por sua versatilidade no desenvolvimento de aplicações, 
 especialmente no que tange ao desenvolvimento, 
 treinamento e testes de modelos de \gls{ocr} e à análise de dados, 
 provendo os insumos necessários para a validação do presente estudo.
-
-A linguagem C, implementada em arquivos \texttt{.ino} neste trabalho, 
-foi utilizada para realizar a comunicação e a orquestração de funções do 
-hardware do \gls{esp32cam} e de seus módulos. 
-Essa linguagem possui grande relevância no cenário de dispositivos \gls{iot} 
-por proporcionar alta granularidade no controle de memória RAM 
-e PSRAM alocadas às mais diversas tarefas. 
 
 \begin{lstlisting}[language=Python, caption={Exemplo ilustrativo de código em Python}]
 import argparse
@@ -60,6 +53,49 @@ def tempo_no_ar_ms(payload_phy: int, sf: int, bw_hz: float, preambulo: int = PRE
     \footnotesize Fonte: Autores (2026).
 \end{center}
 
+\paragraph{TensorFlow | Keras | TFLite}
+As principais ferramentas para o desenvolvimento, 
+treinamento, quantização, testes e validação dos modelos de \gls{ocr} 
+foram os frameworks TensorFlow e Keras, com compilação de saída em arquivos \texttt{.tflite} 
+compatíveis com o módulo TFLite instalado nativamente no firmware do \gls{esp32cam}, e instalado via gerenciador de pacotes pip em computadores pessoais utilizados como servidor de rede.
+
+O TensorFlow, lançado em 2015 pela Google, 
+é uma biblioteca de código aberto focada em cálculos matemáticos complexos de matrizes, 
+atividade essencial para o funcionamento de redes neurais convolucionais. 
+Integrado de forma homogênea ao TensorFlow, 
+o Keras é uma API de alto nível desenvolvida pelo Google (lançada em 2015) 
+com o foco em simplificar o desenvolvimento de redes neurais com poucas linhas de código.
+
+O Tensorflow Lite (TFLite), oficialmente anunciado pela Google em 2017, é framework que tem por objetivo viabilizar o desenvolvimento de soluções com base em \gls{ia} em microcontroladores. Tal ferramenta fornece SDK’s necessários para executar modelos minimizados em microcontroladores de desempenho limitado. Desde 2024 o TFLite foi renomeado como LiteRT, do qual não houve grandes alterações estruturais em seu funcionamento, mantendo inclusive o tipo \textit{.tflite} como extensão de arquivos.
+
+
+\subsubsection{Arduino IDE e Arduino CLI}
+Utilizado como a principal IDE de desenvolvimento para sistemas baseados em microcontroladores, 
+desenvolvida em 2005, 
+o Arduino IDE é uma ferramenta indispensável para desenvolvimento IOT, 
+integrando funcionalidades que auxiliam à comunicação entre computadores pessoais (PC) e microcontroladores 
+de forma à servir como ambiente de desenvolvimento voltado à comunicação serial entre dispositivo.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{sections/imagens/Arduino_IDE.jpeg}
+    \caption{Página Ilustrativa Arduino IDE}
+    \label{fig:arduinoide}
+\end{figure}
+\begin{center}
+    \footnotesize Fonte: Autores (2026).
+\end{center}
+
+
+Em forma de complemento, em 2018, desenvolvida pela própria equipe de desenvolvimento da Arduino SA, o Arduino CLI, é uma ferramenta de linha de comando, desenvolvida com o objetivo de agilizar compilações, testes, instalação de bibliotecas e automação de tarefas relacionadas à desenvolvimento de sistemas com base em microcontroladores.
+
+\paragraph{C (.ino)}
+A linguagem C, implementada em arquivos \texttt{.ino} neste trabalho, 
+foi utilizada para realizar a comunicação e a orquestração de funções do 
+hardware do \gls{esp32cam} e de seus módulos. 
+Essa linguagem possui grande relevância no cenário de dispositivos \gls{iot} 
+por proporcionar alta granularidade no controle de memória RAM 
+e PSRAM alocadas às mais diversas tarefas. 
 
 \begin{lstlisting}[language=C++, caption={Exemplo ilustrativo de codigo em C para ESP32}]
 #define LORA_RX_PIN 15 // Conectado ao TX da Radioenge (Pino 3)
@@ -103,18 +139,6 @@ String consultar(const char *cmd) {
     \footnotesize Fonte: Autores (2026).
 \end{center}
 
-\paragraph{TensorFlow | Keras | TFLite}
-As principais ferramentas para o desenvolvimento, 
-treinamento, quantização, testes e validação dos modelos de \gls{ocr} 
-foram os frameworks TensorFlow e Keras, com compilação de saída em arquivos \texttt{.tflite} 
-compatíveis com o módulo TFLite instalado nativamente no firmware do \gls{esp32cam}.
-
-O TensorFlow, lançado em 2015 pela Google, 
-é uma biblioteca de código aberto focada em cálculos matemáticos complexos de matrizes, 
-atividade essencial para o funcionamento de redes neurais convolucionais. 
-Integrado de forma homogênea ao TensorFlow, 
-o Keras é uma API de alto nível desenvolvida pelo Google (lançada em 2015) 
-com o foco em simplificar o desenvolvimento de redes neurais com poucas linhas de código.
 
 \subsubsection{Git e GitHub}
 O GitHub, plataforma de versionamento online de códigos 
@@ -146,3 +170,21 @@ O ChirpStack tem como objetivo viabilizar o gerenciamento de uma rede LoRa,
 além de possibilitar o processamento de dados, 
 a criação de ambientes de testes, 
 entre outras funções.
+
+\subsubsection{Ferramentas para tratamento de imagens}
+Durante a fase de pré-processamento dos dados utilizados no treinamento dos modelos de \gls{ocr} implementados, 
+a utilização de determinadas ferramentas foi de extrema importância para o sucesso dessa etapa, destacando-se:
+
+\begin{itemize}
+	\item \textbf{NumPy}: Criada em 2005 por Travis Oliphant, é uma biblioteca focada em cálculos matriciais e algébricos.
+	\item \textbf{OpenCV}: Lançada publicamente em 2000 e inicialmente desenvolvida pela Intel, é uma biblioteca voltada para o processamento de imagens e visão computacional.
+	\item \textbf{h5py}: Criada em 2008 por Andrew Collette, é uma ferramenta voltada para gerenciar arquivos \texttt{.hdf5}, utilizados para armazenar de forma estruturada grandes volumes de dados vetoriais.
+	\item \textbf{Pillow}: Em sua versão moderna, implementada em 2010 por Alex Clark e colaboradores, é uma biblioteca específica para manipulação e processamento de imagens.
+	\item \textbf{Matplotlib}: Criada em 2003 por John D. Hunter, é uma das bibliotecas mais difundidas para a elaboração de gráficos e visualização de dados.
+\end{itemize}
+
+\subsubsection{Ferramentas para integração LoRa}
+Durante o desenvolvimento das solucoes comparadas, 
+foram utilizadas ferramentas baseadas em Python com o foco em administrar a comunicação, como é o caso do PySerial, 
+utilizado para gerenciar a comunicação entre transmissor e receptor via barramento serial. Outro exemplo e o PyCryptodome, utilizado
+para processar pacotes de rede trafegados via LoRaWAN, possibilitando a descriptografia com a chave AppSKey.
