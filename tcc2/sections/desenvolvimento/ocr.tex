@@ -11,6 +11,17 @@ de leitura adotada.
 \subsubsection{Evolução das abordagens}
 \label{subsubsec:evolucao_ocr}
 
+A solução adotada resultou de uma sequência de provas de conceito, descrita na
+Seção~\ref{metodologia_pesquisa:poc1} e nas seguintes. O teste com \gls{ocr} genérico
+mostrou que a imagem do \gls{esp32cam} só era lida corretamente quando cada dígito era
+reconhecido isoladamente, o que levou à estrutura em duas etapas. Antes do pipeline
+adotado, dois fluxos com essa estrutura foram desenvolvidos e abandonados, ambos com a
+localização da janela feita por uma U-Net: um com leitura por CRNN e CTC e outro com uma
+CNN de um dígito. A U-Net exigiu 15,3~MB de \textit{arena}, mais que os 4~MB de PSRAM da
+placa, e os modelos de leitura com CTC usam um operador ausente no TensorFlow Lite Micro
+disponível, de modo que nenhum dos dois pôde ser executado no microcontrolador
+(Seção~\ref{subsubsec:fluxos_abandonados}).
+
 \subsubsection{Detalhes do pipeline CNN Simples (adotado)}
 \label{subsubsec:pipeline_b}
 

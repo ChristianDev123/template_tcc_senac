@@ -100,6 +100,8 @@ Arduino Uno) sincronizada via porta serial com os \textit{scripts} em Python
 enlace e consumo energético.
 
 \subsubsection{Fluxos Abandonados}
+\label{subsubsec:fluxos_abandonados}
+
 Durante o desenvolvimento do sistema, 
 em que será base para alcançar os objetivos do presente trabalho, 
 foram implementados dois fluxos abandonados por limitações de hardware 
@@ -108,7 +110,7 @@ tais fluxos orientaram escolhas implementadas no fluxo definitivo,
 utilizado para validação das hipóteses apresentadas na posterior seção de Resultados e Análises:
 
 \paragraph{U-NET + CRNN + CTC}
-O fluxo proposto, aplicava a arquitetura CRNN com função de perda CTC, apresentada na
+O fluxo proposto aplicava a arquitetura CRNN com função de perda CTC, apresentada na
 Seção~\ref{subsubsec:crnn_ctc}, e foi testado diretamente no \gls{esp32cam}. O teste
 mostrou que ele não pode ser executado no microcontrolador: o modelo de localização
 exigiu 15.335.424~bytes de memória de trabalho (\textit{arena}) do TensorFlow Lite Micro,
@@ -183,8 +185,8 @@ visor. O treinamento durou até 600 épocas na fase flutuante e 100 épocas na f
 
 A avaliação do modelo CTC em um conjunto de teste composto por 30 imagens reais de
 hidrômetros (executado em servidor) demonstrou a força da abordagem. Conforme detalhado na
-Tabela~\ref{tab:resultado_ctc}, o modelo obteve 86,67\% de acurácia completo
-da sequência (26 de 30 imagens) e 94,58\% de acurácia por dígito na posição exata.
+Tabela~\ref{tab:resultado_ctc}, o modelo acertou a sequência completa em 86,67\%
+das imagens (26 de 30) e 94,58\% de acurácia por dígito na posição exata.
 
 \begin{table}[H]
     \centering
@@ -204,7 +206,7 @@ da sequência (26 de 30 imagens) e 94,58\% de acurácia por dígito na posição
 \end{table}
 
 \paragraph{Inviabilidade de Execução em Hardware Alvo}
-Apesar do excelente desempenho do CTC em fluxo em nuvem, a arquitetura completa
+Apesar do excelente desempenho do CTC no servidor, a arquitetura completa
 não pôde ser executada no ESP32-CAM. O motivo principal não foi o consumo do CTC (que,
 isoladamente, exige cerca de 500 KB de memória, viável para a placa), mas sim a dependência
 do modelo U-Net para recortar a janela. Como a utilização de U-Net estoura a memória e utiliza o
@@ -214,6 +216,11 @@ de alta performance para hardwares mais robustos ou trabalhos futuros.
 
 \paragraph{U-NET + CNN}
 Em paralelo ao desenvolvimento do fluxo descrito na seção anterior, 
-desenvolveu-se o fluxo utilizando modelo U-Net para identificação de \gls{roi} em conjunto com modelo em arquitetura CNN.
-Por conta das limitações encontradas, e anteriormente descritas, na implementação de modelo U-Net no hardware utilizado no
-fluxo de processamento em borda, tal fluxo de desenvolvimento foi abandonado.
+desenvolveu-se o fluxo utilizando modelo U-Net para identificação de \gls{roi} em conjunto com
+uma \gls{cnn} de um dígito, com entrada de $68 \times 68$ pixels, aplicada a fatias iguais da
+janela. O fluxo foi abandonado por dois motivos. O primeiro é que herda a U-Net e, com ela,
+as limitações de memória descritas anteriormente, de modo que só pode ser executado no
+computador. O segundo é que o classificador foi treinado com dígitos isolados em diferentes
+fontes e estilos \cite{iqbal2019digits}, e não com recortes de hidrômetros, o que o afasta
+das imagens reais do medidor. Não foram registradas métricas de acurácia deste fluxo
+comparáveis às dos demais.
