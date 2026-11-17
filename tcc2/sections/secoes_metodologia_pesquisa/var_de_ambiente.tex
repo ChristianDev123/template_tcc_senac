@@ -1,64 +1,89 @@
-O presente trabalho implementou os dois fluxos de processamento propostos sob as mesmas variáveis de ambiente, 
-estrutura de rede e hardware, 
-de tal forma que se distribuem da seguinte forma:
+Os dois fluxos de processamento foram implementados e avaliados com o mesmo hardware, a
+mesma configuração de rádio e as mesmas condições de bancada, de modo que a diferença
+medida entre eles possa ser atribuída ao fluxo, e não ao ambiente. A
+Tabela~\ref{tab:variaveis_ambiente} reúne as variáveis mantidas fixas em todos os
+experimentos.
 
-\begin{table}[htbp]
+\begin{table}[H]
     \centering
-    \caption{Variáveis de ambiente e parâmetros de configuração do sistema.}
+    \caption{Variáveis controladas e parâmetros de configuração do sistema}
     \label{tab:variaveis_ambiente}
-    \begin{tabularx}{\textwidth}{lX}
+    \small
+    \renewcommand{\arraystretch}{1.3} 
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
         \toprule
-        \textbf{Variável de Ambiente / Parâmetro} & \textbf{Configuração / Descrição} \\
+        \textbf{Variável / Parâmetro} & \textbf{Configuração} \\
         \midrule
-        \textbf{Restrição Regulatória} & Ato nº 14.448 da ANATEL (Item 10.3, padrão AU915) \\
+        \multicolumn{2}{@{}l}{\textit{Rádio e rede}} \\
+        Enquadramento regulatório & Ato nº 14.448 da ANATEL, item 10.3 (modulação digital,
+            largura de faixa de no mínimo 500~kHz), no plano de canais AU915 \\
+        \gls{sf}, \gls{dr} e \gls{cr} & SF8, DR6 (largura de banda de 500~kHz), \gls{cr} 4/5 \\
+        Canal & 915,9~MHz, canal 64 do AU915, fixo, sem salto de frequência \\
+        Potência de transmissão & +20~dBm (100~mW), fixa no módulo \\
+        Ativação do nó & \gls{abp}, com chaves de sessão pré-configuradas \\
+        Portas de aplicação & FPort~1: blocos de imagem com até 175~bytes de dados e
+            cabeçalho de 6~bytes; FPort~2: leitura do \gls{ocr} em 9~bytes \\
+        Intervalo entre blocos & 7~s (fluxo em nuvem) \\
         \addlinespace
-        \textbf{SF, DR, CR} & SF8, Data Rate DR6 (BW 500 kHz), Coding Rate 4/5 \\
+        \multicolumn{2}{@{}l}{\textit{Nó sensor}} \\
+        Placa e módulo de rádio & AI-Thinker \gls{esp32cam} (CPU a 240~MHz, PSRAM de 4~MB) e
+            Radioenge RD49C \\
+        Imagem capturada & $160 \times 120$ pixels em tons de cinza nos dois fluxos; no fluxo
+            em nuvem, comprimida em JPEG com qualidade 90 (escala de 1 a 100), resultando em
+            3,3 a 4,6~KB nas medições \\
+        Repouso entre leituras & 30~s em \textit{deep sleep} (modo autônomo) \\
+        Alimentação & 5~V da porta USB da placa ESP32-CAM-MB \\
         \addlinespace
-        \textbf{Canal Fixo} & 915,9 MHz (Canal 64 do plano AU915, sem salto de frequência) \\
+        \multicolumn{2}{@{}l}{\textit{Cenário de bancada}} \\
+        Receptor & Placa LoRa32 com rádio de canal único, ligada ao computador por USB \\
+        Distância entre nó e receptor & Cerca de 2~m \\
         \addlinespace
-        \textbf{Potência de Transmissão} & +20 dBm (100 mW, fixa no módulo) \\
-        \addlinespace
-        \textbf{Tamanho de Imagens} & 160 $\times$ 120 pixels em tons de cinza ($\approx$ 4 KB comprimida em JPEG qualidade 90) \\
-        \addlinespace
-        \textbf{Versão do Python} & Python 3.10 (ambiente de treino) e Python 3.13 (ambiente de execução de scripts de testes) \\
-        \addlinespace
-        \textbf{Versão do TensorFlow} & TensorFlow 2.16.1 \\
-        \addlinespace
-        \textbf{Métodos de Ativação dos Nós} & \gls{abp} com chaves de sessão pré-configuradas \\
-        \addlinespace
-        \textbf{Portas de Aplicação (FPort 1 e 2)} & FPort 1 (blocos de imagem de até 175 bytes) e FPort 2 (leitura OCR de 9 bytes) \\
+        \multicolumn{2}{@{}l}{\textit{Software}} \\
+        \textit{Firmware} & Núcleo Arduino-ESP32 3.0.7 (ESP-IDF 5.1), com TensorFlow Lite
+            Micro (\texttt{esp-tflite-micro} 1.3.1) \\
+        Treino dos modelos & Python 3.10.11, TensorFlow 2.16.1 e Keras 3.12.4 \\
+        Scripts de enlace e medição & Python 3.13.9 \\
         \bottomrule
     \end{tabularx}
+    \legend{Fonte: Elaborado pelos autores (2026).}
 \end{table}
 
-\paragraph{Variáveis utilizadas nos modelos de OCR implementados}
-Durante o treinamento dos modelos de \gls{ocr} foram estabelecidas 
-variáveis determinantes para a equiparação 
-da comparação entre os modelos quantizados em INT8 e FP32.
+\subsubsection{Variáveis utilizadas no treinamento dos modelos de OCR}
 
-\begin{table}[htbp]
+Os dois modelos do \gls{ocr} embarcado, o de localização da janela de dígitos e o
+classificador de dígitos, foram treinados em ponto flutuante (FP32) e convertidos para INT8
+por quantização pós-treinamento, a partir dos mesmos pesos. Assim, a comparação entre as
+versões FP32 e INT8 isola o efeito da quantização, já que as duas compartilham os
+hiperparâmetros da Tabela~\ref{tab:hiperparametros}.
+
+\begin{table}[H]
     \centering
-    \caption{Variáveis e hiperparâmetros definidos para o treinamento e quantização (FP32 e INT8)}
+    \caption{Hiperparâmetros de treinamento e quantização dos modelos de OCR}
     \label{tab:hiperparametros}
-    \begin{tabularx}{\textwidth}{l l X}
+    \small
+    \begin{tabularx}{\textwidth}{@{}lXX@{}}
         \toprule
-        \textbf{Variável / Parâmetro} & \textbf{Valor / Configuração} & \textbf{Função no Treinamento e Quantização} \\
+        \textbf{Parâmetro} & \textbf{Localização da janela} & \textbf{Classificador de dígitos} \\
         \midrule
-        \texttt{args.epocas} & \texttt{60} (padrão) & Número máximo de épocas(sujeito ao \textit{Early Stopping}). \\
-        \addlinespace
-        \texttt{IMG\_SIZE} & \texttt{(28, 28)} & Dimensão espacial de entrada das imagens de dígitos redimensionadas. \\
-        \addlinespace
-        \texttt{SEED} & \texttt{42} & Semente de aleatoriedade global para garantir a reprodutibilidade. \\
-        \addlinespace
-        \texttt{BATCH\_SIZE} & \texttt{128} & Tamanho do lote (\textit{batch}) utilizado durante o treino e validação. \\
-        \addlinespace
-        \texttt{class\_weight} & Dicionário (máx. \texttt{3.0}) & Pesos calculados por classe para balancear a desproporção do dígito \texttt{'0'}. \\
-        \addlinespace
-        \texttt{augmentacao} & \texttt{Sequential} (5 camadas) & Aplica rotação, translação, contraste, ruído e \textit{downsample/upsample} simulando a câmera. \\
-        \addlinespace
-        \texttt{amostras\_repr} & Lote do dataset de treino & Amostras representativas usadas para calibrar a quantização INT8 no \texttt{TFLiteConverter}. \\
-        \addlinespace
+        Entrada & $192 \times 192$ pixels, tons de cinza & $28 \times 28$ pixels, tons de cinza \\
+        Divisão dos dados & 70\% treino, 15\% validação, 15\% teste & 85\% treino, 15\% validação \\
+        Semente aleatória & 42 & 42 \\
+        Tamanho do lote & 16 & 128 \\
+        Otimizador & Adam, taxa de $10^{-3}$ & Adam, taxa de $5 \times 10^{-4}$ (fase A) e
+            $5 \times 10^{-5}$ (fase B) \\
+        Função de perda & Entropia cruzada binária somada a $1 - \text{Dice}$ suave &
+            Entropia cruzada categórica \\
+        Épocas & Até 600 & Até 60 (fase A) e 5 (fase B) \\
+        Parada antecipada & Dice de validação, paciência de 60 épocas, a partir da época 100 &
+            Perda de validação, paciência de 10 épocas \\
+        Pesos por classe & Não usados & Inversos da frequência, limitados a 3,0, para
+            compensar o excesso do dígito 0 \\
+        Aumento de dados & Não usado & Rotação, translação, contraste, ruído gaussiano e
+            redução seguida de ampliação da resolução, simulando a câmera \\
+        Calibração INT8 & Todas as imagens de treino & 300 recortes do conjunto de treino \\
         \bottomrule
     \end{tabularx}
+    \legend{Fonte: Elaborado pelos autores (2026), a partir de \texttt{pipeline.py} e
+    \texttt{treinar\_classificador\_digitos.py}.}
 \end{table}
 
