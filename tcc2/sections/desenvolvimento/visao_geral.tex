@@ -20,14 +20,6 @@ no conteúdo que trafega pelo enlace:
     único pacote de 9 bytes.
 \end{itemize}
 
-Uma decisão central da implementação é que os dois fluxos utilizam os mesmos modelos de
-redes neurais, quantizados em inteiros de 8 bits (INT8), e a mesma lógica de leitura.
-Assim, as diferenças de latência, entrega de pacotes e consumo energético observadas entre
-eles decorrem apenas do local de processamento e do volume de dados transmitido, e não de
-modelos com capacidades distintas. O efeito da quantização sobre a acurácia, objeto da
-hipótese H1, é avaliado à parte, pela comparação entre as versões em ponto flutuante de
-32 bits e em INT8 do mesmo modelo.
-
 A Figura~\ref{fig:arquitetura_geral} apresenta a arquitetura do sistema e o caminho
 percorrido pelos dados em cada fluxo.
 
@@ -76,42 +68,6 @@ percorrido pelos dados em cada fluxo.
     \end{tikzpicture}
     \legend{Fonte: Elaborado pelos autores (2026).}
 \end{figure}
-
-\subsection{Componentes de hardware}
-\label{subsec:hardware}
-
-O protótipo foi montado com componentes de baixo custo. A Tabela~\ref{tab:hardware} resume a função de cada um.
-
-\begin{table}[H]
-    \centering
-    \caption{Componentes de hardware do protótipo}
-    \label{tab:hardware}
-    \begin{tabularx}{\textwidth}{@{}l>{\raggedright\arraybackslash}X@{}}
-        \toprule
-        \textbf{Componente} & \textbf{Função no sistema} \\
-        \midrule
-        \gls{esp32cam} (AI-Thinker) & Nó sensor. Microcontrolador ESP32 a 240~MHz com 4~MB de PSRAM e
-        câmera integrada. Captura a imagem e, no fluxo em borda, executa os modelos de \gls{ocr}. \\
-        \addlinespace
-        Radioenge RD49C & Módulo \gls{lorawan} homologado pela ANATEL, ligado ao \gls{esp32cam} por UART
-        (GPIO~15 e GPIO~14) e controlado por comandos AT. Opera no plano AU915 com potência de até
-        +20~dBm. \\
-        \addlinespace
-        Heltec/TTGO LoRa32 V2 & Receptor. Rádio LoRa configurado no mesmo canal e na mesma taxa do
-        transmissor; repassa cada quadro recebido ao computador pela porta serial, junto com o
-        RSSI. \\
-        \addlinespace
-        Computador & Servidor da aplicação. Descriptografa os quadros, remonta as imagens,
-        executa o \gls{ocr} do fluxo em nuvem e registra as medições. Também foi usado no
-        treinamento dos modelos. \\
-        \addlinespace
-        INA219 e Arduino Uno & Instrumentação. Sensor de corrente com resistor \textit{shunt} de
-        0,1~$\Omega$, lido por um Arduino Uno a 100 amostras por segundo, usado para medir o
-        consumo do nó sensor. \\
-        \bottomrule
-    \end{tabularx}
-    \legend{Fonte: Elaborado pelos autores (2026).}
-\end{table}
 
 \subsection{Componentes de software}
 \label{subsec:software}
@@ -169,8 +125,7 @@ Seção~\ref{sec:fundamentos} e devem ser consideradas na interpretação dos re
     aplicação dedicados. O dispositivo usa ativação \gls{abp}, com chaves de sessão
     configuradas previamente, e o próprio computador descriptografa o \textit{payload} com a
     chave de aplicação (AppSKey). O código de integridade da mensagem (MIC) não é verificado,
-    pois exigiria a chave de rede. Um protótipo inicial, que injetava os pacotes em um
-    servidor ChirpStack sem uso de rádio, foi descartado.
+    pois exigiria a chave de rede. 
     \item \textbf{Ambiente de bancada}: as medições de enlace foram feitas com transmissor e
     receptor a poucos metros de distância, com sinal forte, de modo que avaliam o
     comportamento dos fluxos, e não o alcance do enlace.

@@ -1,0 +1,27 @@
+
+Utilizando como base as métricas levantadas por \citeonline{Ferreira2020}, no
+que tange ao consumo energético de nós sensores baseados em ESP32,
+implementa-se a medição do pico de consumo no período de processamento e da
+autonomia energética do dispositivo ao longo do tempo, métricas que pautam a
+validade da hipótese \textit{H3}.
+
+O pico de potência instantânea consumida durante a janela crítica de
+processamento e transmissão ($P_{\text{pico}}$, em watts) e a autonomia
+energética estimada ($A$, em dias) para uma bateria de capacidade nominal
+$C_{\text{bat}}$ (em mAh) submetida a um consumo médio de corrente ao longo do
+tempo ($I_{\text{médio}}$, em mA) são definidos pelas
+Equações~\eqref{eq:pico_consumo} e \eqref{eq:autonomia_energetica}:
+
+\begin{equation}
+    \label{eq:pico_consumo}
+    P_{\text{pico}} = V_{\text{alim}} \times I_{\text{pico}}
+\end{equation}
+
+\begin{equation}
+    \label{eq:autonomia_energetica}
+    A = \frac{C_{\text{bat}}}{I_{\text{médio}} \times 24}
+\end{equation}
+
+Em que $V_{\text{alim}}$ representa a tensão de alimentação do módulo (5~V) e
+$I_{\text{pico}}$ corresponde à corrente máxima registrada durante a execução
+ativa da inferência embarcada ou do envio de pacotes via rádio \gls{lora}.

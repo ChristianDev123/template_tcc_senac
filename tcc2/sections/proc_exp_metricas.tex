@@ -21,60 +21,13 @@ Com o foco em avaliar os resultados obtidos nos ensaios de bancada, o trabalho
 adota os indicadores quantitativos descritos a seguir, cujas definições formais
 estão na Seção~\ref{subsec:metricas_experimentos}.
 
-\subsubsection{Métricas aplicadas ao OCR}
-
-Ao considerar os trabalhos de \citeonline{barkat2024smart} e
-\citeonline{jawas2018water}, que avaliam modelos de \gls{ocr} baseados em redes
-neurais aplicados à leitura de medidores, este trabalho adotou as métricas a
-seguir para validar a hipótese \textit{H1}, que compara os modelos em ponto
-flutuante (FP32) e quantizados em INT8.
-
-\paragraph{Acurácia de Leitura Total}
-Conforme discutido por \citeonline{barkat2024smart}, a eficácia de modelos de
-\textit{Deep Learning} aplicados ao monitoramento deve ser medida pela sua
-capacidade de generalização frente à verdade de campo. A Acurácia de Leitura
-Total é a razão entre as imagens em que toda a sequência numérica do mostrador
-foi reconhecida sem nenhum erro e o total de leituras avaliadas
-(Equação~\ref{eq:leitura_exata}).
-
-\paragraph{Acurácia de Leitura por Dígito}
-Corresponde à proporção de dígitos classificados corretamente em relação ao
-total de dígitos avaliados, comparados posição a posição
-(Equação~\ref{eq:leitura_exata}). Ela complementa a métrica anterior, pois
-permite identificar se as falhas estão concentradas em dígitos específicos, em
-reflexos na cúpula de vidro ou em distorções de perspectiva. Para o
-classificador isolado, a métrica equivalente é a acurácia por recorte,
-acompanhada da acurácia por classe e da matriz de confusão.
-
-\subsubsection{Métricas aplicadas ao desempenho de hardware}
-
-No que tange ao desempenho computacional do \gls{esp32cam}, com base nos
-trabalhos de \citeonline{Sari2022} e \citeonline{Ahmad2021}, torna-se
-indispensável levantar os compromissos (\textit{trade-offs}) de recursos
-embarcados entre os métodos de processamento. Para a hipótese \textit{H2}, são
-usadas as métricas a seguir, definidas na Seção~\ref{subsubsec:metricas_custo}.
-
-\paragraph{Tempo de processamento no nó}
-Soma das etapas em que a CPU do \gls{esp32cam}, a 240~MHz, trabalha sobre a
-imagem em cada leitura: a inferência dos modelos no TensorFlow Lite Micro, no
-fluxo em borda, e a compressão JPEG, no fluxo em nuvem. Como referência, também
-é medido o tempo de inferência no servidor, com o LiteRT.
-
-\paragraph{Memória ocupada na PSRAM}
-Quantifica a memória externa PSRAM, frente ao limite físico de 4~MB da placa
-AI-Thinker \gls{esp32cam}, alocada pelas \textit{arenas} de tensores
-intermediários dos modelos embarcados e pelos \textit{buffers} de imagem
-($160 \times 120$ pixels).
+\subsubsection{Métricas aplicadas à OCR}
+\label{subsubsec:metricas_ocr}
+\input{sections/secoes_metodologia_pesquisa/metricas/ocr}
 
 \subsubsection{Métricas aplicadas à gestão energética}
-
-Com base nas métricas levantadas por \citeonline{Ferreira2020} para o consumo
-energético de nós sensores baseados em ESP32, são medidos a carga consumida por
-leitura, a corrente nos estados acordado e em repouso, incluindo os picos de
-transmissão, e a autonomia energética estimada do dispositivo, métricas que
-pautam a validade da hipótese \textit{H3}. A carga por leitura e a autonomia são
-definidas pelas Equações~\eqref{eq:carga_leitura} e
-\eqref{eq:autonomia_modelo}, na Seção~\ref{subsubsec:metricas_energia}.
+\label{subsubsec:metricas_energia}
+\input{sections/secoes_metodologia_pesquisa/metricas/gestao_energetica}
 
 \subsubsection{Métricas aplicadas à rede de comunicação}
 \input{sections/secoes_metodologia_pesquisa/metricas/rede}
