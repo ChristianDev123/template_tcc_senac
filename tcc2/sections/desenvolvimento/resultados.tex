@@ -334,7 +334,7 @@ resolve, e as limitações do treino quanto à polaridade e aos roletes em trans
 limitam a leitura. Como os dois fluxos executam o mesmo pipeline e a compressão não altera a
 leitura, essas conclusões valem igualmente para a borda e para a nuvem.
 
-\subsection{Latência (H2)}
+\subsection{Latência}
 \label{subsec:resultado_latencia}
 
 A Tabela~\ref{tab:resultado_latencia} apresenta a latência ponta a ponta dos dois fluxos,
@@ -392,14 +392,15 @@ não uma exigência regulatória (Seção~\ref{subsubsec:formato_mensagens}), re
 medida no fluxo em borda. Assim, a vantagem do processamento local em latência não depende
 do intervalo escolhido.
 
-Quanto à latência, a hipótese H2 foi confirmada com folga, em concordância com a menor
+Embora não seja objeto de hipótese, a latência complementa a comparação: o fluxo em borda
+foi cerca de dez vezes mais rápido, em concordância com a menor
 latência atribuída à computação em borda na
 Tabela~\ref{tab:vant_desvant_edge_cloud} \cite{andriulo2024edge}. Nesta implementação, a
 vantagem vem da quantidade de dados transmitida, e não da velocidade do processamento: o
 microcontrolador é cerca de 2.800 vezes mais lento que o servidor na inferência, mas o
 fluxo em borda transmite 9~bytes por leitura, contra cerca de 4~KB do fluxo em nuvem.
 
-\subsection{Entrega dos dados (H2)}
+\subsection{Entrega dos dados}
 \label{subsec:resultado_entrega}
 
 A Tabela~\ref{tab:resultado_entrega} apresenta a entrega dos dados nas três corridas, por
@@ -450,7 +451,7 @@ das extremidades ($p = 0{,}21$). A causa não foi investigada; a coincidência s
 perdas estão associadas ao início e ao fim de uma sequência de transmissões, no módulo ou no
 receptor de canal único, e não ao enlace de rádio.
 
-Quanto à entrega, portanto, a hipótese H2 não foi confirmada: o fluxo em borda entregou
+Quanto à entrega, portanto, nenhum dos fluxos se mostrou superior: o fluxo em borda entregou
 mais leituras, mas sem significância estatística, e entregou uma fração menor de pacotes.
 O resultado mostra ainda que a métrica de interesse da aplicação é a entrega por leitura, e
 não o \gls{pdr}: um \gls{pdr} de 98\% por pacote resultou em um terço das imagens perdidas.
@@ -645,15 +646,45 @@ real, o resultado indica que reduzir a corrente em repouso, suspendendo o módul
 os demais componentes da placa, é condição para que a escolha do fluxo faça diferença na
 autonomia.
 
-\subsection{Desempenho computacional e complexidade de desenvolvimento}
+\subsection{Custo computacional (H2) e complexidade de desenvolvimento}
 \label{subsec:resultado_complexidade}
 
 A pergunta de pesquisa inclui, além da energia e da acurácia, o desempenho computacional e
 a complexidade de desenvolvimento do firmware, aspectos avaliados a partir das medições do
 firmware e do servidor (Seções~\ref{subsec:firmware} e \ref{subsec:servidor}) e da
-experiência de implementação.
+experiência de implementação. A hipótese H2 trata do custo computacional no dispositivo
+final, e a Tabela~\ref{tab:resultado_custo} o compara nos dois fluxos.
 
-Em desempenho computacional, a diferença é de mais de três ordens de grandeza: a leitura
+\begin{table}[H]
+    \centering
+    \caption{Custo computacional de uma leitura no nó sensor}
+    \label{tab:resultado_custo}
+    \begin{tabularx}{\textwidth}{@{}X>{\raggedright\arraybackslash}p{4.2cm}>{\raggedright\arraybackslash}p{4.2cm}@{}}
+        \toprule
+        \textbf{Grandeza} & \textbf{Fluxo em nuvem} & \textbf{Fluxo em borda} \\
+        \midrule
+        Processamento da imagem no nó & Compressão JPEG, cerca de 11~ms &
+            Localização da janela e seis dígitos, 17.838~ms \\
+        Memória na PSRAM além do quadro & JPEG de 3,3 a 4,6~KB & \textit{Arenas} de
+            2,9~MB reservados e 1,65~MB usados \\
+        Modelos na \textit{flash} & Nenhum & Dois modelos INT8; firmware de 563~KB \\
+        \bottomrule
+    \end{tabularx}
+    \legend{Fonte: Elaborado pelos autores (2026). Nos dois fluxos, a captura leva cerca de
+    0,7~s desde o despertar e o quadro ocupa cerca de 19~KB. O tempo de compressão foi medido
+    no firmware de depuração, com qualidade 80; o fluxo em nuvem usa qualidade 90 sobre
+    quadros do mesmo tamanho.}
+\end{table}
+
+No dispositivo, o fluxo em borda executa cerca de 1.600 vezes mais processamento por
+leitura que o fluxo em nuvem e ocupa cerca de 1,65~MB de PSRAM que o outro fluxo não usa.
+Mesmo na versão com ROI calibrada, que dispensa a localização da janela, a classificação dos
+dígitos levaria cerca de 2~s, ainda duas ordens de grandeza acima da compressão. A hipótese
+H2 foi, portanto, confirmada. O maior tempo acordado do fluxo em nuvem, de cerca de 190~s,
+não contradiz esse resultado: ele é ocupado pela espera entre os blocos transmitidos, e não
+por processamento, e o seu efeito aparece no consumo, avaliado pela hipótese H3.
+
+Em relação ao servidor, a diferença é de mais de três ordens de grandeza: a leitura
 completa levou 17.838~ms no \gls{esp32cam} e cerca de 6~ms no servidor
 (Tabela~\ref{tab:tempo_inferencia}). A literatura relata inferência abaixo de um segundo
 para modelos de \gls{ocr} de medidores em hardware embarcado
@@ -703,10 +734,15 @@ A Tabela~\ref{tab:sintese_hipoteses} resume o resultado de cada hipótese.
         ponto percentual sem significância estatística ($p = 0{,}29$) & Confirmada no sentido,
         mas a redução é desprezível \\
         \addlinespace
-        H2, latência & 18,84~s no fluxo em borda contra 189,1~s no fluxo em nuvem & Confirmada \\
+        H2 & No nó, 17.838~ms de processamento e 1,65~MB de PSRAM por leitura no fluxo em
+        borda, contra cerca de 11~ms de compressão no fluxo em nuvem & Confirmada \\
         \addlinespace
-        H2, entrega & Por leitura, 79,4\% contra 66,7\%, sem significância ($p = 0{,}27$); por
-        pacote, 79,4\% contra 98,0\% & Não confirmada \\
+        Latência (complementar) & 18,84~s no fluxo em borda contra 189,1~s no fluxo em nuvem &
+        Menor no fluxo em borda \\
+        \addlinespace
+        Entrega (complementar) & Por leitura, 79,4\% contra 66,7\%, sem significância
+        ($p = 0{,}27$); por pacote, 79,4\% contra 98,0\% & Sem diferença significativa por
+        leitura \\
         \addlinespace
         H3 & 0,824 contra 4,64~mAh por leitura (5,6 vezes); autonomia de 1,0 a 7,0 vezes maior,
         conforme a corrente em repouso e o intervalo & Confirmada, com magnitude dependente
@@ -726,8 +762,9 @@ alterou a leitura. O limite da acurácia, nos dois casos, está na localização
 dígitos, que a calibração da ROI na instalação resolve quando a câmera é fixa, e, em
 medidores reais, também na geometria da captura e no treino do classificador, que não cobre
 dígitos claros em fundo escuro nem roletes em transição. O custo do
-fluxo em borda aparece na complexidade de desenvolvimento e de manutenção e na restrição de
-memória, que impede o uso de modelos maiores e de recursos como a correção de inclinação.
+fluxo em borda aparece no processamento e na memória exigidos do nó, como previa a hipótese
+H2, na complexidade de desenvolvimento e de manutenção e na restrição de memória, que impede
+o uso de modelos maiores e de recursos como a correção de inclinação.
 
 Em comparação com os trabalhos correlatos, \citeonline{bravo2025ants} relatam precisão de
 99,71\% no reconhecimento dos dígitos com \gls{ocr} executado no próprio \gls{esp32cam}. O

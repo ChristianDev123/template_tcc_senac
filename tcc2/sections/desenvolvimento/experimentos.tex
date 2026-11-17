@@ -2,9 +2,10 @@ Os experimentos foram planejados para responder às três hipóteses da
 Seção~\ref{subsec:hipotese}. A Tabela~\ref{tab:plano_experimentos} relaciona cada
 experimento à hipótese avaliada, aos dados utilizados e às métricas principais. Os
 experimentos de reconhecimento foram executados no computador, sobre conjuntos de imagens
-fixos e versionados no repositório. Os de latência, entrega e consumo foram executados com
-o protótipo em bancada, com os firmwares dos dois fluxos descritos na
-Seção~\ref{subsec:firmware}.
+fixos e versionados no repositório. Os de custo computacional, latência, entrega e consumo
+foram executados com o protótipo em bancada, com os firmwares dos dois fluxos descritos na
+Seção~\ref{subsec:firmware}. A latência e a entrega não são objeto de hipótese, mas
+complementam a comparação entre os fluxos.
 
 \begin{table}[H]
     \centering
@@ -22,7 +23,11 @@ Seção~\ref{subsec:firmware}.
         hidrômetros físicos; janela prevista pelo modelo e janela marcada à mão & Leitura exata,
         acurácia por dígito, CER, Dice e IoU \\
         \addlinespace
-        Latência e entrega & H2 & Nó em ciclo autônomo com \textit{deep sleep}: 30 leituras no
+        Custo computacional no nó & H2 & 61 capturas do firmware de depuração na placa e
+        ciclos dos firmwares dos dois fluxos & Tempo de processamento por leitura, memória
+        ocupada na PSRAM, tamanho do firmware \\
+        \addlinespace
+        Latência e entrega & --- & Nó em ciclo autônomo com \textit{deep sleep}: 30 leituras no
         fluxo em nuvem e 34 no fluxo em borda; 30 envios adicionais de imagem com o nó sempre
         ligado & Latência ponta a ponta, \gls{pdr} por pacote, taxa de entrega por leitura \\
         \addlinespace
@@ -82,6 +87,16 @@ union}):
     \qquad
     IoU = \frac{|P \cap G|}{|P \cup G|}
 \end{equation}
+
+\subsubsection{Custo computacional}
+\label{subsubsec:metricas_custo}
+
+O custo computacional de uma leitura no nó é medido por três grandezas: o tempo de
+processamento, isto é, a soma das etapas em que a CPU trabalha sobre a imagem (captura e
+compressão JPEG no fluxo em nuvem; captura, localização da janela e classificação dos
+dígitos no fluxo em borda), sem contar as esperas do rádio; a memória ocupada na PSRAM,
+incluindo as \textit{arenas} do TensorFlow Lite Micro; e o tamanho do firmware gravado na
+memória de programa.
 
 \subsubsection{Energia}
 \label{subsubsec:metricas_energia}
@@ -231,7 +246,18 @@ das quatro coordenadas da caixa recebeu um erro inteiro sorteado uniformemente e
 $+d$ pixels, para $d \in \{0, 1, 2, 3, 4, 6\}$, com três sementes aleatórias. Cada caso foi
 lido com fatias iguais e com a votação entre cinco caixas deslocadas.
 
-\subsection{Latência e entrega (H2)}
+\subsection{Custo computacional (H2)}
+\label{subsec:exp_custo}
+
+Os tempos de processamento e a memória do fluxo em borda foram medidos na placa em 61
+capturas, com um firmware de depuração que executa a mesma leitura do firmware do fluxo e
+registra, a cada captura, o tempo de cada etapa, a memória livre e o uso das
+\textit{arenas} (Seção~\ref{subsubsec:tflm}). No fluxo em nuvem, o tempo até a captura vem
+dos registros de ciclo do próprio firmware, e o tempo de compressão JPEG foi medido no
+mesmo firmware de depuração, sobre quadros do mesmo tamanho. O tamanho do firmware é o
+informado pela compilação.
+
+\subsection{Latência e entrega}
 \label{subsec:exp_latencia}
 
 A latência e a entrega foram medidas com o \textit{script} \texttt{latencia\_ponta\_a\_ponta.py},
