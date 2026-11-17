@@ -1,91 +1,134 @@
-% Para avaliar a eficácia do sistema de telemetria proposto e garantir a objetividade dos resultados, 
-% foram adotados indicadores quantitativos divididos em três dimensões críticas: desempenho de rede, 
-% precisão de visão computacional, eficiência energética e acurácia preditiva.
+Este trabalho implementa uma pesquisa aplicada, de caráter experimental e
+comparativo, ao desenvolver um sistema baseado em \gls{iot} e extrair dados
+empíricos sobre dois métodos de processamento (\gls{cloud_computing} e
+\gls{edge_computing}) \cite{SilvaVilela2021}.
 
-% % =================================================================================================
-
-% \subsection{Acurácia da Visão Computacional (OCR)}
-
-% A validação do algoritmo de \gls{ocr}, 
-% responsável pela extração dos dígitos dos medidores, 
-% será realizada sob diferentes condições de iluminação e 
-% ângulos de captura, 
-% visando simular cenários reais de instalação. 
-
-% Conforme discutido por \citeonline{barkat2024smart}, 
-% a eficácia de modelos de \textit{Deep Learning} 
-% aplicados ao monitoramento deve ser medida 
-% pela sua capacidade de generalização. 
-% Para este trabalho, a métrica principal será a Acurácia de Leitura ($Acc_{ocr}$),
-% definida pela razão entre as predições que coincidem exatamente com o valor real (verdade de campo) 
-% e o total de amostras testadas:
-
-% \begin{equation}
-% Acc_{ocr} = \frac{VP + VN}{VP + VN + FP + FN}
-% \end{equation}
-
-% Em que $VP$, $VN$, $FP$ e $FN$ representam, respectivamente,
-% os Verdadeiros Positivos, Verdadeiros Negativos, Falsos Positivos 
-% e Falsos Negativos obtidos através da Matriz de Confusão. 
-% Esta abordagem quantitativa permite identificar se erros de 
-% leitura estão associados a fatores externos, como reflexos na cúpula 
-% de vidro do medidor ou distorções de perspectiva.
-
-% % =================================================================================================
-
-% \subsection{Autonomia Energética}
-% A eficiência do hardware será validada através da 
-% medição do consumo de corrente em diferentes estados de 
-% operação (\textit{Deep Sleep}, captura de imagem e transmissão). 
-% A autonomia estimada ($A$) em dias será calculada pela relação 
-% entre a capacidade da bateria ($C_{bat}$) 
-% e o consumo médio diário ($I_{médio}$):
-
-% \begin{equation}
-% A = \frac{C_{bat}}{I_{médio} \times 24}
-% \end{equation}
-
-% ===========================================================================================================================================================================
-% ===========================================================================================================================================================================
-% ===========================================================================================================================================================================
-
-Este trabalho implementa a pesquisa experimental e comparativa, 
-ao ter como objetivo o desenvolvimento de sistemas baseados em IOT 
-e extrair dados comparativos sobre ambos métodos de processamento (Cloud e Edge Computing).
+Para isolar o impacto do local de execução dos algoritmos de visão
+computacional e validar as hipóteses formuladas na Seção~\ref{subsec:hipotese},
+ambos os fluxos são avaliados sobre exatamente o mesmo hardware, a mesma
+configuração de enlace \gls{lorawan} e as mesmas condições de bancada
+(Tabela~\ref{tab:variaveis_ambiente}). Varia-se exclusivamente o paradigma de
+processamento — inferência embarcada via TensorFlow Lite Micro com envio de
+9~bytes na porta \texttt{FPort~2} versus envio de blocos JPEG na porta
+\texttt{FPort~1} para inferência remota via LiteRT e a precisão numérica
+dos modelos (FP32 versus INT8) \cite{ferreira2022compressao}.
 
 \subsection{Métricas}
-Com o foco em avaliar a os resultados levantados, o trabalho adota os seguintes indicadores quantitativos:
+\label{subsec:metricas}
+
+Com o foco em avaliar os resultados levantados nos ensaios de bancada, o
+trabalho adota os seguintes indicadores quantitativos:
 
 \subsubsection{Métricas aplicadas à OCR}
-Ao relevar dos trabalhos de \citeonline{} e \citeonline{}, 
-que propõem em seus respectivos trabalhos a comparação entre modelos de \gls{ocr} 
-baseados em técnicas de Redes Neurais, 
-este trabalho adotou como métrica para validar à hipótese \textit{H1} as métricas:
+\label{subsubsec:metricas_ocr}
+
+Ao considerar os trabalhos de \citeonline{barkat2024smart} e
+\citeonline{jawas2018water}, que propõem em seus respectivos estudos a
+avaliação de modelos de \gls{ocr} baseados em redes neurais aplicados à leitura
+de medidores, este trabalho adotou como indicadores para validar a hipótese
+\textit{H1} (comparação entre os modelos em ponto flutuante FP32 e
+quantizados em INT8) \cite{ferreira2022compressao} as métricas:
 
 \paragraph{F1 Score}
+Média harmônica entre Precisão e Revocação (\textit{Recall}), calculada a
+partir dos Verdadeiros Positivos ($VP$), Falsos Positivos ($FP$) e Falsos
+Negativos ($FN$) extraídos da Matriz de Confusão, conforme a
+Equação~\eqref{eq:f1_score}:
+
+\begin{equation}
+    \label{eq:f1_score}
+    \text{F1-Score} = \frac{2 \times VP}{2 \times VP + FP + FN}
+\end{equation}
+
+Essa métrica avalia o equilíbrio de classificação entre as dez classes
+numéricas (dígitos de 0 a 9), evitando distorções causadas pelo
+desbalanceamento natural das leituras (como a predominância do dígito 0 nas
+casas mais significativas do hidrômetro).
+
 \paragraph{Acurácia de Leitura Total}
+Conforme discutido por \citeonline{barkat2024smart}, a eficácia de modelos de
+\textit{Deep Learning} aplicados ao monitoramento deve ser mensurada pela sua
+capacidade de generalização frente à verdade de campo. A acurácia global obtida
+a partir da Matriz de Confusão ($Acc_{ocr}$) relaciona os acertos e erros
+totais segundo a Equação~\eqref{eq:acc_ocr}:
+
+\begin{equation}
+    \label{eq:acc_ocr}
+    Acc_{ocr} = \frac{VP + VN}{VP + VN + FP + FN}
+\end{equation}
+
+Em que $VP$, $VN$, $FP$ e $FN$ representam, respectivamente, os Verdadeiros
+Positivos, Verdadeiros Negativos, Falsos Positivos e Falsos Negativos. No
+contexto operacional do hidrômetro, apura-se a \textbf{Acurácia de Leitura
+Total} como a razão entre as imagens em que toda a sequência numérica do
+mostrador foi reconhecida sem nenhum erro de caractere e o total de leituras
+avaliadas.
+
 \paragraph{Acurácia de Leitura por Dígito}
+Corresponde à proporção de recortes individuais de roletes classificados
+corretamente em relação ao total de dígitos avaliados, permitindo identificar
+se falhas pontuais estão associadas a dígitos específicos, reflexos na cúpula
+de vidro ou distorções de perspectiva \cite{barkat2024smart}.
 
 \subsubsection{Métricas aplicadas à desempenho de hardware}
-No que tange o desempenho do ESP32, 
-baseando-se nos trabalhos de \citeonline{} e \citeonline{}, 
-torna-se indispensável o levantamento para a observação de trade-off 
-entre os métodos de processamento as métricas:
+\label{subsubsec:metricas_hardware}
+
+No que tange ao desempenho computacional do \gls{esp32cam}, baseando-se nos
+trabalhos de \citeonline{Sari2022} e \citeonline{Ahmad2021}, torna-se
+indispensável o levantamento dos compromissos (\textit{trade-offs}) de recursos
+embarcados entre os métodos de processamento por meio das seguintes métricas
+(hipótese \textit{H2}):
 
 \paragraph{Média de Utilização de CPU durante o processamento}
-\paragraph{Comparação de frequência de operação entre os métodos durante processamento} 
+Mensura a carga computacional e o tempo de execução ativa demandados dos
+núcleos do processador do \gls{esp32cam} durante o ciclo de trabalho,
+contrastando o esforço exigido pela inferência local das redes neurais no
+interpretador TensorFlow Lite Micro (fluxo \textit{Edge}) frente ao custo de
+compressão JPEG e empacotamento serial (fluxo \textit{Cloud}), além da
+comparação com o tempo de inferência no servidor via LiteRT.
+
+\paragraph{Comparação de frequência de operação entre os métodos durante processamento}
+Avalia a permanência do microcontrolador em sua frequência nominal de operação
+ativa de 240~MHz durante o processamento dos dados em cada paradigma,
+confrontando o tempo em que a CPU permanece em plena atividade antes de
+retornar ao estado de repouso em \textit{deep sleep}.
+
 \paragraph{Pico de utilização de PSRAM durante processamento}
+Quantifica o volume máximo de memória externa PSRAM (em bytes/megabytes, frente
+ao limite físico de 4~MB da placa AI-Thinker \gls{esp32cam}) alocado
+estaticamente pelas \textit{arenas} de tensores intermediários dos modelos
+embarcados e pelos \textit{buffers} de imagem ($160 \times 120$ pixels)
+durante a execução.
 
 \subsubsection{Métricas aplicadas à gestão energética}
+\label{subsubsec:metricas_energia}
 
-Utilizando como base as métricas levantadas por \citeonline{}, 
-no que tange o ponto de métricas de consumo energético, 
-torna-se extremamente útil a implementação das métricas de pico de consumo em 
-período de processamento e autonomia energética do dispositivo ao 
-longo do tempo, tais métricas pautam a validade da hipótese \textit{H3}.
+Utilizando como base as métricas levantadas por \citeonline{Ferreira2020}, no
+que tange ao consumo energético de nós sensores baseados em ESP32,
+implementa-se a medição do pico de consumo no período de processamento e da
+autonomia energética do dispositivo ao longo do tempo, métricas que pautam a
+validade da hipótese \textit{H3}.
 
+O pico de potência instantânea consumida durante a janela crítica de
+processamento e transmissão ($P_{\text{pico}}$, em watts) e a autonomia
+energética estimada ($A$, em dias) para uma bateria de capacidade nominal
+$C_{\text{bat}}$ (em mAh) submetida a um consumo médio de corrente ao longo do
+tempo ($I_{\text{médio}}$, em mA) são definidos pelas
+Equações~\eqref{eq:pico_consumo} e \eqref{eq:autonomia_energetica}:
 
-[Apresentação de ambas fórmulas de métrica]
+\begin{equation}
+    \label{eq:pico_consumo}
+    P_{\text{pico}} = V_{\text{alim}} \times I_{\text{pico}}
+\end{equation}
+
+\begin{equation}
+    \label{eq:autonomia_energetica}
+    A = \frac{C_{\text{bat}}}{I_{\text{médio}} \times 24}
+\end{equation}
+
+Em que $V_{\text{alim}}$ representa a tensão de alimentação do módulo (5~V) e
+$I_{\text{pico}}$ corresponde à corrente máxima registrada durante a execução
+ativa da inferência embarcada ou do envio de pacotes via rádio \gls{lora}.
 
 \subsubsection{Métricas aplicadas à rede de comunicação}
 \input{sections/secoes_metodologia_pesquisa/metricas/rede}

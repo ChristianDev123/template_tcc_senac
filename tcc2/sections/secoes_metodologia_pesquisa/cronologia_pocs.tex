@@ -3,6 +3,8 @@ provas de conceitos e teste de fluxos de processamento,
 abaixo apresenta-se as etapas desenvolvidas em ordem cronológica.
 
 \subsubsection{POC 1: Teste de viabilidade com OCR genérico}
+\label{metodologia_pesquisa:poc1}
+
 O primeiro experimento verificou se um \gls{ocr} de propósito geral conseguiria ler o
 mostrador em uma imagem tão pequena quanto a capturada pelo \gls{esp32cam}
 ($160 \times 120$ pixels, em tons de cinza). Em um \textit{notebook} no Google Colab, o
@@ -16,7 +18,7 @@ viabilidade, mas indicou a estrutura adotada: localizar os dígitos e classific�
 um. Os \gls{ocr} genéricos não foram usados nas etapas seguintes.
 
 \subsubsection{POC 2: Envio de Pacote em Rede P2P}
-\label{metodologia_pesquisa:poc1}
+\label{metodologia_pesquisa:poc2}
 
 Na segunda etapa, validou-se a camada de comunicação sem fio entre o nó transmissor
 (\gls{esp32cam} integrado ao módulo Radioenge RD49C via interface serial UART e comandos
@@ -41,7 +43,7 @@ em Python (\texttt{PySerial} e \texttt{PyCryptodome}) para eliminar variáveis e
 rede na bancada.
 
 \subsubsection{POC 3: Segmentação de Imagens e Reconstrução em ambiente Cloud}
-\label{metodologia_pesquisa:poc2}
+\label{metodologia_pesquisa:poc3}
 
 Na terceira etapa, implementou-se a captura de imagens em tons de cinza na resolução nativa
 de $160 \times 120$ pixels pelo \gls{esp32cam}, sua compressão em formato JPEG com fator
@@ -54,7 +56,7 @@ caracteres, consolidando o fluxo de processamento centralizado em nuvem
 (\gls{cloud_computing}).
 
 \subsubsection{POC 4: Leitura Realizada em Edge-Computing}
-\label{metodologia_pesquisa:poc3}
+\label{metodologia_pesquisa:poc4}
 
 Na quarta etapa, migrou-se a inferência de visão computacional para o interior do
 microcontrolador \gls{esp32cam} (4~MB de PSRAM) por meio do interpretador TensorFlow Lite
@@ -80,20 +82,22 @@ embarcada, incorporou-se ainda o recorte por região de interesse (\gls{roi}) ca
 instalação.
 
 \subsubsection{POC 5: Fluxos de Processamento Edge e Cloud Computing}
-\label{metodologia_pesquisa:poc4}
+\label{metodologia_pesquisa:poc5}
 
-Na quinta etapa, integraram-se ambos os fluxos em firmwares autônomos definitivos para o
-nó transmissor (\texttt{transmissor\_esp32cam} para o fluxo em nuvem e
-\texttt{transmissor\_ocr\_esp32cam} para o fluxo em borda) e para o receptor
-(\texttt{receptor\_lora32}). Seguindo as práticas de gerenciamento energético para
-plataformas ESP32 descritas por \citeonline{Sari2022}, \citeonline{Ahmad2021} e
-\citeonline{Ferreira2020}, os firmwares operam em ciclos autônomos com desligamento ativo
-do sensor da câmera (\textit{power-down}) imediatamente após a captura e repouso em
-\textit{deep sleep} de 30~s (\texttt{AUTO:30}) entre leituras. Paralelamente, acoplou-se a
-bancada de medição elétrica baseada no sensor INA219 (resistor \textit{shunt} de
-0,1~$\Omega$, amostragem a 100~Hz via Arduino Uno) sincronizada via porta serial com os
-\textit{scripts} em Python 3.13.9, permitindo a coleta simultânea de acurácia, latência,
-confiabilidade de enlace e consumo energético.
+Na quinta etapa, integraram-se ambos os fluxos em firmwares autônomos
+definitivos: no nó transmissor, \texttt{transmissor\_\allowbreak esp32cam}
+(fluxo em nuvem) e \texttt{transmissor\_\allowbreak ocr\_\allowbreak esp32cam}
+(fluxo em borda); e, no nó receptor, \texttt{receptor\_\allowbreak lora32}.
+Seguindo as práticas de gerenciamento energético para plataformas ESP32
+descritas por \citeonline{Sari2022}, \citeonline{Ahmad2021} e
+\citeonline{Ferreira2020}, os firmwares operam em ciclos autônomos com
+desligamento ativo do sensor da câmera (\textit{power-down}) imediatamente após
+a captura e repouso em \textit{deep sleep} de 30~s (\texttt{AUTO:30}) entre
+leituras. Paralelamente, acoplou-se a bancada de medição elétrica baseada no
+sensor INA219 (resistor \textit{shunt} de 0,1~$\Omega$, amostragem a 100~Hz via
+Arduino Uno) sincronizada via porta serial com os \textit{scripts} em Python
+3.13.9, permitindo a coleta simultânea de acurácia, latência, confiabilidade de
+enlace e consumo energético.
 
 \subsubsection{Fluxos Abandonados}
 Durante o desenvolvimento do sistema, 
