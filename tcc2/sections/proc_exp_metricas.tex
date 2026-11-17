@@ -2,21 +2,6 @@
 % foram adotados indicadores quantitativos divididos em três dimensões críticas: desempenho de rede, 
 % precisão de visão computacional, eficiência energética e acurácia preditiva.
 
-% \subsection{Desempenho da Rede de Comunicação}
-% A robustez da transmissão via \gls{lorawan} será quantificada através da \gls{pdr}. 
-% Conforme a metodologia de \citeonline{bravo2025ants}, 
-% o PDR é definido pela razão entre o número de pacotes recebidos 
-% pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor:
-
-% \begin{equation}
-% \label{eq:pdr}
-% PDR = \left( \frac{\text{Pacotes Recebidos}}{\text{Pacotes Enviados}} \right) \times 100
-% \end{equation}
-
-% Além do \gls{pdr}, será medida a latência de ponta a ponta, 
-% compreendendo o tempo decorrido desde o disparo da captura da imagem no ESP32 
-% até a disponibilidade do dado processado no \textit{dashboard}.
-
 % % =================================================================================================
 
 % \subsection{Acurácia da Visão Computacional (OCR)}
@@ -103,15 +88,7 @@ longo do tempo, tais métricas pautam a validade da hipótese \textit{H3}.
 [Apresentação de ambas fórmulas de métrica]
 
 \subsubsection{Métricas aplicadas à rede de comunicação}
-
-De maneira aditiva ao resultado deste trabalho, 
-a aplicação de métricas de redes de comunicação auxiliará na comparação entre ambos os métodos. 
-Tais métricas foram selecionadas com base nos trabalhos de \citeonline{} e \citeonline{}, 
-que tem por foco o levantamento deste tipo de métrica em sistemas \gls{iot}.
-
-[Apresentação da métrica de Packet Loss]
-
-
+\input{sections/secoes_metodologia_pesquisa/metricas/rede}
 
 \subsection{Cronologia de Procedimentos Adotados em Desenvolvimento}
 \input{sections/secoes_metodologia_pesquisa/cronologia_pocs}

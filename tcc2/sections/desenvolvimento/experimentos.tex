@@ -83,27 +83,6 @@ union}):
     IoU = \frac{|P \cap G|}{|P \cup G|}
 \end{equation}
 
-\subsubsection{Latência e entrega}
-\label{subsubsec:metricas_latencia}
-
-A latência ponta a ponta de uma leitura é o intervalo entre
-o disparo no nó e o instante em que o dado fica disponível no servidor: a imagem remontada,
-no fluxo em nuvem, ou a leitura decodificada, no fluxo em borda. A entrega é avaliada de
-duas formas. A primeira é o \gls{pdr} por pacote, definido na Equação~\eqref{eq:pdr}. A
-segunda é a taxa de entrega por leitura, a fração das leituras disparadas cujo dado chegou
-completo ao servidor:
-
-\begin{equation}
-    \label{eq:entrega_leitura}
-    E_{\mathrm{leitura}} = \frac{\text{leituras disponíveis no servidor}}{\text{leituras disparadas}}
-\end{equation}
-
-As duas métricas diferem no fluxo em nuvem: como nenhum dos firmwares retransmite blocos no
-modo autônomo, uma imagem com um único bloco perdido não é remontada, e a leitura se perde
-mesmo com um \gls{pdr} alto. No fluxo em borda, em que cada leitura ocupa um pacote, as duas
-coincidem. As taxas de entrega por leitura dos dois fluxos são comparadas pelo teste exato
-de Fisher, adequado a proporções com amostras pequenas.
-
 \subsubsection{Energia}
 \label{subsubsec:metricas_energia}
 

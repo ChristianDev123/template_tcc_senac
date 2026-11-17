@@ -1,0 +1,34 @@
+De maneira aditiva ao resultado deste trabalho, 
+a aplicação de métricas de redes de comunicação auxiliará na comparação entre ambos os métodos. 
+Tais métricas foram selecionadas com base nos trabalhos de \citeonline{bravo2025ants} e \citeonline{}, 
+que tem por foco o levantamento deste tipo de métrica em sistemas \gls{iot}.
+
+\paragraph{Razão de Pacotes Entregues}
+A robustez da transmissão via \gls{lorawan} será quantificada através da \gls{pdr}.  
+O PDR é definido pela razão entre o número de pacotes recebidos 
+pelo \textit{gateway} e o número de pacotes enviados pelo nó sensor:
+
+\begin{equation}
+\label{eq:pdr}
+PDR = \left( \frac{\text{Pacotes Recebidos}}{\text{Pacotes Enviados}} \right) \times 100
+\end{equation}
+
+
+\paragraph{Latência e entrega}
+\label{subsubsec:metricas_latencia}
+A latência ponta a ponta de uma leitura é o intervalo entre
+o disparo no nó e o instante em que o dado fica disponível no servidor: a imagem remontada,
+no fluxo em nuvem, ou a leitura decodificada, no fluxo em borda. 
+
+\begin{equation}
+    \label{eq:entrega_leitura}
+    E_{\mathrm{leitura}} = \frac{\text{leituras disponíveis no servidor}}{\text{leituras disparadas}}
+\end{equation}
+
+\paragraph{Avaliação}
+
+As duas métricas diferem no fluxo em nuvem: como nenhum dos firmwares retransmite blocos no
+modo autônomo, uma imagem com um único bloco perdido não é remontada, e a leitura se perde
+mesmo com um \gls{pdr} alto. No fluxo em borda, em que cada leitura ocupa um pacote, as duas
+coincidem.
+
