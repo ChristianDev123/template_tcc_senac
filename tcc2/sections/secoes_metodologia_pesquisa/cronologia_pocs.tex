@@ -1,4 +1,4 @@
-Durante a etapa de desenvolvimento deste trabalho foram adotados etapas de 
+Durante a etapa de desenvolvimento deste trabalho foram adotadas etapas de 
 provas de conceitos e teste de fluxos de processamento, 
 abaixo apresenta-se as etapas desenvolvidas em ordem cronológica.
 
@@ -15,21 +15,85 @@ reconhecido isoladamente. Por usar uma única foto, o teste serviu apenas como p
 viabilidade, mas indicou a estrutura adotada: localizar os dígitos e classificá-los um a
 um. Os \gls{ocr} genéricos não foram usados nas etapas seguintes.
 
-
 \subsubsection{POC 2: Envio de Pacote em Rede P2P}
 \label{metodologia_pesquisa:poc1}
+
+Na segunda etapa, validou-se a camada de comunicação sem fio entre o nó transmissor
+(\gls{esp32cam} integrado ao módulo Radioenge RD49C via interface serial UART e comandos
+AT) e o receptor de canal único (LoRa32), verificando a adequação física e regulatória
+sob o Ato n\textordmasculine~14.448 da ANATEL \cite{anatel2017} para a faixa de 915 a
+928~MHz (plano AU915).
+
+Inicialmente, modelou-se analiticamente a fragmentação em canais de 125~kHz com salto em
+frequência e \gls{sf}~8, respeitando o limite de \textit{dwell time} de 0,4~s (400~ms) em
+um intervalo de 14~s com mínimo de 35 canais de salto, o que restringia cada bloco a
+115~bytes \cite{anatel2017, adam2022}. Contudo, diante do uso de um receptor de canal
+único e da necessidade de acomodar blocos maiores dentro do limite útil de \gls{payload}
+do AU915 (até 227~bytes para 250~bytes de \textit{MACPayload} sem repetidores)
+\cite{lora_alliance_rp002_105}, o enlace foi configurado em \gls{dr}~6 (largura de banda
+de 500~kHz no canal fixo 64, a 915,9~MHz). Esse ajuste enquadra o sistema no item~10.3 do
+Ato n\textordmasculine~14.448 (modulação digital com largura de faixa a 6~dB de no mínimo
+500~kHz, potência de pico máxima de 1~W e densidade espectral máxima de 8~dBm em 3~kHz),
+dispensando o salto em frequência \cite{anatel2017}. Nessa fase, também foram conduzidos
+testes de injeção de pacotes no servidor de rede ChirpStack \cite{Camargo2022},
+posteriormente substituídos pela recepção direta via serial e descriptografia AES-128
+em Python (\texttt{PySerial} e \texttt{PyCryptodome}) para eliminar variáveis externas de
+rede na bancada.
 
 \subsubsection{POC 3: Segmentação de Imagens e Reconstrução em ambiente Cloud}
 \label{metodologia_pesquisa:poc2}
 
+Na terceira etapa, implementou-se a captura de imagens em tons de cinza na resolução nativa
+de $160 \times 120$ pixels pelo \gls{esp32cam}, sua compressão em formato JPEG com fator
+de qualidade 90 (gerando arquivos entre 3,3 e 4,6~KB), a fragmentação em pacotes de até
+175~bytes de dados úteis acrescidos de 6~bytes de cabeçalho na porta \texttt{FPort~1} e a
+remontagem integral no computador receptor (\texttt{reconstrutor.py}). Com as imagens
+reconstruídas em ambiente remoto, executou-se o pipeline de visão computacional no
+servidor via LiteRT para localização da janela de dígitos e classificação individual dos
+caracteres, consolidando o fluxo de processamento centralizado em nuvem
+(\gls{cloud_computing}).
+
 \subsubsection{POC 4: Leitura Realizada em Edge-Computing}
 \label{metodologia_pesquisa:poc3}
 
-\subsubsection{POC 5: Leitura Realizada em Edge-Computing}
-\label{metodologia_pesquisa:poc3}
+Na quarta etapa, migrou-se a inferência de visão computacional para o interior do
+microcontrolador \gls{esp32cam} (4~MB de PSRAM) por meio do interpretador TensorFlow Lite
+Micro (\texttt{esp-tflite-micro} 1.3.1), reduzindo o tráfego de rede de múltiplos blocos
+de imagem para um único quadro de 9~bytes contendo a leitura decodificada enviada pela
+porta \texttt{FPort~2}.
 
-\subsubsection{POC 6: Fluxos de Processamento Edge e Cloud Computing }
+Para viabilizar a execução embarcada dentro das restrições de memória e processamento,
+processaram-se todas as entradas em canal único (escala de cinza)
+\cite{ayeni2022convolutional} e consolidou-se o pipeline embarcado definitivo, composto
+por uma rede codificador--decodificador leve ($192 \times 192$ pixels, 11,8~KB em INT8) e
+uma \gls{cnn} classificadora de dígitos de $28 \times 28$ pixels (81,5~KB em INT8)
+estruturada com camadas convolucionais, \textit{max-pooling} $2 \times 2$ e camada
+totalmente conectada \cite{ayeni2022convolutional}, alinhada à ordem de grandeza de
+centenas de quilobytes reportada na literatura de \gls{ocr} embarcado para medidores
+\cite{ademola2023resource, jawas2018water}. O classificador foi treinado de forma
+supervisionada \cite{SilvaVilela2021} em duas fases (treinamento base em bases públicas
+\cite{kucev2020, zhao2026wordwheel} seguido de ajuste fino com capturas reais do
+\gls{esp32cam}) e convertido para INT8 por quantização pós-treinamento
+\cite{ferreira2022compressao}, seguindo os hiperparâmetros da
+Tabela~\ref{tab:hiperparametros}. Diante da baixa precisão espacial da segmentação
+embarcada, incorporou-se ainda o recorte por região de interesse (\gls{roi}) calibrada na
+instalação.
+
+\subsubsection{POC 5: Fluxos de Processamento Edge e Cloud Computing}
 \label{metodologia_pesquisa:poc4}
+
+Na quinta etapa, integraram-se ambos os fluxos em firmwares autônomos definitivos para o
+nó transmissor (\texttt{transmissor\_esp32cam} para o fluxo em nuvem e
+\texttt{transmissor\_ocr\_esp32cam} para o fluxo em borda) e para o receptor
+(\texttt{receptor\_lora32}). Seguindo as práticas de gerenciamento energético para
+plataformas ESP32 descritas por \citeonline{Sari2022}, \citeonline{Ahmad2021} e
+\citeonline{Ferreira2020}, os firmwares operam em ciclos autônomos com desligamento ativo
+do sensor da câmera (\textit{power-down}) imediatamente após a captura e repouso em
+\textit{deep sleep} de 30~s (\texttt{AUTO:30}) entre leituras. Paralelamente, acoplou-se a
+bancada de medição elétrica baseada no sensor INA219 (resistor \textit{shunt} de
+0,1~$\Omega$, amostragem a 100~Hz via Arduino Uno) sincronizada via porta serial com os
+\textit{scripts} em Python 3.13.9, permitindo a coleta simultânea de acurácia, latência,
+confiabilidade de enlace e consumo energético.
 
 \subsubsection{Fluxos Abandonados}
 Durante o desenvolvimento do sistema, 
@@ -79,7 +143,6 @@ falhava em aproximadamente 15\% dos casos, retornando uma máscara vazia. Essa i
 motivou o abandono da U-Net
 em favor da rede codificador--decodificador simples descrita na Seção~\ref{subsubsec:segmentacao}.
 
-
 \begin{figure}[H]
     \centering
     \caption{Comparação do desempenho do modelo U-Net Principal (\(384 \times 384\)) e
@@ -116,7 +179,7 @@ visor. O treinamento durou até 600 épocas na fase flutuante e 100 épocas na f
 
 A avaliação do modelo CTC em um conjunto de teste composto por 30 imagens reais de
 hidrômetros (executado em servidor) demonstrou a força da abordagem. Conforme detalhado na
-Tabela~\ref{tab:resultado_ctc}, o modelo obteve 86,67\% de acerto completo
+Tabela~\ref{tab:resultado_ctc}, o modelo obteve 86,67\% de acurácia completo
 da sequência (26 de 30 imagens) e 94,58\% de acurácia por dígito na posição exata.
 
 \begin{table}[H]
@@ -147,6 +210,6 @@ de alta performance para hardwares mais robustos ou trabalhos futuros.
 
 \paragraph{U-NET + CNN}
 Em paralelo ao desenvolvimento do fluxo descrito na seção anterior, 
-desenvolveu-se o fluxo utilizando modelo U-Net para idenfiticação de \gls{roi} em conjunto com modelo em arquitetura CNN.
-Por conta das limitações encontradas, e anteriormente descritas, na implementação de modelo U-Net no hardware utilizado No
+desenvolveu-se o fluxo utilizando modelo U-Net para identificação de \gls{roi} em conjunto com modelo em arquitetura CNN.
+Por conta das limitações encontradas, e anteriormente descritas, na implementação de modelo U-Net no hardware utilizado no
 fluxo de processamento em borda, tal fluxo de desenvolvimento foi abandonado.
