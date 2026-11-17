@@ -1,5 +1,5 @@
 O presente trabalho implementou os dois fluxos de processamento propostos sob as mesmas variáveis de ambiente, 
-estrutura de rede e hardware utilizado, 
+estrutura de rede e hardware, 
 de tal forma que se distribuem da seguinte forma:
 
 \begin{table}[htbp]
@@ -24,7 +24,7 @@ de tal forma que se distribuem da seguinte forma:
         \addlinespace
         \textbf{Versão do TensorFlow} & TensorFlow 2.16.1 \\
         \addlinespace
-        \textbf{Métodos de Ativação dos Nós (ABP)} & Activation by Personalization (ABP) com chaves de sessão pré-configuradas \\
+        \textbf{Métodos de Ativação dos Nós} & \gls{abp} com chaves de sessão pré-configuradas \\
         \addlinespace
         \textbf{Portas de Aplicação (FPort 1 e 2)} & FPort 1 (blocos de imagem de até 175 bytes) e FPort 2 (leitura OCR de 9 bytes) \\
         \bottomrule
@@ -32,8 +32,33 @@ de tal forma que se distribuem da seguinte forma:
 \end{table}
 
 \paragraph{Variáveis utilizadas nos modelos de OCR implementados}
-\begin{itemize}
-    \item \textbf{INT8}
-    \item \textbf{FP32}
-\end{itemize}
+Durante o treinamento dos modelos de \gls{ocr} foram estabelecidas 
+variáveis determinantes para a equiparação 
+da comparação entre os modelos quantizados em INT8 e FP32.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Variáveis e hiperparâmetros definidos para o treinamento e quantização (FP32 e INT8)}
+    \label{tab:hiperparametros}
+    \begin{tabularx}{\textwidth}{l l X}
+        \toprule
+        \textbf{Variável / Parâmetro} & \textbf{Valor / Configuração} & \textbf{Função no Treinamento e Quantização} \\
+        \midrule
+        \texttt{args.epocas} & \texttt{60} (padrão) & Número máximo de épocas(sujeito ao \textit{Early Stopping}). \\
+        \addlinespace
+        \texttt{IMG\_SIZE} & \texttt{(28, 28)} & Dimensão espacial de entrada das imagens de dígitos redimensionadas. \\
+        \addlinespace
+        \texttt{SEED} & \texttt{42} & Semente de aleatoriedade global para garantir a reprodutibilidade. \\
+        \addlinespace
+        \texttt{BATCH\_SIZE} & \texttt{128} & Tamanho do lote (\textit{batch}) utilizado durante o treino e validação. \\
+        \addlinespace
+        \texttt{class\_weight} & Dicionário (máx. \texttt{3.0}) & Pesos calculados por classe para balancear a desproporção do dígito \texttt{'0'}. \\
+        \addlinespace
+        \texttt{augmentacao} & \texttt{Sequential} (5 camadas) & Aplica rotação, translação, contraste, ruído e \textit{downsample/upsample} simulando a câmera. \\
+        \addlinespace
+        \texttt{amostras\_repr} & Lote do dataset de treino & Amostras representativas usadas para calibrar a quantização INT8 no \texttt{TFLiteConverter}. \\
+        \addlinespace
+        \bottomrule
+    \end{tabularx}
+\end{table}
 
