@@ -97,7 +97,7 @@ superdimensionada, pois o modelo usa menos de 29~KB. Para evitar novas tentativa
 placa, foi escrito um \textit{script} que reproduz o planejador de memória do
 TensorFlow Lite Micro a partir do arquivo \texttt{.tflite}; para o modelo de localização,
 ele estimou 1.622.016~bytes, contra 1.623.852~bytes medidos. Esse mesmo \textit{script}
-confirmou que o modelo de localização do pipeline A, que pediu 15,3~MB, não caberia na
+confirmou que o modelo de localização do pipeline U-NET + CRNN + CTC, que pediu 15,3~MB, não caberia na
 placa.
 
 A leitura no firmware segue os passos descritos na
@@ -114,7 +114,10 @@ dígitos.
 O tempo de inferência medido na placa foi muito maior do que o esperado para modelos tão
 pequenos. Em 61 capturas, a localização da janela levou mediana de 15.564~ms, com variação
 de apenas 4~ms entre capturas, e a classificação dos seis dígitos levou 1.995~ms, para um
-total de 17.838~ms por leitura. A causa não foi investigada; uma hipótese é que parte dos
+total de 17.568~ms de processamento por leitura, contando também o preparo da entrada e o
+cálculo da caixa, de cerca de 9~ms. O laço do firmware de depuração durou
+17.838~ms porque inclui também a compressão e o envio pela serial da imagem anotada, que não
+fazem parte da leitura. A causa não foi investigada; uma hipótese é que parte dos
 operadores do modelo de localização, como a convolução transposta, não tenha versão
 otimizada na \texttt{esp-nn} e seja executada pelas implementações de referência, em C
 genérico. Durante essas capturas, a temperatura interna do chip permaneceu entre 72 e
@@ -175,7 +178,7 @@ cada. A Tabela~\ref{tab:tempo_inferencia} compara os tempos com os do microcontr
         \textbf{Etapa} & \textbf{\gls{esp32cam} (ms)} & \textbf{Servidor (ms)} \\
         \midrule
         Localização da janela & 15.564 & 4,30 \\
-        Leitura completa (localização e seis dígitos) & 17.838 & 6,25 \\
+        Leitura completa (localização e seis dígitos) & 17.568 & 6,25 \\
         Leitura com ROI fixa (só os seis dígitos) & $\approx$1.995 & 1,91 \\
         \bottomrule
     \end{tabular}

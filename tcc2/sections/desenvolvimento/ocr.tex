@@ -11,10 +11,10 @@ de leitura adotada.
 \subsubsection{Evolução das abordagens}
 \label{subsubsec:evolucao_ocr}
 
-\subsubsection{Detalhes do Pipeline B (Adotado)}
+\subsubsection{Detalhes do pipeline CNN Simples (adotado)}
 \label{subsubsec:pipeline_b}
 
-Como as abordagens anteriores falharam em cenários de borda, o pipeline B foi concebido
+Como as abordagens anteriores falharam em cenários de borda, o pipeline CNN Simples foi concebido
 para ser leve e independente de modelos pesados de segmentação.
 
 \subsubsection{Conjuntos de dados}
@@ -158,7 +158,8 @@ quantization}), com um conjunto representativo de imagens para calibrar as escal
 quantização foi completa: pesos, ativações, entrada e saída em inteiros de 8 bits, usando
 apenas operadores INT8 do TensorFlow Lite. Na entrada, a escala de $1/255$ com ponto zero
 de $-128$ permite converter cada pixel diretamente, subtraindo 128 do seu valor. Diferente
-do pipeline A, que usou treinamento consciente da quantização (QAT), o pipeline B não
+do pipeline U-NET + CRNN + CTC, que usou treinamento consciente da quantização (QAT), o
+pipeline CNN Simples não
 precisou dessa técnica: a perda de acurácia na quantização foi desprezível, como mostra a
 avaliação da hipótese H1 nos resultados. Por fim, cada modelo \texttt{.tflite} foi
 convertido em um vetor de bytes em um arquivo de cabeçalho C (\texttt{.h}), incluído no
