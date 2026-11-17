@@ -14,15 +14,13 @@ por não ser propriamente uma IDE,
 apresenta menor complexidade de utilização 
 e configuração de ambientes de desenvolvimento.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{sections/imagens/VSCode_Main_PAge.png}
     \caption{Interface do Visual Studio Code}
     \label{fig:vscode}
+    \includegraphics[width=0.8\textwidth]{sections/imagens/VSCode_Main_PAge.png}
+    \legend{Fonte: Captura de tela feita pelos autores (2026).}
 \end{figure}
-\begin{center}
-    \footnotesize Fonte: Autores (2026).
-\end{center}
 
 \paragraph{Python}
 Utilizada como linguagem base no desenvolvimento de inúmeros projetos de Inteligência Artificial, 
@@ -59,35 +57,35 @@ treinamento, quantização, testes e validação dos modelos de \gls{ocr}
 foram os frameworks TensorFlow e Keras, com compilação de saída em arquivos \texttt{.tflite} 
 compatíveis com o módulo TFLite instalado nativamente no firmware do \gls{esp32cam}, e instalado via gerenciador de pacotes pip em computadores pessoais utilizados como servidor de rede.
 
-O TensorFlow, lançado em 2015 pela Google, 
+O TensorFlow, lançado em 2015 pelo Google,
 é uma biblioteca de código aberto focada em cálculos matemáticos complexos de matrizes, 
 atividade essencial para o funcionamento de redes neurais convolucionais. 
 Integrado de forma homogênea ao TensorFlow, 
 o Keras é uma API de alto nível desenvolvida pelo Google (lançada em 2015) 
 com o foco em simplificar o desenvolvimento de redes neurais com poucas linhas de código.
 
-O Tensorflow Lite (TFLite), oficialmente anunciado pela Google em 2017, é framework que tem por objetivo viabilizar o desenvolvimento de soluções com base em \gls{ia} em microcontroladores. Tal ferramenta fornece SDK’s necessários para executar modelos minimizados em microcontroladores de desempenho limitado. Desde 2024 o TFLite foi renomeado como LiteRT, do qual não houve grandes alterações estruturais em seu funcionamento, mantendo inclusive o tipo \textit{.tflite} como extensão de arquivos.
+O TensorFlow Lite (TFLite), oficialmente anunciado pelo Google em 2017, é um framework que tem por objetivo viabilizar o desenvolvimento de soluções com base em \gls{ia} em microcontroladores. Tal ferramenta fornece os SDKs necessários para executar modelos minimizados em microcontroladores de desempenho limitado. Desde 2024, o TFLite foi renomeado como LiteRT, sem grandes alterações estruturais em seu funcionamento, mantendo inclusive a extensão \textit{.tflite} nos arquivos de modelo.
 
 
 \subsubsection{Arduino IDE e Arduino CLI}
-Utilizado como a principal IDE de desenvolvimento para sistemas baseados em microcontroladores, 
-desenvolvida em 2005, 
-o Arduino IDE é uma ferramenta indispensável para desenvolvimento IOT, 
-integrando funcionalidades que auxiliam à comunicação entre computadores pessoais (PC) e microcontroladores 
-de forma à servir como ambiente de desenvolvimento voltado à comunicação serial entre dispositivo.
+O Arduino IDE, lançado em 2005, é o principal ambiente de desenvolvimento integrado para
+sistemas baseados em microcontroladores e uma ferramenta indispensável no desenvolvimento
+\gls{iot}. Ele integra funcionalidades que facilitam a comunicação entre o computador e os
+microcontroladores, servindo também como ambiente para a comunicação serial entre os
+dispositivos.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{sections/imagens/Arduino_IDE.jpeg}
-    \caption{Página Ilustrativa Arduino IDE}
+    \caption{Interface do Arduino IDE}
     \label{fig:arduinoide}
+    \includegraphics[width=0.8\textwidth]{sections/imagens/Arduino_IDE.jpeg}
+    \legend{Fonte: Captura de tela feita pelos autores (2026).}
 \end{figure}
-\begin{center}
-    \footnotesize Fonte: Autores (2026).
-\end{center}
 
-
-Em forma de complemento, em 2018, desenvolvida pela própria equipe de desenvolvimento da Arduino SA, o Arduino CLI, é uma ferramenta de linha de comando, desenvolvida com o objetivo de agilizar compilações, testes, instalação de bibliotecas e automação de tarefas relacionadas à desenvolvimento de sistemas com base em microcontroladores.
+Como complemento, a própria equipe da Arduino SA lançou, em 2018, o Arduino CLI, uma
+ferramenta de linha de comando desenvolvida para agilizar compilações, testes, instalação
+de bibliotecas e automação de tarefas relacionadas ao desenvolvimento de sistemas baseados
+em microcontroladores.
 
 \paragraph{C (.ino)}
 A linguagem C, implementada em arquivos \texttt{.ino} neste trabalho, 
@@ -153,15 +151,13 @@ gestão do versionamento é o Git. Criada por Linus Torvalds em 2005,
 essa ferramenta tem como objetivo prover insumos para o versionamento de 
 código estruturado e integrar repositórios locais com repositórios remotos.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{sections/imagens/Github_Main_Page.png}
-    \caption{Home Page Github}
+    \caption{Página inicial do GitHub}
     \label{fig:github}
+    \includegraphics[width=0.8\textwidth]{sections/imagens/Github_Main_Page.png}
+    \legend{Fonte: Captura de tela feita pelos autores (2026).}
 \end{figure}
-\begin{center}
-    \footnotesize Fonte: Autores (2026).
-\end{center}
 
 \subsubsection{ChirpStack}
 Como apresentado anteriormente, o ChirpStack é um servidor de rede para sistemas \gls{iot} 
@@ -184,7 +180,7 @@ a utilização de determinadas ferramentas foi de extrema importância para o su
 \end{itemize}
 
 \subsubsection{Ferramentas para integração LoRa}
-Durante o desenvolvimento das solucoes comparadas, 
-foram utilizadas ferramentas baseadas em Python com o foco em administrar a comunicação, como é o caso do PySerial, 
-utilizado para gerenciar a comunicação entre transmissor e receptor via barramento serial. Outro exemplo e o PyCryptodome, utilizado
+Durante o desenvolvimento das soluções comparadas,
+foram utilizadas ferramentas baseadas em Python com o foco em administrar a comunicação, como é o caso do PySerial,
+utilizado para gerenciar a comunicação serial entre o computador e as placas do transmissor e do receptor. Outro exemplo é o PyCryptodome, utilizado
 para processar pacotes de rede trafegados via LoRaWAN, possibilitando a descriptografia com a chave AppSKey.

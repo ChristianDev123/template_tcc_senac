@@ -10,8 +10,8 @@
     \gls{cloud_computing}. This work compares these two approaches. Both flows were
     implemented on the same hardware, based on the \gls{esp32cam} microcontroller and the
     Radioenge RD49C \gls{lorawan} module, and on the same link on the AU915 plan, configured
-    with SF8 and a fixed channel, compliant with the 400~ms dwell time limit of ANATEL Act
-    No.~14.448. Recognition uses a digit classification convolutional neural network,
+    with SF8 and a fixed 500~kHz channel, compliant with item 10.3 of ANATEL Act
+    No.~14.448, which waives frequency hopping for this bandwidth. Recognition uses a digit classification convolutional neural network,
     trained on public datasets and on our own photos and quantized to 8-bit integers (INT8),
     with water meters as a case study. In the edge flow, the node runs \gls{ocr} and
     transmits only the reading, in a single packet; in the cloud flow, the node compresses

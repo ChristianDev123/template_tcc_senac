@@ -6,7 +6,7 @@ A figura~\ref{fig:stack_layer_lora} apresenta a pilha de elementos das camadas M
 
 \begin{figure}[H]
     \centering
-    \caption{Pilha de elementos das camadas LoRa/LoRaWan}
+    \caption{Pilha de elementos das camadas LoRa/LoRaWAN}
     \label{fig:stack_layer_lora}
     \includegraphics[width=0.85\textwidth]{sections/imagens/LoRaWan_Pilha_Camadas.png}
     \small
@@ -17,7 +17,7 @@ A figura~\ref{fig:stack_layer_lora} apresenta a pilha de elementos das camadas M
 
 \begin{figure}[H]
     \centering
-    \caption{Implementação Típica de Rede LoRaWan}
+    \caption{Implementação Típica de Rede LoRaWAN}
     \label{fig:implementacao_tipica_lorawan}
     \includegraphics[width=0.85\textwidth]{sections/imagens/Implementacao_tipica_LoRaWan.png}
     \small
@@ -30,15 +30,15 @@ A figura~\ref{fig:implementacao_tipica_lorawan} apresenta a arquitetura típica 
 
 \subsubsection{Dispositivos Finais (End Nodes)}
 
-\citeonline{semtech2024an1200_86} define que dispositivos finais habilitados para LoRaWan são sensores ou atuadores que são conectados a gateways via modulação de radiofrequência LoRa. 
+\citeonline{semtech2024an1200_86} define que dispositivos finais habilitados para LoRaWAN são sensores ou atuadores que são conectados a gateways via modulação de radiofrequência LoRa. 
 
 Na maioria das aplicações, esses dispositivos são autônomos, dependentes de baterias como fonte energética primária e possuem como responsabilidade digitalizar condições físicas como temperatura, captura de imagens, níveis de tremulação, entre outros.
 
 Em relação às possíveis configurações que podem ser aplicadas nos dispositivos finais, como apresentado por \citeonline{Camargo2022}, cada nó pode assumir uma das configurações que a tabela~\ref{tab:tabela_classes} apresenta. Outro parâmetro configurável é o tipo de autenticação dos dispositivos em rede, havendo o padrão \gls{otaa}, no qual o próprio dispositivo gerencia a conexão à rede, e a \gls{abp}, na qual os dispositivos são vinculados de forma manual a uma rede em específico, não passando pelo processo de entrada implementado no \gls{otaa}.
 
-O LoRaWan utiliza o padrão AES de criptografia simétrica, aplicado tanto na camada de aplicação quanto na camada de rede.
+O LoRaWAN utiliza o padrão AES de criptografia simétrica, aplicado tanto na camada de aplicação quanto na camada de rede.
 
-Os dispositivos finais, corriqueiramente, são desenvolvidos sobre microprocessadores, podendo tanto utilizar placas que já incluem módulos LoRaWan nativos quanto serem desenvolvidos sobre plataformas como ESP32, Arduino, Raspberry Pi, entre outras.
+Os dispositivos finais, corriqueiramente, são desenvolvidos sobre microprocessadores, podendo tanto utilizar placas que já incluem módulos LoRaWAN nativos quanto serem desenvolvidos sobre plataformas como ESP32, Arduino, Raspberry Pi, entre outras.
 A partir da construção do dispositivo, ou acoplamento de módulos, possibilita-se a captura de dados em ambiente \cite{Camargo2022}.
 
 Como destacado por \citeonline{Sari2022} e \citeonline{Ahmad2021}, o ESP32 destaca-se nesse cenário como uma plataforma robusta de baixo custo, integrando conectividade sem fio e múltiplos modos de operação. 
@@ -62,10 +62,10 @@ Diante de tal afirmação, destaca-se a função \textit{deep sleep} presente no
 \subsubsection{Gateways}
 
 O gateway, como demonstrado na figura~\ref{fig:implementacao_tipica_lorawan}, 
-é um elemento da rede LoRaWan que tem como responsabilidade agrupar dispositivos finais 
+é um elemento da rede LoRaWAN que tem como responsabilidade agrupar dispositivos finais 
 e viabilizar a comunicação entre o dispositivo final e o servidor de rede \cite{Camargo2022}. 
 
-A comunicação entre o dispositivo final e o gateway é realizada via protocolo LoRaWan, 
+A comunicação entre o dispositivo final e o gateway é realizada via protocolo LoRaWAN, 
 na qual o gateway pode realizar a tarefa de registrar tráfego de mensagens. 
 Como explicado por \citeonline{semtech2024an1200_86}, 
 os dispositivos finais, ao realizar o envio de uplink, 
@@ -80,7 +80,7 @@ enviá-la ao servidor de rede \cite{semtech2024an1200_86}.
 
 A comunicação entre o gateway e o servidor de rede, 
 corriqueiramente, é estabelecida utilizando protocolo TCP/IP. 
-Toda comunicação dentro do protocolo LoRaWan é bidirecional \cite{Camargo2022}.
+Toda comunicação dentro do protocolo LoRaWAN é bidirecional \cite{Camargo2022}.
 
 É possível encontrar gateways prontos de múltiplos canais sendo comercializados, 
 mas é plenamente viável desenvolver gateways a partir de módulos e placas 
@@ -88,7 +88,7 @@ de prototipagem como a apresentada na figura~\ref{fig:esp32cam_lora}.
 
 \begin{figure}[H]
     \centering
-    \caption{Gateway LoRaWan compatível com placas Raspberry Pi}
+    \caption{Gateway LoRaWAN compatível com placas Raspberry Pi}
     \label{fig:lora_uplink}
     \includegraphics[width=0.85\textwidth]{sections/imagens/gateway-lorawan-radioenge.jpg}
     \small

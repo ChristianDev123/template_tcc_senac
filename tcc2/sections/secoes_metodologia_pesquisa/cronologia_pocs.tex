@@ -29,15 +29,14 @@ sob o Ato n\textordmasculine~14.448 da ANATEL \cite{anatel2017} para a faixa de 
 Inicialmente, modelou-se analiticamente a fragmentação em canais de 125~kHz com salto em
 frequência e \gls{sf}~8, respeitando o limite de \textit{dwell time} de 0,4~s (400~ms) em
 um intervalo de 14~s com mínimo de 35 canais de salto, o que restringia cada bloco a
-115~bytes \cite{anatel2017, adam2022}. Contudo, diante do uso de um receptor de canal
-único e da necessidade de acomodar blocos maiores dentro do limite útil de \gls{payload}
-do AU915 (até 227~bytes para 250~bytes de \textit{MACPayload} sem repetidores)
-\cite{lora_alliance_rp002_105}, o enlace foi configurado em \gls{dr}~6 (largura de banda
-de 500~kHz no canal fixo 64, a 915,9~MHz). Esse ajuste enquadra o sistema no item~10.3 do
+115~bytes. Contudo, diante do uso de um receptor de canal único e da necessidade de
+acomodar blocos maiores, o enlace foi configurado em \gls{dr}~6 (largura de banda de
+500~kHz no canal fixo 64, a 915,9~MHz), em que o módulo aceita \gls{payload} de até
+222~bytes \cite{radioenge2022}. Esse ajuste enquadra o sistema no item~10.3 do
 Ato n\textordmasculine~14.448 (modulação digital com largura de faixa a 6~dB de no mínimo
 500~kHz, potência de pico máxima de 1~W e densidade espectral máxima de 8~dBm em 3~kHz),
-dispensando o salto em frequência \cite{anatel2017}. Nessa fase, também foram conduzidos
-testes de injeção de pacotes no servidor de rede ChirpStack \cite{Camargo2022},
+dispensando o salto em frequência. Nessa fase, também foram conduzidos
+testes de injeção de pacotes no servidor de rede ChirpStack,
 posteriormente substituídos pela recepção direta via serial e descriptografia AES-128
 em Python (\texttt{PySerial} e \texttt{PyCryptodome}) para eliminar variáveis externas de
 rede na bancada.
@@ -65,21 +64,18 @@ de imagem para um único quadro de 9~bytes contendo a leitura decodificada envia
 porta \texttt{FPort~2}.
 
 Para viabilizar a execução embarcada dentro das restrições de memória e processamento,
-processaram-se todas as entradas em canal único (escala de cinza)
-\cite{ayeni2022convolutional} e consolidou-se o pipeline embarcado definitivo, composto
-por uma rede codificador--decodificador leve ($192 \times 192$ pixels, 11,8~KB em INT8) e
-uma \gls{cnn} classificadora de dígitos de $28 \times 28$ pixels (81,5~KB em INT8)
-estruturada com camadas convolucionais, \textit{max-pooling} $2 \times 2$ e camada
-totalmente conectada \cite{ayeni2022convolutional}, alinhada à ordem de grandeza de
-centenas de quilobytes reportada na literatura de \gls{ocr} embarcado para medidores
-\cite{ademola2023resource, jawas2018water}. O classificador foi treinado de forma
-supervisionada \cite{SilvaVilela2021} em duas fases (treinamento base em bases públicas
+todas as entradas foram processadas em canal único (escala de cinza), e consolidou-se o
+pipeline embarcado definitivo, composto por uma rede codificador--decodificador leve
+($192 \times 192$ pixels, 11,8~KB em INT8) e uma \gls{cnn} classificadora de dígitos de
+$28 \times 28$ pixels (81,5~KB em INT8), estruturada com camadas convolucionais,
+\textit{max-pooling} $2 \times 2$ e camadas totalmente conectadas. O classificador foi
+treinado em duas fases, com treinamento base em bases públicas
 \cite{kucev2020, zhao2026wordwheel} seguido de ajuste fino com capturas reais do
-\gls{esp32cam}) e convertido para INT8 por quantização pós-treinamento
-\cite{ferreira2022compressao}, seguindo os hiperparâmetros da
-Tabela~\ref{tab:hiperparametros}. Diante da baixa precisão espacial da segmentação
-embarcada, incorporou-se ainda o recorte por região de interesse (\gls{roi}) calibrada na
-instalação.
+\gls{esp32cam}, e convertido para INT8 por quantização pós-treinamento, seguindo os
+hiperparâmetros da Tabela~\ref{tab:hiperparametros}. Diante da baixa precisão espacial da
+localização embarcada, propôs-se ainda substituí-la pelo recorte de uma região de interesse
+(\gls{roi}) calibrada na instalação, solução avaliada no computador e ainda não
+implementada no firmware.
 
 \subsubsection{POC 5: Fluxos de Processamento Edge e Cloud Computing}
 \label{metodologia_pesquisa:poc5}
@@ -88,26 +84,22 @@ Na quinta etapa, integraram-se ambos os fluxos em firmwares autônomos
 definitivos: no nó transmissor, \texttt{transmissor\_\allowbreak esp32cam}
 (fluxo em nuvem) e \texttt{transmissor\_\allowbreak ocr\_\allowbreak esp32cam}
 (fluxo em borda); e, no nó receptor, \texttt{receptor\_\allowbreak lora32}.
-Seguindo as práticas de gerenciamento energético para plataformas ESP32
-descritas por \citeonline{Sari2022}, \citeonline{Ahmad2021} e
-\citeonline{Ferreira2020}, os firmwares operam em ciclos autônomos com
+Para reduzir o consumo, os firmwares operam em ciclos autônomos com
 desligamento ativo do sensor da câmera (\textit{power-down}) imediatamente após
 a captura e repouso em \textit{deep sleep} de 30~s (\texttt{AUTO:30}) entre
 leituras. Paralelamente, acoplou-se a bancada de medição elétrica baseada no
 sensor INA219 (resistor \textit{shunt} de 0,1~$\Omega$, amostragem a 100~Hz via
 Arduino Uno) sincronizada via porta serial com os \textit{scripts} em Python
-3.13.9, permitindo a coleta simultânea de acurácia, latência, confiabilidade de
-enlace e consumo energético.
+3.13.9, o que permitiu coletar simultaneamente a latência, a confiabilidade do
+enlace e o consumo energético.
 
 \subsubsection{Fluxos Abandonados}
 \label{subsubsec:fluxos_abandonados}
 
-Durante o desenvolvimento do sistema, 
-em que será base para alcançar os objetivos do presente trabalho, 
-foram implementados dois fluxos abandonados por limitações de hardware 
-e desempenho, 
-tais fluxos orientaram escolhas implementadas no fluxo definitivo, 
-utilizado para validação das hipóteses apresentadas na posterior seção de Resultados e Análises:
+Durante o desenvolvimento do sistema, foram implementados dois fluxos que acabaram
+abandonados por limitações de hardware e de desempenho. Esses fluxos orientaram escolhas
+adotadas no fluxo definitivo, utilizado para validar as hipóteses na seção de Resultados e
+Análises.
 
 \paragraph{U-NET + CRNN + CTC}
 O fluxo proposto aplicava a arquitetura CRNN com função de perda CTC, apresentada na

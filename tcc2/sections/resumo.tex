@@ -1,6 +1,6 @@
 \begin{resumo}
 A maior parte dos medidores de consumo em uso, como os de água, energia e gás, atualmente, são
-analódigos e exigem leitura manual. Substituí-los por medidores inteligentes tem custo
+analógicos e exigem leitura manual. Substituí-los por medidores inteligentes tem custo
 elevado, o que torna o \textit{\gls{retrofitting}} uma alternativa mais viável: um nó de
 baixo custo, com câmera, fotografa o mostrador do medidor existente, e um modelo de \gls{ocr}
 converte a imagem em leitura, transmitida por uma rede de longo alcance e baixo consumo como
@@ -9,9 +9,9 @@ a \gls{lorawan}. Nessa arquitetura de \gls{smart_metering} (medição inteligent
 em um servidor que recebe a imagem, em \gls{cloud_computing} (Computação em Nuvem). Este
 trabalho compara essas duas abordagens. Os dois fluxos foram implementados sobre o mesmo
 hardware, baseado no microcontrolador \gls{esp32cam} e no módulo \gls{lorawan} Radioenge
-RD49C, e sobre o mesmo enlace no plano AU915, configurado em SF8 com canal fixo, em
-conformidade com o limite de \textit{dwell time} de 400~ms do Ato n\textordmasculine~14.448
-da ANATEL. O reconhecimento usa uma rede neural convolucional de classificação de dígitos,
+RD49C, e sobre o mesmo enlace no plano AU915, configurado em SF8 com canal fixo de
+500~kHz, em conformidade com o item 10.3 do Ato n\textordmasculine~14.448 da ANATEL, que
+dispensa o salto em frequência para essa largura de faixa. O reconhecimento usa uma rede neural convolucional de classificação de dígitos,
 treinada com conjuntos de dados públicos e fotos próprias e quantizada em inteiros de
 8 bits (INT8), adotando hidrômetros como estudo de caso. No fluxo em borda, o nó executa o
 \gls{ocr} e transmite apenas a leitura, em um único pacote; no fluxo em nuvem, o nó comprime
