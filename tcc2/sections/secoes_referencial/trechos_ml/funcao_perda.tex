@@ -1,0 +1,84 @@
+No treinamento supervisionado de modelos de Inteligência Artificial, em especial de
+\glspl{rna}, o aprendizado ocorre pelo ajuste iterativo dos parâmetros internos da rede
+(pesos e vieses) a partir de exemplos rotulados \cite{jesus2023inteligencia}. Para que
+esse ajuste seja possível, é necessário quantificar matematicamente o quanto a saída
+prevista pelo modelo diverge do resultado esperado. Essa medição é realizada pela
+\textbf{função de perda} (\textit{loss function}), também denominada função de custo ou
+função objetivo.
+
+Formalmente, dado um conjunto de entradas associado aos seus respectivos gabaritos $y$ e às
+saídas estimadas $\hat{y}$ produzidas pela rede parametrizada por $\theta$, a função de
+perda $\mathcal{L}(y, \hat{y}; \theta)$ atribui um valor escalar não negativo ao erro
+cometido na previsão. Quanto maior a discrepância entre $\hat{y}$ e $y$, maior o valor
+retornado por $\mathcal{L}$. O treinamento consiste, portanto, em um problema de
+otimização no qual se busca minimizar o valor médio da função de perda sobre os dados de
+treinamento por meio de algoritmos baseados em gradiente, como a retropropagação do erro
+(\textit{backpropagation}) associada a otimizadores como o Gradiente Descendente
+Estocástico ou o Adam \cite{goodfellow2016deep}.
+
+\subsubsubsection{Impacto do Desbalanceamento de Classes na Escolha da Perda}
+
+A escolha da função de perda condiciona diretamente o comportamento do modelo durante a
+convergência. Em problemas de segmentação semântica de imagens, como a delimitação de uma
+\gls{roi} pela arquitetura U-Net \cite{Atika2022ImageSegmentation}, a rede classifica cada
+pixel da imagem como pertencente ao objeto de interesse ou ao fundo. Uma função clássica
+para essa tarefa é a \textbf{Entropia Cruzada Binária} (\textit{Binary Cross-Entropy} --
+BCE), definida sobre $N$ pixels pela Equação~\eqref{eq:bce_loss}:
+
+\begin{equation}
+    \label{eq:bce_loss}
+    \mathcal{L}_{\text{BCE}} = -\frac{1}{N} \sum_{i=1}^{N} \Big[ g_i \log(p_i) + (1 - g_i)\log(1 - p_i) \Big]
+\end{equation}
+
+\noindent em que $g_i \in \{0, 1\}$ representa o rótulo verdadeiro do $i$-ésimo pixel e
+$p_i \in (0, 1)$ corresponde à probabilidade prevista pelo modelo para a classe positiva.
+
+Embora a entropia cruzada avalie cada pixel de forma independente e favoreça boa
+calibração probabilística, ela atribui o mesmo peso a todos os pixels da imagem. Quando a
+região alvo ocupa apenas uma pequena fração do quadro (cenário típico da janela de dígitos
+em imagens de medidores), ocorre um severo desbalanceamento entre a classe positiva
+(objeto) e a classe negativa (fundo). Nessa condição, a rede pode atingir um valor baixo
+de $\mathcal{L}_{\text{BCE}}$ simplesmente classificando quase todos os pixels como fundo,
+o que compromete a detecção da estrutura de interesse \cite{jadon2020survey}.
+
+\subsubsubsection{\textit{Dice Loss}}
+
+Para contornar o desbalanceamento espacial em tarefas de segmentação sem exigir
+reponderação manual das classes, \citeonline{milletari2016vnet} propuseram a
+\textbf{\textit{Dice Loss}}, uma função de perda derivada do coeficiente de similaridade
+de Sørensen--Dice, originalmente formulado para medir a sobreposição entre dois conjuntos
+discretos. Como a interseção binária de conjuntos não é diferenciável (requisito
+indispensável para o cálculo dos gradientes na retropropagação), utiliza-se na otimização
+de redes neurais a sua variante contínua, denominada \textbf{perda \textit{Dice} suave}
+(\textit{Soft Dice Loss}), expressa pela Equação~\eqref{eq:dice_loss}:
+
+\begin{equation}
+    \label{eq:dice_loss}
+    \mathcal{L}_{\text{Dice}} = 1 - \frac{2 \sum_{i=1}^{N} p_i g_i + \epsilon}{\sum_{i=1}^{N} p_i + \sum_{i=1}^{N} g_i + \epsilon}
+\end{equation}
+
+\noindent em que $p_i \in [0, 1]$ é a probabilidade prevista para o pixel $i$,
+$g_i \in \{0, 1\}$ é o valor correspondente na máscara de referência e $\epsilon > 0$ é
+uma constante pequena de suavização adicionada ao numerador e ao denominador para evitar
+divisão por zero e estabilizar o cálculo numérico quando a máscara alvo é vazia.
+
+A formulação da \textit{Dice Loss} apresenta três propriedades relevantes para a
+segmentação de regiões pequenas:
+
+\begin{itemize}
+    \item \textbf{Limitação de escala}: o termo fracionário varia entre $0$ (ausência
+    total de sobreposição) e $1$ (sobreposição perfeita), fazendo com que
+    $\mathcal{L}_{\text{Dice}} \in [0, 1]$ seja minimizada à medida que a máscara
+    prevista converge para a máscara real.
+    \item \textbf{Invariância ao tamanho do fundo}: diferentemente da entropia cruzada, o
+    denominador da Equação~\eqref{eq:dice_loss} normaliza a interseção apenas pela soma
+    das áreas previstas e reais da classe positiva, de modo que os pixels verdadeiros
+    negativos do fundo não diluem o gradiente gerado pela região alvo.
+    \item \textbf{Combinação com a entropia cruzada}: conforme analisado por
+    \citeonline{jadon2020survey}, em estágios iniciais do treino, quando a sobreposição
+    $p_i g_i$ ainda é muito baixa, os gradientes da \textit{Dice Loss} podem apresentar
+    maior variância. Por essa razão, é prática recorrente combinar ambas as formulações em
+    uma perda híbrida ($\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{BCE}} +
+    \mathcal{L}_{\text{Dice}}$), unindo a estabilidade de convergência pixel a pixel da
+    entropia cruzada à sensibilidade de sobreposição regional do coeficiente Dice.
+\end{itemize}
