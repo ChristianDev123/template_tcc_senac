@@ -1,0 +1,24 @@
+A principal contribuição deste trabalho é uma comparação quantitativa entre o processamento
+em borda e em nuvem para a leitura automática de medidores por \gls{ocr}, feita no mesmo
+hardware, com os mesmos modelos e no mesmo enlace \gls{lorawan}, de modo que as diferenças
+medidas decorrem apenas do local do processamento. Essa comparação responde à lacuna
+apontada na Seção~\ref{sec:justificativa}, a falta de trabalhos que ofereçam informações
+úteis para o desenvolvimento arquitetural desse tipo de sistema, e reúne em um mesmo cenário
+a acurácia, o custo computacional no nó, a latência, a entrega e o consumo por leitura.
+
+Dos resultados decorrem três orientações para projetos semelhantes. A primeira é que, em
+redes de longo alcance e baixa taxa, o volume transmitido determina a latência e o consumo
+mais do que a velocidade do processamento, o que favorece o processamento local mesmo em um
+microcontrolador milhares de vezes mais lento que o servidor. A segunda é que a escolha do
+fluxo só faz diferença na autonomia se a corrente em repouso do nó for reduzida: com o
+módulo de rádio ligado durante o repouso, os dois fluxos tiveram autonomias próximas. A
+terceira é que a acurácia depende menos da arquitetura do classificador e da quantização em
+INT8 do que de localizar corretamente a janela de dígitos, o que, com a câmera fixa, pode ser
+resolvido por uma região de interesse calibrada na instalação.
+
+Por fim, o trabalho disponibiliza, em repositório público, os firmwares dos dois fluxos, os
+\textit{scripts} de recepção, remontagem e medição e os dados das medições, o que permite
+reproduzir e estender a comparação. Também documenta uma configuração de enlace
+\gls{lorawan} no plano AU915, enquadrada no item 10.3 do Ato n\textordmasculine~14.448, que
+permite enviar uma imagem em vários pacotes por um canal fixo de 500~kHz, sem salto de
+frequência.

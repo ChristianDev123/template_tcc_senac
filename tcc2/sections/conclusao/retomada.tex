@@ -1,0 +1,60 @@
+Este trabalho partiu da pergunta formulada na Seção~\ref{sec:problema}: de que maneira a
+adoção do processamento em borda ou em nuvem impacta a eficiência energética, a acurácia, a
+complexidade de desenvolvimento de firmware e o desempenho computacional de um sistema
+\gls{iot} voltado à coleta de dados de medidores analógicos. Para respondê-la, os dois
+fluxos foram implementados sobre o mesmo nó sensor, baseado no \gls{esp32cam} e no módulo
+Radioenge RD49C, e sobre o mesmo enlace \gls{lorawan}, e comparados em bancada.
+
+A resposta obtida é que, em um enlace \gls{lorawan} de baixa taxa, o volume de dados
+transmitido pesa mais do que a capacidade de processamento. Embora o \gls{esp32cam} execute a
+inferência cerca de 2.800 vezes mais devagar que o servidor, o fluxo em borda, que transmite
+cerca de 450 vezes menos dados por leitura, teve latência cerca de dez vezes menor e consumo
+por leitura de cinco a sete vezes menor. A acurácia não diferenciou os fluxos, que executam
+os mesmos modelos. O custo do processamento local apareceu no tempo de processamento e na
+memória exigidos do nó e na maior complexidade de desenvolvimento e de manutenção do
+firmware.
+
+O objetivo geral foi atingido: a viabilidade técnica, a acurácia e o consumo energético dos
+dois fluxos foram comparados com medições no protótipo. Quanto aos objetivos específicos:
+
+\begin{enumerate}
+    \item os dois fluxos foram implementados no mesmo hardware e operaram de forma autônoma,
+    em ciclos de captura, envio e repouso em \textit{deep sleep};
+    \item o enlace foi configurado no plano AU915, em DR6 (SF8 com 500~kHz) e canal fixo,
+    enquadrado no item 10.3 do Ato n\textordmasculine~14.448 da ANATEL. Para reduzir o
+    consumo, o nó dorme entre as leituras e desliga a câmera logo após a captura, o que
+    reduziu em 30\% a carga por leitura do fluxo em nuvem. Esse objetivo foi atingido apenas
+    em parte, pois o módulo de rádio permanece ligado durante o repouso, e a corrente em
+    repouso, de cerca de 24~mA, ainda domina a autonomia;
+    \item os dois fluxos foram avaliados segundo as métricas previstas. Na avaliação em
+    computador, com a janela de dígitos marcada à mão, os dois tiveram a mesma precisão no
+    conjunto de teste comum: 46\% das leituras e 85\% dos dígitos corretos; com o quadro
+    endireitado, recurso implementado apenas no servidor, a leitura chegou a 82\% e 92\%. A
+    latência de ponta a ponta foi de 18,84~s no fluxo em borda e de 189,1~s no fluxo em
+    nuvem; o consumo foi de 0,824 e 4,64~mAh por leitura, respectivamente; e o volume
+    transmitido foi de 9~bytes por leitura no fluxo em borda, contra cerca de 4~KB de imagem
+    no fluxo em nuvem.
+\end{enumerate}
+
+Quanto às hipóteses da Seção~\ref{subsec:hipotese}, cujos resultados estão resumidos na
+Tabela~\ref{tab:sintese_hipoteses}:
+
+\begin{itemize}
+    \item a H1, avaliada pela comparação entre as versões em ponto flutuante e em INT8 do
+    mesmo classificador, foi confirmada no sentido, mas a redução de acurácia foi de apenas
+    0,08 ponto percentual (95,38\% contra 95,46\%) e não teve significância estatística
+    ($p = 0{,}29$), de modo que a quantização não penalizou o reconhecimento;
+    \item a H2 foi confirmada: no nó, uma leitura do fluxo em borda exigiu 17.568~ms de
+    processamento e 1,65~MB de PSRAM, contra cerca de 11~ms de compressão JPEG no fluxo em
+    nuvem;
+    \item a H3 foi confirmada: o fluxo em nuvem consumiu 4,64~mAh por leitura, contra
+    0,824~mAh do fluxo em borda, e teve autonomia inferior. A magnitude dessa diferença,
+    porém, depende da corrente em repouso e do intervalo entre leituras: com a corrente
+    medida e uma leitura por hora, as autonomias estimadas para uma bateria hipotética de
+    2.000~mAh foram próximas, de 3,1 e 3,4 dias, e a vantagem do fluxo em borda só se aproxima
+    de sete vezes com uma corrente em repouso muito menor e leituras frequentes.
+\end{itemize}
+
+A entrega dos dados, avaliada de forma complementar, não diferenciou os fluxos: por leitura,
+o fluxo em borda entregou 79,4\% e o fluxo em nuvem, 66,7\%, sem significância estatística
+($p = 0{,}27$).

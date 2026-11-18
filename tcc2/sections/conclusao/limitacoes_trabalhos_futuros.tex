@@ -1,0 +1,30 @@
+As principais limitações, detalhadas na Seção~\ref{subsec:limitacoes_resultados}, decorrem
+do cenário de avaliação. A acurácia foi medida por emulação em computador, com imagens
+capturadas de um monitor e apenas 21 fotos de hidrômetros físicos. O firmware medido ainda
+executa a localização da janela, e não a região de interesse calibrada adotada como solução.
+O enlace foi avaliado em bancada, a 2~m, com um único nó, um receptor de canal único e sem
+retransmissão. O consumo foi medido com o nó alimentado pela porta USB e com o módulo de
+rádio ligado durante o repouso, de modo que as autonomias são estimativas de um modelo
+ideal.
+
+A partir dessas limitações, propõem-se os seguintes trabalhos futuros:
+
+\begin{itemize}
+    \item implementar a região de interesse calibrada no firmware do fluxo em borda e medir o
+    tempo de leitura, a latência e a carga por leitura, hoje apenas estimados em cerca de
+    2~s, 3,3~s e 0,13~mAh no tempo acordado;
+    \item suspender o módulo de rádio e os demais componentes da placa durante o repouso e
+    medir o consumo com bateria e regulador, para obter a autonomia real dos dois fluxos;
+    \item ampliar o conjunto de hidrômetros físicos, com uma instalação fixa, e incluir no
+    treino do classificador dígitos claros em fundo escuro e roletes em transição;
+    \item avaliar o enlace em campo, a distâncias maiores, com um \textit{gateway}
+    multicanal e vários nós, e implementar a retransmissão dos blocos perdidos, medindo o
+    seu custo em tempo no ar e em energia;
+    \item identificar a causa do tempo de inferência do modelo de localização no
+    microcontrolador, de 15,6~s, muito acima do esperado para um modelo desse tamanho;
+    \item avaliar o fluxo U-Net + CRNN + CTC, descartado pela memória exigida pela U-Net e
+    por um operador ausente no TensorFlow Lite Micro, em um hardware com mais memória ou em
+    uma versão mais recente da biblioteca;
+    \item implementar a atualização remota dos modelos, que hoje exige regravar o firmware
+    de cada nó.
+\end{itemize}
