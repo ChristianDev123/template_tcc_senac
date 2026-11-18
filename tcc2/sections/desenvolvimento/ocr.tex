@@ -8,26 +8,6 @@ separadamente. Os mesmos modelos e a mesma lógica de leitura são usados no
 como essa solução foi escolhida, os dados usados, os dois modelos, a quantização e a forma
 de leitura adotada.
 
-\subsubsection{Evolução das abordagens}
-\label{subsubsec:evolucao_ocr}
-
-A solução adotada resultou de uma sequência de provas de conceito, descrita na
-Seção~\ref{metodologia_pesquisa:poc1} e nas seguintes. O teste com \gls{ocr} genérico
-mostrou que a imagem do \gls{esp32cam} só era lida corretamente quando cada dígito era
-reconhecido isoladamente, o que levou à estrutura em duas etapas. Antes do pipeline
-adotado, dois fluxos com essa estrutura foram desenvolvidos e abandonados, ambos com a
-localização da janela feita por uma U-Net: um com leitura por CRNN e CTC e outro com uma
-CNN de um dígito. A U-Net exigiu 15,3~MB de \textit{arena}, mais que os 4~MB de PSRAM da
-placa, e os modelos de leitura com CTC usam um operador ausente no TensorFlow Lite Micro
-disponível, de modo que nenhum dos dois pôde ser executado no microcontrolador
-(Seção~\ref{subsubsec:fluxos_abandonados}).
-
-\subsubsection{Detalhes do pipeline CNN Simples (adotado)}
-\label{subsubsec:pipeline_b}
-
-Como as abordagens anteriores falharam em cenários de borda, o pipeline CNN Simples foi concebido
-para ser leve e independente de modelos pesados de segmentação.
-
 \subsubsection{Conjuntos de dados}
 \label{subsubsec:dados_ocr}
 
@@ -211,7 +191,7 @@ Por isso, a solução adotada dispensa a localização automática. Em uma insta
 câmera fica fixa diante do medidor, de modo que a janela de dígitos ocupa sempre a mesma
 região do quadro. Assim, a região de interesse (ROI) e a inclinação dos roletes são
 calibradas uma única vez, na instalação, e usadas em todas as leituras seguintes. Essa
-calibração precisa ser precisa: a avaliação apresentada nos resultados indica que a ROI
+calibração necessita ser precisa: a avaliação apresentada nos resultados indica que a ROI
 deve estar a cerca de um ou dois pixels da posição correta no quadro de
 $160 \times 120$ pixels, em que cada dígito tem aproximadamente 16 pixels de largura.
 

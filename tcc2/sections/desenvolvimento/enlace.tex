@@ -18,9 +18,9 @@ restringe o tamanho do bloco de dados: um pacote com 181~bytes de \textit{payloa
 tamanho adotado adiante, ocuparia 543~ms de rádio com 125~kHz.
 
 Por isso, o enlace foi configurado para operar com largura de banda de 500~kHz, no
-\textit{data rate} DR6 do plano AU915, que corresponde a SF8 com 500~kHz
-(Tabela~\ref{tab:uplink_datarate}) e a um \textit{payload} máximo de 222~bytes
-\cite{radioenge2022}. Com essa largura de banda, o rádio se enquadra no item~10.3 do mesmo
+\textit{data rate} \gls{dr}6 do plano AU915, que corresponde a \gls{sf}8 com 500~kHz
+(Tabela~\ref{tab:uplink_datarate}) e a um \textit{payload} máximo de 222~bytes. 
+Com essa largura de banda, o rádio se enquadra no item~10.3 do mesmo
 Ato, destinado a sistemas de modulação digital (Seção~\ref{subsec:restricoes_regulatorias}),
 cujos três requisitos são verificados a seguir: largura de faixa a 6~dB de, no mínimo,
 500~kHz; potência de pico máxima de 1~W; e densidade espectral de potência máxima de 8~dBm
@@ -41,33 +41,10 @@ O canal escolhido foi o de 915,9~MHz, o primeiro canal de 500~kHz do plano AU915
 64 na numeração da especificação \cite{lora_alliance_rp002_105}, que começa em zero, e
 canal 65 na numeração do manual do módulo, que começa em um. No módulo, ele foi
 selecionado pela máscara de canais (\texttt{AT+CHMASK}), e o \textit{data rate} foi fixado
-em DR6 com o ajuste adaptativo de taxa (ADR) desativado, pois o comando \texttt{AT+DR} só
-tem efeito com o ADR desligado \cite{radioenge2022}. A Tabela~\ref{tab:parametros_enlace} reúne os parâmetros
+em \gls{dr}6 com o ajuste adaptativo de taxa (ADR) desativado, pois o comando \texttt{AT+DR} só
+tem efeito com o ADR desligado \cite{radioenge2022}. A Tabela~\ref{tab:variaveis_ambiente} reúne os parâmetros
 usados por todos os componentes do enlace.
 
-\begin{table}[H]
-    \centering
-    \caption{Parâmetros do enlace LoRaWAN}
-    \label{tab:parametros_enlace}
-    \begin{tabularx}{\textwidth}{@{}lX@{}}
-        \toprule
-        \textbf{Parâmetro} & \textbf{Valor} \\
-        \midrule
-        Plano de canais & AU915 \\
-        Canal & Fixo, 915,9~MHz (canal 64), sem salto de frequência \\
-        \textit{Data rate} & DR6: \gls{sf}~8, \gls{bw} de 500~kHz, ADR desativado \\
-        Camada física & \gls{cr} 4/5, preâmbulo de 8 símbolos, CRC ativado, cabeçalho
-        explícito, palavra de sincronismo \texttt{0x34} \\
-        Potência de transmissão & +20~dBm (fixa no módulo) \\
-        Ativação & \gls{abp} \\
-        \textit{Payload} máximo em DR6 & 222~bytes \\
-        Portas de aplicação & FPort~1 (blocos de imagem) e FPort~2 (leitura do \gls{ocr}) \\
-        Bloco de imagem & 175~bytes de dados + 6~bytes de cabeçalho = 181~bytes \\
-        Intervalo entre pacotes & 7~s \\
-        \bottomrule
-    \end{tabularx}
-    \legend{Fonte: Elaborado pelos autores (2026).}
-\end{table}
 
 \subsubsection{Formato das mensagens}
 \label{subsubsec:formato_mensagens}
@@ -155,9 +132,7 @@ mediana observada depois.
 
 O arquivo JPEG é dividido em blocos de 175~bytes, que recebem o cabeçalho de 6~bytes da
 Tabela~\ref{tab:formato_payload}, totalizando 181~bytes de \textit{payload}, abaixo do
-máximo de 222~bytes permitido em DR6. Uma versão anterior usava blocos de 100~bytes;
-o aumento para 175~bytes reduziu o número de pacotes por imagem a pouco mais da metade,
-mantendo uma folga de 41~bytes em relação ao máximo.
+máximo de 222~bytes permitido em DR6.
 
 Os blocos são enviados ao módulo de rádio, um a um, pelo comando \texttt{AT+SENDB} na
 porta~1, com intervalo de 7~s entre eles. O item~10.3 não impõe intervalo mínimo entre
@@ -235,7 +210,7 @@ hipótese H3 e explica também a diferença de latência entre os fluxos.
 O receptor LoRa32 foi configurado com os mesmos parâmetros de camada física do
 transmissor (Tabela~\ref{tab:parametros_enlace}). Para cada quadro recebido com CRC
 válido, ele escreve na porta serial uma linha com o conteúdo do quadro em hexadecimal e o
-RSSI medido. Como não há servidor de rede, o processamento \gls{lorawan} é feito no
+\gls{rssi} medido. Como não há servidor de rede, o processamento \gls{lorawan} é feito no
 computador pelo \textit{script} \texttt{reconstrutor.py}, em quatro etapas:
 
 \begin{enumerate}
@@ -252,7 +227,7 @@ computador pelo \textit{script} \texttt{reconstrutor.py}, em quatro etapas:
     \item \textbf{Remontagem e registro}: quando todos os blocos de uma leitura chegam, o
     arquivo JPEG é gravado e pode seguir para o \gls{ocr}. Se algum bloco faltar, a imagem
     é gravada como parcial, com zeros no lugar dos dados ausentes. Cada leitura é
-    registrada em um arquivo CSV com os blocos recebidos, o RSSI e os tempos usados nas
+    registrada em um arquivo CSV com os blocos recebidos, o \gls{rssi} e os tempos usados nas
     medições.
 \end{enumerate}
 

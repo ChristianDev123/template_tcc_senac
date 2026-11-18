@@ -88,15 +88,6 @@ union}):
     IoU = \frac{|P \cap G|}{|P \cup G|}
 \end{equation}
 
-\subsubsection{Custo computacional}
-\label{subsubsec:metricas_custo}
-
-O custo computacional de uma leitura no nó é medido por duas grandezas: o tempo de
-processamento, isto é, a soma das etapas em que a CPU trabalha sobre a imagem (captura e
-compressão JPEG no fluxo em nuvem; captura, localização da janela e classificação dos
-dígitos no fluxo em borda), sem contar as esperas do rádio; e a memória ocupada na PSRAM,
-incluindo as \textit{arenas} do TensorFlow Lite Micro.
-
 \subsubsection{Energia}
 \label{subsubsec:metricas_energia}
 
@@ -130,7 +121,7 @@ superior.
 \label{subsec:bancada}
 
 Todas as medições em hardware foram feitas em 27 de outubro de 2026, em bancada, com o nó
-sensor e o receptor a cerca de 2~m de distância. Nessa condição, o RSSI médio dos quadros
+sensor e o receptor a cerca de 2~m de distância. Nessa condição, o \gls{rssi} médio dos quadros
 recebidos ficou entre $-34$ e $-27$~dBm, um sinal muito forte. Como antecipado na
 Seção~\ref{subsec:simplificacoes}, o cenário avalia o comportamento dos fluxos, e não o
 alcance do enlace. O enlace usou a configuração da Tabela~\ref{tab:parametros_enlace} nos
