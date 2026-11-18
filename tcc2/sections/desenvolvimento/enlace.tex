@@ -208,7 +208,7 @@ hipótese H3 e explica também a diferença de latência entre os fluxos.
 \label{subsubsec:recepcao}
 
 O receptor LoRa32 foi configurado com os mesmos parâmetros de camada física do
-transmissor (Tabela~\ref{tab:parametros_enlace}). Para cada quadro recebido com CRC
+transmissor (Tabela~\ref{tab:variaveis_ambiente}). Para cada quadro recebido com CRC
 válido, ele escreve na porta serial uma linha com o conteúdo do quadro em hexadecimal e o
 \gls{rssi} medido. Como não há servidor de rede, o processamento \gls{lorawan} é feito no
 computador pelo \textit{script} \texttt{reconstrutor.py}, em quatro etapas:

@@ -44,78 +44,8 @@ Como os dois fluxos usam os mesmos modelos INT8 e a mesma lógica de leitura
 eles. Por isso, a hipótese H1 é avaliada pela comparação entre as versões em ponto
 flutuante e em INT8 do mesmo modelo, e não entre os fluxos. Já nos experimentos das
 hipóteses H2 e H3, a única variável é o fluxo: o hardware, o enlace, o intervalo de repouso
-e a bancada são os mesmos.
-
-\subsection{Métricas}
-\label{subsec:metricas_experimentos}
-
-\subsubsection{Reconhecimento}
-\label{subsubsec:metricas_ocr}
-
-Para cada imagem, a leitura prevista $\hat{y}$ é comparada com a
-leitura real $y$, ambas sequências de $N$ dígitos. São usadas três métricas sobre um
-conjunto de $M$ imagens: a taxa de leitura exata, que conta apenas as leituras com todos os
-dígitos corretos; a acurácia por dígito, que compara posição a posição; e a taxa de erro de
-caracteres (\textit{character error rate}, CER), baseada na distância de edição de
-Levenshtein $d_{\mathrm{L}}$, isto é, o número mínimo de inserções, remoções e substituições
-que transformam uma sequência na outra:
-
-\begin{equation}
-    \label{eq:leitura_exata}
-    Acc_{\mathrm{leitura}} = \frac{1}{M}\sum_{m=1}^{M} \mathbf{1}\!\left[\hat{y}_m = y_m\right]
-    \qquad
-    Acc_{\textrm{dígito}} = \frac{\sum_{m}\sum_{k=1}^{N_m} \mathbf{1}\!\left[\hat{y}_{m,k} = y_{m,k}\right]}{\sum_{m} N_m}
-\end{equation}
-
-\begin{equation}
-    \label{eq:cer}
-    CER = \frac{\sum_{m} d_{\mathrm{L}}(\hat{y}_m, y_m)}{\sum_{m} N_m}
-\end{equation}
-
-A taxa de leitura exata é a métrica mais exigente e a que interessa à aplicação: uma
-leitura com um único dígito errado é uma leitura errada. Para o classificador isolado, a
-métrica é a acurácia por recorte, a fração de recortes de um único dígito classificados
-corretamente, acompanhada da acurácia por classe e da matriz de confusão.
-
-A qualidade da localização da janela é medida pela sobreposição entre a máscara prevista
-$P$ e a máscara de referência $G$, pelos coeficientes Dice e IoU (\textit{intersection over
-union}):
-
-\begin{equation}
-    \label{eq:dice_iou}
-    Dice = \frac{2\,|P \cap G|}{|P| + |G|}
-    \qquad
-    IoU = \frac{|P \cap G|}{|P \cup G|}
-\end{equation}
-
-\subsubsection{Energia}
-\label{subsubsec:metricas_energia}
-
-A carga consumida em uma leitura é a integral da corrente $i(t)$ ao
-longo de um ciclo completo, de um despertar ao seguinte, incluindo o repouso, calculada pela
-regra do trapézio sobre as amostras e expressa em mAh:
-
-\begin{equation}
-    \label{eq:carga_leitura}
-    Q_{\mathrm{leitura}} = \frac{1}{3600}\int_{t_{\mathrm{despertar},k}}^{t_{\mathrm{despertar},k+1}} i(t)\,dt
-\end{equation}
-
-\noindent com $i$ em mA e $t$ em segundos. Para estimar a autonomia em outros intervalos
-entre leituras, o ciclo é modelado por dois estados: acordado, com corrente média
-$I_{\mathrm{ac}}$ durante $t_{\mathrm{ac}}$, e em repouso, com corrente $I_{\mathrm{rep}}$
-no restante do intervalo $T$. A autonomia $A$, em dias, para uma bateria de capacidade
-$C_{\mathrm{bat}}$ em mAh, é então:
-
-\begin{equation}
-    \label{eq:autonomia_modelo}
-    Q_{\mathrm{leitura}}(T) = \frac{I_{\mathrm{ac}}\,t_{\mathrm{ac}} + I_{\mathrm{rep}}\,(T - t_{\mathrm{ac}})}{3600}
-    \qquad
-    A = \frac{C_{\mathrm{bat}}}{Q_{\mathrm{leitura}}(T)} \cdot \frac{T}{86400}
-\end{equation}
-
-O modelo é ideal: não considera as perdas do regulador, a autodescarga nem a variação da
-capacidade da bateria com a temperatura, de modo que a autonomia calculada é um limite
-superior.
+e a bancada são os mesmos. As métricas utilizadas nas avaliações estão formalizadas na
+Seção~\ref{subsec:metricas}.
 
 \subsection{Cenário de bancada}
 \label{subsec:bancada}
@@ -124,7 +54,7 @@ Todas as medições em hardware foram feitas em 27 de outubro de 2026, em bancad
 sensor e o receptor a cerca de 2~m de distância. Nessa condição, o \gls{rssi} médio dos quadros
 recebidos ficou entre $-34$ e $-27$~dBm, um sinal muito forte. Como antecipado na
 Seção~\ref{subsec:simplificacoes}, o cenário avalia o comportamento dos fluxos, e não o
-alcance do enlace. O enlace usou a configuração da Tabela~\ref{tab:parametros_enlace} nos
+alcance do enlace. O enlace usou a configuração da Tabela~\ref{tab:variaveis_ambiente} nos
 dois fluxos, e a câmera ficou fixa, apontada para o mostrador de um hidrômetro.
 
 Nos experimentos de latência, entrega e consumo, os dois firmwares operaram no modo

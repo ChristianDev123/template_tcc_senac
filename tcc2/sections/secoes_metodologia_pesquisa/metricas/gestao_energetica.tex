@@ -25,3 +25,29 @@ Equações~\eqref{eq:pico_consumo} e \eqref{eq:autonomia_energetica}:
 Em que $V_{\text{alim}}$ representa a tensão de alimentação do módulo (5~V) e
 $I_{\text{pico}}$ corresponde à corrente máxima registrada durante a execução
 ativa da inferência embarcada ou do envio de pacotes via rádio \gls{lora}.
+
+A carga consumida em uma leitura é a integral da corrente $i(t)$ ao
+longo de um ciclo completo, de um despertar ao seguinte, incluindo o repouso, calculada pela
+regra do trapézio sobre as amostras e expressa em mAh:
+
+\begin{equation}
+    \label{eq:carga_leitura}
+    Q_{\mathrm{leitura}} = \frac{1}{3600}\int_{t_{\mathrm{despertar},k}}^{t_{\mathrm{despertar},k+1}} i(t)\,dt
+\end{equation}
+
+\noindent com $i$ em mA e $t$ em segundos. Para estimar a autonomia em outros intervalos
+entre leituras, o ciclo é modelado por dois estados: acordado, com corrente média
+$I_{\mathrm{ac}}$ durante $t_{\mathrm{ac}}$, e em repouso, com corrente $I_{\mathrm{rep}}$
+no restante do intervalo $T$. A autonomia $A$, em dias, para uma bateria de capacidade
+$C_{\mathrm{bat}}$ em mAh, é então:
+
+\begin{equation}
+    \label{eq:autonomia_modelo}
+    Q_{\mathrm{leitura}}(T) = \frac{I_{\mathrm{ac}}\,t_{\mathrm{ac}} + I_{\mathrm{rep}}\,(T - t_{\mathrm{ac}})}{3600}
+    \qquad
+    A = \frac{C_{\mathrm{bat}}}{Q_{\mathrm{leitura}}(T)} \cdot \frac{T}{86400}
+\end{equation}
+
+O modelo é ideal: não considera as perdas do regulador, a autodescarga nem a variação da
+capacidade da bateria com a temperatura, de modo que a autonomia calculada é um limite
+superior.

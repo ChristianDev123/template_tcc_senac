@@ -46,6 +46,42 @@ corretamente em relação ao total de dígitos avaliados, permitindo identificar
 se falhas pontuais estão associadas a dígitos específicos, reflexos na cúpula
 de vidro ou distorções de perspectiva \cite{barkat2024smart}.
 
+Para cada imagem, a leitura prevista $\hat{y}$ é comparada com a
+leitura real $y$, ambas sequências de $N$ dígitos. São usadas três métricas sobre um
+conjunto de $M$ imagens: a taxa de leitura exata, que conta apenas as leituras com todos os
+dígitos corretos; a acurácia por dígito, que compara posição a posição; e a taxa de erro de
+caracteres (\textit{character error rate}, CER), baseada na distância de edição de
+Levenshtein $d_{\mathrm{L}}$, isto é, o número mínimo de inserções, remoções e substituições
+que transformam uma sequência na outra:
+
+\begin{equation}
+    \label{eq:leitura_exata}
+    Acc_{\mathrm{leitura}} = \frac{1}{M}\sum_{m=1}^{M} \mathbf{1}\!\left[\hat{y}_m = y_m\right]
+    \qquad
+    Acc_{\textrm{dígito}} = \frac{\sum_{m}\sum_{k=1}^{N_m} \mathbf{1}\!\left[\hat{y}_{m,k} = y_{m,k}\right]}{\sum_{m} N_m}
+\end{equation}
+
+\begin{equation}
+    \label{eq:cer}
+    CER = \frac{\sum_{m} d_{\mathrm{L}}(\hat{y}_m, y_m)}{\sum_{m} N_m}
+\end{equation}
+
+A taxa de leitura exata é a métrica mais exigente e a que interessa à aplicação: uma
+leitura com um único dígito errado é uma leitura errada. Para o classificador isolado, a
+métrica é a acurácia por recorte, a fração de recortes de um único dígito classificados
+corretamente, acompanhada da acurácia por classe e da matriz de confusão.
+
+A qualidade da localização da janela é medida pela sobreposição entre a máscara prevista
+$P$ e a máscara de referência $G$, pelos coeficientes Dice e IoU (\textit{intersection over
+union}):
+
+\begin{equation}
+    \label{eq:dice_iou}
+    Dice = \frac{2\,|P \cap G|}{|P| + |G|}
+    \qquad
+    IoU = \frac{|P \cap G|}{|P \cup G|}
+\end{equation}
+
 \subsubsection{Métricas aplicadas à desempenho de hardware}
 \label{subsubsec:metricas_hardware}
 
