@@ -37,8 +37,8 @@ Tabela~\ref{tab:ciclo_fluxos}.
         Repouso & \multicolumn{2}{l}{\textit{Deep sleep} até o próximo ciclo} \\
         \bottomrule
     \end{tabularx}
-    \legend{Fonte: Elaborado pelos autores (2026). Nas medições de latência e consumo, o
-    fluxo em borda ainda executava a localização da janela.}
+    \legend{Fonte: Elaborado pelos autores (2026). Nas medições de consumo e na primeira
+    medição de latência, o fluxo em borda ainda executava a localização da janela.}
 \end{table}
 
 Ao fim de cada ciclo, o firmware escreve na serial uma linha padronizada com o número do
@@ -109,7 +109,8 @@ orientação é aplicada ao próprio sensor da câmera, de modo que o quadro já
 usada na calibração. O quadro capturado é copiado para um buffer próprio e a câmera é
 desligada antes da inferência. Com a ROI gravada, o firmware não carrega o modelo de
 localização: divide a caixa em fatias, recorta a face de cada uma e classifica. Sem a ROI,
-mantém o comportamento usado nas medições de latência e consumo, descrito a seguir. Para o
+mantém o comportamento usado nas medições de consumo e na primeira medição de latência,
+descrito a seguir. Para o
 modelo de localização, o quadro é redimensionado por vizinho mais próximo para $192 \times 192$ pixels diretamente no
 tensor de entrada, já convertido para INT8 pela subtração de 128 de cada pixel. Na saída,
 os valores INT8 maiores que zero, que correspondem a probabilidade superior a 0,5, formam
@@ -132,10 +133,11 @@ genérico. Durante essas capturas, a temperatura interna do chip permaneceu entr
 
 Com a ROI gravada, a leitura no nó fica restrita à classificação dos dígitos. Medido no
 firmware do fluxo em borda, com quadros enviados pela porta serial, o classificador levou
-mediana de 1.917~ms para as seis fatias, em 33 quadros. Em um teste de bancada com a
-câmera, a leitura ficou pronta de 2,3 a 2,9~s depois do comando de leitura. Essa é uma
-observação, e não uma medição formal: a latência ponta a ponta e o consumo nesse modo não
-foram medidos, pois as medições foram feitas antes da integração da ROI ao firmware.
+mediana de 1.917~ms para as seis fatias, em 33 quadros. No modo autônomo, com a câmera, a
+leitura ficou pronta no nó 2,86~s após o disparo, e a latência ponta a ponta nesse modo é
+apresentada nos resultados (Seção~\ref{subsec:resultado_latencia}). O consumo com a ROI não
+foi medido, pois as medições de corrente foram feitas antes da integração da ROI ao
+firmware.
 
 \subsubsection{Firmware de depuração e calibração}
 \label{subsubsec:firmware_debug}

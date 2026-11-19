@@ -316,30 +316,37 @@ essas conclusões valem igualmente para a borda e para a nuvem.
 \label{subsec:resultado_latencia}
 
 A Tabela~\ref{tab:resultado_latencia} apresenta a latência ponta a ponta dos dois fluxos,
-medida com o nó no modo autônomo.
+medida com o nó no modo autônomo. O fluxo em borda foi medido duas vezes: com a localização
+da janela, configuração usada também nas medições de consumo, e com a ROI calibrada,
+adotada como solução.
 
 \begin{table}[H]
     \centering
     \caption{Latência ponta a ponta dos dois fluxos}
     \label{tab:resultado_latencia}
-    \begin{tabularx}{\textwidth}{@{}Xrr@{}}
+    \small
+    \begin{tabularx}{\textwidth}{@{}X>{\raggedleft\arraybackslash}p{2.9cm}>{\raggedleft\arraybackslash}p{2.9cm}>{\raggedleft\arraybackslash}p{2.9cm}@{}}
         \toprule
-        \textbf{Marco, desde o disparo} & \textbf{Fluxo em nuvem} & \textbf{Fluxo em borda} \\
+        \textbf{Marco, desde o disparo} & \textbf{Fluxo em nuvem} & \textbf{Fluxo em borda, com localização} & \textbf{Fluxo em borda, com ROI} \\
         \midrule
-        Captura concluída & 0,70~s & --- \\
-        Leitura pronta no nó & --- & 18,20~s \\
-        Primeiro pacote no computador & 1,97~s & 18,84~s \\
-        \textbf{Dado disponível no servidor (mediana)} & \textbf{189,1~s} & \textbf{18,84~s} \\
-        Mínimo e máximo & 172,7 a 213,5~s & 18,836 a 18,840~s \\
-        Desvio-padrão & 11,8~s & 0,9~ms \\
-        Leituras consideradas & 20 imagens completas & 27 leituras recebidas \\
+        Captura concluída & 0,70~s & --- & --- \\
+        Leitura pronta no nó & --- & 18,20~s & 2,86~s \\
+        Primeiro pacote no computador & 1,97~s & 18,84~s & 3,50~s \\
+        \textbf{Dado no servidor (mediana)} & \textbf{189,1~s} & \textbf{18,84~s} & \textbf{3,50~s} \\
+        Mínimo e máximo & 172,7 a 213,5~s & 18,836 a 18,840~s & 3,496 a 3,580~s \\
+        Desvio-padrão & 11,8~s & 0,9~ms & 15~ms \\
+        Leituras consideradas & 20 imagens completas & 27 leituras recebidas & 29 leituras recebidas \\
         \bottomrule
     \end{tabularx}
-    \legend{Fonte: Elaborado pelos autores (2026).}
+    \legend{Fonte: Elaborado pelos autores (2026). O fluxo em nuvem e o fluxo em borda com a
+    localização da janela foram medidos em 27/10; o fluxo em borda com a ROI calibrada, em 18
+    e 19/11, sem o primeiro disparo, feito logo após a ativação do modo autônomo e sem o
+    reinício do despertar.}
 \end{table}
 
-A latência do fluxo em borda foi de 18,84~s, cerca de dez vezes menor que os 189,1~s do
-fluxo em nuvem. Na corrida controlada, com o nó sempre ligado, a latência do fluxo em nuvem
+A latência do fluxo em borda foi de 18,84~s com a localização da janela, cerca de dez vezes
+menor que os 189,1~s do fluxo em nuvem, e de 3,50~s com a ROI calibrada, cerca de 54 vezes
+menor. Na corrida controlada, com o nó sempre ligado, a latência do fluxo em nuvem
 foi de 197,1~s (de 148,1 a 204,9~s, com 21 imagens completas), compatível com a corrida em
 modo autônomo, já que as imagens dessa corrida foram maiores (mediana de 4.379 contra
 4.068~bytes).
@@ -359,20 +366,22 @@ No fluxo em borda, ao contrário, quase toda a latência é processamento. A lei
 pronta no nó em 18,20~s, dos quais cerca de 15,5~s são a localização da janela e 2,0~s a
 classificação dos dígitos, segundo o log do próprio firmware; o envio e a recepção levam
 mais 0,64~s. Como nenhum desses passos depende da rede, a latência é praticamente
-determinística, com desvio-padrão de 0,9~ms.
+determinística, com desvio-padrão de 0,9~ms. Com a ROI calibrada, a localização deixa de
+ser executada: a leitura fica pronta no nó em 2,86~s e chega ao servidor em 3,50~s. A
+redução de 15,3~s corresponde, aproximadamente, aos cerca de 15,5~s da localização, e a
+latência continua praticamente determinística, com desvio-padrão de 15~ms.
 
-Dois cenários ajudam a avaliar se a conclusão depende das escolhas de implementação. No
-fluxo em borda, a solução com ROI calibrada, já integrada ao firmware, retira a localização
-da janela, e a latência estimada cai para cerca de 3,3~s; em um teste de bancada, a leitura
-ficou pronta de 2,3 a 2,9~s após o comando de leitura, mas a latência ponta a ponta nesse
-modo não foi medida. No fluxo em nuvem, também como estimativa, mesmo eliminando o intervalo de 7~s entre pacotes, que é uma escolha conservadora e
-não uma exigência regulatória (Seção~\ref{subsubsec:formato_mensagens}), restaria cerca de
-1,1~s por bloco, ou aproximadamente 26~s para uma imagem de 24 blocos, acima da latência
-medida no fluxo em borda. Assim, a vantagem do processamento local em latência não depende
-do intervalo escolhido.
+Um cenário adicional ajuda a avaliar se a conclusão depende das escolhas de implementação.
+No fluxo em nuvem, mesmo eliminando o intervalo de 7~s entre pacotes, que é uma escolha
+conservadora e não uma exigência regulatória (Seção~\ref{subsubsec:formato_mensagens}),
+restaria cerca de 1,1~s por bloco, ou aproximadamente 26~s para uma imagem de 24 blocos.
+Essa é uma estimativa, e não uma medição, mas ainda fica acima das latências medidas no
+fluxo em borda. Assim, a vantagem do processamento local em latência não depende do
+intervalo escolhido.
 
 Embora não seja objeto de hipótese, a latência complementa a comparação: o fluxo em borda
-foi cerca de dez vezes mais rápido, em concordância com a menor
+foi de 10 a 54 vezes mais rápido, conforme a janela fosse localizada pelo modelo ou dada
+pela ROI calibrada, em concordância com a menor
 latência atribuída à computação em borda na
 Tabela~\ref{tab:vant_desvant_edge_cloud} \cite{andriulo2024edge}. Nesta implementação, a
 vantagem vem da quantidade de dados transmitida, e não da velocidade do processamento: o
@@ -382,7 +391,7 @@ fluxo em borda transmite 9~bytes por leitura, contra cerca de 4~KB do fluxo em n
 \subsection{Entrega dos dados}
 \label{subsec:resultado_entrega}
 
-A Tabela~\ref{tab:resultado_entrega} apresenta a entrega dos dados nas três corridas, por
+A Tabela~\ref{tab:resultado_entrega} apresenta a entrega dos dados nas quatro corridas, por
 pacote e por leitura.
 
 \begin{table}[H]
@@ -396,16 +405,22 @@ pacote e por leitura.
         Fluxo em nuvem, modo autônomo & 699/713 (98,0\%) & 20/30 (66,7\%) \\
         Fluxo em nuvem, modo controlado & 749/759 (98,7\%) & 21/30 (70,0\%) \\
         Fluxo em borda, modo autônomo & 27/34 (79,4\%) & 27/34 (79,4\%) \\
+        Fluxo em borda com ROI, modo autônomo & 30/30 (100\%) & 30/30 (100\%) \\
         \bottomrule
     \end{tabularx}
-    \legend{Fonte: Elaborado pelos autores (2026).}
+    \legend{Fonte: Elaborado pelos autores (2026). As três primeiras corridas são de 27/10, e a
+    do fluxo em borda com ROI, de 18 e 19/11.}
 \end{table}
 
 As duas métricas apontam em sentidos opostos. Por pacote, o fluxo em nuvem entregou mais:
 98,0\% contra 79,4\%, diferença estatisticamente significativa (teste exato de Fisher,
 $p < 0{,}001$). Por leitura, o fluxo em borda entregou mais: 79,4\% contra 66,7\%; com 30 e
 34 leituras, porém, essa diferença não é estatisticamente significativa ($p = 0{,}27$), nem
-em relação à corrida controlada ($p = 0{,}40$).
+em relação à corrida controlada ($p = 0{,}40$). Na corrida do fluxo em borda com a ROI
+calibrada, todas as 30 leituras chegaram ao servidor, com \gls{rssi} médio de $-60$ a
+$-59$~dBm. Como essa corrida foi feita em outro dia e em outra condição de sinal, e as
+amostras são pequenas, esse resultado não permite concluir sobre a causa das perdas de
+27/10, e as comparações desta seção usam as corridas daquele dia.
 
 No fluxo em nuvem, a diferença entre as duas métricas decorre da fragmentação. Como nenhum
 dos firmwares retransmite blocos no modo autônomo, basta um bloco perdido para que a imagem
@@ -760,8 +775,8 @@ A Tabela~\ref{tab:sintese_hipoteses} resume o resultado de cada hipótese.
         H2 & No nó, 17.568~ms de processamento e 1,65~MB de PSRAM por leitura no fluxo em
         borda, contra cerca de 11~ms de compressão no fluxo em nuvem & Confirmada \\
         \addlinespace
-        Latência (complementar) & 18,84~s no fluxo em borda contra 189,1~s no fluxo em nuvem &
-        Menor no fluxo em borda \\
+        Latência (complementar) & 18,84~s no fluxo em borda com a localização da janela e
+        3,50~s com a ROI calibrada, contra 189,1~s no fluxo em nuvem & Menor no fluxo em borda \\
         \addlinespace
         Entrega (complementar) & Por leitura, 79,4\% contra 66,7\%, sem significância
         ($p = 0{,}27$); por pacote, 79,4\% contra 98,0\% & Sem diferença significativa por
@@ -778,8 +793,9 @@ A Tabela~\ref{tab:sintese_hipoteses} resume o resultado de cada hipótese.
 Em relação à pergunta de pesquisa, os resultados indicam que, em um enlace \gls{lorawan} de
 baixa taxa, o volume de dados transmitido pesa mais do que a capacidade de processamento.
 Mesmo com uma inferência cerca de 2.800 vezes mais lenta que a do servidor, o fluxo em borda
-teve latência dez vezes menor e consumo por leitura de cinco a sete vezes menor, porque
-transmite cerca de 450 vezes menos dados. A acurácia não diferenciou os fluxos: ambos
+teve latência de 10 a 54 vezes menor, conforme executasse a localização da janela ou usasse
+a ROI calibrada, e consumo por leitura de cinco a sete vezes menor, medido com a
+localização, porque transmite cerca de 450 vezes menos dados. A acurácia não diferenciou os fluxos: ambos
 executam os mesmos modelos, a quantização teve efeito desprezível e a compressão JPEG não
 alterou a leitura. O limite da acurácia, nos dois casos, está na localização da janela de
 dígitos e, em medidores reais, no recorte de cada dígito. Com a câmera fixa, a ROI
@@ -821,14 +837,16 @@ Os resultados devem ser interpretados considerando as seguintes limitações:
     da bancada, com a mesma leitura na placa e no servidor, mas a leitura com a câmera ao vivo
     não foi avaliada. Na corrida de latência do fluxo em borda, ainda com a localização da
     janela, as 27 leituras recebidas tiveram 13 valores distintos, instabilidade que não foi
-    investigada.
-    \item \textbf{ROI sem medição de latência e consumo}: a ROI calibrada foi integrada ao
-    firmware depois das medições de latência e consumo, que foram feitas com a localização
-    da janela. Nesse modo, só o tempo do classificador foi medido na placa, 1.917~ms; a
-    latência de cerca de 3,3~s e a carga acordado de cerca de 0,13~mAh são estimativas.
-    \item \textbf{Cenário de enlace}: as medições foram feitas em bancada, a 2~m de
-    distância, com sinal forte, um receptor de canal único no lugar de um
-    \textit{gateway} e sem retransmissão. As execuções em que o receptor ficou de 15 a 25
+    investigada. Na corrida de latência com a ROI, as leituras recebidas, com três valores
+    distintos, não foram conferidas com o visor e, por isso, não valem como medida de
+    acurácia.
+    \item \textbf{ROI sem medição de consumo}: a ROI calibrada foi integrada ao firmware
+    depois das medições de consumo, que foram feitas com a localização da janela. A latência
+    nesse modo foi medida depois, mas a carga acordado de cerca de 0,13~mAh é uma estimativa.
+    \item \textbf{Cenário de enlace}: as medições foram feitas em bancada, com sinal forte,
+    um receptor de canal único no lugar de um \textit{gateway} e sem retransmissão; as de
+    27/10, a cerca de 2~m de distância, e a corrida com a ROI, com \gls{rssi} de cerca de
+    $-60$~dBm e distância não registrada. As execuções em que o receptor ficou de 15 a 25
     minutos sem repassar quadros foram excluídas por se tratar de uma falha do receptor, cuja
     causa não foi identificada; a sua ocorrência indica que o receptor usado é um ponto
     frágil do protótipo. As amostras, de 30 a 34 leituras por fluxo, só permitem detectar

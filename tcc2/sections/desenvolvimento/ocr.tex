@@ -207,8 +207,9 @@ Seção~\ref{subsubsec:firmware_debug}, que grava os parâmetros na memória nã
 Com esses parâmetros gravados, o firmware do fluxo em borda não executa o modelo de
 localização; sem eles, volta a localizar a janela a cada leitura.
 
-As medições de latência e consumo em hardware foram feitas antes da integração da ROI ao
-firmware. Nelas, o fluxo em borda ainda executava o modelo de localização a cada leitura,
-com a câmera posicionada à mão para que a janela ocupasse a maior parte do quadro e a caixa
-prevista ficasse próxima dela. Essa configuração é descrita na próxima seção, e o efeito de
+As medições de consumo e a primeira medição de latência em hardware foram feitas antes da
+integração da ROI ao firmware. Nelas, o fluxo em borda ainda executava o modelo de
+localização a cada leitura, com a câmera posicionada à mão para que a janela ocupasse a
+maior parte do quadro e a caixa prevista ficasse próxima dela. Essa configuração é descrita
+na próxima seção. A latência foi medida novamente com a ROI calibrada, e o efeito de
 remover a localização é discutido nos resultados.

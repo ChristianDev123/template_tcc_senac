@@ -30,8 +30,8 @@ complementam a comparação entre os fluxos.
         ocupada na PSRAM \\
         \addlinespace
         Latência e entrega & --- & Nó em ciclo autônomo com \textit{deep sleep}: 30 leituras no
-        fluxo em nuvem e 34 no fluxo em borda; 30 envios adicionais de imagem com o nó sempre
-        ligado & Latência ponta a ponta, \gls{pdr} por pacote, taxa de entrega por leitura \\
+        fluxo em nuvem, 34 no fluxo em borda com a localização da janela e 30 com a ROI
+        calibrada; 30 envios adicionais de imagem com o nó sempre ligado & Latência ponta a ponta, \gls{pdr} por pacote, taxa de entrega por leitura \\
         \addlinespace
         Consumo de energia & H3 & Corrente do nó medida em 30 ciclos do fluxo em nuvem e 32
         do fluxo em borda & Carga por leitura (mAh), corrente acordado e em repouso, autonomia
@@ -52,9 +52,12 @@ Seção~\ref{subsec:metricas}.
 \subsection{Cenário de bancada}
 \label{subsec:bancada}
 
-Todas as medições em hardware foram feitas em 27 de outubro de 2026, em bancada, com o nó
-sensor e o receptor a cerca de 2~m de distância. Nessa condição, o \gls{rssi} médio dos quadros
-recebidos ficou entre $-34$ e $-27$~dBm, um sinal muito forte. Como antecipado na
+As medições de consumo, de entrega e de latência com a localização da janela foram feitas
+em 27 de outubro de 2026, em bancada, com o nó sensor e o receptor a cerca de 2~m de
+distância. Nessa condição, o \gls{rssi} médio dos quadros recebidos ficou entre $-34$ e
+$-27$~dBm, um sinal muito forte. A latência com a ROI calibrada foi medida em 18 e 19 de
+novembro, também em bancada, com o \gls{rssi} médio entre $-60$ e $-59$~dBm; a distância
+entre o nó e o receptor nessa corrida não foi registrada. Como antecipado na
 Seção~\ref{subsec:simplificacoes}, o cenário avalia o comportamento dos fluxos, e não o
 alcance do enlace. O enlace usou a configuração da Tabela~\ref{tab:variaveis_ambiente} nos
 dois fluxos, e a câmera ficou fixa, apontada para o mostrador de um hidrômetro.
@@ -201,17 +204,23 @@ serial, o disparo marcado ocorre cerca de 0,3 a 0,5~s após o despertar real, o 
 subestima a latência nesse valor nos dois fluxos. No fluxo em nuvem, a latência não inclui a
 execução do \gls{ocr} no servidor, que é feita depois sobre as imagens salvas; como mostra a
 Tabela~\ref{tab:tempo_inferencia}, esse tempo é da ordem de milissegundos e não altera a
-comparação. Foram feitas duas corridas:
+comparação. Foram feitas três corridas nesse modo:
 
 \begin{itemize}
-    \item \textbf{Fluxo em nuvem}: 31 despertares, das 9h34 às 11h20, simultâneos à medição
-    de corrente. Em 30 deles o nó enviou uma imagem; no outro, o nó acordou e voltou a dormir
-    sem enviar nada, e esse despertar foi excluído.
-    \item \textbf{Fluxo em borda}: 34 despertares, das 12h59 às 13h27.
+    \item \textbf{Fluxo em nuvem}: 31 despertares, em 27/10, das 9h34 às 11h20, simultâneos
+    à medição de corrente. Em 30 deles o nó enviou uma imagem; no outro, o nó acordou e voltou
+    a dormir sem enviar nada, e esse despertar foi excluído.
+    \item \textbf{Fluxo em borda com a localização da janela}: 34 despertares, em 27/10, das
+    12h59 às 13h27.
+    \item \textbf{Fluxo em borda com a ROI calibrada}: 30 disparos, das 23h58 de 18/11 às
+    0h14 de 19/11, com a ROI gravada no nó. Nessa corrida, o \textit{script} reiniciou o nó e
+    ativou o modo autônomo; o primeiro disparo, feito logo após a ativação e sem o reinício
+    do despertar, foi excluído das estatísticas de latência, que usam os 29 despertares
+    seguintes.
 \end{itemize}
 
 Para conferir o \gls{pdr} do fluxo em nuvem com uma contagem exata dos pacotes enviados, foi
-feita uma terceira corrida com o \textit{script} \texttt{reconstrutor.py} no modo controlado.
+feita uma quarta corrida com o \textit{script} \texttt{reconstrutor.py} no modo controlado.
 Nele, o nó fica sempre ligado, sem \textit{deep sleep}, e o computador envia o comando de
 captura, espera o fim do envio e, após uma pausa de 10~s, dispara a leitura seguinte. Foram
 30 envios, das 14h59 às 16h44. O número de pacotes enviados vem do log do próprio nó, que
