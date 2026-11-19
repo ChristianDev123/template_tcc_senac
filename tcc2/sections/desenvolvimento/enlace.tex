@@ -124,11 +124,12 @@ A conversão para tons de cinza reduziu o arquivo em relação à imagem colorid
 binarização o aumentou em quase o dobro, pois as bordas abruptas entre preto e branco são
 pouco compressíveis pelo JPEG. Por isso, a imagem é transmitida em tons de cinza, sem
 binarização. A qualidade 90 foi mantida para que a compressão não prejudicasse o
-reconhecimento dos dígitos no servidor. Nas 60 leituras das duas corridas de medição do fluxo em nuvem, o JPEG variou de 3.323
-a 4.568~bytes (mediana de 4.323~bytes), pois o tamanho depende da cena e da iluminação.
-Para o dimensionamento, adotou-se como referência uma imagem de 4.300~bytes, valor
-definido a partir das primeiras capturas, antes das corridas de medição, e próximo da
-mediana observada depois.
+reconhecimento dos dígitos no servidor. Nas 60 leituras das duas corridas do fluxo em
+nuvem de 27/10, o JPEG variou de 3.323 a 4.568~bytes (mediana de 4.323~bytes) e, nas 30
+da corrida de 19/11, com a câmera mais perto do mostrador, de 2.912 a 3.404~bytes, pois o
+tamanho depende da cena e da iluminação. Para o dimensionamento, adotou-se como referência
+uma imagem de 4.300~bytes, valor definido a partir das primeiras capturas, antes das
+corridas de medição, e próximo da mediana observada em 27/10.
 
 O arquivo JPEG é dividido em blocos de 175~bytes, que recebem o cabeçalho de 6~bytes da
 Tabela~\ref{tab:formato_payload}, totalizando 181~bytes de \textit{payload}, abaixo do
@@ -176,8 +177,9 @@ $n_{\text{payload}} = 8 + \lceil 1564/32 \rceil \cdot 5 = 253$ símbolos e
 $T_{\text{pacote}} = (8 + 4{,}25 + 253) \cdot 0{,}512 \approx 135{,}8$~ms. Para a
 mensagem de leitura do fluxo em borda, $PL = 13 + 9 = 22$~bytes, o que resulta em
 $T_{\text{pacote}} \approx 25{,}7$~ms. A Tabela~\ref{tab:tempo_no_ar} apresenta o número
-de pacotes e os tempos para os tamanhos mínimo, mediano e máximo de JPEG medidos e para a
-mensagem do fluxo em borda.
+de pacotes e os tempos para os tamanhos mínimo, mediano e máximo de JPEG medidos em 27/10
+e para a mensagem do fluxo em borda. Com as imagens menores de 19/11, de 17 a 20 pacotes, o
+tempo de rádio fica entre 2,27 e 2,65~s.
 
 \begin{table}[H]
     \centering
@@ -188,14 +190,14 @@ mensagem do fluxo em borda.
         \textbf{Conteúdo} & \textbf{Bytes} & \textbf{Pacotes} &
         \textbf{Rádio (s)} & \textbf{Envio total (s)} \\
         \midrule
-        JPEG, menor medido & 3.323 & 19 & 2,58 & 126 \\
-        JPEG, mediana medida & 4.323 & 25 & 3,36 & 168 \\
-        JPEG, maior medido & 4.568 & 27 & 3,57 & 182 \\
+        JPEG, menor de 27/10 & 3.323 & 19 & 2,58 & 126 \\
+        JPEG, mediana de 27/10 & 4.323 & 25 & 3,36 & 168 \\
+        JPEG, maior de 27/10 & 4.568 & 27 & 3,57 & 182 \\
         Leitura do fluxo em borda & 9 & 1 & 0,03 & 0,03 \\
         \bottomrule
     \end{tabular}
-    \legend{Fonte: Elaborado pelos autores (2026). O envio total soma o tempo no ar ao
-    intervalo de 7~s entre pacotes.}
+    \legend{Fonte: Elaborado pelos autores (2026). O envio total soma os intervalos de 7~s
+    entre pacotes consecutivos e o tempo no ar do último pacote.}
 \end{table}
 
 Os valores mostram que, no fluxo em nuvem, o tempo de rádio é pequeno diante do tempo

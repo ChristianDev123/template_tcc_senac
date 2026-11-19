@@ -8,23 +8,24 @@ No Brasil, a ANATEL (Agência Nacional de Telecomunicações)
 homologar dispositivos com o foco 
 de estabelecer redes de comunicação. 
 
-O AU915 é a restrição imposta pela ANATEL no Ato nº 14.448,
-estabelecida em 4 de dezembro de 2017~\cite{anatel2017}, 
-em que se adota o padrão australiano de radiocomunicação. 
-Visto que o Brasil adotou o padrão americano de distribuição 
-de canais, o \gls{ism}, o AU915 foi escolhido por conta da já 
-existente implantação de infraestrutura de rádio 
-que ocupava parcialmente as faixas abaixo de 915 MHz; 
-portanto, o padrão americano (US915), que funciona em uma faixa 
-de frequência entre 902 e 928 MHz, 
-tornou-se inadequado para implantação em território brasileiro.
+O uso das faixas de 902 a 907,5 MHz e de 915 a 928 MHz por
+equipamentos de radiação restrita, como os nós \gls{lorawan}, é regulado pelo
+Ato nº 14.448 da ANATEL, de 4 de dezembro de 2017~\cite{anatel2017}.
+As duas faixas fazem parte da faixa \gls{ism} de 902 a 928 MHz.
+Os planos de canais do \gls{lorawan}, como o AU915, definido para a Austrália,
+e o US915, definido para os Estados Unidos, não são estabelecidos pela ANATEL,
+mas pela LoRa Alliance~\cite{lora_alliance_rp002_105}. No país, adota-se o
+AU915, cujos canais ficam entre 915 e 928 MHz, dentro das faixas permitidas,
+enquanto a maior parte dos canais de \textit{uplink} do US915 fica entre
+907,5 e 915 MHz, fora delas.
 
-O \gls{ism} foi desenvolvido em Atlanta em 1947, elaborado pela 
-FCC (Federal Communications Commission), com o objetivo de delimitar 
-internacionalmente os espectros de frequências de rádio para as mais diversas 
-finalidades. Em 1985, a FCC autorizou o uso livre de espectros de rádio 
-em bandas ISM sem a necessidade de licenciamento para utilização em determinados
-espectros de frequência.
+As faixas \gls{ism} foram estabelecidas em 1947, em uma conferência da
+União Internacional de Telecomunicações (UIT) realizada em Atlantic City,
+nos Estados Unidos, e destinadas a equipamentos industriais, científicos e
+médicos que emitem radiofrequência sem finalidade de comunicação. Em 1985, a
+FCC (\textit{Federal Communications Commission}), agência que regula as
+comunicações nos Estados Unidos, autorizou o uso de parte dessas faixas por
+sistemas de comunicação com espalhamento espectral, sem necessidade de licença.
 
 Entre as regulações implementadas pelos mais diversos países ao redor 
 do mundo, dois termos ganham grande relevância. 

@@ -19,10 +19,17 @@ a imagem em JPEG e a transmite dividida em vários pacotes, e o mesmo modelo é 
 servidor. Os experimentos, realizados em bancada, avaliaram o efeito da quantização sobre a
 acurácia, o custo computacional do processamento no nó, a latência de ponta a ponta, a taxa
 de entrega de pacotes e de leituras e o consumo de energia por leitura, medido com sensor de
-corrente, a partir do qual foi estimada a autonomia do nó. Com isso, o trabalho busca
-orientar a escolha entre as duas abordagens em implantações de \gls{smart_metering},
-considerando o \textit{trade-off} entre precisão de leitura, eficiência energética e
-complexidade de manutenção do sistema.
+corrente, a partir do qual foi estimada a autonomia do nó. A quantização teve efeito
+desprezível sobre a acurácia, e os dois fluxos leram corretamente 25 de 30 fotos de um
+hidrômetro físico. Na configuração final, com a região dos dígitos calibrada na instalação e
+o módulo de rádio em classe A, o fluxo em borda teve latência de 3,50~s,
+contra 148,3~s do fluxo em nuvem, e consumiu 0,175~mAh por leitura, contra 2,91~mAh. Com uma
+bateria hipotética de 2.000~mAh e leituras a cada 10~minutos, a autonomia estimada foi de
+12,1 dias no fluxo em borda e de 3,8 dias no fluxo em nuvem. Em contrapartida, o fluxo em
+borda exigiu mais processamento e memória do nó e um \textit{firmware} mais complexo.
+Conclui-se que, em um enlace \gls{lorawan} de baixa taxa, o volume de dados transmitido pesa
+mais do que a capacidade de processamento, o que favorece o processamento em borda, mas a
+vantagem na autonomia depende da corrente do nó em repouso.
 
 \vspace{\onelineskip}
 
