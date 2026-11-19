@@ -68,10 +68,10 @@ O resultado é coerente com o tamanho e a forma do modelo. A quantização compl
 treinamento, calibrada com um conjunto representativo, foi suficiente para um classificador
 convolucional pequeno, com ativações ReLU, e o pipeline CNN Simples não precisou do treinamento
 consciente da quantização descrito na Seção~\ref{sec:fundamentos}, que no pipeline U-NET + CRNN + CTC havia
-sido usado justamente para mitigar a degradação \cite{ferreira2022compressao}. Os dois
+sido usado justamente para mitigar a degradação. Os dois
 modelos INT8 somam 93,3~KB (81,5~KB do classificador e 11,8~KB da localização), na faixa de
 centenas de quilobytes relatada para modelos de \gls{ocr} de medidores em hardware
-embarcado \cite{ademola2023resource, jawas2018water}.
+embarcado.
 
 Por classe, a acurácia em INT8 variou de 90,84\% no dígito 7 a 97,21\% no dígito 0, que é
 também o mais frequente. Os dígitos 7, 9 e 6 foram os mais difíceis (90,84\%, 91,64\% e
