@@ -34,8 +34,9 @@ complementam a comparação entre os fluxos.
         calibrada; 30 envios adicionais de imagem com o nó sempre ligado & Latência ponta a ponta, \gls{pdr} por pacote, taxa de entrega por leitura \\
         \addlinespace
         Consumo de energia & H3 & Corrente do nó medida em 30 ciclos do fluxo em nuvem e 32
-        do fluxo em borda & Carga por leitura (mAh), corrente acordado e em repouso, autonomia
-        estimada \\
+        do fluxo em borda, com o rádio em classe C, e em 29 ciclos de cada fluxo com a ROI
+        calibrada e o rádio em classe A & Carga por leitura (mAh), corrente acordado e em
+        repouso, autonomia estimada \\
         \bottomrule
     \end{tabularx}
     \legend{Fonte: Elaborado pelos autores (2026).}
@@ -55,9 +56,10 @@ Seção~\ref{subsec:metricas}.
 As medições de consumo, de entrega e de latência com a localização da janela foram feitas
 em 27 de outubro de 2026, em bancada, com o nó sensor e o receptor a cerca de 2~m de
 distância. Nessa condição, o \gls{rssi} médio dos quadros recebidos ficou entre $-34$ e
-$-27$~dBm, um sinal muito forte. A latência com a ROI calibrada foi medida em 18 e 19 de
-novembro, também em bancada, com o \gls{rssi} médio entre $-60$ e $-59$~dBm; a distância
-entre o nó e o receptor nessa corrida não foi registrada. Como antecipado na
+$-27$~dBm, um sinal muito forte. A latência com a ROI calibrada, medida em 18 e 19 de
+novembro, e as medições com o rádio em classe A, em 19 de novembro, também foram feitas em
+bancada, com o \gls{rssi} mediano de cada corrida entre $-60$ e $-49$~dBm; a distância
+entre o nó e o receptor nessas corridas não foi registrada. Como antecipado na
 Seção~\ref{subsec:simplificacoes}, o cenário avalia o comportamento dos fluxos, e não o
 alcance do enlace. O enlace usou a configuração da Tabela~\ref{tab:variaveis_ambiente} nos
 dois fluxos, e a câmera ficou fixa, apontada para o mostrador de um hidrômetro.
@@ -298,7 +300,11 @@ maior, com pelo menos 12~s de duração, é considerado repouso. Cada ciclo vai 
 repouso ao fim do seguinte, e a carga do ciclo é calculada pela
 Equação~\eqref{eq:carga_leitura}. A duração mínima de 12~s foi necessária porque picos
 isolados de uma única amostra, de cerca de 61~mA, partiam alguns trechos de repouso em
-dois e criavam ciclos falsos. Foram feitas duas capturas principais:
+dois e criavam ciclos falsos.
+
+O consumo foi medido em duas campanhas. Na primeira, em 27/10, o módulo de rádio estava
+configurado em classe C e o fluxo em borda ainda executava a localização da janela. Foram
+feitas duas capturas principais:
 
 \begin{itemize}
     \item \textbf{Fluxo em nuvem}: 685.000 amostras em 6.850~s, a partir das 9h29. Dos 31
@@ -308,15 +314,33 @@ dois e criavam ciclos falsos. Foram feitas duas capturas principais:
     ciclos completos.
 \end{itemize}
 
+Na segunda, em 19/11, o módulo foi configurado em classe A, pelo comando
+\texttt{AT+CLASS=A}, e o fluxo em borda já usava a ROI calibrada. A configuração fica
+gravada no próprio módulo e se manteve após uma queda de energia que o reiniciou. As
+capturas usaram a mesma montagem e o mesmo repouso de 30~s, e a latência e a entrega foram
+registradas ao mesmo tempo, com o \textit{script} de latência:
+
+\begin{itemize}
+    \item \textbf{Fluxo em nuvem}: 527.088 amostras em 5.271~s, com 29 ciclos analisados e
+    30 leituras registradas. Uma primeira captura desse fluxo foi interrompida por uma queda
+    de energia do nó, causada pelo movimento dos fios da bancada, e ficou fora das
+    estatísticas.
+    \item \textbf{Fluxo em borda com a ROI calibrada}: 102.707 amostras em 1.027~s, com 29
+    ciclos analisados e 30 leituras registradas.
+\end{itemize}
+
 Antes dessas capturas, um teste curto de quatro ciclos com uma versão anterior do firmware
 do fluxo em nuvem, que mantinha a câmera ligada durante todo o envio, foi usado como
 referência para medir o efeito de desligá-la após a captura.
 
 A partir das médias medidas de corrente e tempo acordado de cada fluxo, a autonomia foi
 estimada pela Equação~\eqref{eq:autonomia_modelo} para uma bateria hipotética de
-2.000~mAh e para intervalos de 10~minutos e de 1~hora entre leituras. A corrente de
-repouso medida, de cerca de 24~mA, inclui o Radioenge, que permanece ligado durante o
-\textit{deep sleep} do ESP32 (Seção~\ref{subsubsec:ciclo_operacao}), e os demais
-componentes da placa. A medição que separaria essas parcelas, com o módulo desconectado,
-não foi realizada. Por isso, a estimativa foi repetida com correntes de repouso hipotéticas
-de 5, 1 e 0,1~mA, para mostrar como o resultado depende desse valor.
+2.000~mAh e para intervalos de 10~minutos e de 1~hora entre leituras. Na primeira
+campanha, a corrente de repouso medida, de cerca de 24~mA, incluía o Radioenge recebendo
+continuamente em classe C, durante o \textit{deep sleep} do ESP32
+(Seção~\ref{subsubsec:ciclo_operacao}), e os demais componentes da placa. Por isso, a
+estimativa com os parâmetros dessa campanha foi repetida com correntes de repouso
+hipotéticas de 5, 1 e 0,1~mA, para mostrar como o resultado depende desse valor. Na
+segunda campanha, a autonomia foi estimada com a corrente de repouso medida em classe A.
+Nas duas, a medição que separaria a corrente do módulo da dos demais componentes, com o
+módulo desconectado, não foi realizada.

@@ -346,9 +346,12 @@ adotada como solução.
 
 A latência do fluxo em borda foi de 18,84~s com a localização da janela, cerca de dez vezes
 menor que os 189,1~s do fluxo em nuvem, e de 3,50~s com a ROI calibrada, cerca de 54 vezes
-menor. Na corrida controlada, com o nó sempre ligado, a latência do fluxo em nuvem
-foi de 197,1~s (de 148,1 a 204,9~s, com 21 imagens completas), compatível com a corrida em
-modo autônomo, já que as imagens dessa corrida foram maiores (mediana de 4.379 contra
+menor. Nas corridas de 19/11, com o módulo de rádio em classe A, o fluxo em borda com a ROI
+repetiu os 3,50~s, em 28 despertares, e o fluxo em nuvem levou 148,3~s (de 132,3 a 156,6~s,
+com 24 imagens completas), menos que em 27/10 porque as imagens tinham 17 a 20 blocos, em
+vez de 22 a 27, após a aproximação da câmera. Na corrida controlada de 27/10, com o nó
+sempre ligado, a latência do fluxo em nuvem foi de 197,1~s (de 148,1 a 204,9~s, com 21
+imagens completas), compatível com a corrida em modo autônomo do mesmo dia, já que as imagens dessa corrida foram maiores (mediana de 4.379 contra
 4.068~bytes).
 
 Os dois fluxos têm gargalos opostos. No fluxo em nuvem, a imagem fica pronta em 0,70~s, e
@@ -406,10 +409,14 @@ pacote e por leitura.
         Fluxo em nuvem, modo controlado & 749/759 (98,7\%) & 21/30 (70,0\%) \\
         Fluxo em borda, modo autônomo & 27/34 (79,4\%) & 27/34 (79,4\%) \\
         Fluxo em borda com ROI, modo autônomo & 30/30 (100\%) & 30/30 (100\%) \\
+        \addlinespace
+        Fluxo em nuvem, classe A & 551/557 (98,9\%) & 24/30 (80,0\%) \\
+        Fluxo em borda com ROI, classe A & 29/30 (96,7\%) & 29/30 (96,7\%) \\
         \bottomrule
     \end{tabularx}
-    \legend{Fonte: Elaborado pelos autores (2026). As três primeiras corridas são de 27/10, e a
-    do fluxo em borda com ROI, de 18 e 19/11.}
+    \legend{Fonte: Elaborado pelos autores (2026). As três primeiras corridas são de 27/10,
+    com o módulo de rádio em classe C; a quarta, de 18 e 19/11; e as duas últimas, de 19/11,
+    com o módulo em classe A.}
 \end{table}
 
 As duas métricas apontam em sentidos opostos. Por pacote, o fluxo em nuvem entregou mais:
@@ -418,9 +425,12 @@ $p < 0{,}001$). Por leitura, o fluxo em borda entregou mais: 79,4\% contra 66,7\
 34 leituras, porém, essa diferença não é estatisticamente significativa ($p = 0{,}27$), nem
 em relação à corrida controlada ($p = 0{,}40$). Na corrida do fluxo em borda com a ROI
 calibrada, todas as 30 leituras chegaram ao servidor, com \gls{rssi} médio de $-60$ a
-$-59$~dBm. Como essa corrida foi feita em outro dia e em outra condição de sinal, e as
-amostras são pequenas, esse resultado não permite concluir sobre a causa das perdas de
-27/10, e as comparações desta seção usam as corridas daquele dia.
+$-59$~dBm. Nas corridas de 19/11, com o módulo em classe A, o fluxo em borda entregou 29 de
+30 leituras e o fluxo em nuvem, 24 de 30, com 98,9\% dos pacotes; a diferença por leitura
+também não é estatisticamente significativa ($p = 0{,}10$). Como essas corridas foram
+feitas em outros dias e em outra condição de sinal, e as amostras são pequenas, esses
+resultados não permitem concluir sobre a causa das perdas de 27/10, e as demais comparações
+desta seção usam as corridas daquele dia.
 
 No fluxo em nuvem, a diferença entre as duas métricas decorre da fragmentação. Como nenhum
 dos firmwares retransmite blocos no modo autônomo, basta um bloco perdido para que a imagem
@@ -456,12 +466,17 @@ faltantes e manter o nó acordado durante a espera.
 \subsection{Consumo de energia e autonomia (H3)}
 \label{subsec:resultado_energia}
 
-A Figura~\ref{fig:corrente_ciclos} mostra a corrente do nó durante um ciclo típico de cada
-fluxo, e a Tabela~\ref{tab:resultado_energia} resume as medições.
+O consumo foi medido em duas campanhas. Na primeira, em 27/10, o fluxo em borda ainda
+executava a localização da janela, e o módulo de rádio estava configurado em classe C. Na
+segunda, em 19/11, o fluxo em borda já usava a ROI calibrada, e o módulo foi configurado em
+classe A, a configuração adotada (Seção~\ref{subsec:exp_energia}). A
+Figura~\ref{fig:corrente_ciclos} mostra a corrente do nó durante um ciclo típico de cada
+fluxo na primeira campanha, e a Tabela~\ref{tab:resultado_energia} resume as medições das
+duas.
 
 \begin{figure}[H]
     \centering
-    \caption{Corrente do nó sensor em um ciclo de leitura de cada fluxo}
+    \caption{Corrente do nó sensor em um ciclo de leitura de cada fluxo, na medição de 27/10}
     \label{fig:corrente_ciclos}
     \begin{tikzpicture}
         \begin{groupplot}[
@@ -488,70 +503,103 @@ fluxo, e a Tabela~\ref{tab:resultado_energia} resume as medições.
         \end{groupplot}
     \end{tikzpicture}
     \legend{Fonte: Elaborado pelos autores (2026). Ciclos com carga próxima da mediana de
-    cada corrida; envelope dos valores mínimo e máximo a cada 0,25~s das amostras de 100~Hz.}
+    cada corrida; envelope dos valores mínimo e máximo a cada 0,25~s das amostras de 100~Hz.
+    Nessa medição, o fluxo em borda executava a localização da janela, e o módulo de rádio
+    estava em classe C.}
 \end{figure}
 
 \begin{table}[H]
     \centering
     \caption{Consumo do nó sensor por ciclo de leitura, com repouso de 30~s}
     \label{tab:resultado_energia}
-    \begin{tabularx}{\textwidth}{@{}Xrr@{}}
+    \small
+    \begin{tabularx}{\textwidth}{@{}X>{\raggedleft\arraybackslash}p{2.15cm}>{\raggedleft\arraybackslash}p{2.15cm}>{\raggedleft\arraybackslash}p{2.15cm}>{\raggedleft\arraybackslash}p{2.15cm}@{}}
         \toprule
-        \textbf{Grandeza} & \textbf{Fluxo em nuvem} & \textbf{Fluxo em borda} \\
+        & \multicolumn{2}{c}{\textbf{27/10: localização, classe C}} & \multicolumn{2}{c}{\textbf{19/11: ROI, classe A}} \\
+        \cmidrule(lr){2-3}\cmidrule(l){4-5}
+        \textbf{Grandeza} & \textbf{Nuvem} & \textbf{Borda} & \textbf{Nuvem} & \textbf{Borda} \\
         \midrule
-        Ciclos medidos & 30 & 32 \\
-        \textbf{Carga por leitura (média)} & \textbf{4,64~mAh} & \textbf{0,824~mAh} \\
-        Desvio-padrão da carga & 0,24~mAh & 0,014~mAh \\
-        Carga apenas do tempo acordado & 4,46~mAh & 0,62~mAh \\
-        Tempo acordado & 189,9~s (173 a 219~s) & 19,45~s \\
-        Corrente média acordado & 84,5~mA & 114~mA \\
-        Picos de transmissão & 207 a 220~mA & 206 a 227~mA \\
-        Corrente em repouso & 23,7~mA & 25,2~mA \\
-        Período do ciclo & 218,5~s & 49,1~s \\
+        Ciclos medidos & 30 & 32 & 29 & 29 \\
+        \textbf{Carga por leitura (média)} & \textbf{4,64~mAh} & \textbf{0,824~mAh} & \textbf{2,91~mAh} & \textbf{0,175~mAh} \\
+        Desvio-padrão da carga & 0,24~mAh & 0,014~mAh & 0,14~mAh & 0,004~mAh \\
+        Carga do tempo acordado & 4,46~mAh & 0,62~mAh & 2,87~mAh & 0,129~mAh \\
+        Tempo acordado & 189,9~s & 19,45~s & 147,6~s & 6,49~s \\
+        Corrente média acordado & 84,5~mA & 114~mA & 69,9~mA & 71,4~mA \\
+        Picos de transmissão & 207--220~mA & 206--227~mA & 230--240~mA & 208--230~mA \\
+        Corrente em repouso & 23,7~mA & 25,2~mA & 6,3~mA & 6,1~mA \\
+        Período do ciclo & 218,5~s & 49,1~s & 174,8~s & 33,8~s \\
+        Blocos por imagem & 22 a 27 & --- & 17 a 20 & --- \\
         \bottomrule
     \end{tabularx}
-    \legend{Fonte: Elaborado pelos autores (2026). No fluxo em borda, tempo acordado e
-    corrente acordado são medianas; três ciclos tiveram a fronteira deslocada por picos
-    isolados de uma amostra.}
+    \legend{Fonte: Elaborado pelos autores (2026). Em 27/10, no fluxo em borda, tempo
+    acordado e corrente acordado são medianas, pois três ciclos tiveram a fronteira deslocada
+    por picos isolados de uma amostra. Em 19/11, o tempo acordado é o tempo acima do limiar de
+    repouso, que no fluxo em borda inclui, além de cerca de 4,1~s do ESP32 acordado, as
+    janelas de recepção do módulo de rádio. O tempo acordado do fluxo em nuvem variou de 173 a
+    219~s em 27/10 e de 135 a 160~s em 19/11.}
 \end{table}
 
-Uma leitura do fluxo em nuvem consumiu 4,64~mAh, contra 0,824~mAh do fluxo em borda: 5,6
-vezes mais. Considerando apenas o tempo acordado, sem o repouso, a razão é de 7,2 vezes
-(4,46 contra 0,62~mAh). A Figura~\ref{fig:corrente_ciclos} mostra a origem da diferença. No
-fluxo em nuvem, o nó passa cerca de 190~s acordado, a maior parte em espera entre blocos,
-com a CPU ligada a cerca de 80~mA; os picos de transmissão acima de 150~mA ocupam só 2,2\%
-do tempo acordado e respondem por 4,9\% da carga acordado. O consumo é determinado,
-portanto, pelo tempo acordado, que depende do número de blocos e do intervalo entre eles,
-e não pela energia do rádio. Isso explica também a variação entre ciclos, de 4,26 a
-5,24~mAh, que acompanha o tamanho de cada imagem. No fluxo em borda, a corrente é maior
-durante a inferência, cerca de 114~mA, mas o ciclo é dez vezes mais curto.
+Na medição de 27/10, uma leitura do fluxo em nuvem consumiu 4,64~mAh, contra 0,824~mAh do
+fluxo em borda: 5,6 vezes mais. Considerando apenas o tempo acordado, sem o repouso, a razão
+é de 7,2 vezes (4,46 contra 0,62~mAh). A Figura~\ref{fig:corrente_ciclos} mostra a origem da
+diferença. No fluxo em nuvem, o nó passa cerca de 190~s acordado, a maior parte em espera
+entre blocos, com a CPU ligada a cerca de 80~mA; os picos de transmissão acima de 150~mA
+ocupam só 2,2\% do tempo acordado e respondem por 4,9\% da carga acordado. O consumo é
+determinado, portanto, pelo tempo acordado, que depende do número de blocos e do intervalo
+entre eles, e não pela energia do rádio. Isso explica também a variação entre ciclos, de
+4,26 a 5,24~mAh, que acompanha o tamanho de cada imagem. No fluxo em borda, a corrente é
+maior durante a inferência, cerca de 114~mA, mas o ciclo é dez vezes mais curto.
 
 O consumo do fluxo em nuvem também mostra o efeito de decisões de firmware. Na versão
 anterior, que mantinha a câmera ligada durante o envio, a corrente acordado era de 162~mA e
 a leitura custava 6,62~mAh. Desligar a câmera logo após a captura reduziu a corrente
 acordado em 48\% e a carga por leitura em 30\%; a redução da carga foi menor porque as
-imagens da corrida final foram maiores, o que aumentou o tempo acordado. No fluxo em borda, a localização da janela responde por cerca de 0,48~mAh
-dos 0,62~mAh acordado, considerando 15,5~s a cerca de 112~mA. Com a ROI calibrada, já integrada ao
-firmware, a carga acordado estimada cai para cerca de 0,13~mAh, valor que ainda não foi
-medido com o sensor de corrente.
+imagens da corrida final foram maiores, o que aumentou o tempo acordado. No fluxo em borda,
+a localização da janela respondia por cerca de 0,48~mAh dos 0,62~mAh acordado, considerando
+15,5~s a cerca de 112~mA, e a carga acordado com a ROI calibrada foi estimada em cerca de
+0,13~mAh. A medição de 19/11 confirmou a estimativa: 0,129~mAh.
+
+\subsubsection{Efeito da classe do módulo de rádio}
+\label{subsubsec:resultado_classe}
+
+Na medição de 27/10, o módulo de rádio estava configurado em classe C, na qual, segundo o
+fabricante, ele não entra em modo de baixo consumo e permanece pronto para receber
+mensagens do servidor \cite{radioenge2022}. Por isso, o módulo continuava recebendo enquanto
+o ESP32 dormia. Em classe A, ele desliga as funções de rádio fora das janelas de recepção
+que seguem cada envio (Seção~\ref{subsubsec:ciclo_operacao}).
+
+Com a classe A, a corrente em repouso caiu de cerca de 24~mA para cerca de 6~mA nos dois
+fluxos. A diferença, de cerca de 18~mA, é compatível com a corrente de recepção de 20~mA
+informada pelo fabricante. Os cerca de 6~mA restantes não foram separados por medição; como
+o módulo suspenso consome 1,8~µA, eles devem vir dos demais componentes da placa, mas essa
+atribuição é uma inferência. A corrente acordado do fluxo em nuvem também caiu, de 84,5 para
+69,9~mA, porque o módulo deixou de receber entre um bloco e outro.
+
+Na configuração adotada, uma leitura do fluxo em borda custou 0,175~mAh, contra 2,91~mAh do
+fluxo em nuvem: 16,7 vezes menos, ou 22 vezes menos considerando apenas o tempo acordado
+(0,129 contra 2,87~mAh). No fluxo em borda, a queda em relação a 27/10, de 0,824 para
+0,175~mAh, tem duas causas simultâneas: a retirada da localização, que encurtou o tempo
+acordado em cerca de 15,5~s, e a classe A, que reduziu a corrente em repouso. As imagens da
+corrida de 19/11, porém, foram menores que as de 27/10, com 17 a 20 blocos em vez de 22 a
+27, porque a câmera foi aproximada do mostrador. Como a carga do fluxo em nuvem cresce com o
+número de blocos, a razão entre os fluxos depende do tamanho da imagem, e o valor de
+2,91~mAh vale para imagens desse tamanho.
 
 \subsubsection{Autonomia}
 
-Com repouso de 30~s, a corrente em repouso responde por apenas 4\% da carga de uma leitura
-no fluxo em nuvem, mas por 25\% no fluxo em borda. Em intervalos mais longos, ela passa a
-dominar os dois fluxos. Os cerca de 24~mA medidos em repouso, porém, não são uma
-característica dos fluxos: incluem o módulo Radioenge, que permanece ligado sem receber o
-comando de suspensão, e os demais componentes da placa. Segundo o fabricante, o módulo
-consome 1,8~µA quando suspenso \cite{radioenge2022}, de modo que esse piso pode ser muito
-reduzido. Como a medição que separaria essas parcelas não foi feita, a autonomia foi
-estimada com o piso medido e com pisos hipotéticos, pela
-Equação~\eqref{eq:autonomia_modelo}. O modelo reproduz as cargas medidas (4,65 e
-0,825~mAh), e os resultados estão na Tabela~\ref{tab:resultado_autonomia} e na
-Figura~\ref{fig:autonomia}.
+Na medição de 27/10, com repouso de 30~s, a corrente em repouso respondia por apenas 4\% da
+carga de uma leitura no fluxo em nuvem, mas por 25\% no fluxo em borda, e, em intervalos mais
+longos, passava a dominar os dois fluxos. Os cerca de 24~mA medidos em repouso nessa
+campanha eram, em sua maior parte, o módulo de rádio em classe C. A
+Tabela~\ref{tab:resultado_autonomia} e a Figura~\ref{fig:autonomia} mostram, com os
+parâmetros dessa campanha, como a autonomia estimada pela
+Equação~\eqref{eq:autonomia_modelo} varia com a corrente em repouso. Apenas a corrente de
+24~mA foi medida, e as demais são hipotéticas. O modelo reproduz as cargas medidas (4,65 e
+0,825~mAh).
 
 \begin{table}[H]
     \centering
-    \caption{Autonomia estimada para uma bateria de 2.000~mAh}
+    \caption{Autonomia estimada para uma bateria de 2.000~mAh, com os parâmetros de 27/10}
     \label{tab:resultado_autonomia}
     \begin{tabular}{@{}llrrr@{}}
         \toprule
@@ -569,12 +617,13 @@ Figura~\ref{fig:autonomia}.
         \bottomrule
     \end{tabular}
     \legend{Fonte: Elaborado pelos autores (2026). Modelo ideal, sem perdas do regulador
-    nem autodescarga; apenas a corrente de 24~mA foi medida.}
+    nem autodescarga; apenas a corrente de 24~mA, com o módulo de rádio em classe C, foi
+    medida.}
 \end{table}
 
 \begin{figure}[H]
     \centering
-    \caption{Autonomia estimada em função da corrente em repouso}
+    \caption{Autonomia estimada em função da corrente em repouso, com os parâmetros de 27/10}
     \label{fig:autonomia}
     \begin{tikzpicture}[
         declare function={
@@ -620,26 +669,57 @@ Figura~\ref{fig:autonomia}.
         \node[anchor=north] at ($(group c2r1.south)+(0,-11mm)$) {\pgfplotslegendfromname{legendaAutonomia}};
     \end{tikzpicture}
     \legend{Fonte: Elaborado pelos autores (2026). Bateria hipotética de 2.000~mAh, modelo
-    da Equação~\eqref{eq:autonomia_modelo} com os valores medidos de corrente e tempo
-    acordado de cada fluxo.}
+    da Equação~\eqref{eq:autonomia_modelo} com os valores de corrente e tempo acordado
+    medidos em 27/10, com a localização da janela e o módulo de rádio em classe C.}
 \end{figure}
 
-Com o piso medido, a vantagem do fluxo em borda na autonomia é pequena: 1,6 vez com
-leituras a cada 10~minutos e 1,1 vez a cada hora, com autonomias de poucos dias nos dois
+Com o piso medido em 27/10, a vantagem do fluxo em borda na autonomia era pequena: 1,6 vez
+com leituras a cada 10~minutos e 1,1 vez a cada hora, com autonomias de poucos dias nos dois
 casos. À medida que o piso diminui, a razão se aproxima da razão entre as cargas acordado,
 de 7,2 vezes: com 0,1~mA, o fluxo em borda alcança 21,9 dias com leituras a cada 10~minutos,
 contra 3,1 dias do fluxo em nuvem. A Figura~\ref{fig:autonomia} mostra também o efeito do
 intervalo: com leituras diárias, mesmo um piso de 0,1~mA consome mais que as próprias
 leituras, e a razão cai para 2,3 vezes (663 contra 292 dias).
 
+Com a ROI calibrada e o módulo em classe A, a corrente em repouso medida foi de cerca de
+6,2~mA, a média das duas corridas de 19/11. A Tabela~\ref{tab:autonomia_classe_a} apresenta
+a autonomia estimada com esse valor e com o tempo e a corrente acordado medidos nessa
+campanha. Com o repouso de 30~s, o modelo reproduz as cargas medidas: 2,92 e 0,180~mAh,
+contra 2,91 e 0,175~mAh.
+
+\begin{table}[H]
+    \centering
+    \caption{Autonomia estimada para uma bateria de 2.000~mAh, com a ROI calibrada e o módulo de rádio em classe A}
+    \label{tab:autonomia_classe_a}
+    \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        \textbf{Intervalo} & \textbf{Nuvem} & \textbf{Borda} & \textbf{Borda / nuvem} \\
+        \midrule
+        10~min & 3,8 dias & 12,1 dias & 3,2 \\
+        1~h    & 9,5 dias & 13,2 dias & 1,4 \\
+        \bottomrule
+    \end{tabular}
+    \legend{Fonte: Elaborado pelos autores (2026). Modelo ideal, sem perdas do regulador
+    nem autodescarga, com a corrente em repouso medida de 6,2~mA e o tempo e a corrente
+    acordado medidos em 19/11; no fluxo em nuvem, imagens de 17 a 20 blocos.}
+\end{table}
+
+Com a classe A, a vantagem do fluxo em borda na autonomia passou de 1,6 para 3,2 vezes com
+leituras a cada 10~minutos e de 1,1 para 1,4 vez com leituras a cada hora. Em intervalos
+longos, porém, a corrente em repouso ainda domina: com uma leitura por hora, o repouso
+consome cerca de 6,2~mAh, contra 2,9~mAh de uma leitura do fluxo em nuvem e 0,13~mAh de uma
+leitura do fluxo em borda.
+
 Quanto à hipótese H3, o fluxo em nuvem apresentou, de fato, maior consumo por leitura e,
-portanto, autonomia inferior, de modo que a hipótese foi confirmada. A magnitude da
-diferença na autonomia, porém, depende menos do fluxo do que da corrente em repouso e do
-intervalo entre leituras: vai de praticamente nula, com o piso medido e leituras horárias ou
-diárias, a cerca de sete vezes, com um piso baixo e leituras frequentes. Para um projeto
-real, o resultado indica que reduzir a corrente em repouso, suspendendo o módulo de rádio e
-os demais componentes da placa, é condição para que a escolha do fluxo faça diferença na
-autonomia.
+portanto, autonomia inferior nas duas campanhas, de modo que a hipótese foi confirmada. A
+magnitude da diferença na autonomia, porém, depende menos do fluxo do que da corrente em
+repouso e do intervalo entre leituras: com o módulo de rádio em classe C, foi praticamente
+nula com leituras horárias; em classe A, chegou a 3,2 vezes com leituras a cada 10~minutos e
+a 1,4 vez com leituras horárias. Para um projeto real, o resultado indica que configurar o
+módulo de rádio em classe A é condição para que a escolha do fluxo faça diferença na
+autonomia, e que o próximo ganho está nos cerca de 6~mA que ainda restam em repouso, e não
+no fluxo.
+
 
 \subsection{Custo computacional (H2) e complexidade de desenvolvimento}
 \label{subsec:resultado_complexidade}
@@ -779,12 +859,13 @@ A Tabela~\ref{tab:sintese_hipoteses} resume o resultado de cada hipótese.
         3,50~s com a ROI calibrada, contra 189,1~s no fluxo em nuvem & Menor no fluxo em borda \\
         \addlinespace
         Entrega (complementar) & Por leitura, 79,4\% contra 66,7\%, sem significância
-        ($p = 0{,}27$); por pacote, 79,4\% contra 98,0\% & Sem diferença significativa por
-        leitura \\
+        ($p = 0{,}27$); por pacote, 79,4\% contra 98,0\%; em classe A, 96,7\% contra 80,0\% por
+        leitura ($p = 0{,}10$) & Sem diferença significativa por leitura \\
         \addlinespace
-        H3 & 0,824 contra 4,64~mAh por leitura (5,6 vezes); autonomia de 1,0 a 7,0 vezes maior,
-        conforme a corrente em repouso e o intervalo & Confirmada, com magnitude dependente
-        do repouso \\
+        H3 & Com a localização e o rádio em classe C, 0,824 contra 4,64~mAh por leitura (5,6
+        vezes) e autonomia de 1,1 a 1,6 vez maior com o repouso medido; com a ROI e o rádio em
+        classe A, 0,175 contra 2,91~mAh (16,7 vezes) e autonomia de 1,4 a 3,2 vezes maior &
+        Confirmada, com magnitude dependente do repouso \\
         \bottomrule
     \end{tabularx}
     \legend{Fonte: Elaborado pelos autores (2026).}
@@ -794,8 +875,9 @@ Em relação à pergunta de pesquisa, os resultados indicam que, em um enlace \g
 baixa taxa, o volume de dados transmitido pesa mais do que a capacidade de processamento.
 Mesmo com uma inferência cerca de 2.800 vezes mais lenta que a do servidor, o fluxo em borda
 teve latência de 10 a 54 vezes menor, conforme executasse a localização da janela ou usasse
-a ROI calibrada, e consumo por leitura de cinco a sete vezes menor, medido com a
-localização, porque transmite cerca de 450 vezes menos dados. A acurácia não diferenciou os fluxos: ambos
+a ROI calibrada, e consumo por leitura de 5,6 vezes menor com a localização e o rádio em
+classe C e de 16,7 vezes menor com a ROI e o rádio em classe A, porque transmite cerca de
+450 vezes menos dados. A acurácia não diferenciou os fluxos: ambos
 executam os mesmos modelos, a quantização teve efeito desprezível e a compressão JPEG não
 alterou a leitura. O limite da acurácia, nos dois casos, está na localização da janela de
 dígitos e, em medidores reais, no recorte de cada dígito. Com a câmera fixa, a ROI
@@ -840,21 +922,22 @@ Os resultados devem ser interpretados considerando as seguintes limitações:
     investigada. Na corrida de latência com a ROI, as leituras recebidas, com três valores
     distintos, não foram conferidas com o visor e, por isso, não valem como medida de
     acurácia.
-    \item \textbf{ROI sem medição de consumo}: a ROI calibrada foi integrada ao firmware
-    depois das medições de consumo, que foram feitas com a localização da janela. A latência
-    nesse modo foi medida depois, mas a carga acordado de cerca de 0,13~mAh é uma estimativa.
+    \item \textbf{Campanhas em condições diferentes}: as medições de 27/10 e as de 18 e 19/11
+    diferem em mais de um fator, como o modo do fluxo em borda, a classe do módulo de rádio e
+    a posição da câmera, que reduziu o tamanho das imagens; por isso, os resultados de cada
+    campanha são comparados entre os fluxos, e não entre as campanhas.
     \item \textbf{Cenário de enlace}: as medições foram feitas em bancada, com sinal forte,
     um receptor de canal único no lugar de um \textit{gateway} e sem retransmissão; as de
-    27/10, a cerca de 2~m de distância, e a corrida com a ROI, com \gls{rssi} de cerca de
-    $-60$~dBm e distância não registrada. As execuções em que o receptor ficou de 15 a 25
+    27/10, a cerca de 2~m de distância, e as de 18 e 19/11, com \gls{rssi} mediano de $-60$ a
+    $-49$~dBm e distância não registrada. As execuções em que o receptor ficou de 15 a 25
     minutos sem repassar quadros foram excluídas por se tratar de uma falha do receptor, cuja
     causa não foi identificada; a sua ocorrência indica que o receptor usado é um ponto
     frágil do protótipo. As amostras, de 30 a 34 leituras por fluxo, só permitem detectar
     diferenças grandes de entrega.
-    \item \textbf{Energia}: a corrente em repouso inclui o módulo de rádio e os componentes
-    da placa, e a medição que separaria essas parcelas não foi feita. O nó foi alimentado
-    pela porta USB, e não pela bateria e pelo regulador de uma instalação real, e as
-    autonomias vêm de um modelo ideal com bateria hipotética.
+    \item \textbf{Energia}: em classe A, a corrente em repouso caiu para cerca de 6~mA, mas o
+    que resta não foi separado entre o módulo de rádio e os demais componentes da placa. O nó
+    foi alimentado pela porta USB, e não pela bateria e pelo regulador de uma instalação real,
+    e as autonomias vêm de um modelo ideal com bateria hipotética.
     \item \textbf{Instante de disparo}: o disparo foi marcado de 0,3 a 0,5~s após o
     despertar real, nos dois fluxos, e a latência do fluxo em nuvem não inclui a execução do
     \gls{ocr} no servidor, de cerca de 6~ms.

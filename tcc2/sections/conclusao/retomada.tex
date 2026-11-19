@@ -9,8 +9,8 @@ A resposta obtida é que, em um enlace \gls{lorawan} de baixa taxa, o volume de 
 transmitido pesa mais do que a capacidade de processamento. Embora o \gls{esp32cam} execute a
 inferência cerca de 2.800 vezes mais devagar que o servidor, o fluxo em borda, que transmite
 cerca de 450 vezes menos dados por leitura, teve latência de 10 a 54 vezes menor, conforme
-executasse a localização da janela ou usasse a ROI calibrada, e consumo por leitura de cinco
-a sete vezes menor. A acurácia não diferenciou os fluxos, que executam
+executasse a localização da janela ou usasse a ROI calibrada, e consumo por leitura de 5,6
+a 16,7 vezes menor, conforme a configuração. A acurácia não diferenciou os fluxos, que executam
 os mesmos modelos. O custo do processamento local apareceu no tempo de processamento e na
 memória exigidos do nó e na maior complexidade de desenvolvimento e de manutenção do
 firmware.
@@ -24,9 +24,10 @@ dois fluxos foram comparados com medições no protótipo. Quanto aos objetivos 
     \item o enlace foi configurado no plano AU915, em DR6 (SF8 com 500~kHz) e canal fixo,
     enquadrado no item 10.3 do Ato n\textordmasculine~14.448 da ANATEL. Para reduzir o
     consumo, o nó dorme entre as leituras e desliga a câmera logo após a captura, o que
-    reduziu em 30\% a carga por leitura do fluxo em nuvem. Esse objetivo foi atingido apenas
-    em parte, pois o módulo de rádio permanece ligado durante o repouso, e a corrente em
-    repouso, de cerca de 24~mA, ainda domina a autonomia;
+    reduziu em 30\% a carga por leitura do fluxo em nuvem. Com o módulo de rádio configurado
+    em classe A, a corrente em repouso caiu de cerca de 24 para cerca de 6~mA. Esse objetivo
+    foi atingido em parte, pois esses cerca de 6~mA, ainda não separados entre o módulo e a
+    placa, dominam a autonomia em intervalos longos;
     \item os dois fluxos foram avaliados segundo as métricas previstas. Na avaliação em
     computador, com a janela de dígitos marcada à mão, os dois tiveram a mesma precisão no
     conjunto de teste comum: 46\% das leituras e 85\% dos dígitos corretos; com o quadro
@@ -34,8 +35,9 @@ dois fluxos foram comparados com medições no protótipo. Quanto aos objetivos 
     hidrômetro físico, com a câmera fixa, a ROI calibrada e o recorte da face da roda, os dois
     fluxos leram 25 das 30 fotos (83\%) e 97\% dos dígitos. A latência de ponta a ponta foi
     de 189,1~s no fluxo em nuvem e, no fluxo em borda, de 18,84~s com a localização da janela
-    e de 3,50~s com a ROI calibrada; o consumo, medido com a localização, foi de 4,64~mAh por
-    leitura no fluxo em nuvem e de 0,824~mAh no fluxo em borda; e o volume
+    e de 3,50~s com a ROI calibrada; o consumo foi de 4,64~mAh por leitura no fluxo em nuvem
+    e de 0,824~mAh no fluxo em borda com a localização e o rádio em classe C, e de 2,91 e
+    0,175~mAh com a ROI e o rádio em classe A; e o volume
     transmitido foi de 9~bytes por leitura no fluxo em borda, contra cerca de 4~KB de imagem
     no fluxo em nuvem.
 \end{enumerate}
@@ -52,12 +54,14 @@ Tabela~\ref{tab:sintese_hipoteses}:
     \item a H2 foi confirmada: no nó, uma leitura do fluxo em borda exigiu 17.568~ms de
     processamento e 1,65~MB de PSRAM, contra cerca de 11~ms de compressão JPEG no fluxo em
     nuvem;
-    \item a H3 foi confirmada: o fluxo em nuvem consumiu 4,64~mAh por leitura, contra
-    0,824~mAh do fluxo em borda, e teve autonomia inferior. A magnitude dessa diferença,
-    porém, depende da corrente em repouso e do intervalo entre leituras: com a corrente
-    medida e uma leitura por hora, as autonomias estimadas para uma bateria hipotética de
-    2.000~mAh foram próximas, de 3,1 e 3,4 dias, e a vantagem do fluxo em borda só se aproxima
-    de sete vezes com uma corrente em repouso muito menor e leituras frequentes.
+    \item a H3 foi confirmada: nas duas campanhas, o fluxo em nuvem consumiu mais por leitura
+    e teve autonomia inferior. Na configuração adotada, com a ROI e o rádio em classe A, uma
+    leitura custou 2,91~mAh no fluxo em nuvem, contra 0,175~mAh no fluxo em borda. A magnitude
+    da diferença na autonomia, porém, depende da corrente em repouso e do intervalo entre
+    leituras: para uma bateria hipotética de 2.000~mAh, o fluxo em borda teria 12,1 dias de
+    autonomia, contra 3,8 dias do fluxo em nuvem, com leituras a cada 10~minutos, e 13,2
+    contra 9,5 dias com leituras a cada hora; com o rádio em classe C, as autonomias com
+    leituras horárias eram de apenas 3,4 e 3,1 dias.
 \end{itemize}
 
 A entrega dos dados, avaliada de forma complementar, não diferenciou os fluxos: por leitura,

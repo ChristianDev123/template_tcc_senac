@@ -37,8 +37,8 @@ Tabela~\ref{tab:ciclo_fluxos}.
         Repouso & \multicolumn{2}{l}{\textit{Deep sleep} até o próximo ciclo} \\
         \bottomrule
     \end{tabularx}
-    \legend{Fonte: Elaborado pelos autores (2026). Nas medições de consumo e na primeira
-    medição de latência, o fluxo em borda ainda executava a localização da janela.}
+    \legend{Fonte: Elaborado pelos autores (2026). Na primeira medição de consumo e de
+    latência, o fluxo em borda ainda executava a localização da janela.}
 \end{table}
 
 Ao fim de cada ciclo, o firmware escreve na serial uma linha padronizada com o número do
@@ -50,11 +50,15 @@ Antes de entrar em \textit{deep sleep}, o firmware desativa o driver da câmera,
 sensor em modo de baixo consumo pelo pino de \textit{power-down} (GPIO~32), apaga o LED
 de \textit{flash} (GPIO~4) e mantém o nível desses pinos durante o repouso. O contador de
 ciclos e o estado do modo autônomo ficam na memória RTC, que é preservada durante o
-\textit{deep sleep}. Apenas o ESP32 é colocado em repouso: o módulo Radioenge continua
-alimentado e não recebe comando para entrar em modo suspenso, o que mantém nele a sessão
-\gls{lorawan} e o contador de quadros, mas também mantém o seu consumo durante o repouso,
-como discutido nos resultados. Nas medições, o intervalo de \textit{deep sleep} foi de
-30~s nos dois fluxos.
+\textit{deep sleep}. O firmware coloca em repouso apenas o ESP32: o módulo Radioenge
+continua alimentado, o que mantém nele a sessão \gls{lorawan} e o contador de quadros. O
+consumo do módulo durante o repouso depende da sua classe
+(Tabela~\ref{tab:tabela_classes}). Em classe C, configuração usada nas medições de 27/10,
+o módulo não entra em modo de baixo consumo e permanece recebendo; em classe A, adotada a
+partir de 19/11, desliga as funções de rádio fora das janelas de recepção que seguem cada
+envio \cite{radioenge2022}. Como o enlace não usa mensagens do servidor para o nó, a classe
+A não retira nenhuma função do sistema. Nas medições, o intervalo de \textit{deep sleep}
+foi de 30~s nos dois fluxos.
 
 \subsubsection{Execução dos modelos no microcontrolador}
 \label{subsubsec:tflm}
@@ -109,8 +113,8 @@ orientação é aplicada ao próprio sensor da câmera, de modo que o quadro já
 usada na calibração. O quadro capturado é copiado para um buffer próprio e a câmera é
 desligada antes da inferência. Com a ROI gravada, o firmware não carrega o modelo de
 localização: divide a caixa em fatias, recorta a face de cada uma e classifica. Sem a ROI,
-mantém o comportamento usado nas medições de consumo e na primeira medição de latência,
-descrito a seguir. Para o
+mantém o comportamento usado na primeira medição de consumo e de latência, descrito a
+seguir. Para o
 modelo de localização, o quadro é redimensionado por vizinho mais próximo para $192 \times 192$ pixels diretamente no
 tensor de entrada, já convertido para INT8 pela subtração de 128 de cada pixel. Na saída,
 os valores INT8 maiores que zero, que correspondem a probabilidade superior a 0,5, formam
@@ -135,9 +139,8 @@ Com a ROI gravada, a leitura no nó fica restrita à classificação dos dígito
 firmware do fluxo em borda, com quadros enviados pela porta serial, o classificador levou
 mediana de 1.917~ms para as seis fatias, em 33 quadros. No modo autônomo, com a câmera, a
 leitura ficou pronta no nó 2,86~s após o disparo, e a latência ponta a ponta nesse modo é
-apresentada nos resultados (Seção~\ref{subsec:resultado_latencia}). O consumo com a ROI não
-foi medido, pois as medições de corrente foram feitas antes da integração da ROI ao
-firmware.
+apresentada nos resultados (Seção~\ref{subsec:resultado_latencia}), assim como o consumo
+nesse modo (Seção~\ref{subsec:resultado_energia}).
 
 \subsubsection{Firmware de depuração e calibração}
 \label{subsubsec:firmware_debug}
