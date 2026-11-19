@@ -13,11 +13,13 @@ microcontrolador milhares de vezes mais lento que o servidor. A segunda é que a
 fluxo só faz diferença na autonomia se a corrente em repouso do nó for reduzida: com o
 módulo de rádio ligado durante o repouso, os dois fluxos tiveram autonomias próximas. A
 terceira é que a acurácia depende menos da arquitetura do classificador e da quantização em
-INT8 do que de localizar corretamente a janela de dígitos, o que, com a câmera fixa, pode ser
-resolvido por uma região de interesse calibrada na instalação.
+INT8 do que de localizar corretamente a janela de dígitos e de enviar ao classificador
+apenas a face de cada roda. Com a câmera fixa, uma região de interesse calibrada na
+instalação resolveu os dois, com 83\% das leituras no hidrômetro físico.
 
-Por fim, o trabalho disponibiliza, em repositório público, os firmwares dos dois fluxos, os
-\textit{scripts} de recepção, remontagem e medição e os dados das medições, o que permite
+Por fim, o trabalho disponibiliza, em repositório público, os firmwares dos dois fluxos, a
+ferramenta de calibração da região de interesse, os \textit{scripts} de recepção,
+remontagem e medição e os dados das medições, o que permite
 reproduzir e estender a comparação. Também documenta uma configuração de enlace
 \gls{lorawan} no plano AU915, enquadrada no item 10.3 do Ato n\textordmasculine~14.448, que
 permite enviar uma imagem em vários pacotes por um canal fixo de 500~kHz, sem salto de

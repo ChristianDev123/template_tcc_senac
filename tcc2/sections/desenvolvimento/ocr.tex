@@ -160,19 +160,24 @@ firmware.
 \label{subsubsec:leitura_roi}
 
 Dada a caixa da janela, a leitura é feita da mesma forma no firmware e no servidor: a
-caixa é dividida em $N$ fatias de largura igual, uma por rolete; cada fatia é
-redimensionada para $28 \times 28$ pixels por vizinho mais próximo, convertida para INT8 e
-classificada; e os dígitos de maior probabilidade são concatenados na leitura. O número
-$N$ de roletes é um parâmetro configurado por medidor: seis no medidor usado nos testes de
-hardware.
+caixa é dividida em $N$ fatias de largura igual, uma por rolete; de cada fatia, apenas a
+face da roda, isto é, a faixa da largura em que o número aparece, é redimensionada para
+$28 \times 28$ pixels por vizinho mais próximo, convertida para INT8 e classificada; e os
+dígitos de maior probabilidade são concatenados na leitura. O número $N$ de roletes e a
+face da roda são parâmetros configurados por medidor: no hidrômetro usado na bancada, seis
+roletes e a face entre 14\% e 74\% da largura de cada fatia. O recorte da face é
+necessário porque cada fatia contém, além da roda, a barra escura que separa uma roda da
+outra, enquanto o classificador foi treinado com o dígito ocupando todo o recorte. No
+hidrômetro físico, sem esse recorte, a leitura falhou em quase todas as fotos
+(Seção~\ref{subsubsec:resultado_fisico}).
 
 Como o modelo de localização não encontra a janela com precisão, os resultados com a caixa
 prevista por ele são próximos de zero. Esses resultados \textbf{não refletem a capacidade
 de leitura do classificador}, e sim o erro da localização: com a caixa errada, as fatias
 não correspondem aos roletes. Quando a janela é informada corretamente, o mesmo
 classificador lê com alta acurácia os dígitos escuros sobre fundo claro, que predominam no
-treino; a leitura de medidores com dígitos claros em fundo escuro é discutida nos
-resultados (Seção~\ref{subsec:resultado_leitura}). A Figura~\ref{fig:leitura_caixa_manual}
+treino, como mostram os resultados (Seção~\ref{subsec:resultado_leitura}). A
+Figura~\ref{fig:leitura_caixa_manual}
 mostra cinco capturas do \gls{esp32cam} em que a janela foi marcada à mão: todas as cinco
 leituras e os 26 dígitos foram reconhecidos corretamente.
 
@@ -189,13 +194,21 @@ leituras e os 26 dígitos foram reconhecidos corretamente.
 
 Por isso, a solução adotada dispensa a localização automática. Em uma instalação real, a
 câmera fica fixa diante do medidor, de modo que a janela de dígitos ocupa sempre a mesma
-região do quadro. Assim, a região de interesse (ROI) e a inclinação dos roletes são
-calibradas uma única vez, na instalação, e usadas em todas as leituras seguintes. Essa
-calibração necessita ser precisa: a avaliação apresentada nos resultados indica que a ROI
-deve estar a cerca de um ou dois pixels da posição correta no quadro de
-$160 \times 120$ pixels, em que cada dígito tem aproximadamente 16 pixels de largura.
+região do quadro. Assim, a região de interesse (ROI), o número de roletes, a orientação do
+quadro e a face da roda são calibrados uma única vez, na instalação, e usados em todas as
+leituras seguintes. A inclinação não é corrigida no firmware: a câmera deve ser montada com
+a fileira de roletes na horizontal. Essa calibração necessita ser precisa: a avaliação
+apresentada nos resultados indica que a ROI deve estar a cerca de um ou dois pixels da
+posição correta no quadro de $160 \times 120$ pixels, em que cada dígito tem
+aproximadamente 16 pixels de largura.
 
-Nas medições de latência e consumo em hardware, o firmware de borda ainda executava o
-modelo de localização a cada leitura, com a câmera posicionada à mão para que a janela
-ocupasse a maior parte do quadro e a caixa prevista ficasse próxima dela. Essa configuração
-é descrita na próxima seção, e o efeito de remover a localização é discutido nos resultados.
+A calibração é feita com uma ferramenta própria, descrita na
+Seção~\ref{subsubsec:firmware_debug}, que grava os parâmetros na memória não volátil do nó.
+Com esses parâmetros gravados, o firmware do fluxo em borda não executa o modelo de
+localização; sem eles, volta a localizar a janela a cada leitura.
+
+As medições de latência e consumo em hardware foram feitas antes da integração da ROI ao
+firmware. Nelas, o fluxo em borda ainda executava o modelo de localização a cada leitura,
+com a câmera posicionada à mão para que a janela ocupasse a maior parte do quadro e a caixa
+prevista ficasse próxima dela. Essa configuração é descrita na próxima seção, e o efeito de
+remover a localização é discutido nos resultados.

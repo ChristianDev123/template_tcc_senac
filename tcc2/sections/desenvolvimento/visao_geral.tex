@@ -40,7 +40,7 @@ percorrido pelos dados em cada fluxo.
         \node[bloco, below=of hidro] (cam)
             {\textbf{\gls{esp32cam}}\\captura de quadro 160$\times$120 em tons de cinza};
         \node[bloco=5.4cm, below left=9mm and -2.2cm of cam] (borda)
-            {\textbf{Fluxo em borda}\\segmentação e classificação de dígitos no
+            {\textbf{Fluxo em borda}\\classificação dos dígitos na ROI calibrada, no
              próprio nó (TFLite Micro, INT8)\\$\rightarrow$ leitura de 9 bytes, FPort 2};
         \node[bloco=5.4cm, below right=9mm and -2.2cm of cam] (nuvem)
             {\textbf{Fluxo em nuvem}\\compressão JPEG (qualidade 90, $\approx$4~KB)\\
@@ -88,8 +88,12 @@ os principais componentes.
         \midrule
         \texttt{transmissor\_esp32cam} & Firmware do nó no fluxo em nuvem: captura, compressão JPEG,
         fragmentação e envio dos blocos pela porta 1 (FPort 1). \\
-        \texttt{transmissor\_ocr\_esp32cam} & Firmware do nó no fluxo em borda: captura, inferência dos
-        modelos com TensorFlow Lite Micro e envio da leitura pela porta 2 (FPort 2). \\
+        \texttt{transmissor\_ocr\_esp32cam} & Firmware do nó no fluxo em borda: captura, leitura
+        dos dígitos na ROI calibrada com TensorFlow Lite Micro (sem ROI gravada, com o modelo de
+        localização) e envio da leitura pela porta 2 (FPort 2). \\
+        \texttt{calibrar\_roi\_esp32cam} & Ferramenta de calibração: firmware que envia o quadro ao
+        computador e \textit{script} em que a ROI, o número de roletes, a orientação do quadro e a
+        face da roda são ajustados e gravados na memória não volátil do nó. \\
         \texttt{receptor\_lora32} & Firmware do receptor: escuta o canal e escreve na serial cada
         quadro recebido. \\
         \texttt{reconstrutor.py}, \texttt{enlace.py} & Lado do servidor: leitura da serial,

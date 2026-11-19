@@ -1,7 +1,9 @@
 As principais limitações, detalhadas na Seção~\ref{subsec:limitacoes_resultados}, decorrem
 do cenário de avaliação. A acurácia foi medida por emulação em computador, com imagens
-capturadas de um monitor e apenas 21 fotos de hidrômetros físicos. O firmware medido ainda
-executa a localização da janela, e não a região de interesse calibrada adotada como solução.
+capturadas de um monitor e, no caso físico, com um único hidrômetro em bancada, com a
+câmera fixa, além de nove fotos avulsas. A região de interesse calibrada foi integrada ao
+firmware depois das medições de latência e consumo, que foram feitas com a localização da
+janela.
 O enlace foi avaliado em bancada, a 2~m, com um único nó, um receptor de canal único e sem
 retransmissão. O consumo foi medido com o nó alimentado pela porta USB e com o módulo de
 rádio ligado durante o repouso, de modo que as autonomias são estimativas de um modelo
@@ -10,13 +12,13 @@ ideal.
 A partir dessas limitações, propõem-se os seguintes trabalhos futuros:
 
 \begin{itemize}
-    \item implementar a região de interesse calibrada no firmware do fluxo em borda e medir o
-    tempo de leitura, a latência e a carga por leitura, hoje apenas estimados em cerca de
-    2~s, 3,3~s e 0,13~mAh no tempo acordado;
+    \item medir a latência e a carga por leitura com a região de interesse calibrada, já
+    integrada ao firmware do fluxo em borda, hoje apenas estimadas em cerca de 3,3~s e
+    0,13~mAh no tempo acordado, e avaliar a leitura com a câmera ao vivo;
     \item suspender o módulo de rádio e os demais componentes da placa durante o repouso e
     medir o consumo com bateria e regulador, para obter a autonomia real dos dois fluxos;
-    \item ampliar o conjunto de hidrômetros físicos, com uma instalação fixa, e incluir no
-    treino do classificador dígitos claros em fundo escuro e roletes em transição;
+    \item avaliar outros hidrômetros e outras iluminações, já que a face da roda foi
+    calibrada em um único medidor, e incluir no treino do classificador roletes em transição;
     \item avaliar o enlace em campo, a distâncias maiores, com um \textit{gateway}
     multicanal e vários nós, e implementar a retransmissão dos blocos perdidos, medindo o
     seu custo em tempo no ar e em energia;
