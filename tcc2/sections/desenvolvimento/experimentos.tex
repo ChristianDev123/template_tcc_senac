@@ -16,11 +16,13 @@ complementam a comparação entre os fluxos.
         \textbf{Experimento} & \textbf{Hipótese} & \textbf{Dados e condição} & \textbf{Métricas} \\
         \midrule
         Efeito da quantização & H1 & Mesmo classificador em ponto flutuante e em INT8; 7.378
-        recortes de validação e 1.894 imagens de teste independentes & Acurácia por recorte,
-        leitura exata, acurácia por dígito, CER \\
+        recortes de validação, 1.894 imagens de teste independentes e 30 fotos do hidrômetro
+        físico com a ROI calibrada & Acurácia por recorte, leitura exata, acurácia por dígito,
+        CER \\
         \addlinespace
-        Leitura de ponta a ponta & --- & 39 fotos do conjunto de teste comum e 21 fotos de
-        hidrômetros físicos; janela prevista pelo modelo e janela marcada à mão & Leitura exata,
+        Leitura de ponta a ponta & --- & 39 fotos do conjunto de teste comum e 39 fotos de
+        hidrômetros físicos, 30 delas com a câmera fixa; janela prevista pelo modelo, marcada à
+        mão ou calibrada na instalação; comparação entre a placa e o servidor & Leitura exata,
         acurácia por dígito, CER, Dice e IoU \\
         \addlinespace
         Custo computacional no nó & H2 & 61 capturas do firmware de depuração na placa e
@@ -110,24 +112,34 @@ idêntica às fotos usadas no treino. O gabarito de cada foto foi conferido manu
 sobre uma folha que imprime a leitura esperada sobre a imagem, e para cada foto também foi
 marcada à mão a janela de dígitos.
 
-O \textbf{conjunto de hidrômetros físicos} reúne 21 fotos de medidores reais, de
-diferentes modelos, com cinco a oito roletes, capturadas pelo \gls{esp32cam} no quadro de
-$160 \times 120$ pixels. Ao contrário do conjunto comum, essas fotos têm reflexos no vidro,
-iluminação variada e ângulos diversos. A leitura de cada foto foi anotada manualmente. Para
-cada foto, foram marcados também a inclinação da fileira de roletes, a janela de dígitos no
-quadro endireitado e a polaridade da janela: dígitos escuros em fundo claro ou dígitos
-claros em fundo escuro. A inclinação foi a estimada pela transformada de Hough quando ela
-deixava a fileira reta, em 16 fotos, e corrigida à mão nas outras cinco. A janela foi marcada
-pela geometria da imagem, sobre o quadro ampliado com uma grade de coordenadas, a partir das
-bordas da janela e dos centros dos roletes, de modo que as divisões das fatias caíssem entre
-eles. Todas as marcações foram concluídas antes da execução da leitura e não foram ajustadas
-pelo resultado.
+O \textbf{conjunto de hidrômetros físicos} reúne 39 fotos de hidrômetros reais,
+capturadas pelo \gls{esp32cam} no quadro de $160 \times 120$ pixels. Trinta delas vêm de
+uma bancada com a câmera fixa diante de um único hidrômetro, de seis roletes, com 26
+leituras distintas, de \texttt{000025} a \texttt{000052}, e uma única condição de
+iluminação; são quadros sem compressão, como os que o firmware lê. A câmera foi deslocada
+uma vez durante a captura, de modo que há duas posições, com 8 e 22 quadros, e três
+quadros com um rolete parado entre dois números foram descartados. As outras nove são fotos
+avulsas de medidores diferentes, com cinco a sete roletes. As leituras foram anotadas
+manualmente por uma pessoa, sem conferência independente. Doze fotos de medidores de gás e
+uma de um medidor não identificado, que integravam uma versão anterior do conjunto, foram
+retiradas por não serem de hidrômetros.
+
+Nas 30 fotos da bancada, a janela é a ROI calibrada uma única vez para cada posição da
+câmera, com a ferramenta descrita na Seção~\ref{subsubsec:firmware_debug}, a partir de um
+quadro de uma das leituras: \texttt{000025} na primeira posição e \texttt{000032} na
+segunda. Na mesma calibração, foi escolhida a face da roda, entre 14\% e 74\% da largura de
+cada fatia. Nas nove fotos avulsas, a inclinação da fileira e a janela de dígitos foram
+marcadas à mão, pela geometria da imagem, sobre o quadro ampliado com uma grade de
+coordenadas, antes da execução da leitura.
 
 Cada foto foi avaliada nos dois fluxos. No fluxo em borda, o quadro de
 $160 \times 120$ pixels é lido diretamente; no fluxo em nuvem, o mesmo quadro é antes
 codificado em JPEG com qualidade 90 e decodificado, como ocorre na transmissão. Essa
 avaliação é uma emulação em Python, com os mesmos arquivos \texttt{.tflite} INT8, e não a
-execução na placa. No conjunto comum, as fotos foram lidas em três configurações:
+execução na placa. Para verificar a equivalência com a placa, os 33 quadros da bancada
+foram enviados pela porta serial ao firmware do fluxo em borda, que os leu com a mesma
+função usada nas leituras da câmera, e as leituras foram comparadas às do servidor. No
+conjunto comum, as fotos foram lidas em três configurações:
 
 \begin{enumerate}
     \item \textbf{Janela prevista pelo modelo}: o pipeline completo, como no firmware, com
@@ -148,16 +160,18 @@ aos roletes, e nenhum classificador acertaria a leitura. Assim, os resultados da
 configuração medem o modelo de localização, e não a capacidade de leitura do classificador,
 que é medida pelas configurações com a janela marcada à mão.
 
-O conjunto de hidrômetros físicos, cujas fotos têm inclinações de até cerca de 55°, foi lido
-com a janela prevista pelo modelo e com a janela e a inclinação marcadas à mão. Nesse caso,
-a rotação do quadro foi aplicada nos dois fluxos, o que no firmware exigiria uma rotação com
-ângulo fixo, ainda não implementada. Como variante de diagnóstico, as fotos de fundo escuro
-foram lidas também com os tons da janela invertidos, o que equivale a informar a polaridade
-do medidor na instalação, assim como o número de roletes. Depois da avaliação do conjunto
-completo, os resultados também foram calculados para o subconjunto de fotos que atendem às
-condições de uma instalação adequada: câmera frontal, dígitos escuros em fundo claro e todos
-os dígitos visíveis no quadro. Por ter sido definido após a avaliação, esse subconjunto é
-apresentado como complemento, e o conjunto completo continua sendo a referência.
+O conjunto de hidrômetros físicos foi lido em três configurações. Na primeira, com a
+janela prevista pelo modelo, nas 39 fotos. Na segunda, com a janela informada e a fatia
+inteira enviada ao classificador, também nas 39 fotos: a ROI calibrada nas fotos da
+bancada e a janela marcada à mão nas avulsas, cuja inclinação foi corrigida nos dois
+fluxos, o que no firmware exigiria uma rotação com ângulo fixo, não implementada. Na
+terceira, com a solução adotada, nas 30 fotos da bancada: a ROI calibrada, sem o modelo de
+localização e com o recorte da face da roda, com e sem a votação entre caixas. Nessa
+configuração, foram comparadas também as variantes sem pré-processamento, só com o realce,
+que equaliza o histograma da face, e com a face e o realce juntos. Como a face foi escolhida
+observando a leitura usada na calibração, os resultados foram recalculados sem as fotos
+dessa leitura, como teste independente. A mesma configuração foi lida com o classificador
+em ponto flutuante, para a avaliação da hipótese H1 no hidrômetro físico.
 
 Por fim, como a ROI de uma instalação real é calibrada uma única vez e pode ter pequenos
 desvios, foi medida a tolerância da leitura ao erro de posição da janela. Partindo da janela

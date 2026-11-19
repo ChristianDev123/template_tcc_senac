@@ -28,15 +28,17 @@ Tabela~\ref{tab:ciclo_fluxos}.
         \midrule
         Despertar & \multicolumn{2}{l}{Reinício pelo temporizador e configuração da câmera} \\
         Captura & \multicolumn{2}{l}{Quadro de $160 \times 120$ pixels em cinza; câmera desligada em seguida} \\
-        Processamento & Compressão JPEG e divisão em blocos de 175~bytes & Localização da janela
-        e classificação dos dígitos com TensorFlow Lite Micro \\
+        Processamento & Compressão JPEG e divisão em blocos de 175~bytes & Classificação dos
+        dígitos na ROI calibrada, com TensorFlow Lite Micro (sem ROI gravada, também a
+        localização da janela) \\
         Envio & Um \textit{uplink} por bloco, com 7~s de intervalo (19 a 27 blocos) & Um único
         \textit{uplink} de 9~bytes \\
         Registro & \multicolumn{2}{l}{Linha de fim de ciclo na serial, com os tempos de cada etapa} \\
         Repouso & \multicolumn{2}{l}{\textit{Deep sleep} até o próximo ciclo} \\
         \bottomrule
     \end{tabularx}
-    \legend{Fonte: Elaborado pelos autores (2026).}
+    \legend{Fonte: Elaborado pelos autores (2026). Nas medições de latência e consumo, o
+    fluxo em borda ainda executava a localização da janela.}
 \end{table}
 
 Ao fim de cada ciclo, o firmware escreve na serial uma linha padronizada com o número do
@@ -101,9 +103,14 @@ confirmou que o modelo de localização do pipeline U-NET + CRNN + CTC, que pedi
 placa.
 
 A leitura no firmware segue os passos descritos na
-Seção~\ref{subsubsec:leitura_roi}. O quadro capturado é copiado para um buffer próprio e a
-câmera é desligada antes da inferência. Para o modelo de localização, o quadro é
-redimensionado por vizinho mais próximo para $192 \times 192$ pixels diretamente no
+Seção~\ref{subsubsec:leitura_roi}. Ao iniciar, o firmware lê da memória não volátil a ROI,
+o número de roletes, a face da roda e a orientação do quadro gravados na calibração; a
+orientação é aplicada ao próprio sensor da câmera, de modo que o quadro já sai na posição
+usada na calibração. O quadro capturado é copiado para um buffer próprio e a câmera é
+desligada antes da inferência. Com a ROI gravada, o firmware não carrega o modelo de
+localização: divide a caixa em fatias, recorta a face de cada uma e classifica. Sem a ROI,
+mantém o comportamento usado nas medições de latência e consumo, descrito a seguir. Para o
+modelo de localização, o quadro é redimensionado por vizinho mais próximo para $192 \times 192$ pixels diretamente no
 tensor de entrada, já convertido para INT8 pela subtração de 128 de cada pixel. Na saída,
 os valores INT8 maiores que zero, que correspondem a probabilidade superior a 0,5, formam
 a máscara, e a caixa é o menor retângulo que a contém. Cada uma das $N$ fatias da caixa é
@@ -123,24 +130,36 @@ otimizada na \texttt{esp-nn} e seja executada pelas implementações de referên
 genérico. Durante essas capturas, a temperatura interna do chip permaneceu entre 72 e
 74~°C.
 
-Como discutido na Seção~\ref{subsubsec:leitura_roi}, a solução adotada dispensa o modelo de
-localização e usa uma ROI calibrada na instalação. O firmware usado nas medições, porém,
-ainda executa a localização a cada leitura; a versão com ROI fixa não foi implementada.
-Sem a localização, a leitura no nó ficaria restrita à classificação dos dígitos, de cerca
-de 2~s, o que é uma estimativa, e não uma medição.
+Com a ROI gravada, a leitura no nó fica restrita à classificação dos dígitos. Medido no
+firmware do fluxo em borda, com quadros enviados pela porta serial, o classificador levou
+mediana de 1.917~ms para as seis fatias, em 33 quadros. Em um teste de bancada com a
+câmera, a leitura ficou pronta de 2,3 a 2,9~s depois do comando de leitura. Essa é uma
+observação, e não uma medição formal: a latência ponta a ponta e o consumo nesse modo não
+foram medidos, pois as medições foram feitas antes da integração da ROI ao firmware.
 
 \subsubsection{Firmware de depuração e calibração}
 \label{subsubsec:firmware_debug}
 
-Um terceiro firmware, sem rádio, foi usado para posicionar a câmera diante do medidor e
-para medir o desempenho dos modelos na placa. A cada 5~s, ele captura um quadro, executa a
+Um terceiro firmware, sem rádio, foi usado inicialmente para posicionar a câmera diante do
+medidor e para medir o desempenho dos modelos na placa. A cada 5~s, ele captura um quadro, executa a
 leitura completa, desenha sobre a imagem a caixa encontrada e as divisões das fatias e
 envia ao computador a imagem anotada, a leitura e métricas de memória, tempo e
 temperatura. Um \textit{script} no computador grava as imagens e as métricas em arquivo.
 Com ele, a câmera foi ajustada à mão até que a janela de dígitos ocupasse o quadro e a
 caixa prevista coincidisse com ela; a partir desse ponto, a leitura do medidor de teste se
-estabilizou. Os dados de memória e de tempo de inferência apresentados nesta seção vêm
-desse firmware.
+estabilizou. Os dados de memória e de tempo de inferência com o modelo de localização
+apresentados nesta seção vêm desse firmware.
+
+Para a calibração da ROI, foi desenvolvida depois uma ferramenta específica, composta por
+um firmware e um \textit{script} no computador. O firmware envia pela porta USB o quadro de
+$160 \times 120$ pixels em tons de cinza, sem compressão e no mesmo formato capturado pelo
+firmware do fluxo em borda, e o \textit{script} o exibe continuamente. Sobre o quadro, o
+operador desenha a caixa da janela, ajusta o número de roletes, a orientação do quadro e a
+face da roda e acompanha as fatias como o classificador as recebe e o dígito lido em cada
+uma, até que a leitura coincida com a do visor. Os parâmetros são gravados na memória não
+volátil do nó, que se mantém após reinícios e períodos de \textit{deep sleep}, e em um
+arquivo usado pelo servidor. Como a ROI é definida em pixels do quadro, a calibração
+precisa ser refeita se a câmera ou o medidor se deslocarem.
 
 \subsection{Servidor da aplicação}
 \label{subsec:servidor}
@@ -153,11 +172,14 @@ executado sobre essas imagens pelo \textit{script} \texttt{pipeline\_nuvem.py}.
 Para que a única diferença entre os fluxos seja o local do processamento, o servidor
 executa os mesmos arquivos \texttt{.tflite} INT8 do firmware, com o interpretador LiteRT
 2.3.0, e reproduz a mesma lógica: o mesmo redimensionamento por vizinho mais próximo, com
-o mesmo cálculo de índices, a mesma conversão para INT8, o mesmo limiar na máscara e o
-mesmo fatiamento. O acelerador XNNPACK do LiteRT foi desativado, para que os operadores
-sejam executados pelas implementações de referência, como no microcontrolador. A única
-diferença no dado de entrada é a compressão JPEG com qualidade 90, que o fluxo em borda não
-sofre.
+o mesmo cálculo de índices, a mesma conversão para INT8, o mesmo limiar na máscara, o
+mesmo fatiamento e o mesmo recorte da face da roda. O acelerador XNNPACK do LiteRT foi
+desativado, para que os operadores sejam executados pelas implementações de referência. A
+única diferença no dado de entrada é a compressão JPEG com qualidade 90, que o fluxo em
+borda não sofre. As funções de leitura do firmware, compiladas no computador, produziram
+as mesmas entradas de $28 \times 28$ pixels que o servidor em 2.442 fatias, e a
+equivalência das leituras entre a placa e o servidor é apresentada nos resultados
+(Seção~\ref{subsubsec:resultado_fisico}).
 
 \subsubsection{Tempo de inferência no servidor}
 \label{subsubsec:tempo_servidor}
@@ -179,12 +201,13 @@ cada. A Tabela~\ref{tab:tempo_inferencia} compara os tempos com os do microcontr
         \midrule
         Localização da janela & 15.564 & 4,30 \\
         Leitura completa (localização e seis dígitos) & 17.568 & 6,25 \\
-        Leitura com ROI fixa (só os seis dígitos) & $\approx$1.995 & 1,91 \\
+        Leitura com ROI fixa (só os seis dígitos) & 1.917 & 1,91 \\
         \bottomrule
     \end{tabular}
     \legend{Fonte: Elaborado pelos autores (2026). No servidor, os tempos incluem a
-    decodificação do JPEG; no \gls{esp32cam}, a leitura com ROI fixa corresponde ao tempo
-    medido da classificação dos dígitos.}
+    decodificação do JPEG. No \gls{esp32cam}, a localização e a leitura completa foram
+    medidas no firmware de depuração, em 61 capturas, e a leitura com ROI fixa, no firmware
+    do fluxo em borda, em 33 quadros.}
 \end{table}
 
 O servidor executa a leitura completa cerca de 2.800 vezes mais rápido que o
@@ -212,9 +235,7 @@ microcontrolador. Duas foram implementadas e avaliadas:
 \end{itemize}
 
 A ROI é informada ao servidor como um retângulo em coordenadas do quadro de
-$160 \times 120$ pixels e é calibrada uma vez por instalação. Para isso, um
-\textit{script} auxiliar desenha uma grade de coordenadas sobre o quadro ampliado, a
-partir da qual a janela é lida à mão. Ainda não existe uma ferramenta que faça essa
-calibração de forma automática ou guiada, o que é uma limitação da solução atual. O efeito
-da correção da inclinação, da votação e da precisão da ROI sobre a acurácia é apresentado
-nos resultados.
+$160 \times 120$ pixels, com o número de roletes e a face da roda, usando os mesmos valores
+gravados no nó pela ferramenta de calibração
+(Seção~\ref{subsubsec:firmware_debug}). O efeito da correção da inclinação, da votação e da
+precisão da ROI sobre a acurácia é apresentado nos resultados.

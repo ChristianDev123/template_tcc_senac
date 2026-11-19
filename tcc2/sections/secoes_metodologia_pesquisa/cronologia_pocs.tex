@@ -73,9 +73,10 @@ treinado em duas fases, com treinamento base em bases públicas
 \cite{kucev2020, zhao2026wordwheel} seguido de ajuste fino com capturas reais do
 \gls{esp32cam}, e convertido para INT8 por quantização pós-treinamento, seguindo os
 hiperparâmetros da Tabela~\ref{tab:hiperparametros}. Diante da baixa precisão espacial da
-localização embarcada, propôs-se ainda substituí-la pelo recorte de uma região de interesse
-(\gls{roi}) calibrada na instalação, solução avaliada no computador e ainda não
-implementada no firmware.
+localização embarcada, ela foi substituída pelo recorte de uma região de interesse
+(\gls{roi}) calibrada na instalação com uma ferramenta própria e gravada na memória não
+volátil do nó, com o recorte da face de cada roda; com a ROI gravada, o firmware deixa de
+executar o modelo de localização.
 
 \subsubsection{POC 5: Fluxos de Processamento Edge e Cloud Computing}
 \label{metodologia_pesquisa:poc5}

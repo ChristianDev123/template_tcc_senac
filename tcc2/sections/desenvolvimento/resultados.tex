@@ -48,10 +48,14 @@ dígitos. Nos 7.378 recortes de validação, o modelo em ponto flutuante acertou
         \addlinespace
         Teste independente \textit{Word-Wheel} & INT8, fase A & 92,4\% & 97,3\% & 0,026 \\
         (1.894 imagens, 9.719 dígitos)          & INT8, fases A e B & 92,8\% & 97,7\% & 0,023 \\
+        \addlinespace
+        Hidrômetro físico, ROI calibrada & Ponto flutuante & 83,3\% & 97,2\% & 0,028 \\
+        (30 fotos, 180 dígitos)          & INT8            & 83,3\% & 97,2\% & 0,028 \\
         \bottomrule
     \end{tabularx}
     \legend{Fonte: Elaborado pelos autores (2026). Na validação, cada recorte é um único
-    dígito, de modo que a acurácia por recorte coincide com o acerto por dígito.}
+    dígito, de modo que a acurácia por recorte coincide com o acerto por dígito. No
+    hidrômetro físico, os valores são os do fluxo em borda, iguais aos do fluxo em nuvem.}
 \end{table}
 
 Como os dois modelos foram avaliados sobre os mesmos recortes, a comparação foi feita de
@@ -63,6 +67,11 @@ também aparece em outro detalhe: executado com os \textit{kernels} otimizados X
 vez dos \textit{kernels} sem esse delegado usados no restante do trabalho, o mesmo arquivo
 INT8 acertou 7.040 recortes. A troca da implementação dos operadores altera o resultado na
 mesma escala que a própria quantização.
+
+No hidrômetro físico, lido com a solução adotada (Seção~\ref{subsubsec:resultado_fisico}),
+as duas versões leram as mesmas 25 das 30 fotos e acertaram os mesmos 175 dos 180 dígitos,
+com CER de 0,028. Os dígitos lidos foram iguais em 179 dos 180 no fluxo em borda e em
+todos os 180 no fluxo em nuvem, e o teste de McNemar não indicou diferença ($p = 1{,}0$).
 
 O resultado é coerente com o tamanho e a forma do modelo. A quantização completa após o
 treinamento, calibrada com um conjunto representativo, foi suficiente para um classificador
@@ -88,9 +97,9 @@ mostra o quanto um teste contaminado pelo treino superestima o desempenho, e é 
 o valor adotado é o do teste independente.
 
 Quanto à hipótese H1, o modelo INT8 teve, de fato, acurácia menor que a do modelo em ponto
-flutuante, como previsto. A redução, porém, é de 0,08 ponto percentual e não é
-estatisticamente significativa, de modo que, na prática, a quantização não penalizou o
-reconhecimento. Além disso, como os dois fluxos executam os mesmos modelos INT8
+flutuante, como previsto. A redução, porém, é de 0,08 ponto percentual na validação, não é
+estatisticamente significativa e não apareceu no hidrômetro físico, de modo que, na
+prática, a quantização não penalizou o reconhecimento. Além disso, como os dois fluxos executam os mesmos modelos INT8
 (Seção~\ref{subsec:visao_geral}), a acurácia não é um fator de diferença entre eles: o
 servidor poderia executar o modelo em ponto flutuante sem restrição de memória, mas
 ganharia no máximo essa mesma fração.
@@ -116,16 +125,18 @@ sequência de dígitos, nas configurações descritas na Seção~\ref{subsubsec:
                          & Marcada à mão        & 46\% & 85\% & 46\% & 85\% \\
                          & Marcada à mão, quadro endireitado & --- & --- & 82\% & 92\% \\
         \addlinespace
-        \multirow{3}{=}{Físico (21 fotos, 152 dígitos)}
-                         & Prevista pelo modelo & 10\% & 31\% & 0\% & 27\% \\
-                         & Marcada à mão, quadro endireitado & 10\% & 36\% & 10\% & 37\% \\
-                         & Marcada à mão, endireitado, tons invertidos no fundo escuro & 14\% & 56\% & 14\% & 56\% \\
+        \multirow{2}{=}{Físico (39 fotos, 238 dígitos)}
+                         & Prevista pelo modelo & 5\% & 38\% & 0\% & 34\% \\
+                         & Informada, fatia inteira & 10\% & 76\% & 10\% & 76\% \\
+        \addlinespace
+        Físico, bancada (30 fotos, 180 dígitos)
+                         & ROI calibrada, face da roda & 83\% & 97\% & 83\% & 97\% \\
         \bottomrule
     \end{tabularx}
     \legend{Fonte: Elaborado pelos autores (2026). Leituras: taxa de leitura exata;
     dígitos: acerto por dígito. No conjunto comum, a inclinação é estimada pela transformada
     de Hough e só é corrigida no servidor; no físico, é marcada à mão e corrigida nos dois
-    fluxos.}
+    fluxos nas fotos avulsas, e as fotos da bancada não precisam de correção.}
 \end{table}
 
 \subsubsection{O gargalo é a localização da janela}
@@ -218,121 +229,88 @@ apenas 26\% a 30\% das leituras no medidor de seis roletes e 0\% no de cinco. Es
 porém, é pessimista: as fotos do conjunto comum são de um monitor cujo zoom e cuja posição
 mudaram entre leituras, o que deslocou a janela em 3,5 a 5~pixels, em média, no primeiro
 medidor e em 12 a 18~pixels no segundo. Os valores confirmam que a precisão da calibração é
-o fator que decide a leitura: em uma instalação com a câmera fixada mecanicamente, espera-se
-que a janela não se desloque entre leituras, mas essa condição não foi testada.
+o fator que decide a leitura. Com a câmera fixa, a condição de uma instalação real, a ROI
+calibrada uma única vez manteve a janela no lugar ao longo das leituras do hidrômetro
+físico (Seção~\ref{subsubsec:resultado_fisico}); durante a captura, porém, a câmera se
+deslocou uma vez e precisou ser recalibrada.
 
 \subsubsection{Hidrômetros físicos}
+\label{subsubsec:resultado_fisico}
 
 No conjunto de hidrômetros físicos, com a janela prevista pelo modelo, o fluxo em borda
-leu 2 das 21 fotos e o fluxo em nuvem, nenhuma, com 27\% a 31\% dos dígitos corretos. As
-duas leituras corretas são de fotos em que a janela de dígitos ocupa a maior parte do
-quadro, a mesma condição em que a caixa prevista se aproximou da janela no firmware de
-depuração.
+leu 2 das 39 fotos e o fluxo em nuvem, nenhuma, com 34\% a 38\% dos dígitos corretos. As
+duas leituras corretas são de fotos avulsas; nenhuma das 30 fotos da bancada foi lida.
+Com a janela informada, mas com a fatia inteira enviada ao classificador, o resultado
+melhorou pouco: 4 das 39 leituras e 76\% dos dígitos, nos dois fluxos, e apenas 2 dessas
+leituras eram de fotos da bancada. Ao contrário do conjunto comum, portanto, no hidrômetro físico a
+janela correta não bastou.
 
-Com a janela e a inclinação marcadas à mão, porém, o resultado mudou pouco: 2 das 21
-leituras e 36\% a 37\% dos dígitos, nos dois fluxos. Ao contrário do conjunto comum,
-portanto, nos medidores reais a localização da janela não é a única causa dos erros. A
-Tabela~\ref{tab:resultado_fisico_polaridade} separa as fotos pela polaridade da janela e
-mostra de onde eles vêm.
-
-\begin{table}[H]
-    \centering
-    \caption{Leitura do conjunto físico com a janela marcada à mão, por polaridade da janela}
-    \label{tab:resultado_fisico_polaridade}
-    \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}Xcrrrr@{}}
-        \toprule
-        & & \multicolumn{2}{c}{\textbf{Tons originais}} & \multicolumn{2}{c}{\textbf{Tons invertidos}} \\
-        \cmidrule(lr){3-4}\cmidrule(l){5-6}
-        \textbf{Fotos} & \textbf{Qtd.} & \textbf{Leituras} & \textbf{Dígitos} & \textbf{Leituras} & \textbf{Dígitos} \\
-        \midrule
-        Dígitos escuros em fundo claro, fotos frontais & 7 & 2 & 43/48 & --- & --- \\
-        Dígitos escuros em fundo claro, perspectiva extrema & 2 & 0 & 2/10 & --- & --- \\
-        Dígitos claros em fundo escuro & 12 & 0 & 11/94 & 1 & 40/94 \\
-        \bottomrule
-    \end{tabularx}
-    \legend{Fonte: Elaborado pelos autores (2026). Fluxo em nuvem; leituras: número de
-    leituras exatas. A inversão só se aplica às fotos de fundo escuro.}
-\end{table}
-
-Nas sete fotos frontais de medidores com dígitos escuros em fundo claro, o classificador
-acertou 43 dos 48 dígitos (90\%), resultado próximo ao do conjunto comum, e duas fotos foram
-lidas por inteiro; dos cinco dígitos errados, três estão no último rolete, parado entre dois
-números. Nas duas fotos com perspectiva extrema, em que os dígitos aparecem inclinados em
-relação às fatias, a leitura falhou.
-
-Nas 12 fotos de medidores com dígitos claros em fundo escuro, o classificador respondeu 0
-na maior parte das fatias e acertou apenas 11 dos 94 dígitos (12\%). A causa está no
-treino: considerando de fundo escuro os recortes cuja mediana dos pixels fica abaixo de 100,
-apenas 421 dos 49.038 recortes de treino (0,9\%) têm essa polaridade, e o modelo responde
-com a classe mais frequente. Invertendo os tons da janela nessas fotos, o que equivale a
-informar a polaridade do medidor na instalação, assim como o número de roletes, o acerto
-subiu para 40 dos 94 dígitos (43\%), e uma foto passou a ser lida por inteiro. As fotos que
-continuaram com erros têm perspectiva forte, reflexos no vidro, baixo contraste, dígitos com
-cerca de 10 pixels de largura ou a janela cortada pela borda do quadro. A votação entre
-caixas deslocadas não melhorou o resultado.
-
-Com a janela, a inclinação e a polaridade informadas, o conjunto físico chegou a 3 das 21
-leituras (14\%) e 56\% dos dígitos. Os erros que restam, porém, não têm todos a mesma
-origem, e a maior parte não está no fluxo nem na janela. A
-Tabela~\ref{tab:causas_erros_fisico} classifica as fotos pela causa dos erros.
+A causa está no conteúdo de cada fatia. No hidrômetro da bancada, cada fatia inclui, além
+da roda, a barra escura que separa uma roda da outra, e o classificador foi treinado com o
+dígito ocupando todo o recorte. A Tabela~\ref{tab:resultado_fisico_face} mostra o efeito do
+pré-processamento das fatias nas 30 fotos da bancada, lidas com a ROI calibrada. Como os
+quatro primeiros roletes marcaram zero em todas as fotos, a tabela traz também o acerto nos
+dois últimos, que variaram ao longo das leituras.
 
 \begin{table}[H]
     \centering
-    \caption{Causas dos erros de leitura no conjunto físico}
-    \label{tab:causas_erros_fisico}
-    \begin{tabularx}{\textwidth}{@{}l>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{4.2cm}@{}}
+    \caption{Leitura do hidrômetro da bancada com a ROI calibrada, por pré-processamento das fatias}
+    \label{tab:resultado_fisico_face}
+    \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}Xrrr@{}}
         \toprule
-        \textbf{Origem} & \textbf{Causa} & \textbf{Fotos} \\
+        \textbf{Pré-processamento} & \textbf{Leituras exatas} & \textbf{Dígitos} & \textbf{Dois últimos dígitos} \\
         \midrule
-        Captura & Perspectiva extrema, com os dígitos inclinados em relação às fatias & 01, 06, 11, 21, 26 \\
-        Captura & Janela cortada pela borda do quadro & 21, 23, 25 \\
-        Captura & Reflexo no vidro, baixo contraste ou dígitos com cerca de 10 pixels de largura & 02, 05, 15, 16 \\
-        \addlinespace
-        Treino & Dígitos claros em fundo escuro & 02, 03, 05, 06, 07, 11, 13, 15, 16, 21, 23, 24 \\
-        Treino & Último rolete parado entre dois números & 04, 20, 25 \\
-        \addlinespace
-        Classificador & Dígito visível lido como 0 & 08, 22 \\
+        Nenhum (fatia inteira)  & 2/30 (7\%)  & 136/180 (76\%) & 18/60 (30\%) \\
+        Só o realce             & 5/30 (17\%) & 141/180 (78\%) & 25/60 (42\%) \\
+        Só a face da roda       & 25/30 (83\%) & 175/180 (97\%) & 55/60 (92\%) \\
+        Face da roda e realce   & 24/30 (80\%) & 174/180 (97\%) & 54/60 (90\%) \\
         \bottomrule
     \end{tabularx}
-    \legend{Fonte: Elaborado pelos autores (2026). Uma foto pode ter mais de uma causa. As
-    fotos 12 e 19 foram lidas sem erro com a janela marcada à mão.}
+    \legend{Fonte: Elaborado pelos autores (2026). Fluxo em borda. No fluxo em nuvem, os
+    valores foram os mesmos, exceto com o realce: 143 dígitos só com o realce e 23 leituras e
+    173 dígitos com a face e o realce.}
 \end{table}
 
-As causas de captura são resolvidas por uma instalação adequada, com a câmera de frente para
-o medidor e a janela inteira no quadro, e não indicam falha do \gls{ocr}. As causas de
-treino, ao contrário, são limitações do classificador, e não das fotos. A foto 07, por
-exemplo, é frontal e nítida, mas foi lida como \texttt{00000000} com os tons originais e por
-inteiro com os tons invertidos. O rolete parado entre dois números, por sua vez, ocorre em
-qualquer medidor em uso, mas as imagens com essa situação foram descartadas do principal
-conjunto de treino por terem rótulo ambíguo (Seção~\ref{subsubsec:dados_ocr}). Restam, por
-fim, erros do próprio classificador em dígitos visíveis, raros nas fotos de boa qualidade.
+Recortar a face da roda, entre 14\% e 74\% da largura de cada fatia, elevou a leitura exata
+de 2 para 25 das 30 fotos (83\%, com intervalo de confiança de 95\% de 66\% a 93\%) e o
+acerto nos dois últimos roletes de 30\% para 92\%. O realce, que equaliza o histograma da
+face, não acrescentou nada e foi desligado na configuração gravada na placa. Com essa
+configuração, os dois fluxos leram as mesmas 25 fotos e acertaram os mesmos 175 dos 180
+dígitos, com CER de 0,028, e a votação entre cinco caixas não alterou o resultado. Por
+posição da câmera, foram 7 de 8 leituras na primeira e 18 de 22 na segunda. Como a face foi
+escolhida observando a leitura usada na calibração, os resultados foram recalculados sem as
+fotos dessa leitura: 23 de 28 leituras (82\%) e 97\% dos dígitos, praticamente o mesmo
+valor.
 
-Para estimar o desempenho em uma instalação adequada, foram separadas as fotos que atendem a
-três condições: câmera frontal, sem perspectiva extrema; dígitos escuros em fundo claro, a
-polaridade do treino; e todos os dígitos visíveis no quadro. Restaram seis fotos (04, 08,
-12, 19, 20 e 22), com 41 dígitos. Com a janela marcada à mão, o classificador acertou 37 dos
-41 dígitos (90,2\%, com intervalo de confiança de 95\% de 77,5\% a 96,1\%) e leu por
-inteiro duas das seis fotos, nos dois fluxos; com a janela prevista pelo modelo, o acerto foi
-de 61\% a 66\% dos dígitos. Dos quatro dígitos errados, dois estão no último rolete, parado
-entre dois números, e dois são dígitos visíveis lidos como 0. Esse subconjunto foi definido
-depois da avaliação do conjunto completo e é pequeno, de modo que deve ser lido como uma
-indicação do que uma instalação adequada permite, e não como substituto do resultado das 21
-fotos.
+Os cinco erros estão todos no último rolete, o das unidades, lido como 0: as leituras
+\texttt{000027}, \texttt{000034} e \texttt{000037} foram lidas como \texttt{000020},
+\texttt{000030} e \texttt{000030}, e as duas fotos de \texttt{000041}, como
+\texttt{000040}.
 
-Os resultados do conjunto físico indicam, portanto, o que uma instalação real precisa:
-câmera frontal com a janela inteira no quadro; ROI, inclinação e polaridade calibradas; e um
-classificador treinado também com dígitos claros em fundo escuro, por exemplo pela inversão
-dos recortes no aumento de dados, e com roletes em transição.
+A equivalência entre a emulação e a placa foi verificada com os 33 quadros da bancada,
+enviados ao firmware do fluxo em borda e lidos com a mesma função usada nas leituras da
+câmera. A placa e o servidor deram a mesma leitura em todos os 33 quadros e, portanto,
+acertaram as mesmas 25 das 30 fotos rotuladas. As saídas INT8 do classificador diferiram
+em até 18 unidades, por causa da diferença entre os \textit{kernels} otimizados da
+\texttt{esp-nn} e os de referência usados no servidor, sem mudar nenhum dígito. Essa
+verificação mede o cálculo, e não a captura: a leitura com a câmera ao vivo, com a exposição
+e a variação entre quadros, não foi avaliada.
+
+Esse resultado vale para um único hidrômetro, uma iluminação e a câmera fixa e calibrada, e
+a face foi escolhida nesse mesmo medidor. Ele mede, portanto, a leitura em uma instalação
+calibrada, e não a generalização para outros medidores; as nove fotos avulsas, de
+medidores diferentes, não foram lidas com uma calibração própria.
 
 Em síntese, os resultados próximos de zero obtidos com a janela prevista pelo modelo são
-causados pela localização automática, e não pelo classificador nem pelo fluxo: com a janela
-informada, a leitura chega a 82\% das leituras e 92\% dos dígitos no conjunto comum e a
-90\% dos dígitos nas fotos de medidores reais que atendem às condições de instalação, e o
-classificador reconhece 97,7\% dos dígitos de um conjunto público independente. Em
-medidores reais, porém, a janela correta não basta: a geometria da captura, que a instalação
-resolve, e as limitações do treino quanto à polaridade e aos roletes em transição também
-limitam a leitura. Como os dois fluxos executam o mesmo pipeline e a compressão não altera a
-leitura, essas conclusões valem igualmente para a borda e para a nuvem.
+causados pela localização automática, e não pelo classificador nem pelo fluxo. Com a janela
+informada, a leitura chega a 82\% das leituras e 92\% dos dígitos no conjunto comum, com o
+quadro endireitado, e a 83\% das leituras e 97\% dos dígitos no hidrômetro físico, com a
+câmera fixa, a ROI calibrada e o recorte da face da roda; o classificador reconhece 97,7\%
+dos dígitos de um conjunto público independente. Em medidores reais, porém, a janela correta
+não basta: a parte de cada fatia enviada ao classificador também precisa ser calibrada por
+medidor. Como os dois fluxos executam o mesmo pipeline e a compressão não altera a leitura,
+essas conclusões valem igualmente para a borda e para a nuvem.
+
 
 \subsection{Latência}
 \label{subsec:resultado_latencia}
@@ -383,10 +361,11 @@ classificação dos dígitos, segundo o log do próprio firmware; o envio e a re
 mais 0,64~s. Como nenhum desses passos depende da rede, a latência é praticamente
 determinística, com desvio-padrão de 0,9~ms.
 
-Dois cenários ajudam a avaliar se a conclusão depende das escolhas de implementação. Ambos
-são estimativas, e não medições. No fluxo em borda, retirar a localização da janela, como
-prevê a solução com ROI calibrada, reduziria a latência para cerca de 3,3~s. No fluxo em
-nuvem, mesmo eliminando o intervalo de 7~s entre pacotes, que é uma escolha conservadora e
+Dois cenários ajudam a avaliar se a conclusão depende das escolhas de implementação. No
+fluxo em borda, a solução com ROI calibrada, já integrada ao firmware, retira a localização
+da janela, e a latência estimada cai para cerca de 3,3~s; em um teste de bancada, a leitura
+ficou pronta de 2,3 a 2,9~s após o comando de leitura, mas a latência ponta a ponta nesse
+modo não foi medida. No fluxo em nuvem, também como estimativa, mesmo eliminando o intervalo de 7~s entre pacotes, que é uma escolha conservadora e
 não uma exigência regulatória (Seção~\ref{subsubsec:formato_mensagens}), restaria cerca de
 1,1~s por bloco, ou aproximadamente 26~s para uma imagem de 24 blocos, acima da latência
 medida no fluxo em borda. Assim, a vantagem do processamento local em latência não depende
@@ -537,8 +516,9 @@ anterior, que mantinha a câmera ligada durante o envio, a corrente acordado era
 a leitura custava 6,62~mAh. Desligar a câmera logo após a captura reduziu a corrente
 acordado em 48\% e a carga por leitura em 30\%; a redução da carga foi menor porque as
 imagens da corrida final foram maiores, o que aumentou o tempo acordado. No fluxo em borda, a localização da janela responde por cerca de 0,48~mAh
-dos 0,62~mAh acordado, considerando 15,5~s a cerca de 112~mA. Com a ROI calibrada, a carga
-acordado cairia para cerca de 0,13~mAh, uma estimativa ainda não medida.
+dos 0,62~mAh acordado, considerando 15,5~s a cerca de 112~mA. Com a ROI calibrada, já integrada ao
+firmware, a carga acordado estimada cai para cerca de 0,13~mAh, valor que ainda não foi
+medido com o sensor de corrente.
 
 \subsubsection{Autonomia}
 
@@ -706,22 +686,22 @@ final, e a Tabela~\ref{tab:resultado_custo} o compara nos dois fluxos.
             \addplot[fill=corNuvem, draw=none, bar shift=0pt]
                 coordinates {(11,jpeg) [11~ms]};
             \addplot[fill=corBorda!45, draw=none, bar shift=0pt]
-                coordinates {(1995,roi) [1.995~ms]};
+                coordinates {(1917,roi) [1.917~ms]};
             \addplot[fill=corBorda, draw=none, bar shift=0pt]
                 coordinates {(17568,borda) [17.568~ms]};
         \end{axis}
     \end{tikzpicture}
     \legend{Fonte: Elaborado pelos autores (2026). Medianas: no nó, 58 capturas do firmware de
     depuração com a janela encontrada; no servidor, as 21 imagens recebidas lidas cinco vezes
-    cada. A barra do fluxo em borda com ROI corresponde ao tempo medido da classificação dos
-    dígitos, pois a ROI não foi implementada no firmware.}
+    cada. A barra do fluxo em borda com ROI é a mediana do classificador para as seis fatias
+    em 33 quadros lidos pelo firmware do fluxo em borda com a ROI gravada.}
 \end{figure}
 
 No dispositivo, o processamento de uma leitura no fluxo em borda leva cerca de 1.600 vezes
 mais tempo que no fluxo em nuvem (17.568 contra 11~ms), e o fluxo em borda ocupa cerca de
-1,65~MB de PSRAM que o outro fluxo não usa (Figura~\ref{fig:custo_processamento}). Mesmo na
-versão com ROI calibrada, que dispensa a localização da janela, a classificação dos dígitos
-levaria cerca de 2~s, ainda cerca de 180 vezes o tempo da compressão. A hipótese
+1,65~MB de PSRAM que o outro fluxo não usa (Figura~\ref{fig:custo_processamento}). Mesmo com
+a ROI calibrada, que dispensa a localização da janela, o classificador levou 1.917~ms na
+placa, ainda cerca de 170 vezes o tempo da compressão. A hipótese
 H2 foi, portanto, confirmada. O maior tempo acordado do fluxo em nuvem, de cerca de 190~s,
 não contradiz esse resultado: ele é ocupado pela espera entre os blocos transmitidos, e não
 por processamento, e o seu efeito aparece no consumo, avaliado pela hipótese H3.
@@ -773,8 +753,9 @@ A Tabela~\ref{tab:sintese_hipoteses} resume o resultado de cada hipótese.
         \textbf{Hipótese} & \textbf{Resultado medido} & \textbf{Situação} \\
         \midrule
         H1 & INT8 com 95,38\% contra 95,46\% do modelo em ponto flutuante, diferença de 0,08
-        ponto percentual sem significância estatística ($p = 0{,}29$) & Confirmada no sentido,
-        mas a redução é desprezível \\
+        ponto percentual sem significância estatística ($p = 0{,}29$); no hidrômetro físico,
+        25 de 30 leituras nas duas versões ($p = 1{,}0$) & Confirmada no sentido, mas a
+        redução é desprezível \\
         \addlinespace
         H2 & No nó, 17.568~ms de processamento e 1,65~MB de PSRAM por leitura no fluxo em
         borda, contra cerca de 11~ms de compressão no fluxo em nuvem & Confirmada \\
@@ -801,9 +782,10 @@ teve latência dez vezes menor e consumo por leitura de cinco a sete vezes menor
 transmite cerca de 450 vezes menos dados. A acurácia não diferenciou os fluxos: ambos
 executam os mesmos modelos, a quantização teve efeito desprezível e a compressão JPEG não
 alterou a leitura. O limite da acurácia, nos dois casos, está na localização da janela de
-dígitos, que a calibração da ROI na instalação resolve quando a câmera é fixa, e, em
-medidores reais, também na geometria da captura e no treino do classificador, que não cobre
-dígitos claros em fundo escuro nem roletes em transição. O custo do
+dígitos e, em medidores reais, no recorte de cada dígito. Com a câmera fixa, a ROI
+calibrada na instalação e o recorte da face da roda resolveram os dois no hidrômetro físico
+da bancada, com 83\% das leituras e 97\% dos dígitos, e os erros restantes ficaram no rolete
+das unidades. O custo do
 fluxo em borda aparece no processamento e na memória exigidos do nó, como previa a hipótese
 H2, na complexidade de desenvolvimento e de manutenção e na restrição de memória, que impede
 o uso de modelos maiores e de recursos como a correção de inclinação.
@@ -811,11 +793,12 @@ o uso de modelos maiores e de recursos como a correção de inclinação.
 Em comparação com os trabalhos correlatos, \citeonline{bravo2025ants} relatam precisão de
 99,71\% no reconhecimento dos dígitos com \gls{ocr} executado no próprio \gls{esp32cam}. O
 classificador deste trabalho reconheceu 97,7\% dos dígitos em um conjunto público
-independente e 92\% nas fotos do \gls{esp32cam} com a janela informada. Como os conjuntos de
-dados são diferentes, os números não são diretamente comparáveis, mas os resultados aqui
-obtidos indicam que, nesse tipo de sistema, a acurácia depende menos da arquitetura do
-classificador do que de localizar corretamente a janela de dígitos e de o treino cobrir a
-variedade dos medidores reais, como a polaridade dos dígitos. Em relação a \citeonline{SilvaVilela2021}, cujo trabalho não
+independente, 92\% nas fotos do \gls{esp32cam} com a janela informada e 97\% no hidrômetro
+físico com a ROI calibrada. Como os conjuntos de dados são diferentes, os números não são
+diretamente comparáveis, mas os resultados aqui obtidos indicam que, nesse tipo de sistema,
+a acurácia depende menos da arquitetura do classificador do que de localizar corretamente a
+janela de dígitos e de adequar ao medidor o recorte de cada dígito, como mostrou o recorte
+da face da roda. Em relação a \citeonline{SilvaVilela2021}, cujo trabalho não
 apresentou métricas de consumo energético e de processamento, este trabalho quantifica essas
 métricas para os dois métodos de processamento: carga por leitura, latência, tempo de
 inferência e uso de memória.
@@ -828,18 +811,21 @@ Os resultados devem ser interpretados considerando as seguintes limitações:
 \begin{itemize}
     \item \textbf{Imagens de teste}: o conjunto comum, as fotos de ajuste fino e as de
     calibração foram capturadas de um monitor que exibia imagens de hidrômetros, sem os
-    reflexos, a iluminação e os ângulos de um medidor instalado. O conjunto de hidrômetros
-    físicos tem apenas 21 fotos, de medidores diferentes e não de uma instalação fixa, e as
-    suas janelas, inclinações e polaridades foram marcadas pelos autores, sem conferência
-    independente. O subconjunto que representa uma instalação adequada tem apenas seis fotos
-    e foi definido após a avaliação do conjunto completo.
+    reflexos, a iluminação e os ângulos de um medidor instalado. No conjunto de hidrômetros
+    físicos, as 30 fotos da bancada são de um único hidrômetro, com uma iluminação e com os
+    quatro primeiros roletes sempre em zero, e a face da roda foi escolhida nesse mesmo
+    medidor; as outras nove fotos são avulsas. As leituras e as janelas foram marcadas pelos
+    autores, sem conferência independente.
     \item \textbf{Acurácia emulada}: a acurácia dos dois fluxos foi medida por uma emulação
-    em Python com os mesmos modelos. Na placa, as leituras não tinham gabarito; na corrida de
-    latência do fluxo em borda, com a câmera fixa, as 27 leituras recebidas tiveram 13
-    valores distintos, instabilidade que não foi investigada.
-    \item \textbf{ROI não implementada no firmware}: o firmware medido ainda executa a
-    localização da janela. Os valores de leitura em cerca de 2~s, latência de cerca de
-    3,3~s e carga acordado de cerca de 0,13~mAh para a versão com ROI são estimativas.
+    em Python com os mesmos modelos. A equivalência do cálculo foi verificada nos 33 quadros
+    da bancada, com a mesma leitura na placa e no servidor, mas a leitura com a câmera ao vivo
+    não foi avaliada. Na corrida de latência do fluxo em borda, ainda com a localização da
+    janela, as 27 leituras recebidas tiveram 13 valores distintos, instabilidade que não foi
+    investigada.
+    \item \textbf{ROI sem medição de latência e consumo}: a ROI calibrada foi integrada ao
+    firmware depois das medições de latência e consumo, que foram feitas com a localização
+    da janela. Nesse modo, só o tempo do classificador foi medido na placa, 1.917~ms; a
+    latência de cerca de 3,3~s e a carga acordado de cerca de 0,13~mAh são estimativas.
     \item \textbf{Cenário de enlace}: as medições foram feitas em bancada, a 2~m de
     distância, com sinal forte, um receptor de canal único no lugar de um
     \textit{gateway} e sem retransmissão. As execuções em que o receptor ficou de 15 a 25
