@@ -178,8 +178,10 @@ Para que a única diferença entre os fluxos seja o local do processamento, o se
 executa os mesmos arquivos \texttt{.tflite} INT8 do firmware, com o interpretador LiteRT
 2.3.0, e reproduz a mesma lógica: o mesmo redimensionamento por vizinho mais próximo, com
 o mesmo cálculo de índices, a mesma conversão para INT8, o mesmo limiar na máscara, o
-mesmo fatiamento e o mesmo recorte da face da roda. O acelerador XNNPACK do LiteRT foi
-desativado, para que os operadores sejam executados pelas implementações de referência. A
+mesmo fatiamento e o mesmo recorte da face da roda. O delegado XNNPACK do LiteRT foi
+desativado, mas, nessa versão, o interpretador continua a executar os operadores com os
+seus próprios \textit{kernels} otimizados, e não com as implementações de referência; na
+placa, os operadores também são otimizados, pela biblioteca \texttt{esp-nn}. A
 única diferença no dado de entrada é a compressão JPEG com qualidade 90, que o fluxo em
 borda não sofre. As funções de leitura do firmware, compiladas no computador, produziram
 as mesmas entradas de $28 \times 28$ pixels que o servidor em 2.442 fatias, e a

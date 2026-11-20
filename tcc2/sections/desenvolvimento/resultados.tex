@@ -39,23 +39,29 @@ dígitos. Nos 7.378 recortes de validação, o modelo em ponto flutuante acertou
     \centering
     \caption{Desempenho do classificador de dígitos em ponto flutuante e em INT8}
     \label{tab:resultado_quantizacao}
-    \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}Xlrrr@{}}
+    \small
+    \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}Xlrrrr@{}}
         \toprule
-        \textbf{Conjunto} & \textbf{Modelo} & \textbf{Leitura exata} & \textbf{Acerto por dígito} & \textbf{CER} \\
+        \textbf{Conjunto} & \textbf{Modelo}
+        & \begin{tabular}[b]{@{}r@{}}\textbf{Leitura}\\\textbf{exata}\end{tabular}
+        & \begin{tabular}[b]{@{}r@{}}\textbf{Acerto}\\\textbf{por dígito}\end{tabular}
+        & \textbf{CER} & \textbf{Macro-F1} \\
         \midrule
-        Validação (7.378 recortes) & Ponto flutuante & --- & 95,46\% & --- \\
-                                   & INT8            & --- & 95,38\% & --- \\
+        Validação (7.378 recortes) & Ponto flutuante & --- & 95,46\% & --- & 0,946 \\
+                                   & INT8            & --- & 95,38\% & --- & 0,945 \\
         \addlinespace
-        Teste independente \textit{Word-Wheel} & INT8, fase A & 92,4\% & 97,3\% & 0,026 \\
-        (1.894 imagens, 9.719 dígitos)          & INT8, fases A e B & 92,8\% & 97,7\% & 0,023 \\
+        Teste independente \textit{Word-Wheel} & INT8, fase A & 92,4\% & 97,3\% & 0,026 & --- \\
+        (1.894 imagens, 9.719 dígitos)          & INT8, fases A e B & 92,8\% & 97,7\% & 0,023 & --- \\
         \addlinespace
-        Hidrômetro físico, ROI calibrada & Ponto flutuante & 83,3\% & 97,2\% & 0,028 \\
-        (30 fotos, 180 dígitos)          & INT8            & 83,3\% & 97,2\% & 0,028 \\
+        Hidrômetro físico, ROI calibrada & Ponto flutuante & 83,3\% & 97,2\% & 0,028 & 0,847 \\
+        (30 fotos, 180 dígitos)          & INT8            & 83,3\% & 97,2\% & 0,028 & 0,861 \\
         \bottomrule
     \end{tabularx}
     \legend{Fonte: Elaborado pelos autores (2026). Na validação, cada recorte é um único
-    dígito, de modo que a acurácia por recorte coincide com o acerto por dígito. No
-    hidrômetro físico, os valores são os do fluxo em borda, iguais aos do fluxo em nuvem.}
+    dígito, de modo que a acurácia por recorte coincide com o acerto por dígito. O macro-F1
+    foi calculado nos dois conjuntos em que as duas versões do modelo foram comparadas. No
+    hidrômetro físico, os valores são os do fluxo em borda, iguais aos do fluxo em nuvem,
+    exceto o macro-F1 do INT8, que no fluxo em nuvem é 0,847.}
 \end{table}
 
 Como os dois modelos foram avaliados sobre os mesmos recortes, a comparação foi feita de
@@ -63,15 +69,28 @@ forma pareada. As duas versões deram a mesma resposta em 99,62\% dos recortes. 
 divergiram, 14 foram acertados apenas pelo modelo em ponto flutuante e 8 apenas pelo modelo
 INT8. Pelo teste exato de McNemar, que considera apenas esses pares discordantes, a
 diferença não é estatisticamente significativa ($p = 0{,}29$). A ordem de grandeza da perda
-também aparece em outro detalhe: executado com os \textit{kernels} otimizados XNNPACK, em
-vez dos \textit{kernels} sem esse delegado usados no restante do trabalho, o mesmo arquivo
-INT8 acertou 7.040 recortes. A troca da implementação dos operadores altera o resultado na
-mesma escala que a própria quantização.
+também aparece em outro detalhe: executado com os \textit{kernels} otimizados do LiteRT,
+com ou sem o delegado XNNPACK, em vez dos \textit{kernels} de referência usados nesta
+comparação, o mesmo arquivo INT8 acertou 7.040 recortes. A troca da implementação dos
+operadores altera o resultado na mesma escala que a própria quantização.
+
+O F1, calculado para cada dígito pela Equação~\eqref{eq:f1_score} e resumido pela média
+simples das dez classes (macro-F1), confirma o mesmo quadro: 0,946 no modelo em ponto
+flutuante e 0,945 no INT8. Por dígito, o F1 do INT8 variou de 0,916 no dígito 9 a 0,968 no
+dígito 0, e a maior diferença entre as duas versões em um mesmo dígito foi de 0,005, no
+dígito 7.
 
 No hidrômetro físico, lido com a solução adotada (Seção~\ref{subsubsec:resultado_fisico}),
 as duas versões leram as mesmas 25 das 30 fotos e acertaram os mesmos 175 dos 180 dígitos,
 com CER de 0,028. Os dígitos lidos foram iguais em 179 dos 180 no fluxo em borda e em
 todos os 180 no fluxo em nuvem, e o teste de McNemar não indicou diferença ($p = 1{,}0$).
+O macro-F1 foi de 0,847 nas duas versões no fluxo em nuvem e, no fluxo em borda, de 0,847
+no modelo em ponto flutuante e de 0,861 no INT8. Essa diferença decorre do único dígito
+lido de forma diferente: as duas versões o erraram, mas o modelo em ponto flutuante o
+classificou como 8, e o INT8, como 0. Como 123 dos 180 dígitos são 0 e apenas dois são 7,
+lidos incorretamente pelas duas versões, um único erro altera muito o F1 das classes pouco
+frequentes, e o macro-F1 desse conjunto serve apenas como indicação complementar à da
+validação.
 
 O resultado é coerente com o tamanho e a forma do modelo. A quantização completa após o
 treinamento, calibrada com um conjunto representativo, foi suficiente para um classificador
@@ -97,7 +116,8 @@ mostra o quanto um teste contaminado pelo treino superestima o desempenho, e é 
 o valor adotado é o do teste independente.
 
 Quanto à hipótese H1, o modelo INT8 teve, de fato, acurácia menor que a do modelo em ponto
-flutuante, como previsto. A redução, porém, é de 0,08 ponto percentual na validação, não é
+flutuante, como previsto. A redução, porém, é de 0,08 ponto percentual na validação (0,001 no
+macro-F1), não é
 estatisticamente significativa e não apareceu no hidrômetro físico, de modo que, na
 prática, a quantização não penalizou o reconhecimento. Além disso, como os dois fluxos executam os mesmos modelos INT8
 (Seção~\ref{subsec:visao_geral}), a acurácia não é um fator de diferença entre eles: o
@@ -292,7 +312,7 @@ enviados ao firmware do fluxo em borda e lidos com a mesma função usada nas le
 câmera. A placa e o servidor deram a mesma leitura em todos os 33 quadros e, portanto,
 acertaram as mesmas 25 das 30 fotos rotuladas. As saídas INT8 do classificador diferiram
 em até 18 unidades, por causa da diferença entre os \textit{kernels} otimizados da
-\texttt{esp-nn} e os de referência usados no servidor, sem mudar nenhum dígito. Essa
+\texttt{esp-nn}, na placa, e os do LiteRT, no servidor, sem mudar nenhum dígito. Essa
 verificação mede o cálculo, e não a captura: a leitura com a câmera ao vivo, com a exposição
 e a variação entre quadros, não foi avaliada.
 
@@ -848,8 +868,8 @@ A Tabela~\ref{tab:sintese_hipoteses} resume o resultado de cada hipótese.
         \textbf{Hipótese} & \textbf{Resultado medido} & \textbf{Situação} \\
         \midrule
         H1 & INT8 com 95,38\% contra 95,46\% do modelo em ponto flutuante, diferença de 0,08
-        ponto percentual sem significância estatística ($p = 0{,}29$); no hidrômetro físico,
-        25 de 30 leituras nas duas versões ($p = 1{,}0$) & Confirmada no sentido, mas a
+        ponto percentual sem significância estatística ($p = 0{,}29$), e macro-F1 de 0,945
+        contra 0,946; no hidrômetro físico, 25 de 30 leituras nas duas versões ($p = 1{,}0$) & Confirmada no sentido, mas a
         redução é desprezível \\
         \addlinespace
         H2 & No nó, 17.568~ms de processamento e 1,65~MB de PSRAM por leitura no fluxo em
