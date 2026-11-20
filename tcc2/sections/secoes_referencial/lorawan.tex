@@ -9,10 +9,8 @@ A figura~\ref{fig:stack_layer_lora} apresenta a pilha de elementos das camadas M
     \caption{Pilha de elementos das camadas LoRa/LoRaWAN}
     \label{fig:stack_layer_lora}
     \includegraphics[width=0.85\textwidth]{sections/imagens/LoRaWan_Pilha_Camadas.png}
-    \small
-    \begin{quote}
-        Fonte: Adaptado de Semtech Corporation \cite{semtech2024an1200_86}.
-    \end{quote}
+    \small
+    \legend{Fonte: Adaptado de Semtech Corporation \cite{semtech2024an1200_86}.}
 \end{figure}
 
 \begin{figure}[H]
@@ -20,10 +18,8 @@ A figura~\ref{fig:stack_layer_lora} apresenta a pilha de elementos das camadas M
     \caption{Implementação Típica de Rede LoRaWAN}
     \label{fig:implementacao_tipica_lorawan}
     \includegraphics[width=0.85\textwidth]{sections/imagens/Implementacao_tipica_LoRaWan.png}
-    \small
-    \begin{quote}
-        Fonte: Adaptado de Semtech Corporation \cite{semtech2024an1200_86}.
-    \end{quote}
+    \small
+    \legend{Fonte: Adaptado de Semtech Corporation \cite{semtech2024an1200_86}.}
 \end{figure}
 
 A figura~\ref{fig:implementacao_tipica_lorawan} apresenta a arquitetura típica de um sistema \gls{iot} que utiliza como base o protocolo \gls{lorawan} para viabilizar a comunicação entre os dispositivos. Cada elemento que compõe uma rede \gls{lorawan} possui uma responsabilidade; neste momento, é extremamente válido analisá-las individualmente:
@@ -52,11 +48,8 @@ Diante de tal afirmação, destaca-se a função \textit{deep sleep} presente no
     \caption{Módulo ESP32-CAM integrado com LoRa}
     \label{fig:esp32cam_lora}
     \includegraphics[width=0.85\textwidth]{sections/imagens/ESP32CAM_LoRa.jpg}
-    \small
-    \begin{quote}
-        \centering
-        Fonte: \cite{robinson2021stuartcam}.
-    \end{quote}
+    \small
+    \legend{Fonte: \cite{robinson2021stuartcam}.}
 \end{figure}
 
 \subsubsection{Gateways}
@@ -82,20 +75,18 @@ A comunicação entre o gateway e o servidor de rede,
 corriqueiramente, é estabelecida utilizando protocolo TCP/IP. 
 Toda comunicação dentro do protocolo LoRaWAN é bidirecional \cite{Camargo2022}.
 
-É possível encontrar gateways prontos de múltiplos canais sendo comercializados, 
+É possível encontrar gateways prontos de múltiplos canais sendo comercializados, como o da
+figura~\ref{fig:gateway_lorawan}, 
 mas é plenamente viável desenvolver gateways a partir de módulos e placas 
 de prototipagem como a apresentada na figura~\ref{fig:esp32cam_lora}. 
 
 \begin{figure}[H]
     \centering
     \caption{Gateway LoRaWAN compatível com placas Raspberry Pi}
-    \label{fig:lora_uplink}
+    \label{fig:gateway_lorawan}
     \includegraphics[width=0.85\textwidth]{sections/imagens/gateway-lorawan-radioenge.jpg}
-    \small
-    \begin{quote}
-        \centering
-        Fonte: Catálogo de Produtos \cite{radioenge_gateway_lorawan}.
-    \end{quote}
+    \small
+    \legend{Fonte: Catálogo de Produtos \cite{radioenge_gateway_lorawan}.}
 \end{figure}
 
 

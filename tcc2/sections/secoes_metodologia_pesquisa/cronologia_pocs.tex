@@ -135,7 +135,7 @@ Na tentativa de contornar o problema de memória, desenvolveu-se uma versão com
 U-Net, reduzindo a profundidade dos filtros e a resolução de entrada para
 \(160 \times 160\) pixels, o que diminuiu a arena de memória para cerca de 1,7~MB. Essa
 versão apresentou um comportamento curioso: em alguns testes, obteve métricas de
-segmentação superiores à versão grande, ignorando ruídos visuais externos (como códigos
+segmentação superiores à versão grande (Figura~\ref{fig:comparacao_unet}), ignorando ruídos visuais externos (como códigos
 de barras no mostrador). Contudo, o modelo compacto apresentou alta instabilidade. Devido
 à redução agressiva de resolução e ao pós-processamento via contornos conectados, a rede
 falhava em aproximadamente 15\% dos casos, retornando uma máscara vazia. Essa incerteza

@@ -229,7 +229,10 @@
 % ---------------------------------------------------------------
 \pdfbookmark[0]{Lista de Abreviaturas e Siglas}{siglas}
 % \chapter*{Lista de Abreviaturas e Siglas}
-\printglossary[type=\acronymtype, title={Lista de Abreviaturas e Siglas}]
+% Siglas usadas no texto sem \gls: o \glsadd as inclui na lista.
+\glsadd{aes}\glsadd{anatel}\glsadd{cer}\glsadd{fp32}\glsadd{int8}\glsadd{iou}%
+\glsadd{jpeg}\glsadd{mic}\glsadd{psram}\glsadd{uart}\glsadd{usb}%
+\printglossary[type=\acronymtype, title={Lista de Abreviaturas e Siglas}, style=long, nonumberlist]
 \cleardoublepage
 
 \vspace{\onelineskip}
