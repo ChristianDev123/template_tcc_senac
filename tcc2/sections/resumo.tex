@@ -11,12 +11,14 @@ trabalho compara essas duas abordagens. Os dois fluxos foram implementados sobre
 hardware, baseado no microcontrolador \gls{esp32cam} e no módulo \gls{lorawan} Radioenge
 RD49C, e sobre o mesmo enlace no plano AU915, configurado em SF8 com canal fixo de
 500~kHz, em conformidade com o item 10.3 do Ato n\textordmasculine~14.448 da ANATEL, que
-dispensa o salto em frequência para essa largura de faixa. O reconhecimento usa uma rede neural convolucional de classificação de dígitos,
-treinada com conjuntos de dados públicos e fotos próprias e quantizada em inteiros de
-8 bits (INT8), adotando hidrômetros como caso aplicado. No fluxo em borda, o nó executa o
+dispensa o salto em frequência para essa largura de faixa. 
+O reconhecimento basea-se na implementação de \gls{cnn} voltada à classificação de dígitos,
+treinada com dataset público e conjunto de fotos próprias, quantizada em inteiros de 8 bits (INT8)
+e ponto flutuante de 32 bits (FP32), utilizando principalmente hidrômetros como caso aplicado.
+No fluxo em borda, o nó executa o
 \gls{ocr} e transmite apenas a leitura, em um único pacote; no fluxo em nuvem, o nó comprime
-a imagem em JPEG e a transmite dividida em vários pacotes, e o mesmo modelo é executado no
-servidor. Os experimentos, realizados em bancada, avaliaram o efeito da quantização sobre a
+a imagem em JPEG e a transmite dividida em vários pacotes. 
+Os experimentos, realizados em bancada, avaliaram o efeito da quantização sobre a
 acurácia, o custo computacional do processamento no nó, a latência de ponta a ponta, a taxa
 de entrega de pacotes e de leituras e o consumo de energia por leitura, medido com sensor de
 corrente, a partir do qual foi estimada a autonomia do nó. A quantização teve efeito
