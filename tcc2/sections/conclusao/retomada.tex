@@ -52,9 +52,11 @@ Tabela~\ref{tab:sintese_hipoteses}:
     ($p = 0{,}29$), com macro-F1 de 0,945 contra 0,946; no hidrômetro físico, as duas
     versões leram as mesmas 25 das 30 fotos, de
     modo que a quantização não penalizou o reconhecimento;
-    \item a H2 foi confirmada: no nó, uma leitura do fluxo em borda exigiu 17.568~ms de
-    processamento e 1,65~MB de PSRAM, contra cerca de 11~ms de compressão JPEG no fluxo em
-    nuvem;
+    \item a H2 foi confirmada: no nó, com a ROI, a leitura do fluxo em borda ocupou a CPU
+    por 1.917~ms e teve pico de 788,9~KB de PSRAM, contra cerca de 11~ms de captura e
+    compressão JPEG e 148,9~KB no fluxo em nuvem, com a CPU a 240~MHz nos dois; com a
+    localização da janela, o processamento chegava a 17.568~ms e cerca de 2,9~MB de PSRAM
+    alocados;
     \item a H3 foi confirmada: nas duas campanhas, o fluxo em nuvem consumiu mais por leitura
     e teve autonomia inferior. Na configuração adotada, com a ROI e o rádio em classe A, uma
     leitura custou 2,91~mAh no fluxo em nuvem, contra 0,175~mAh no fluxo em borda. A magnitude

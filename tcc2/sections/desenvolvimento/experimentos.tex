@@ -25,9 +25,10 @@ complementam a comparação entre os fluxos.
         mão ou calibrada na instalação; comparação entre a placa e o servidor & Leitura exata,
         acurácia por dígito, CER, Dice e IoU \\
         \addlinespace
-        Custo computacional no nó & H2 & 61 capturas do firmware de depuração na placa e
-        ciclos dos firmwares dos dois fluxos & Tempo de processamento por leitura e memória
-        ocupada na PSRAM \\
+        Custo computacional no nó & H2 & 61 capturas do firmware de depuração na placa e 30
+        ciclos de cada fluxo, com a ROI calibrada, nos firmwares instrumentados & Tempo de
+        processamento por leitura, uso de CPU por núcleo, frequência de operação e pico de
+        memória na PSRAM \\
         \addlinespace
         Latência e entrega & --- & Nó em ciclo autônomo com \textit{deep sleep}: 30 leituras no
         fluxo em nuvem, 34 no fluxo em borda com a localização da janela e 30 com a ROI
@@ -194,6 +195,20 @@ registra, a cada captura, o tempo de cada etapa, a memória livre e o uso das
 \textit{arenas} (Seção~\ref{subsubsec:tflm}). No fluxo em nuvem, o tempo até a captura vem
 dos registros de ciclo do próprio firmware, e o tempo de compressão JPEG foi medido no
 mesmo firmware de depuração, sobre quadros do mesmo tamanho.
+
+O uso de CPU, a frequência de operação e o pico de memória foram medidos nos firmwares
+dos dois fluxos, compilados com uma instrumentação opcional, em 30 ciclos do modo autônomo
+de cada fluxo, com a ROI calibrada e o rádio em classe A. As bibliotecas do \textit{core}
+3.0.7 não incluem as estatísticas de tempo de execução do FreeRTOS, por isso o uso de cada
+núcleo foi estimado pela tarefa ociosa: uma função executada a cada volta dessa tarefa
+conta as suas voltas, e a taxa de voltas com o núcleo livre, medida durante 1~s ao ligar a
+placa, serve de referência. O uso em um intervalo é, assim, a fração dessa taxa que deixou
+de ocorrer. A frequência foi lida pelo próprio firmware, e o pico de memória foi obtido
+pelo menor espaço livre na PSRAM e na RAM interna desde o despertar. A janela de medição
+vai do início do programa até a entrada em \textit{deep sleep} e não inclui os cerca de
+0,5~s de inicialização da ROM. Como a instrumentação impede que o núcleo ocioso entre em
+espera, esses firmwares não foram usados nas medições de corrente; os tempos de cada etapa
+foram os mesmos das demais medições.
 
 \subsection{Latência e entrega}
 \label{subsec:exp_latencia}

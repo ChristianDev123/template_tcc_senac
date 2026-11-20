@@ -754,20 +754,28 @@ final, e a Tabela~\ref{tab:resultado_custo} o compara nos dois fluxos.
     \centering
     \caption{Custo computacional de uma leitura no nó sensor}
     \label{tab:resultado_custo}
-    \begin{tabularx}{\textwidth}{@{}X>{\raggedright\arraybackslash}p{4.2cm}>{\raggedright\arraybackslash}p{4.2cm}@{}}
+    \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{4.2cm}>{\raggedright\arraybackslash}p{4.2cm}@{}}
         \toprule
         \textbf{Grandeza} & \textbf{Fluxo em nuvem} & \textbf{Fluxo em borda} \\
         \midrule
-        Processamento da imagem no nó & Compressão JPEG, cerca de 11~ms &
-            Localização da janela e seis dígitos, 17.568~ms \\
-        Memória na PSRAM além do quadro & JPEG de 3,3 a 4,6~KB & \textit{Arenas} de
-            2,9~MB reservados e 1,65~MB usados \\
+        Processamento da imagem no nó & Captura e compressão JPEG, 11~ms &
+            Seis dígitos com a ROI, 1.917~ms; localização da janela e seis dígitos,
+            17.568~ms \\
+        Uso do núcleo 1 durante o processamento & Cerca de 50\% & 100\% \\
+        Frequência da CPU & 240~MHz durante todo o ciclo & 240~MHz durante todo o ciclo \\
+        Tempo acordado por leitura & 115,9~s & 3,55~s \\
+        Uso médio de CPU no ciclo (núcleo 1 / núcleo 0) & 9,6\% / 0,9\% & 74,1\% / 2,1\% \\
+        Tempo de CPU ocupada no ciclo, núcleo 1 & 11,2~s & 2,63~s \\
+        Pico de PSRAM alocada no ciclo & 148,9~KB & 788,9~KB com a ROI; cerca de 2,9~MB com
+            a localização da janela, dos quais 1,65~MB usados pelos modelos \\
         \bottomrule
     \end{tabularx}
-    \legend{Fonte: Elaborado pelos autores (2026). Nos dois fluxos, a captura leva cerca de
-    0,7~s desde o despertar e o quadro ocupa cerca de 19~KB. O tempo de compressão foi medido
-    no firmware de depuração, com qualidade 80; o fluxo em nuvem usa qualidade 90 sobre
-    quadros do mesmo tamanho.}
+    \legend{Fonte: Elaborado pelos autores (2026). Medianas de 30 ciclos de cada fluxo, com a
+    ROI calibrada e o rádio em classe A, medidos com os firmwares instrumentados; os valores
+    com a localização da janela são das 61 capturas do firmware de depuração. O tempo
+    acordado vai do início do programa até o \textit{deep sleep}, sem os cerca de 0,5~s de
+    inicialização da ROM, e variou de 99,6 a 165,0~s no fluxo em nuvem, conforme o número de
+    blocos da imagem. O pico de PSRAM inclui o quadro da câmera, de cerca de 19~KB.}
 \end{table}
 
 \begin{figure}[H]
@@ -812,14 +820,24 @@ final, e a Tabela~\ref{tab:resultado_custo} o compara nos dois fluxos.
     em 33 quadros lidos pelo firmware do fluxo em borda com a ROI gravada.}
 \end{figure}
 
-No dispositivo, o processamento de uma leitura no fluxo em borda leva cerca de 1.600 vezes
-mais tempo que no fluxo em nuvem (17.568 contra 11~ms), e o fluxo em borda ocupa cerca de
-1,65~MB de PSRAM que o outro fluxo não usa (Figura~\ref{fig:custo_processamento}). Mesmo com
-a ROI calibrada, que dispensa a localização da janela, o classificador levou 1.917~ms na
-placa, ainda cerca de 170 vezes o tempo da compressão. A hipótese
-H2 foi, portanto, confirmada. O maior tempo acordado do fluxo em nuvem, de cerca de 190~s,
-não contradiz esse resultado: ele é ocupado pela espera entre os blocos transmitidos, e não
-por processamento, e o seu efeito aparece no consumo, avaliado pela hipótese H3.
+No dispositivo, com a localização da janela, o processamento de uma leitura no fluxo em
+borda levava cerca de 1.600 vezes mais tempo que no fluxo em nuvem (17.568 contra 11~ms) e
+alocava cerca de 2,9~MB de PSRAM (Figura~\ref{fig:custo_processamento}). Com a ROI calibrada, que
+dispensa a localização, o classificador ocupou o núcleo 1 integralmente por 1.917~ms, cerca
+de 170 vezes o tempo da captura e da compressão no fluxo em nuvem, durante as quais esse
+núcleo ficou ocupado cerca de metade do tempo. O pico de PSRAM alocada foi 5,3 vezes maior no
+fluxo em borda (788,9 contra 148,9~KB). A frequência não distingue os fluxos: as bibliotecas
+usadas não habilitam a variação dinâmica de frequência, e a CPU permaneceu em 240~MHz durante
+todo o tempo acordado nos dois. A hipótese H2 foi, portanto, confirmada.
+
+Considerado o ciclo inteiro, porém, o fluxo em nuvem permaneceu acordado cerca de 33 vezes
+mais (115,9 contra 3,55~s) e manteve o núcleo 1 ocupado por mais tempo (11,2 contra
+2,63~s), ainda que com uso médio menor (9,6\% contra 74,1\%). Esse tempo não é
+processamento da imagem: quase todo vem da espera ativa do firmware pela resposta do módulo
+de rádio a cada bloco, de cerca de 0,75~s de CPU por bloco, enquanto o intervalo de 7~s
+entre os blocos deixa a CPU ociosa. O núcleo 0 ficou quase ocioso nos dois fluxos, pois o
+programa é executado no núcleo 1 e não há Wi-Fi nem Bluetooth em uso. O efeito do maior
+tempo acordado do fluxo em nuvem aparece no consumo, avaliado pela hipótese H3.
 
 Em relação ao servidor, a diferença é de mais de três ordens de grandeza: a leitura
 completa levou 17.568~ms no \gls{esp32cam} e cerca de 6~ms no servidor
@@ -833,15 +851,18 @@ podem elevar o tempo de processamento, o tempo de inferência aqui não depende 
 da imagem: variou apenas 4~ms em 61 capturas, pois a rede executa sempre as mesmas
 operações.
 
-A restrição de memória limitou a escolha dos modelos. O fluxo em borda reservou cerca de
-2,9~MB da PSRAM para as \textit{arenas} e usou 1,65~MB (Tabela~\ref{tab:memoria_tflm}), e o
+A restrição de memória limitou a escolha dos modelos. Com a localização da janela, o fluxo
+em borda reservou cerca de 2,9~MB da PSRAM para as \textit{arenas} e usou 1,65~MB
+(Tabela~\ref{tab:memoria_tflm}). Com a ROI, apenas o classificador é carregado, e o pico de
+788,9~KB vem quase todo da \textit{arena} de 768~KB reservada para ele, da qual o modelo usa
+menos de 29~KB. O
 pipeline U-NET + CRNN + CTC foi descartado porque pedia uma \textit{arena} de
 15,3~MB e um operador ausente na versão do TensorFlow Lite Micro disponível
 (Seção~\ref{subsubsec:fluxos_abandonados}). No servidor, nenhuma dessas restrições existe.
 
-A complexidade de desenvolvimento também foi maior no fluxo em borda, ainda que os dois
-firmwares tenham tamanhos parecidos, com 525 e 624 linhas. A diferença está fora do laço
-principal. O fluxo em borda exigiu a quantização completa e a sua validação, a conversão
+A complexidade de desenvolvimento também foi maior no fluxo em borda. O seu firmware tem
+801 linhas, contando os comentários, contra 553 no fluxo em nuvem, mas a maior parte do
+esforço ficou fora do laço principal. O fluxo em borda exigiu a quantização completa e a sua validação, a conversão
 dos modelos em cabeçalhos C, o registro dos operadores de cada modelo, o dimensionamento das
 \textit{arenas}, que falhou na primeira tentativa e motivou um \textit{script} de
 estimativa, e um firmware de depuração para observar na placa o que o modelo via.
@@ -872,8 +893,11 @@ A Tabela~\ref{tab:sintese_hipoteses} resume o resultado de cada hipótese.
         contra 0,946; no hidrômetro físico, 25 de 30 leituras nas duas versões ($p = 1{,}0$) & Confirmada no sentido, mas a
         redução é desprezível \\
         \addlinespace
-        H2 & No nó, 17.568~ms de processamento e 1,65~MB de PSRAM por leitura no fluxo em
-        borda, contra cerca de 11~ms de compressão no fluxo em nuvem & Confirmada \\
+        H2 & No nó, com a ROI, 1.917~ms de processamento com o núcleo 1 a 100\% e pico de
+        788,9~KB de PSRAM no fluxo em borda, contra 11~ms de captura e compressão e 148,9~KB no
+        fluxo em nuvem, ambos a 240~MHz; com a localização da janela, 17.568~ms e cerca de
+        2,9~MB &
+        Confirmada \\
         \addlinespace
         Latência (complementar) & 18,84~s no fluxo em borda com a localização da janela e
         3,50~s com a ROI calibrada, contra 189,1~s no fluxo em nuvem & Menor no fluxo em borda \\
