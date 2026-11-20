@@ -10,7 +10,7 @@ Formalmente, dado um conjunto de entradas associado aos seus respectivos gabarit
 saídas estimadas $\hat{y}$ produzidas pela rede parametrizada por $\theta$, a função de
 perda $\mathcal{L}(y, \hat{y}; \theta)$ atribui um valor escalar não negativo ao erro
 cometido na previsão. Quanto maior a discrepância entre $\hat{y}$ e $y$, maior o valor
-retornado por $\mathcal{L}$. O treinamento consiste, portanto, em um problema de
+retornado pela função de perda. O treinamento consiste, portanto, em um problema de
 otimização no qual se busca minimizar o valor médio da função de perda sobre os dados de
 treinamento por meio de algoritmos baseados em gradiente, como a retropropagação do erro
 (\textit{backpropagation}) associada a otimizadores como o Gradiente Descendente
@@ -20,7 +20,7 @@ Estocástico ou o Adam \cite{goodfellow2016deep}.
 
 A escolha da função de perda condiciona diretamente o comportamento do modelo durante a
 convergência. Em problemas de segmentação semântica de imagens, como a delimitação de uma
-\gls{roi} pela arquitetura U-Net \cite{Atika2022ImageSegmentation}, a rede classifica cada
+\gls{roi} pela arquitetura U-Net, a rede classifica cada
 pixel da imagem como pertencente ao objeto de interesse ou ao fundo. Uma função clássica
 para essa tarefa é a \textbf{Entropia Cruzada Binária} (\textit{Binary Cross-Entropy} --
 BCE), definida sobre $N$ pixels pela Equação~\eqref{eq:bce_loss}:

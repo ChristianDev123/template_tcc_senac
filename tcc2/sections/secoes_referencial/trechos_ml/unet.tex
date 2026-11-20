@@ -31,13 +31,28 @@ estruturas presentes em imagens; tal característica é explorada a fim de defin
     \legend{Fonte: Elaborado pelos autores (2026).}
 \end{figure}
 
+Como \citeonline{zioulis2022hybrid} e \citeonline{Atika2022ImageSegmentation} explicam, 
+a arquitetura U-Net pertence ao tipo autoencoder, 
+portanto caracteriza-se pela presença de três etapas de
+processamento: contração, gargalo e expansão.  
 
-A arquitetura U-Net é caracterizada pela presença de três etapas de 
-processamento: Contração, Gargalo e Expansão. 
-A camada de contração é composta por vários blocos, 
-nos quais cada bloco recebe uma entrada e aplica uma camada de convolução seguida por 
-uma camada de operação de max-pooling; essas camadas são matrizes 
-que, respectivamente, apresentam a estrutura 3x3 e 2x2.
+A etapa de contração, também denominada encoder, é composta por vários blocos,
+nos quais cada bloco recebe uma entrada e aplica uma camada de convolução seguida por
+uma camada de operação de max-pooling; essas camadas são matrizes
+que, respectivamente, apresentam a estrutura 3x3 e 2x2, e possui como responsabilidade a 
+extração de características locais.   
+
+A etapa de gargalo (Bottleneck) situa-se entre as etapas de contração e expansão (decoder), 
+e possui como característica a inferência de detalhes mais finos em uma imagem.   
+
+A etapa de expansão, é a etapa final de processamento, 
+responsável por aumentar a resolução reduzida durante a etapa de contração, 
+capturando conceitos de mais alto nível dentro da imagem.   
+
+Outra característica presente na arquitetura U-Net é a utilização de 
+skip connections (Conexões de Salto), responsável pelo tráfego de dados entre as 
+camadas iniciais (na etapa de encoder) e as camadas finais (na etapa de decoder), 
+de tal forma que se preserve elementos para inferência de bordas e contornos. 
 
 Com adendo, as camadas que constroem a arquitetura U-Net utilizam a função de ativação ReLU 
 apresentada na equação~\ref{eq:relu_def}.
