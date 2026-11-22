@@ -14,37 +14,10 @@ classificador, a mesma ROI e a mesma lógica de leitura são usados no \gls{esp3
 fluxo em borda, e no servidor, no fluxo em nuvem. Esta seção descreve os dados usados, o
 classificador, a quantização e a forma de leitura adotada.
 
-\subsubsection{Conjuntos de dados}
-\label{subsubsec:dados_ocr}
-
-A principal dificuldade para treinar um classificador de dígitos de hidrômetro é a
-rotulagem: os conjuntos públicos informam a leitura completa do medidor, e não o valor de
-cada rolete. Três fontes de dados foram combinadas, cada uma com um tratamento próprio
-para gerar recortes rotulados de um único dígito:
-
-\begin{enumerate}
-    \item \textbf{Water Meters Dataset} \cite{kucev2020}: 1.244 fotos de hidrômetros
-    variados, tiradas em ângulos arbitrários, com a máscara da janela de dígitos e a
-    leitura no nome do arquivo. Para o classificador, passou por um processo automático: a janela foi retificada a partir da
-    máscara e dividida em células por projeção vertical. Para evitar rótulos errados, só
-    foram aceitas as fotos em que a divisão produziu exatamente oito células de larguras
-    semelhantes; as demais foram descartadas. Restaram 195 fotos, que geraram 1.560 recortes.
-    \item \textbf{Word-Wheel Water Meter Dataset} \cite{zhao2026wordwheel}: conjunto público
-    cujo subconjunto de reconhecimento traz recortes padronizados de $200 \times 60$ pixels
-    da janela de dígitos, com a leitura completa. Foram descartadas as imagens com um rolete
-    no meio da troca entre dois dígitos, cujo rótulo é ambíguo, e as imagens espelhadas
-    foram invertidas. Como os recortes já vêm retos, cada um foi dividido em fatias de
-    largura igual. Apenas as pastas de treino foram usadas, gerando 47.478 recortes; as
-    pastas de teste, com 1.894 imagens, foram reservadas como teste independente.
-    \item \textbf{Fotos do próprio \gls{esp32cam}}: para aproximar o modelo das condições
-    do sensor, da lente e da compressão do dispositivo, três fotos capturadas pelo
-    \gls{esp32cam}, de dois medidores diferentes, tiveram a janela marcada manualmente e
-    foram fatiadas e rotuladas à mão, gerando 24 recortes. Esses recortes foram usados
-    apenas no ajuste fino (\textit{fine-tuning}) do classificador.
-\end{enumerate}
-
-Os dois conjuntos públicos somam 49.038 recortes, com forte desbalanceamento: o dígito 0
-tem 20.398 exemplos, pois os roletes mais significativos do medidor costumam marcar zero,
+\subsubsection{Conjunto de Dados}
+Os dois conjuntos públicos, apresentados na seção~\ref{subsubsec:dados_ocr}, somam 49.038 recortes, 
+com forte desbalanceamento: o dígito 0 tem 20.398 exemplos, 
+pois os roletes mais significativos do medidor costumam marcar zero,
 enquanto os demais dígitos têm entre 2.469 e 4.991. Para a validação, a divisão foi feita
 por foto, e não por recorte, para que dígitos de uma mesma foto não aparecessem ao mesmo
 tempo no treino e na validação: 15\% das fotos foram separadas, resultando em 41.660
