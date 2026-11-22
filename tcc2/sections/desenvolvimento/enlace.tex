@@ -125,11 +125,11 @@ binarização o aumentou em quase o dobro, pois as bordas abruptas entre preto e
 pouco compressíveis pelo JPEG. Por isso, a imagem é transmitida em tons de cinza, sem
 binarização. A qualidade 90 foi mantida para que a compressão não prejudicasse o
 reconhecimento dos dígitos no servidor. Nas 60 leituras das duas corridas do fluxo em
-nuvem de 27/10, o JPEG variou de 3.323 a 4.568~bytes (mediana de 4.323~bytes) e, nas 30
-da corrida de 19/11, com a câmera mais perto do mostrador, de 2.912 a 3.404~bytes, pois o
+nuvem dos testes iniciais (Seção~\ref{par:fluxo_localizacao}), o JPEG variou de 3.323 a 4.568~bytes (mediana de 4.323~bytes) e, nas 30
+dos testes finais, com a câmera mais perto do mostrador, de 2.912 a 3.404~bytes, pois o
 tamanho depende da cena e da iluminação. Para o dimensionamento, adotou-se como referência
 uma imagem de 4.300~bytes, valor definido a partir das primeiras capturas, antes das
-corridas de medição, e próximo da mediana observada em 27/10.
+corridas de medição, e próximo da mediana observada nos testes iniciais.
 
 O arquivo JPEG é dividido em blocos de 175~bytes, que recebem o cabeçalho de 6~bytes da
 Tabela~\ref{tab:formato_payload}, totalizando 181~bytes de \textit{payload}, abaixo do
@@ -177,8 +177,8 @@ $n_{\text{payload}} = 8 + \lceil 1564/32 \rceil \cdot 5 = 253$ símbolos e
 $T_{\text{pacote}} = (8 + 4{,}25 + 253) \cdot 0{,}512 \approx 135{,}8$~ms. Para a
 mensagem de leitura do fluxo em borda, $PL = 13 + 9 = 22$~bytes, o que resulta em
 $T_{\text{pacote}} \approx 25{,}7$~ms. A Tabela~\ref{tab:tempo_no_ar} apresenta o número
-de pacotes e os tempos para os tamanhos mínimo, mediano e máximo de JPEG medidos em 27/10
-e para a mensagem do fluxo em borda. Com as imagens menores de 19/11, de 17 a 20 pacotes, o
+de pacotes e os tempos para os tamanhos mínimo, mediano e máximo de JPEG medidos nos testes
+iniciais e para a mensagem do fluxo em borda. Com as imagens menores dos testes finais, de 17 a 20 pacotes, o
 tempo de rádio fica entre 2,27 e 2,65~s.
 
 \begin{table}[H]
@@ -190,9 +190,9 @@ tempo de rádio fica entre 2,27 e 2,65~s.
         \textbf{Conteúdo} & \textbf{Bytes} & \textbf{Pacotes} &
         \textbf{Rádio (s)} & \textbf{Envio total (s)} \\
         \midrule
-        JPEG, menor de 27/10 & 3.323 & 19 & 2,58 & 126 \\
-        JPEG, mediana de 27/10 & 4.323 & 25 & 3,36 & 168 \\
-        JPEG, maior de 27/10 & 4.568 & 27 & 3,57 & 182 \\
+        JPEG, menor dos testes iniciais & 3.323 & 19 & 2,58 & 126 \\
+        JPEG, mediana dos testes iniciais & 4.323 & 25 & 3,36 & 168 \\
+        JPEG, maior dos testes iniciais & 4.568 & 27 & 3,57 & 182 \\
         Leitura do fluxo em borda & 9 & 1 & 0,03 & 0,03 \\
         \bottomrule
     \end{tabular}

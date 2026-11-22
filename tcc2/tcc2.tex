@@ -32,6 +32,27 @@
 \usepackage{pgfplots}                % Gráficos dos resultados
 \pgfplotsset{compat=1.18}
 \usepgfplotslibrary{groupplots}
+% Cores dos gráficos: a mesma cor identifica o mesmo fluxo em todas as figuras
+\definecolor{corNuvem}{HTML}{2A78D6}
+\definecolor{corBorda}{HTML}{EB6834}
+\definecolor{corFatias}{HTML}{008300}
+\definecolor{corVotacao}{HTML}{6250D6}
+\definecolor{corGrade}{HTML}{E1E0D9}
+\definecolor{corEixo}{HTML}{898781}
+\pgfplotsset{
+    estiloResultados/.style={
+        grid=major, grid style={color=corGrade, line width=0.3pt},
+        axis x line*=bottom, axis y line*=left,
+        axis line style={color=corEixo}, tick style={color=corEixo},
+        tick label style={font=\scriptsize}, label style={font=\footnotesize},
+        title style={font=\footnotesize},
+        legend style={font=\scriptsize, draw=none, fill=white, fill opacity=0.85,
+                      text opacity=1},
+        legend cell align=left,
+        /pgf/number format/use comma, /pgf/number format/1000 sep={.},
+    },
+}
+
 \usepackage[brazilian,hyperpageref]{backref}  % Páginas com citações
 \usepackage[alf]{abntex2cite}       % Citações ABNT
 %Adicionados posteriormente:

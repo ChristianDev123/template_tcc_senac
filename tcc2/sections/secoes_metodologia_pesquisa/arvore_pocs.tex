@@ -1,0 +1,46 @@
+% Árvore dos caminhos testados para a leitura do mostrador (POCs 1 a 5).
+% Verde: direção seguida; vermelho: direção abandonada, com o motivo.
+% Usado pelo texto (cronologia_pocs.tex) e pela apresentação (apresentacao_tcc2.tex).
+% Requer as bibliotecas TikZ arrows.meta e calc.
+\providecolor{corOk}{HTML}{008300}%
+\providecolor{corFalha}{HTML}{C62828}%
+\begin{tikzpicture}[
+    font=\footnotesize,
+    no/.style={draw, rounded corners=2pt, align=center, text width=4.3cm,
+               inner sep=3pt, minimum height=1.0cm},
+    raiz/.style={no, draw=black!70, fill=black!4, thick},
+    ok/.style={no, draw=corOk, fill=corOk!8, thick},
+    falha/.style={no, draw=corFalha, fill=corFalha!6, dashed},
+    ramoOk/.style={-{Stealth[length=2mm]}, very thick, corOk},
+    ramoFalha/.style={-{Stealth[length=2mm]}, thick, corFalha, dashed},
+]
+  % colunas: 0, 5.0, 10.0, 15.0 cm
+  \node[raiz]  (raiz)   at (0,-3.2)     {\textbf{Ler o mostrador}\\quadro de $160 \times 120$ pixels em cinza};
+
+  \node[falha] (ocrg)   at (5.0,0)      {\textbf{OCR genérico na linha}\\(Tesseract, EasyOCR)\\não leu o valor (POC 1)};
+  \node[ok]    (loc)    at (5.0,-6.4)   {\textbf{Localizar a janela e ler dígito a dígito}\\recorte por dígito funcionou (POC 1)};
+
+  \node[falha] (unet)   at (10.0,-2.85) {\textbf{U-Net} $384 \times 384$\\\textit{arena} de $\approx$15~MB, contra 4~MB de PSRAM};
+  \node[falha] (unetc)  at (10.0,-5.45) {\textbf{U-Net compacta} $160 \times 160$\\cabe ($\approx$1,7~MB), mas devolve máscara vazia em $\approx$15\% dos casos};
+  \node[falha] (cod)    at (10.0,-7.75) {\textbf{Codificador--decodificador} $192 \times 192$\\executa no nó, mas localiza mal a janela; usado nos testes iniciais};
+  \node[ok]    (roi)    at (10.0,-10.0) {\textbf{ROI calibrada à mão} na instalação e face da roda\\substitui a localização (POC 4)};
+
+  \node[falha] (ctc)    at (15.0,-1.55) {\textbf{+ CRNN com CTC}\\86,67\% no servidor, mas não executa no nó; guardado para trabalhos futuros};
+  \node[falha] (cnn68)  at (15.0,-4.15) {\textbf{+ CNN} $68 \times 68$\\herda a U-Net; treinada com dígitos de outros domínios};
+  \node[ok]    (cnn28)  at (15.0,-10.0) {\textbf{+ CNN} $28 \times 28$ (INT8, 81,5~KB)\\classifica cada dígito; adotada nos dois fluxos (POC 5)};
+
+  \newcommand{\ramo}[3]{\draw[#1] (#2.east) -- ++(0.25,0) |- (#3.west);}
+  \ramo{ramoFalha}{raiz}{ocrg}
+  \ramo{ramoOk}{raiz}{loc}
+  \ramo{ramoFalha}{loc}{unet}
+  \ramo{ramoFalha}{loc}{unetc}
+  \ramo{ramoFalha}{loc}{cod}
+  \ramo{ramoOk}{loc}{roi}
+  \ramo{ramoFalha}{unet}{ctc}
+  \ramo{ramoFalha}{unet}{cnn68}
+  \ramo{ramoOk}{roi}{cnn28}
+
+  % legenda
+  \node[ok, text width=2.6cm, minimum height=0.6cm, anchor=west] (lok) at (-2.3,-9.3) {direção seguida};
+  \node[falha, text width=2.6cm, minimum height=0.6cm, anchor=north west] at ([yshift=-2mm]lok.south west) {direção abandonada};
+\end{tikzpicture}%

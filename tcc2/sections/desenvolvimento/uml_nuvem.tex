@@ -1,0 +1,25 @@
+% Diagrama de sequência: ciclo de leitura do fluxo em nuvem.
+% Firmware: Rede/transmissor_esp32cam; servidor: reconstrutor.py e pipeline_nuvem.py.
+\input{sections/desenvolvimento/uml_comum}%
+\begin{tikzpicture}
+  \umlcabecalho{\umlXno}{\textbf{ESP32-CAM}\\(firmware)}
+  \umlcabecalho{\umlXrad}{\textbf{Radioenge RD49C}}
+  \umlcabecalho{\umlXrx}{\textbf{Receptor LoRa32}}
+  \umlcabecalho{\umlXsrv}{\textbf{Servidor}\\(\texttt{reconstrutor.py})}
+  \foreach \x in {\umlXno,\umlXrad,\umlXrx,\umlXsrv} {\umlvida{\x}{-11.3}}
+
+  \umlauto{-1.05}{\umlXno}{desperta; captura um quadro\\$160 \times 120$ em cinza e\\desliga a câmera}
+  \umlauto{-2.55}{\umlXno}{comprime em JPEG (qualidade 90,\\2,9 a 3,4~KB) e divide em $N$\\blocos de 175 bytes}
+
+  \umlloop{-3.5}{-8.15}{-0.4}{19.6}{para cada bloco; $N$ = 17 a 20}
+  \umlmsg{-4.5}{\umlXno}{\umlXrad}{\texttt{AT+SENDB=01:}$\langle$181 bytes$\rangle$}
+  \umlmsg{-5.45}{\umlXrad}{\umlXrx}{\textit{uplink} LoRaWAN\\cifrado, FPort 1}
+  \umlret{-6.0}{\umlXrad}{\umlXno}{\texttt{AT\_TX\_OK}}
+  \umlmsg{-6.95}{\umlXrx}{\umlXsrv}{quadro em hexadecimal\\e RSSI (USB)}
+  \umlauto{-7.3}{\umlXsrv}{descriptografa (AppSKey)\\e guarda o bloco}
+  \umlauto{-7.4}{\umlXno}{aguarda 7~s}
+
+  \umlauto{-8.65}{\umlXsrv}{com todos os blocos,\\remonta e grava o JPEG}
+  \umlauto{-8.65}{\umlXno}{\textit{deep sleep} até o próximo ciclo}
+  \umlauto{-10.1}{\umlXsrv}{executa o OCR depois, com a\\mesma ROI calibrada à mão,\\sobre o JPEG gravado\\(\texttt{pipeline\_nuvem.py})}
+\end{tikzpicture}%

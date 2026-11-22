@@ -1,6 +1,17 @@
-Durante a etapa de desenvolvimento deste trabalho foram adotadas etapas de 
-provas de conceitos e teste de fluxos de processamento, 
-abaixo apresenta-se as etapas desenvolvidas em ordem cronológica.
+O desenvolvimento deste trabalho foi conduzido por meio de provas de conceito e de testes
+de fluxos de processamento, apresentados a seguir em ordem cronológica.
+A Figura~\ref{fig:arvore_pocs} resume os caminhos testados para a leitura do mostrador:
+em verde, as direções seguidas; em vermelho, as abandonadas, com o motivo do abandono,
+detalhado nas seções a seguir e nos fluxos abandonados
+(Seção~\ref{subsubsec:fluxos_abandonados}).
+
+\begin{figure}[H]
+    \centering
+    \caption{Caminhos testados para a leitura do mostrador}
+    \label{fig:arvore_pocs}
+    \resizebox{\textwidth}{!}{\input{sections/secoes_metodologia_pesquisa/arvore_pocs}}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{figure}
 
 \subsubsection{POC 1: Teste de viabilidade com OCR genérico}
 \label{metodologia_pesquisa:poc1}
@@ -134,7 +145,7 @@ com parada antecipada (\textit{early stopping}) para evitar sobreajuste.
 Na tentativa de contornar o problema de memória, desenvolveu-se uma versão compacta da
 U-Net, reduzindo a profundidade dos filtros e a resolução de entrada para
 \(160 \times 160\) pixels, o que diminuiu a arena de memória para cerca de 1,7~MB. Essa
-versão apresentou um comportamento curioso: em alguns testes, obteve métricas de
+versão apresentou um comportamento inesperado: em alguns testes, obteve métricas de
 segmentação superiores à versão grande (Figura~\ref{fig:comparacao_unet}), ignorando ruídos visuais externos (como códigos
 de barras no mostrador). Contudo, o modelo compacto apresentou alta instabilidade. Devido
 à redução agressiva de resolução e ao pós-processamento via contornos conectados, a rede
@@ -199,12 +210,13 @@ das imagens (26 de 30) e 94,58\% de acurácia por dígito na posição exata.
 \end{table}
 
 \paragraph{Inviabilidade de Execução em Hardware Alvo}
-Apesar do excelente desempenho do CTC no servidor, a arquitetura completa
-não pôde ser executada no ESP32-CAM. O motivo principal não foi o consumo do CTC (que,
-isoladamente, exige cerca de 500 KB de memória, viável para a placa), mas sim a dependência
-do modelo U-Net para recortar a janela. Como a utilização de U-Net estoura a memória e utiliza o
-operador \texttt{REDUCE\_PROD} (ausente na biblioteca do microcontrolador), todo o pipeline
-ficou inviabilizado. A arquitetura CRNN com CTC permanece guardada como uma alternativa
+Apesar do bom desempenho do CTC no servidor, a arquitetura completa
+não pôde ser executada no ESP32-CAM, por dois motivos. O principal não foi o consumo do CTC
+(que, isoladamente, exige cerca de 500 KB de memória, viável para a placa), mas a
+dependência do modelo U-Net para recortar a janela, que estoura a memória da placa. Além
+disso, os próprios modelos CRNN com CTC usam o operador \texttt{REDUCE\_PROD}, ausente na
+biblioteca do microcontrolador, de modo que todo o pipeline ficou inviabilizado. A
+arquitetura CRNN com CTC permanece guardada como uma alternativa
 de alta performance para hardwares mais robustos ou trabalhos futuros.
 
 \paragraph{U-NET + CNN}
@@ -217,3 +229,54 @@ computador. O segundo é que o classificador foi treinado com dígitos isolados 
 fontes e estilos \cite{iqbal2019digits}, e não com recortes de hidrômetros, o que o afasta
 das imagens reais do medidor. Não foram registradas métricas de acurácia deste fluxo
 comparáveis às dos demais.
+
+\paragraph{Localização automática da janela e testes iniciais}
+\label{par:fluxo_localizacao}
+\label{subsubsec:segmentacao}
+
+A primeira versão do fluxo em borda localizava a janela de dígitos automaticamente, com uma
+rede codificador--decodificador inspirada na U-Net, sem as conexões de salto: duas camadas
+convolucionais ($3 \times 3$, com 8 e 16 filtros), cada uma seguida de \textit{max
+pooling}, duas convoluções transpostas e uma convolução $1 \times 1$ com ativação sigmoide.
+A rede recebia o quadro redimensionado para $192 \times 192$ pixels, ocupava 11,8~KB em
+INT8 e foi treinada com o \textit{Water Meters Dataset}, com perda que combina entropia
+cruzada e Dice. A caixa da janela era o menor retângulo que continha os pixels da máscara
+prevista.
+
+O modelo não localizou a janela com precisão: no teste, obteve Dice de 0,39 e IoU de 0,28,
+e, no conjunto de teste comum, a caixa prevista teve mediana de $130 \times 90$ pixels,
+contra cerca de $97 \times 18$ pixels da janela real. Com essa caixa, cada fatia continha
+pedaços de vários roletes, e nenhuma das 39 fotos foi lida corretamente; com a janela
+marcada à mão, o mesmo classificador leu 46\% das leituras. No nó, a localização também era
+o passo mais caro: levava cerca de 15,5~s dos 17,6~s de processamento de uma leitura e
+ocupava cerca de 1,6~MB de PSRAM. Por isso, ela foi substituída pela ROI calibrada à mão
+(Seção~\ref{subsubsec:leitura_roi}).
+
+Essa versão foi usada nos testes iniciais de latência, entrega e consumo, nos quais o módulo
+de rádio dos dois fluxos estava em classe C, que mantém o rádio recebendo durante o repouso.
+A Tabela~\ref{tab:testes_iniciais} resume os resultados. Nesses testes, algumas execuções
+foram descartadas porque o receptor deixou de repassar quadros ao computador por 15 a 25
+minutos.
+
+\begin{table}[H]
+    \centering
+    \caption{Resultados dos testes iniciais, com a localização automática e o rádio em classe C}
+    \label{tab:testes_iniciais}
+    \begin{tabular}{@{}lrr@{}}
+        \toprule
+        \textbf{Grandeza} & \textbf{Fluxo em nuvem} & \textbf{Fluxo em borda} \\
+        \midrule
+        Latência ponta a ponta (mediana) & 189,1~s & 18,84~s \\
+        Entrega por leitura & 66,7\% & 79,4\% \\
+        Carga por leitura & 4,64~mAh & 0,824~mAh \\
+        Corrente em repouso & 23,7~mA & 25,2~mA \\
+        \bottomrule
+    \end{tabular}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{table}
+
+Os resultados já indicavam a vantagem do fluxo em borda, mas com dois limitantes que a
+solução adotada eliminou: a localização, que respondia pela maior parte do tempo acordado da
+borda, e a corrente em repouso de cerca de 24~mA, causada pela classe C. Com a ROI
+calibrada e o rádio em classe A, a carga por leitura do fluxo em borda caiu de 0,824 para
+0,175~mAh, e a corrente em repouso, para cerca de 6~mA nos dois fluxos.

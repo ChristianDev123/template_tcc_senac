@@ -1,20 +1,15 @@
 As principais limitações, detalhadas na Seção~\ref{subsec:limitacoes_resultados}, decorrem
-do cenário de avaliação. A acurácia foi medida por emulação em computador, com imagens
-capturadas de um monitor e, no caso físico, com um único hidrômetro em bancada, com a
-câmera fixa, além de nove fotos avulsas. As duas campanhas de medição diferem em mais de um
-fator, como o modo do fluxo em borda, a classe do módulo de rádio e o tamanho das imagens.
-O enlace foi avaliado em bancada, com um único nó, um receptor de canal único e sem
-retransmissão. O consumo foi medido com o nó alimentado pela porta USB, e os cerca de 6~mA
-que restam em repouso com o rádio em classe A não foram separados entre o módulo e a placa,
-de modo que as autonomias são estimativas de um modelo ideal.
+do cenário de avaliação. A acurácia da solução adotada foi medida em quadros de um único
+hidrômetro físico, capturados pela câmera do nó em bancada, com a câmera fixa e uma única
+iluminação; o firmware da placa e o servidor leram esses
+quadros com o mesmo resultado, 25 de 30 leituras corretas, e o \gls{ocr} na borda foi executado na
+própria placa também em todos os ciclos do modo autônomo. Os demais conjuntos de teste vieram de fotos de um monitor que exibia hidrômetros
+e de nove fotos avulsas. O enlace foi avaliado em bancada, com um único nó, um receptor de
+canal único e sem retransmissão.
 
 A partir dessas limitações, propõem-se os seguintes trabalhos futuros:
 
 \begin{itemize}
-    \item avaliar a acurácia da leitura com a câmera ao vivo, no firmware do fluxo em borda;
-    \item separar e reduzir os cerca de 6~mA que restam em repouso, desconectando o módulo
-    de rádio para isolar o consumo da placa, e medir o consumo com bateria e regulador, para
-    obter a autonomia real dos dois fluxos;
     \item avaliar outros hidrômetros e outras iluminações, já que a face da roda foi
     calibrada em um único medidor, e incluir no treino do classificador roletes em transição;
     \item avaliar o enlace em campo, a distâncias maiores, com um \textit{gateway}

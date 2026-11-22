@@ -1,0 +1,22 @@
+% Diagrama de sequência: ciclo de leitura do fluxo em borda.
+% Firmware: Rede/transmissor_ocr_esp32cam; servidor: reconstrutor.py.
+\input{sections/desenvolvimento/uml_comum}%
+\begin{tikzpicture}
+  \umlcabecalho{\umlXno}{\textbf{ESP32-CAM}\\(firmware)}
+  \umlcabecalho{\umlXrad}{\textbf{Radioenge RD49C}}
+  \umlcabecalho{\umlXrx}{\textbf{Receptor LoRa32}}
+  \umlcabecalho{\umlXsrv}{\textbf{Servidor}\\(\texttt{reconstrutor.py})}
+  \foreach \x in {\umlXno,\umlXrad,\umlXrx,\umlXsrv} {\umlvida{\x}{-10.2}}
+
+  \umlauto{-1.35}{\umlXno}{desperta e lê a ROI calibrada\\à mão na instalação; captura\\um quadro $160 \times 120$ em cinza\\e desliga a câmera}
+
+  \umlloop{-2.65}{-4.7}{-0.4}{5.6}{6 roletes}
+  \umlauto{-3.6}{\umlXno}{corta a fatia na ROI manual,\\recorta a face da roda e a\\classifica (TFLite Micro, INT8)}
+
+  \umlmsg{-5.4}{\umlXno}{\umlXrad}{\texttt{AT+SENDB=02:}$\langle$leitura, 9 bytes$\rangle$}
+  \umlmsg{-6.35}{\umlXrad}{\umlXrx}{\textit{uplink} LoRaWAN\\cifrado, FPort 2}
+  \umlret{-6.9}{\umlXrad}{\umlXno}{\texttt{AT\_TX\_OK}}
+  \umlmsg{-7.85}{\umlXrx}{\umlXsrv}{quadro em hexadecimal\\e RSSI (USB)}
+  \umlauto{-8.2}{\umlXsrv}{descriptografa (AppSKey)\\e valida a leitura}
+  \umlauto{-9.4}{\umlXno}{\textit{deep sleep} até o próximo ciclo}
+\end{tikzpicture}%

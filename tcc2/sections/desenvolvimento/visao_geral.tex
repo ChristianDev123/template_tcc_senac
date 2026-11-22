@@ -43,7 +43,7 @@ percorrido pelos dados em cada fluxo.
             {\textbf{Fluxo em borda}\\classificação dos dígitos na ROI calibrada, no
              próprio nó (TFLite Micro, INT8)\\$\rightarrow$ leitura de 9 bytes, FPort 2};
         \node[bloco=5.4cm, below right=9mm and -2.2cm of cam] (nuvem)
-            {\textbf{Fluxo em nuvem}\\compressão JPEG (qualidade 90, $\approx$4~KB)\\
+            {\textbf{Fluxo em nuvem}\\compressão JPEG (qualidade 90, 2,9 a 3,4~KB)\\
              $\rightarrow$ blocos de 175 bytes + 6 bytes de cabeçalho, FPort 1};
         \node[bloco] (radio) at ($(borda.south)!0.5!(nuvem.south)+(0,-15mm)$)
             {\textbf{Radioenge RD49C}\\módulo \gls{lorawan} comandado por UART (comandos AT)};
@@ -69,6 +69,62 @@ percorrido pelos dados em cada fluxo.
     \legend{Fonte: Elaborado pelos autores (2026).}
 \end{figure}
 
+Os dois fluxos diferem na troca de mensagens entre os componentes, detalhada nos
+diagramas de sequência da \gls{uml} das Figuras~\ref{fig:sequencia_borda}
+e~\ref{fig:sequencia_nuvem}. No fluxo em borda, o nó classifica os dígitos antes de
+acionar o rádio e envia um único comando ao módulo Radioenge. No fluxo em nuvem, o nó
+apenas comprime o quadro e, para cada bloco, envia o comando, aguarda a confirmação do
+módulo e espera 7~s antes do bloco seguinte. Nos dois fluxos, o receptor apenas repassa
+cada quadro ao computador, que o descriptografa; no fluxo em nuvem, o \gls{ocr} é executado
+depois, sobre a imagem remontada (Seção~\ref{subsec:servidor}).
+
+\begin{figure}[H]
+    \centering
+    \caption{Diagrama de sequência de um ciclo de leitura no fluxo em borda}
+    \label{fig:sequencia_borda}
+    \resizebox{\textwidth}{!}{\input{sections/desenvolvimento/uml_borda}}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \caption{Diagrama de sequência de um ciclo de leitura no fluxo em nuvem}
+    \label{fig:sequencia_nuvem}
+    \resizebox{\textwidth}{!}{\input{sections/desenvolvimento/uml_nuvem}}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{figure}
+
+O protótipo foi montado em bancada, como mostra a Figura~\ref{fig:prototipo_bancada}: a
+câmera do \gls{esp32cam} fica fixa sobre o mostrador do hidrômetro, ligada por fios à
+\textit{protoboard} em que está o módulo Radioenge, com antena externa, e a placa
+ESP32-CAM-MB fornece a alimentação e a serial pela USB. A
+Figura~\ref{fig:prototipo_componentes} mostra separadamente o nó sensor e o receptor LoRa32.
+
+\begin{figure}[H]
+    \centering
+    \caption{Protótipo em bancada, com a câmera do nó sensor fixa sobre o mostrador do hidrômetro}
+    \label{fig:prototipo_bancada}
+    \includegraphics[width=0.8\textwidth]{sections/imagens/prototipo_conjunto.jpg}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \caption{Componentes do protótipo}
+    \label{fig:prototipo_componentes}
+    \begin{subfigure}[b]{0.42\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{sections/imagens/prototipo_no_sensor.jpg}
+        \caption{Nó sensor: \gls{esp32cam}, módulo Radioenge RD49C e placa ESP32-CAM-MB}
+    \end{subfigure}\hfill
+    \begin{subfigure}[b]{0.42\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{sections/imagens/prototipo_receptor.jpg}
+        \caption{Receptor LoRa32 com antena externa}
+    \end{subfigure}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{figure}
+
 \subsection{Componentes de software}
 \label{subsec:software}
 
@@ -91,8 +147,7 @@ os principais componentes.
         \texttt{transmissor\_esp32cam} & Firmware do nó no fluxo em nuvem: captura, compressão JPEG,
         fragmentação e envio dos blocos pela porta 1 (FPort 1). \\
         \texttt{transmissor\_ocr\_esp32cam} & Firmware do nó no fluxo em borda: captura, leitura
-        dos dígitos na ROI calibrada com TensorFlow Lite Micro (sem ROI gravada, com o modelo de
-        localização) e envio da leitura pela porta 2 (FPort 2). \\
+        dos dígitos na ROI calibrada com TensorFlow Lite Micro e envio da leitura pela porta 2 (FPort 2). \\
         \texttt{calibrar\_roi\_esp32cam} & Ferramenta de calibração: firmware que envia o quadro ao
         computador e \textit{script} em que a ROI, o número de roletes, a orientação do quadro e a
         face da roda são ajustados e gravados na memória não volátil do nó. \\

@@ -1,12 +1,18 @@
 \subsection{Reconhecimento dos dígitos}
 \label{subsec:ocr_desenvolvimento}
 
-O \gls{ocr} implementado divide a leitura em duas etapas: primeiro, localizar no quadro a
-janela onde ficam os roletes do hidrômetro; depois, classificar cada dígito dessa janela
-separadamente. Os mesmos modelos e a mesma lógica de leitura são usados no
-\gls{esp32cam}, no fluxo em borda, e no servidor, no fluxo em nuvem. Esta seção descreve
-como essa solução foi escolhida, os dados usados, os dois modelos, a quantização e a forma
-de leitura adotada.
+O \gls{ocr} divide a leitura em duas etapas: primeiro, localizar no quadro a janela onde
+ficam os roletes do hidrômetro; depois, classificar cada dígito dessa janela
+separadamente. Na solução adotada, a janela não é localizada automaticamente: ela
+é uma ROI calibrada à mão, uma única vez, na instalação do nó, em que o operador marca a
+caixa dos dígitos sobre um quadro da própria câmera
+(Seção~\ref{subsubsec:leitura_roi}). Com a câmera fixa diante do medidor, essa mesma ROI é
+usada em todas as leituras seguintes, e apenas a classificação dos dígitos é feita por um
+modelo. A localização automática da janela, usada em uma versão anterior do fluxo em
+borda, é descrita entre os fluxos abandonados (Seção~\ref{par:fluxo_localizacao}). O mesmo
+classificador, a mesma ROI e a mesma lógica de leitura são usados no \gls{esp32cam}, no
+fluxo em borda, e no servidor, no fluxo em nuvem. Esta seção descreve os dados usados, o
+classificador, a quantização e a forma de leitura adotada.
 
 \subsubsection{Conjuntos de dados}
 \label{subsubsec:dados_ocr}
@@ -19,8 +25,7 @@ para gerar recortes rotulados de um único dígito:
 \begin{enumerate}
     \item \textbf{Water Meters Dataset} \cite{kucev2020}: 1.244 fotos de hidrômetros
     variados, tiradas em ângulos arbitrários, com a máscara da janela de dígitos e a
-    leitura no nome do arquivo. Foi usado no treinamento do modelo de localização e, para o
-    classificador, passou por um processo automático: a janela foi retificada a partir da
+    leitura no nome do arquivo. Para o classificador, passou por um processo automático: a janela foi retificada a partir da
     máscara e dividida em células por projeção vertical. Para evitar rótulos errados, só
     foram aceitas as fotos em que a divisão produziu exatamente oito células de larguras
     semelhantes; as demais foram descartadas. Restaram 195 fotos, que geraram 1.560 recortes.
@@ -44,48 +49,6 @@ enquanto os demais dígitos têm entre 2.469 e 4.991. Para a validação, a divi
 por foto, e não por recorte, para que dígitos de uma mesma foto não aparecessem ao mesmo
 tempo no treino e na validação: 15\% das fotos foram separadas, resultando em 41.660
 recortes de treino e 7.378 de validação.
-
-\subsubsection{Modelo de localização da janela}
-\label{subsubsec:segmentacao}
-
-O modelo de localização recebe o quadro redimensionado para $192 \times 192$ pixels e
-produz uma máscara binária que indica os pixels da janela de dígitos. Trata-se de uma rede
-codificador--decodificador inspirada na U-Net, porém reduzida para caber no
-microcontrolador e sem as conexões de salto: duas camadas convolucionais ($3 \times 3$,
-com 8 e 16 filtros), cada uma seguida de \textit{max pooling}, duas convoluções transpostas
-que restauram a resolução e uma convolução $1 \times 1$ com ativação sigmoide na saída.
-Quantizada em INT8, ocupa 11,8~KB.
-
-O modelo foi treinado com o \textit{Water Meters Dataset}, dividido em 70\% para treino,
-15\% para validação e 15\% para teste. Como a janela ocupa uma fração pequena da imagem, a
-entropia cruzada sozinha levava a rede a classificar quase tudo como fundo; por isso, a
-perda adotada combina entropia cruzada e Dice suave, o que elevou o Dice de validação de
-0,306 para 0,396 com o mesmo número de épocas. O treino durou 600 épocas, com lotes de 16
-imagens, e a melhor época foi a 581. A Figura~\ref{fig:treino_segmentacao} mostra a
-evolução do treino.
-
-\begin{figure}[H]
-    \centering
-    \caption{Evolução do treino do modelo de localização da janela}
-    \label{fig:treino_segmentacao}
-    \includegraphics[width=\textwidth]{sections/imagens/ocr_treino_segmentacao.png}
-    \legend{Fonte: Elaborado pelos autores (2026).}
-\end{figure}
-
-No conjunto de teste, com 186 fotos não vistas no treino, o modelo em INT8 obteve Dice de
-0,39 e IoU de 0,28. O resultado é fraco. A acurácia por pixel supera 98\%, mas não serve
-como medida, pois o fundo domina a imagem, como mostra o terceiro gráfico da
-Figura~\ref{fig:treino_segmentacao}. As curvas de treino e validação próximas indicam
-subajuste: a rede, minúscula e sem conexões de salto, não tem capacidade para localizar a
-janela com precisão.
-
-No uso, a caixa da janela é o menor retângulo que contém os pixels marcados pela máscara,
-convertido para as coordenadas do quadro de $160 \times 120$ pixels. Como a máscara
-prevista transborda a janela, essa caixa fica muito maior do que deveria. Nas fotos do
-conjunto de teste comum, descrito adiante, a caixa prevista
-teve mediana de $130 \times 90$ pixels, cobrindo quase todo o mostrador, enquanto a janela
-real mede cerca de $97 \times 18$ pixels. Com essa caixa, cada fatia contém pedaços de
-vários roletes e do mostrador, e a leitura falha.
 
 \subsubsection{Classificador de dígitos}
 \label{subsubsec:classificador}
@@ -144,7 +107,7 @@ flutuante foi de 95,46\%.
 \subsubsection{Quantização e exportação}
 \label{subsubsec:quantizacao_ocr}
 
-Os dois modelos foram quantizados em INT8 após o treinamento (\textit{post-training
+O classificador foi quantizado em INT8 após o treinamento (\textit{post-training
 quantization}), com um conjunto representativo de imagens para calibrar as escalas. A
 quantização foi completa: pesos, ativações, entrada e saída em inteiros de 8 bits, usando
 apenas operadores INT8 do TensorFlow Lite. Na entrada, a escala de $1/255$ com ponto zero
@@ -152,7 +115,7 @@ de $-128$ permite converter cada pixel diretamente, subtraindo 128 do seu valor.
 do pipeline U-NET + CRNN + CTC, que usou treinamento consciente da quantização (QAT), o
 pipeline CNN Simples não
 precisou dessa técnica: a perda de acurácia na quantização foi desprezível, como mostra a
-avaliação da hipótese H1 nos resultados. Por fim, cada modelo \texttt{.tflite} foi
+avaliação da hipótese H1 nos resultados. Por fim, o modelo \texttt{.tflite} foi
 convertido em um vetor de bytes em um arquivo de cabeçalho C (\texttt{.h}), incluído no
 firmware.
 
@@ -171,10 +134,7 @@ outra, enquanto o classificador foi treinado com o dígito ocupando todo o recor
 hidrômetro físico, sem esse recorte, a leitura falhou em quase todas as fotos
 (Seção~\ref{subsubsec:resultado_fisico}).
 
-Como o modelo de localização não encontra a janela com precisão, os resultados com a caixa
-prevista por ele são próximos de zero. Esses resultados \textbf{não refletem a capacidade
-de leitura do classificador}, e sim o erro da localização: com a caixa errada, as fatias
-não correspondem aos roletes. Quando a janela é informada corretamente, o mesmo
+Quando a janela é informada corretamente, o
 classificador lê com alta acurácia os dígitos escuros sobre fundo claro, que predominam no
 treino, como mostram os resultados (Seção~\ref{subsec:resultado_leitura}). A
 Figura~\ref{fig:leitura_caixa_manual}
@@ -192,11 +152,11 @@ leituras e os 26 dígitos foram reconhecidos corretamente.
     uma.}
 \end{figure}
 
-Por isso, a solução adotada dispensa a localização automática. Em uma instalação real, a
+Em uma instalação real, a
 câmera fica fixa diante do medidor, de modo que a janela de dígitos ocupa sempre a mesma
 região do quadro. Assim, a região de interesse (ROI), o número de roletes, a orientação do
-quadro e a face da roda são calibrados uma única vez, na instalação, e usados em todas as
-leituras seguintes. A inclinação não é corrigida no firmware: a câmera deve ser montada com
+quadro e a face da roda são calibrados à mão pelo operador, uma única vez, na instalação, e
+usados em todas as leituras seguintes, sem nenhuma localização automática. A inclinação não é corrigida no firmware: a câmera deve ser montada com
 a fileira de roletes na horizontal. Essa calibração necessita ser precisa: a avaliação
 apresentada nos resultados indica que a ROI deve estar a cerca de um ou dois pixels da
 posição correta no quadro de $160 \times 120$ pixels, em que cada dígito tem
@@ -204,12 +164,5 @@ aproximadamente 16 pixels de largura.
 
 A calibração é feita com uma ferramenta própria, descrita na
 Seção~\ref{subsubsec:firmware_debug}, que grava os parâmetros na memória não volátil do nó.
-Com esses parâmetros gravados, o firmware do fluxo em borda não executa o modelo de
-localização; sem eles, volta a localizar a janela a cada leitura.
-
-A primeira medição de consumo e de latência em hardware foi feita antes da integração da
-ROI ao firmware. Nela, o fluxo em borda ainda executava o modelo de localização a cada
-leitura, com a câmera posicionada à mão para que a janela ocupasse a maior parte do quadro
-e a caixa prevista ficasse próxima dela. Essa configuração é descrita na próxima seção. O
-consumo e a latência foram medidos novamente com a ROI calibrada, e o efeito de remover a
-localização é discutido nos resultados.
+O firmware do fluxo em borda lê esses parâmetros ao iniciar, e, no fluxo em nuvem, o
+servidor aplica a mesma ROI, lida do arquivo gravado pela mesma ferramenta.

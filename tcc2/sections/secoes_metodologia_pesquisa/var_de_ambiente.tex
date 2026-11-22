@@ -1,8 +1,10 @@
 Os dois fluxos de processamento foram implementados e avaliados com o mesmo hardware, a
-mesma configuração de rádio e as mesmas condições de bancada em cada campanha de medição,
+mesma configuração de rádio e as mesmas condições de bancada em cada conjunto de testes,
 de modo que a diferença medida entre eles possa ser atribuída ao fluxo, e não ao ambiente.
-A Tabela~\ref{tab:variaveis_ambiente} reúne essas variáveis e indica as que mudaram entre a
-campanha de 27/10 e a de 18 e 19/11.
+A Tabela~\ref{tab:variaveis_ambiente} reúne essas variáveis e indica as que mudaram entre os
+testes iniciais, com a localização automática da janela e o rádio em classe C
+(Seção~\ref{par:fluxo_localizacao}), e os testes finais, com a ROI calibrada e o rádio em
+classe A, que correspondem à configuração adotada.
 
 \begin{table}[H]
     \centering
@@ -21,7 +23,7 @@ campanha de 27/10 e a de 18 e 19/11.
         Canal & 915,9~MHz, canal 64 do AU915, fixo, sem salto de frequência \\
         Potência de transmissão & +20~dBm (100~mW), fixa no módulo \\
         Ativação do nó & \gls{abp}, com chaves de sessão pré-configuradas \\
-        Classe do módulo de rádio & C nas medições de 27/10 e A nas de 19/11 \\
+        Classe do módulo de rádio & C nos testes iniciais e A nos testes finais \\
         Portas de aplicação & FPort~1: blocos de imagem com até 175~bytes de dados e
             cabeçalho de 6~bytes; FPort~2: leitura do \gls{ocr} em 9~bytes \\
         Intervalo entre blocos & 7~s (fluxo em nuvem) \\
@@ -31,13 +33,13 @@ campanha de 27/10 e a de 18 e 19/11.
             Radioenge RD49C \\
         Imagem capturada & $160 \times 120$ pixels em tons de cinza nos dois fluxos; no fluxo
             em nuvem, comprimida em JPEG com qualidade 90 (escala de 1 a 100), resultando em
-            3,3 a 4,6~KB em 27/10 e em 2,9 a 3,4~KB em 19/11 \\
+            3,3 a 4,6~KB nos testes iniciais e 2,9 a 3,4~KB nos testes finais \\
         Repouso entre leituras & 30~s em \textit{deep sleep} (modo autônomo) \\
         Alimentação & 5~V da porta USB da placa ESP32-CAM-MB \\
         \addlinespace
         \multicolumn{2}{@{}l}{\textit{Cenário de bancada}} \\
         Receptor & Placa LoRa32 com rádio de canal único, ligada ao computador por USB \\
-        Distância entre nó e receptor & Cerca de 2~m em 27/10; não registrada em 18 e 19/11 \\
+        Distância entre nó e receptor & Cerca de 2~m nos testes iniciais; não registrada nos testes finais \\
         \addlinespace
         \multicolumn{2}{@{}l}{\textit{Software}} \\
         \textit{Firmware} & Núcleo Arduino-ESP32 3.0.7 (ESP-IDF 5.1), com TensorFlow Lite

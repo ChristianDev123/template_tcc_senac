@@ -21,21 +21,20 @@ complementam a comparação entre os fluxos.
         CER \\
         \addlinespace
         Leitura de ponta a ponta & --- & 39 fotos do conjunto de teste comum e 39 fotos de
-        hidrômetros físicos, 30 delas com a câmera fixa; janela prevista pelo modelo, marcada à
+        hidrômetros físicos, 30 delas com a câmera fixa; janela marcada à
         mão ou calibrada na instalação; comparação entre a placa e o servidor & Leitura exata,
         acurácia por dígito, CER, Dice e IoU \\
         \addlinespace
-        Custo computacional no nó & H2 & 61 capturas do firmware de depuração na placa e 30
-        ciclos de cada fluxo, com a ROI calibrada, nos firmwares instrumentados & Tempo de
+        Custo computacional no nó & H2 & 30 ciclos de cada fluxo, com a ROI calibrada, nos
+        firmwares instrumentados, e 33 quadros lidos pelo firmware do fluxo em borda & Tempo de
         processamento por leitura, uso de CPU por núcleo, frequência de operação e pico de
         memória na PSRAM \\
         \addlinespace
-        Latência e entrega & --- & Nó em ciclo autônomo com \textit{deep sleep}: 30 leituras no
-        fluxo em nuvem, 34 no fluxo em borda com a localização da janela e 30 com a ROI
-        calibrada; 30 envios adicionais de imagem com o nó sempre ligado & Latência ponta a ponta, \gls{pdr} por pacote, taxa de entrega por leitura \\
+        Latência e entrega & --- & Nó em ciclo autônomo com \textit{deep sleep}, ROI calibrada e
+        rádio em classe A: 30 leituras de cada fluxo; e 30 leituras do fluxo em borda com a
+        ROI na corrida de validação da ROI & Latência ponta a ponta, \gls{pdr} por pacote, taxa de entrega por leitura \\
         \addlinespace
-        Consumo de energia & H3 & Corrente do nó medida em 30 ciclos do fluxo em nuvem e 32
-        do fluxo em borda, com o rádio em classe C, e em 29 ciclos de cada fluxo com a ROI
+        Consumo de energia & H3 & Corrente do nó medida em 29 ciclos de cada fluxo, com a ROI
         calibrada e o rádio em classe A & Carga por leitura (mAh), corrente acordado e em
         repouso, autonomia estimada \\
         \bottomrule
@@ -54,11 +53,9 @@ Seção~\ref{subsec:metricas}.
 \subsection{Cenário de bancada}
 \label{subsec:bancada}
 
-As medições de consumo, de entrega e de latência com a localização da janela foram feitas
-em 27 de outubro de 2026, em bancada, com o nó sensor e o receptor a cerca de 2~m de
-distância. Nessa condição, o \gls{rssi} médio dos quadros recebidos ficou entre $-34$ e
-$-27$~dBm, um sinal muito forte. A latência com a ROI calibrada, medida em 18 e 19 de
-novembro, e as medições com o rádio em classe A, em 19 de novembro, também foram feitas em
+As medições da configuração adotada, com a ROI calibrada e o rádio em classe A, formam
+os testes finais; antes deles, uma corrida de validação da ROI mediu a latência do fluxo em
+borda com a ROI, ainda com o rádio em classe C. As duas foram feitas em
 bancada, com o \gls{rssi} mediano de cada corrida entre $-60$ e $-49$~dBm; a distância
 entre o nó e o receptor nessas corridas não foi registrada. Como antecipado na
 Seção~\ref{subsec:simplificacoes}, o cenário avalia o comportamento dos fluxos, e não o
@@ -141,17 +138,15 @@ coordenadas, antes da execução da leitura.
 Cada foto foi avaliada nos dois fluxos. No fluxo em borda, o quadro de
 $160 \times 120$ pixels é lido diretamente; no fluxo em nuvem, o mesmo quadro é antes
 codificado em JPEG com qualidade 90 e decodificado, como ocorre na transmissão. Essa
-avaliação é uma emulação em Python, com os mesmos arquivos \texttt{.tflite} INT8, e não a
-execução na placa. Para verificar a equivalência com a placa, os 33 quadros da bancada
-foram enviados pela porta serial ao firmware do fluxo em borda, que os leu com a mesma
-função usada nas leituras da câmera, e as leituras foram comparadas às do servidor. No
-conjunto comum, as fotos foram lidas em três configurações:
+avaliação é feita em Python, com os mesmos arquivos \texttt{.tflite} INT8. No hidrômetro
+físico, a leitura também foi feita na própria placa: os 33 quadros da bancada, capturados
+pela câmera do nó, foram enviados pela porta serial ao firmware do fluxo em borda, que os
+leu com a mesma função usada nas leituras da câmera, e as leituras da placa foram
+comparadas às do servidor e ao gabarito. No
+conjunto comum, as fotos foram lidas em duas configurações:
 
 \begin{enumerate}
-    \item \textbf{Janela prevista pelo modelo}: o pipeline completo, como no firmware, com
-    a caixa obtida da máscara do modelo de localização.
-    \item \textbf{Janela marcada à mão}: a caixa é informada diretamente e o modelo de
-    localização não é usado. Essa configuração corresponde à ROI calibrada na instalação
+    \item \textbf{Janela marcada à mão}: a caixa é informada diretamente. Essa configuração corresponde à ROI calibrada na instalação
     (Seção~\ref{subsubsec:leitura_roi}) e mede o classificador e o fatiamento quando a
     janela está correta.
     \item \textbf{Janela marcada à mão com correção de inclinação}: o quadro é antes
@@ -159,20 +154,12 @@ conjunto comum, as fotos foram lidas em três configurações:
     disponível apenas no fluxo em nuvem (Seção~\ref{subsubsec:recursos_servidor}).
 \end{enumerate}
 
-A distinção entre essas configurações é essencial para interpretar os resultados.
-Quando a janela é prevista pelo modelo, o erro da leitura é dominado pelo erro da
-localização: com uma caixa que cobre quase todo o mostrador, as fatias não correspondem
-aos roletes, e nenhum classificador acertaria a leitura. Assim, os resultados da primeira
-configuração medem o modelo de localização, e não a capacidade de leitura do classificador,
-que é medida pelas configurações com a janela marcada à mão.
-
-O conjunto de hidrômetros físicos foi lido em três configurações. Na primeira, com a
-janela prevista pelo modelo, nas 39 fotos. Na segunda, com a janela informada e a fatia
+O conjunto de hidrômetros físicos foi lido em duas configurações. Na primeira, com a
+janela informada e a fatia
 inteira enviada ao classificador, também nas 39 fotos: a ROI calibrada nas fotos da
 bancada e a janela marcada à mão nas avulsas, cuja inclinação foi corrigida nos dois
 fluxos, o que no firmware exigiria uma rotação com ângulo fixo, não implementada. Na
-terceira, com a solução adotada, nas 30 fotos da bancada: a ROI calibrada, sem o modelo de
-localização e com o recorte da face da roda, com e sem a votação entre caixas. Nessa
+segunda, com a solução adotada, nas 30 fotos da bancada: a ROI calibrada e com o recorte da face da roda, com e sem a votação entre caixas. Nessa
 configuração, foram comparadas também as variantes sem pré-processamento, só com o realce,
 que equaliza o histograma da face, e com a face e o realce juntos. Como a face foi escolhida
 observando a leitura usada na calibração, os resultados foram recalculados sem as fotos
@@ -189,12 +176,10 @@ lido com fatias iguais e com a votação entre cinco caixas deslocadas.
 \subsection{Custo computacional (H2)}
 \label{subsec:exp_custo}
 
-Os tempos de processamento e a memória do fluxo em borda foram medidos na placa em 61
-capturas, com um firmware de depuração que executa a mesma leitura do firmware do fluxo e
-registra, a cada captura, o tempo de cada etapa, a memória livre e o uso das
-\textit{arenas} (Seção~\ref{subsubsec:tflm}). No fluxo em nuvem, o tempo até a captura vem
-dos registros de ciclo do próprio firmware, e o tempo de compressão JPEG foi medido no
-mesmo firmware de depuração, sobre quadros do mesmo tamanho.
+O tempo do classificador no fluxo em borda foi medido no próprio firmware do fluxo, em 33
+quadros lidos com a ROI gravada (Seção~\ref{subsubsec:tflm}). No fluxo em nuvem, o tempo até a captura vem
+dos registros de ciclo do próprio firmware, e o tempo de compressão JPEG foi medido em
+um firmware de depuração, sobre quadros do mesmo tamanho.
 
 O uso de CPU, a frequência de operação e o pico de memória foram medidos nos firmwares
 dos dois fluxos, compilados com uma instrumentação opcional, em 30 ciclos do modo autônomo
@@ -221,39 +206,23 @@ serial, o disparo marcado ocorre cerca de 0,3 a 0,5~s após o despertar real, o 
 subestima a latência nesse valor nos dois fluxos. No fluxo em nuvem, a latência não inclui a
 execução do \gls{ocr} no servidor, que é feita depois sobre as imagens salvas; como mostra a
 Tabela~\ref{tab:tempo_inferencia}, esse tempo é da ordem de milissegundos e não altera a
-comparação. Foram feitas três corridas nesse modo:
+comparação. Foram usadas duas corridas nesse modo:
 
 \begin{itemize}
-    \item \textbf{Fluxo em nuvem}: 31 despertares, em 27/10, das 9h34 às 11h20, simultâneos
-    à medição de corrente. Em 30 deles o nó enviou uma imagem; no outro, o nó acordou e voltou
-    a dormir sem enviar nada, e esse despertar foi excluído.
-    \item \textbf{Fluxo em borda com a localização da janela}: 34 despertares, em 27/10, das
-    12h59 às 13h27.
-    \item \textbf{Fluxo em borda com a ROI calibrada}: 30 disparos, das 23h58 de 18/11 às
-    0h14 de 19/11, com a ROI gravada no nó. Nessa corrida, o \textit{script} reiniciou o nó e
+    \item \textbf{Fluxo em borda com a ROI calibrada}: 30 disparos
+    na corrida de validação da ROI, com a ROI gravada no nó e o rádio ainda em classe C. Nessa corrida, o \textit{script} reiniciou o nó e
     ativou o modo autônomo; o primeiro disparo, feito logo após a ativação e sem o reinício
     do despertar, foi excluído das estatísticas de latência, que usam os 29 despertares
     seguintes.
+    \item \textbf{Fluxos em nuvem e em borda com a ROI calibrada e o rádio em classe A}: 30
+    disparos de cada fluxo, nos testes finais, registrados durante as medições de consumo
+    (Seção~\ref{subsec:exp_energia}).
 \end{itemize}
 
-Para conferir o \gls{pdr} do fluxo em nuvem com uma contagem exata dos pacotes enviados, foi
-feita uma quarta corrida com o \textit{script} \texttt{reconstrutor.py} no modo controlado.
-Nele, o nó fica sempre ligado, sem \textit{deep sleep}, e o computador envia o comando de
-captura, espera o fim do envio e, após uma pausa de 10~s, dispara a leitura seguinte. Foram
-30 envios, das 14h59 às 16h44. O número de pacotes enviados vem do log do próprio nó, que
-registra cada tentativa de transmissão, e não da lacuna no contador de quadros (FCnt), que
-não detecta perdas no início nem no fim de uma imagem. Cada corrida grava todos os quadros
+Cada corrida grava todos os quadros
 recebidos, os logs das duas seriais e as imagens remontadas, que ficam versionadas no
 repositório. O tempo no ar de cada envio é calculado pela Equação~\eqref{eq:tpacote_enlace},
 e não medido.
-
-Em algumas execuções, o receptor deixou de repassar quadros ao computador por 15 a 25
-minutos seguidos, enquanto o nó registrava todos os envios como aceitos pelo módulo. Isso
-ocorreu em uma primeira tentativa do fluxo em borda, das 12h25 às 12h46, e em cinco execuções
-do fluxo em nuvem, das 13h41 às 14h55. Essas execuções foram interrompidas e mantidas no
-repositório em arquivos separados, como registro, mas não entram nas estatísticas: as perdas
-nelas vêm de uma falha do receptor, cuja causa não foi identificada, e não do enlace. Essa
-exclusão é retomada na discussão das limitações.
 
 \subsection{Consumo de energia (H3)}
 \label{subsec:exp_energia}
@@ -265,7 +234,8 @@ inteiro: microcontrolador, câmera, módulo de rádio, regulador e LED. Um capac
 100~µF, ligado depois do resistor, evita a queda de tensão nos picos de transmissão. O
 INA219 foi lido por I2C por um Arduino Uno, que enviava ao computador uma amostra a cada
 10~ms (100~Hz), com a tensão no resistor e a tensão de alimentação. A
-Figura~\ref{fig:bancada_corrente} mostra a montagem.
+Figura~\ref{fig:bancada_corrente} mostra a montagem, e a Figura~\ref{fig:foto_ina219}, o
+INA219 ligado ao Arduino Uno.
 
 \begin{figure}[H]
     \centering
@@ -299,6 +269,14 @@ Figura~\ref{fig:bancada_corrente} mostra a montagem.
     \legend{Fonte: Elaborado pelos autores (2026).}
 \end{figure}
 
+\begin{figure}[H]
+    \centering
+    \caption{Sensor INA219, em \textit{protoboard}, ligado ao Arduino Uno}
+    \label{fig:foto_ina219}
+    \includegraphics[width=0.42\textwidth]{sections/imagens/prototipo_ina219.jpg}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{figure}
+
 O INA219 foi configurado com o ganho que admite até 320~mV no resistor (3,2~A), para não
 saturar nos picos de transmissão. A corrente é calculada no computador pela tensão no
 resistor, cujo passo de 10~µV corresponde a 0,1~mA. Com o nó desconectado, a leitura foi de
@@ -317,20 +295,8 @@ Equação~\eqref{eq:carga_leitura}. A duração mínima de 12~s foi necessária 
 isolados de uma única amostra, de cerca de 61~mA, partiam alguns trechos de repouso em
 dois e criavam ciclos falsos.
 
-O consumo foi medido em duas campanhas. Na primeira, em 27/10, o módulo de rádio estava
-configurado em classe C e o fluxo em borda ainda executava a localização da janela. Foram
-feitas duas capturas principais:
-
-\begin{itemize}
-    \item \textbf{Fluxo em nuvem}: 685.000 amostras em 6.850~s, a partir das 9h29. Dos 31
-    ciclos encontrados, um foi excluído: o mesmo despertar sem envio excluído na medição de
-    latência, em que o nó ficou acordado por 0,97~s. Restaram 30 ciclos completos.
-    \item \textbf{Fluxo em borda}: 169.738 amostras em 1.697~s, das 12h22 às 12h49, com 32
-    ciclos completos.
-\end{itemize}
-
-Na segunda, em 19/11, o módulo foi configurado em classe A, pelo comando
-\texttt{AT+CLASS=A}, e o fluxo em borda já usava a ROI calibrada. A configuração fica
+O consumo foi medido nos testes finais, com o módulo configurado em classe A, pelo comando
+\texttt{AT+CLASS=A}, e o fluxo em borda com a ROI calibrada. A configuração fica
 gravada no próprio módulo e se manteve após uma queda de energia que o reiniciou. As
 capturas usaram a mesma montagem e o mesmo repouso de 30~s, e a latência e a entrega foram
 registradas ao mesmo tempo, com o \textit{script} de latência:
@@ -344,18 +310,8 @@ registradas ao mesmo tempo, com o \textit{script} de latência:
     ciclos analisados e 30 leituras registradas.
 \end{itemize}
 
-Antes dessas capturas, um teste curto de quatro ciclos com uma versão anterior do firmware
-do fluxo em nuvem, que mantinha a câmera ligada durante todo o envio, foi usado como
-referência para medir o efeito de desligá-la após a captura.
-
 A partir das médias medidas de corrente e tempo acordado de cada fluxo, a autonomia foi
 estimada pela Equação~\eqref{eq:autonomia_modelo} para uma bateria hipotética de
-2.000~mAh e para intervalos de 10~minutos e de 1~hora entre leituras. Na primeira
-campanha, a corrente de repouso medida, de cerca de 24~mA, incluía o Radioenge recebendo
-continuamente em classe C, durante o \textit{deep sleep} do ESP32
-(Seção~\ref{subsubsec:ciclo_operacao}), e os demais componentes da placa. Por isso, a
-estimativa com os parâmetros dessa campanha foi repetida com correntes de repouso
-hipotéticas de 5, 1 e 0,1~mA, para mostrar como o resultado depende desse valor. Na
-segunda campanha, a autonomia foi estimada com a corrente de repouso medida em classe A.
-Nas duas, a medição que separaria a corrente do módulo da dos demais componentes, com o
+2.000~mAh e para intervalos de 10~minutos e de 1~hora entre leituras. Foi usada a corrente de repouso medida em classe A, e a
+medição que separaria a corrente do módulo da dos demais componentes, com o
 módulo desconectado, não foi realizada.

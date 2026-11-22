@@ -1,0 +1,35 @@
+% Elementos comuns aos diagramas de sequência (uml_borda.tex e uml_nuvem.tex).
+% Usado pelo texto (tcc2.tex) e pela apresentação (apresentacao_tcc2.tex).
+% Requer as bibliotecas TikZ arrows.meta e calc.
+%
+% Posição horizontal de cada linha de vida (cm)
+\def\umlXno{0}
+\def\umlXrad{6.0}
+\def\umlXrx{10.5}
+\def\umlXsrv{15.0}
+%
+% \umlcabecalho{x}{texto}: caixa do participante no topo
+\providecommand{\umlcabecalho}[2]{%
+  \node[draw, fill=white, rounded corners=1pt, align=center, minimum width=3.2cm,
+        minimum height=0.9cm, font=\small] at (#1,0) {#2};}
+% \umlvida{x}{y final}: linha de vida tracejada
+\providecommand{\umlvida}[2]{\draw[dashed, black!55] (#1,-0.45) -- (#1,#2);}
+% \umlmsg{y}{x origem}{x destino}{rótulo}: mensagem síncrona
+\providecommand{\umlmsg}[4]{%
+  \draw[-{Stealth[length=2.2mm]}, thick] (#2,#1) -- node[above, font=\footnotesize,
+    align=center, inner sep=2pt] {#4} (#3,#1);}
+% \umlret{y}{x origem}{x destino}{rótulo}: resposta (tracejada)
+\providecommand{\umlret}[4]{%
+  \draw[-{Stealth[length=2.2mm, open]}, dashed] (#2,#1) -- node[above, font=\footnotesize,
+    align=center, inner sep=2pt] {#4} (#3,#1);}
+% \umlauto{y}{x}{rótulo}: mensagem para o próprio participante
+\providecommand{\umlauto}[3]{%
+  \draw[-{Stealth[length=2.2mm]}, thick] (#2,#1) -- ++(0.45,0) -- ++(0,-0.3) -- ++(-0.45,0);
+  \node[anchor=west, font=\footnotesize, align=left, fill=white, inner sep=1pt]
+       at (#2+0.55,#1-0.15) {#3};}
+% \umlloop{y topo}{y base}{x esq}{x dir}{condição}: fragmento combinado "loop"
+\providecommand{\umlloop}[5]{%
+  \draw[black!70] (#3,#1) rectangle (#4,#2);
+  \node[draw, fill=white, anchor=north west, font=\footnotesize\bfseries, inner sep=2pt]
+       (umlL) at (#3,#1) {loop};
+  \node[anchor=west, font=\footnotesize] at (umlL.east) {[#5]};}
