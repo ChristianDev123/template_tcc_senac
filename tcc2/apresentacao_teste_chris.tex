@@ -513,6 +513,39 @@
   }
 \end{frame}
 
+\begin{frame}{Implementação: Sequência de um Ciclo no Fluxo em \textcolor{corBorda}{Borda}}
+  \centering
+  \resizebox{\textwidth}{!}{\input{sections/desenvolvimento/uml_borda}}
+  \fonteslide{Fonte: Elaborado pelos autores (2026).}
+\end{frame}
+
+\begin{frame}{Implementação: Sequência de um Ciclo no Fluxo em \textcolor{corNuvem}{Nuvem}}
+  \centering
+  \resizebox{!}{6.4cm}{\input{sections/desenvolvimento/uml_nuvem}}
+  \fonteslide{Fonte: Elaborado pelos autores (2026).}
+\end{frame}
+
+\begin{frame}{Implementação: Protótipo em Bancada}
+  \centering
+  \begin{minipage}[t]{0.36\textwidth}\centering
+    \includegraphics[height=3.7cm]{sections/imagens/prototipo_conjunto.jpg}\\[2pt]
+    {\tiny\textbf{Conjunto}: câmera fixa sobre o hidrômetro}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.2\textwidth}\centering
+    \includegraphics[height=3.7cm]{sections/imagens/prototipo_no_sensor.jpg}\\[2pt]
+    {\tiny\textbf{Nó sensor}: ESP32-CAM, RD49C e ESP32-CAM-MB}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.2\textwidth}\centering
+    \includegraphics[height=3.7cm]{sections/imagens/prototipo_receptor.jpg}\\[2pt]
+    {\tiny\textbf{Receptor}: Heltec LoRa32}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.2\textwidth}\centering
+    \includegraphics[height=3.7cm]{sections/imagens/prototipo_ina219.jpg}\\[2pt]
+    {\tiny\textbf{Medição}: INA219 e Arduino Uno}
+  \end{minipage}
+  \fonteslide{Fonte: Elaborado pelos autores (2026).}
+\end{frame}
+
 \begin{frame}{Implementação: Hardware, Enlace e OCR}
   \begin{columns}[t]
     \column{0.48\textwidth}
@@ -580,13 +613,24 @@
       \end{axis}
     \end{tikzpicture}
     \column{0.39\textwidth}
+    \centering
+    \includegraphics[width=0.95\linewidth,trim=0 1265 0 0,clip]{sections/imagens/ocr_leitura_caixa_manual.png}\\[1pt]
+    {\tiny Captura do ESP32-CAM: janela recortada, fatias e dígitos lidos}
     \begin{itemize}\scriptsize
-      \item \textbf{Comum (39 fotos)}: 46\% leituras (85\% dígitos) com janela manual; \textbf{82\%} leituras (92\% dígitos) endireitada no servidor.
-      \item \textbf{Físico bancada (30 fotos)}: ROI + face atingiu \textbf{83\%} (25/30) leituras e \textbf{97\%} (175/180) dígitos.
+      \item \textbf{Físico (30 fotos)}: ROI + face, \textbf{83\%} das leituras e \textbf{97\%} dos dígitos.
       \item JPEG q90 \textbf{não alterou} os acertos entre borda e nuvem.
     \end{itemize}
   \end{columns}
   \fonteslide{Placa e servidor produziram leituras idênticas nos 33 quadros da bancada enviados à placa.}
+\end{frame}
+
+\begin{frame}{Resultados: Leituras do Hidrômetro Físico (30 Fotos)}
+  \centering
+  \includegraphics[width=\linewidth]{sections/imagens/ocr_grade_bancada.png}\\[3pt]
+  {\scriptsize \textcolor{corOk}{\textbf{25 de 30}} leituras exatas e 175 de 180 dígitos; os
+  \textcolor{corFalha}{\textbf{5 erros}} estão todos no último rolete, lido como 0.}
+  \fonteslide{Fonte: Elaborado pelos autores (2026). Fluxo em borda, ROI calibrada à mão e face da roda;
+  linhas laranja dividem as fatias e os retângulos azuis marcam a face enviada ao classificador.}
 \end{frame}
 
 \begin{frame}{Resultados: H2 --- Custo Computacional e Latência}
@@ -623,30 +667,26 @@
   \begin{columns}[c]
     \column{0.6\textwidth}
     \centering
-    \scriptsize
-    \renewcommand{\arraystretch}{1.15}
-    \begin{tabular}{@{}lrr@{}}
-      \toprule
-      & \textbf{\color{corNuvem}Nuvem} & \textbf{\color{corBorda}Borda} \\
-      \midrule
-      \multicolumn{3}{@{}l}{\textit{Testes iniciais (27/10): localização automática, classe C}} \\
-      Carga por leitura & 4,64~mAh & 0,824~mAh \\
-      Corrente em repouso & 23,7~mA & 25,2~mA \\
-      \addlinespace
-      \multicolumn{3}{@{}l}{\textit{Testes finais (19/11): ROI calibrada, classe A (adotada)}} \\
-      Carga por leitura (média) & \textbf{2,91~mAh} & \textbf{0,175~mAh} \\
-      Corrente em repouso & 6,3~mA & 6,1~mA \\
-      Autonomia (1 leit./10~min) & 3,8 dias & \textbf{12,1 dias} \\
-      Autonomia (1 leit./hora) & 9,5 dias & \textbf{13,2 dias} \\
-      \bottomrule
-    \end{tabular}\\[2pt]
-    {\tiny Modelo ideal para bateria hipotética de 2.000~mAh; repouso de 30~s nas medições}
+    \begin{tikzpicture}
+      \begin{groupplot}[estiloSlides,
+          group style={group size=1 by 2, vertical sep=1.3cm},
+          width=\linewidth, height=2.75cm,
+          xmin=0, xmax=175, ymin=0, ymax=250, ytick={0,100,200},
+          ylabel={mA}]
+        \nextgroupplot[title={\color{corNuvem}Nuvem: 2,91~mAh por leitura}]
+        \addplot[color=corNuvem, line width=0.35pt] table {sections/dados/corrente_ciclo_nuvem_classe_a.dat};
+        \nextgroupplot[title={\color{corBorda}Borda: 0,175~mAh por leitura},
+                       xlabel={Tempo desde o despertar (s)}]
+        \addplot[color=corBorda, line width=0.35pt] table {sections/dados/corrente_ciclo_borda_classe_a.dat};
+      \end{groupplot}
+    \end{tikzpicture}
     \column{0.37\textwidth}
     \bignum[corBorda]{16,7$\times$}{menos carga por leitura na borda}
     \vspace{0.1cm}
     \begin{itemize}\scriptsize
       \item Consumo regido pelo \textbf{tempo acordado} (147,6~s $\times$ 6,49~s).
       \item \textbf{Classe A} reduziu o repouso de $\approx$24 para $\approx$6,2~mA.
+      \item Autonomia (2.000~mAh): \textbf{12,1} $\times$ 3,8 dias (1 leit./10~min); 13,2 $\times$ 9,5 dias (1 leit./h).
     \end{itemize}
     \etiqueta{corOk}{H3 CONFIRMADA}
   \end{columns}
