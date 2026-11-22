@@ -1,0 +1,26 @@
+As comparações entre proporções usam testes exatos, adequados às amostras pequenas deste
+trabalho, todos bilaterais e com nível de significância de 5\%.
+
+Na comparação entre o classificador em ponto flutuante e em INT8 (hipótese \textit{H1}),
+as duas versões são avaliadas sobre os mesmos recortes e as mesmas leituras, de modo que
+as amostras são pareadas. Nesse caso, aplica-se o teste exato de McNemar
+\cite{mcnemar1947}. Na comparação de dois classificadores executados uma única vez sobre o
+mesmo conjunto de teste, esse foi o único teste com taxa aceitável de erro do tipo I, isto
+é, de falsos positivos, entre os avaliados por \citeonline{dietterich1998}. O teste
+considera apenas os pares discordantes: sendo $b$ o número de casos acertados apenas pela
+primeira versão e $c$ o número de casos acertados apenas pela segunda, sob a hipótese nula
+de desempenho igual cada par discordante tem probabilidade de $1/2$ de favorecer qualquer
+uma das versões, e o valor-$p$ bilateral é dado pela Equação~\eqref{eq:mcnemar}:
+
+\begin{equation}
+    \label{eq:mcnemar}
+    p = \min\left(1,\; 2 \sum_{i=0}^{\min(b,c)} \binom{b+c}{i} \left(\frac{1}{2}\right)^{b+c}\right)
+\end{equation}
+
+Na comparação da entrega entre os fluxos, as leituras e os pacotes de cada fluxo formam
+amostras independentes, organizadas em uma tabela de contingência $2 \times 2$ (fluxo e
+resultado, entregue ou perdido). Nesse caso, aplica-se o teste exato de Fisher
+\cite{fisher1934}, que obtém a probabilidade de cada tabela com as mesmas somas de linhas e
+colunas pela distribuição hipergeométrica; o valor-$p$ bilateral é a soma das
+probabilidades das tabelas tão ou menos prováveis que a observada. O mesmo teste foi usado
+para comparar a perda de blocos conforme a sua posição na sequência de envio.
