@@ -44,11 +44,12 @@ Tabela~\ref{tab:sintese_hipoteses}:
 
 \begin{itemize}
     \item a H1, avaliada pela comparação entre as versões em ponto flutuante e em INT8 do
-    mesmo classificador, foi confirmada, mas a redução de acurácia foi de apenas
-    0,08 ponto percentual (95,38\% contra 95,46\%) e não teve significância estatística
-    ($p = 0{,}29$), com macro-F1 de 0,945 contra 0,946; no hidrômetro físico, as duas
+    mesmo classificador, não foi confirmada: a quantização não reduziu a acurácia de
+    forma estatisticamente significativa, com diferença de 0,08 ponto percentual
+    (95,38\% contra 95,46\%, $p = 0{,}29$) e macro-F1 de 0,945 contra 0,946; no hidrômetro físico, as duas
     versões leram as mesmas 25 das 30 fotos, de
-    modo que a quantização não penalizou o reconhecimento;
+    modo que a quantização não penalizou o reconhecimento, resultado favorável ao uso do
+    INT8 no nó;
     \item a H2 foi confirmada: no nó, com a ROI, a leitura do fluxo em borda ocupou a CPU
     por 1.917~ms e teve pico de 788,9~KB de PSRAM, contra cerca de 11~ms de captura e
     compressão JPEG e 148,9~KB no fluxo em nuvem, com a CPU a 240~MHz nos dois;

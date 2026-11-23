@@ -87,7 +87,7 @@ apenas operadores INT8 do TensorFlow Lite. Na entrada, a escala de $1/255$ com p
 de $-128$ permite converter cada pixel diretamente, subtraindo 128 do seu valor. Diferente
 do pipeline U-NET + CRNN + CTC, que usou treinamento consciente da quantização (QAT), o
 pipeline CNN Simples não
-precisou dessa técnica: a perda de acurácia na quantização foi desprezível, como mostra a
+precisou dessa técnica: a quantização não reduziu a acurácia de forma estatisticamente significativa, como mostra a
 avaliação da hipótese H1 nos resultados. Por fim, o modelo \texttt{.tflite} foi
 convertido em um vetor de bytes em um arquivo de cabeçalho C (\texttt{.h}), incluído no
 firmware.

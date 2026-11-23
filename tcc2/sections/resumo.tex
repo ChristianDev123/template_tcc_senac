@@ -12,17 +12,17 @@ hardware, baseado no microcontrolador \gls{esp32cam} e no módulo \gls{lorawan} 
 RD49C, e sobre o mesmo enlace no plano AU915, configurado em SF8 com canal fixo de
 500~kHz, em conformidade com o item 10.3 do Ato n\textordmasculine~14.448 da ANATEL, que
 dispensa o salto em frequência para essa largura de faixa. 
-O reconhecimento basea-se na implementação de \gls{cnn} voltada à classificação de dígitos,
+O reconhecimento baseia-se na implementação de \gls{cnn} voltada à classificação de dígitos,
 treinada com dataset público e conjunto de fotos próprias, quantizada em inteiros de 8 bits (INT8)
-e ponto flutuante de 32 bits (FP32), utilizando principalmente hidrômetros como caso aplicado.
+a partir da versão em ponto flutuante de 32 bits (FP32), utilizando principalmente hidrômetros como caso aplicado.
 No fluxo em borda, o nó executa o
 \gls{ocr} e transmite apenas a leitura, em um único pacote; no fluxo em nuvem, o nó comprime
 a imagem em JPEG e a transmite dividida em vários pacotes. 
 Os experimentos, realizados em bancada, avaliaram o efeito da quantização sobre a
 acurácia, o custo computacional do processamento no nó, a latência de ponta a ponta, a taxa
 de entrega de pacotes e de leituras e o consumo de energia por leitura, medido com sensor de
-corrente, a partir do qual foi estimada a autonomia do nó. A quantização teve efeito
-desprezível sobre a acurácia, e os dois fluxos leram corretamente 25 de 30 fotos de um
+corrente, a partir do qual foi estimada a autonomia do nó. A quantização em INT8 não
+reduziu a acurácia de forma estatisticamente significativa, e os dois fluxos leram corretamente 25 de 30 fotos de um
 hidrômetro físico. Na configuração final, com a região dos dígitos calibrada na instalação e
 o módulo de rádio em classe A, o fluxo em borda teve latência de 3,50~s,
 contra 148,3~s do fluxo em nuvem, e consumiu 0,175~mAh por leitura, contra 2,91~mAh. Com uma

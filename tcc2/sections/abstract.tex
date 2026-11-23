@@ -19,8 +19,8 @@
     on the server. The bench experiments evaluated the effect of quantization on accuracy,
     the computational cost of processing on the node, end-to-end latency, packet and
     reading delivery rates, and energy consumption per reading, measured with a current
-    sensor, from which the node's autonomy was estimated. Quantization had a negligible
-    effect on accuracy, and both flows correctly read 25 of 30 photos of a physical water
+    sensor, from which the node's autonomy was estimated. Quantization to INT8 did not
+    reduce accuracy in a statistically significant way, and both flows correctly read 25 of 30 photos of a physical water
     meter. In the final configuration, with the digit region calibrated at installation and
     the radio module in class A, the edge flow had a latency of 3.50~s, against 148.3~s
     for the cloud flow, and consumed 0.175~mAh per reading, against 2.91~mAh. With a
