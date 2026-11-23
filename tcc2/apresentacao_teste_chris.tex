@@ -144,8 +144,8 @@
   \vspace{0.2cm}
   \begin{minipage}{0.86\textwidth}\centering
   {\usebeamerfont{title}\usebeamercolor[fg]{title}\bfseries\normalsize\inserttitle\par}
-  \end{minipage}
-  \vspace{0.1cm}
+  \end{minipage}\par
+  \vspace{0.15cm}
   {\footnotesize\insertsubtitle\par}
 
   \vspace{0.22cm}
@@ -379,6 +379,36 @@
     \bottomrule
   \end{tabular}
   \fonteslide{Adaptado de Andriulo et al. (2024).}
+\end{frame}
+
+\begin{frame}{Trabalhos Correlatos}
+  \centering
+  \scriptsize
+  \renewcommand{\arraystretch}{1.35}
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.35cm}>{\raggedright\arraybackslash}p{3.7cm}>{\raggedright\arraybackslash}p{3.0cm}>{\raggedright\arraybackslash}p{3.9cm}@{}}
+    \toprule
+    \textbf{Trabalho} & \textbf{Solução} & \textbf{Limitação} & \textbf{Diferencial deste trabalho} \\
+    \midrule
+    \textbf{Silva Vilela (2021)} &
+      OCR na borda em ESP32, envio por LoRaWAN e \textit{dashboard} de consumo &
+      Sem métricas de energia e de processamento; \textit{dataset} sem tratamento de viés &
+      Compara borda $\times$ nuvem e mede energia, processamento e manutenção \\
+    \addlinespace
+    \textbf{Tedjojuwono e Jahja (2024)} &
+      Troca o medidor por sensor de fluxo (Arduino + YF-S201), envio por 3G/GPRS e aplicação \textit{web} &
+      Foco só na vazão; substitui o hidrômetro &
+      Aproveita o medidor analógico existente e usa LoRaWAN, de menor consumo \\
+    \addlinespace
+    \textbf{Bravo, Javier e Tolentino (2025)} &
+      ESP32-CAM com OCR no nó, LoRa com repetidores e \textit{deep sleep}; 99,71\% dos dígitos &
+      Não define a regulação de rádio seguida; foco em uma solução para distribuidoras &
+      Compara os dois fluxos para orientar projetos IoT, dentro do AU915 (ANATEL) \\
+    \bottomrule
+  \end{tabular}
+  \vspace{0.25cm}
+
+  {\scriptsize Bravo, Javier e Tolentino (2025) serviram de referência para o fluxo em borda deste trabalho.}
+  \fonteslide{Fonte: Elaborado pelos autores (2026), a partir de Silva Vilela (2021), Tedjojuwono e Jahja (2024) e Bravo, Javier e Tolentino (2025).}
 \end{frame}
 
 % ===============================================================
