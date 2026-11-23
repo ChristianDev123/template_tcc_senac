@@ -258,7 +258,19 @@ valor.
 Os cinco erros estão todos no último rolete, o das unidades, lido como 0: as leituras
 \texttt{000027}, \texttt{000034} e \texttt{000037} foram lidas como \texttt{000020},
 \texttt{000030} e \texttt{000030}, e as duas fotos de \texttt{000041}, como
-\texttt{000040}.
+\texttt{000040}. A Figura~\ref{fig:grade_bancada} mostra as 30 leituras.
+
+\begin{figure}[H]
+    \centering
+    \caption{Leitura das 30 fotos do hidrômetro da bancada com a ROI calibrada e o recorte da face da roda}
+    \label{fig:grade_bancada}
+    \includegraphics[width=\textwidth]{sections/imagens/ocr_grade_bancada.png}
+    \legend{Fonte: Elaborado pelos autores (2026). Fluxo em borda. Cada quadro mostra a janela
+    recortada do quadro de $160 \times 120$ pixels, ampliada; as linhas laranja dividem as fatias,
+    os retângulos azuis marcam a face da roda enviada ao classificador, e abaixo estão a leitura
+    real e a lida, com o dígito errado em vermelho. Bordas verdes indicam leitura exata, e
+    vermelhas, leitura com erro.}
+\end{figure}
 
 A leitura na placa foi avaliada com os 33 quadros da bancada, capturados pela câmera do
 nó, rotulados no momento da captura olhando o visor e enviados ao firmware do fluxo em

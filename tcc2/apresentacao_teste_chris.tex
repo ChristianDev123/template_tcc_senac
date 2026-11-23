@@ -473,7 +473,7 @@
   \vspace{-0.4cm}
   \centering
   \makebox[\linewidth][c]{%
-    \resizebox{0.70\textwidth}{!}{%
+    \resizebox{!}{6.9cm}{%
       \begin{tikzpicture}[
           font=\tiny,
           node distance=3.2mm and 3.5mm,
@@ -486,25 +486,27 @@
           \node[bloco] (hidro) {Medidor analógico (mostrador de roletes)};
           \node[bloco, below=of hidro] (cam)
               {\textbf{ESP32-CAM}\\captura quadro $160\times120$ em tons de cinza e desliga câmera/\textit{deep sleep}};
-          \node[bloco=4.2cm, draw=corBorda] (borda) at ($(cam.south)+(-2.35cm,-0.85cm)$)
+          \node[bloco=4.0cm, draw=corBorda, anchor=north, minimum height=1.55cm] (borda)
+              at ($(cam.south)+(-2.65cm,-5mm)$)
               {\textbf{\color{corBorda}Fluxo em borda}\\classifica dígitos na ROI calibrada (TFLite Micro, INT8)\\envia leitura: \textbf{9 bytes, 1 pacote (FPort 2)}};
-          \node[bloco=4.2cm, draw=corNuvem] (nuvem) at ($(cam.south)+(2.35cm,-0.85cm)$)
+          \node[bloco=4.0cm, draw=corNuvem, anchor=north, minimum height=1.55cm] (nuvem)
+              at ($(cam.south)+(2.65cm,-5mm)$)
               {\textbf{\color{corNuvem}Fluxo em nuvem}\\comprime em JPEG (qualidade 90, 2,9--3,4~KB)\\envia blocos de até 175~B + 6~B cabeçalho (FPort 1)};
-          \node[bloco] (radio) at ($(borda.south)!0.5!(nuvem.south)+(0,-7mm)$)
+          \node[bloco, anchor=north] (radio) at ($(borda.south)!0.5!(nuvem.south)+(0,-6mm)$)
               {\textbf{Radioenge RD49C}\\módulo LoRaWAN por UART (comandos AT), classe A};
           \node[draw, dashed, rounded corners=3pt, inner sep=1.6mm,
                 fit=(cam) (borda) (nuvem) (radio),
                 label={[font=\tiny\bfseries, anchor=north west]north west:Nó sensor}] {};
-          \node[bloco, below=6.5mm of radio] (rx)
+          \node[bloco, below=10mm of radio] (rx)
               {\textbf{Receptor LoRa32}\\escuta canal 915,9~MHz e repassa quadros via serial};
           \node[bloco, below=of rx] (pc)
               {\textbf{Computador (servidor)}\\descriptografa (\texttt{AppSKey}); lê FPort 2 ou remonta JPEG e executa OCR via LiteRT (FPort 1)};
           \draw[seta] (hidro) -- (cam);
-          \draw[seta] (cam.south) -- ++(0,-1.5mm) -| (borda.north);
-          \draw[seta] (cam.south) -- ++(0,-1.5mm) -| (nuvem.north);
-          \draw[thick] (borda.south) |- ([yshift=2.2mm]radio.north);
-          \draw[thick] (nuvem.south) |- ([yshift=2.2mm]radio.north);
-          \draw[seta] ([yshift=2.2mm]radio.north) -- (radio.north);
+          \draw[seta] (cam.south) -- ++(0,-2.5mm) -| (borda.north);
+          \draw[seta] (cam.south) -- ++(0,-2.5mm) -| (nuvem.north);
+          \draw[thick] (borda.south) |- ([yshift=3mm]radio.north);
+          \draw[thick] (nuvem.south) |- ([yshift=3mm]radio.north);
+          \draw[seta] ([yshift=3mm]radio.north) -- (radio.north);
           \draw[seta] (radio) -- node[rotulo, right=1mm]
               {AU915, DR6 (SF8 / 500~kHz), canal 64 fixo, ABP} (rx);
           \draw[seta] (rx) -- node[rotulo, right=1mm] {USB-serial} (pc);
