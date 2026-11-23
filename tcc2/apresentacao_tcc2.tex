@@ -186,7 +186,7 @@
     \column{0.41\textwidth}
     \centering
     \IfFileExists{assets/apresentacao/bancada_quadro.jpg}{%
-      \includegraphics[width=0.84\linewidth]{assets/apresentacao/Img_Original_Unet.jpg}%
+      \includegraphics[height=3.4cm]{assets/apresentacao/Img_Original_Unet.jpg}%
     }{%
       \begin{tikzpicture}
         \draw[draw=senacblue, fill=senacblue!5, rounded corners=3pt, thick] (0,0) rectangle (4.3,2.4);
@@ -288,86 +288,66 @@
 % ===============================================================
 \section{Referencial Teórico}
 % ===============================================================
-\subsection{LoRa e LoRaWAN}
-\begin{frame}{Referencial Teórico: LoRa e LoRaWAN}
+\subsection{LoRaWAN e Regulação}
+\begin{frame}{Referencial Teórico: LoRaWAN e Regulação (AU915)}
   \begin{columns}[t]
     \column{0.48\textwidth}
     {\footnotesize\bfseries\color{senacblue}Camada Física (LoRa)}
     \begin{itemize}\scriptsize
-      \setlength{\itemsep}{3pt}
-      \item Modulação por espalhamento espectral \textit{Chirp Spread Spectrum} (CSS) da Semtech: longo alcance e baixo consumo.
-      \item Parâmetros principais:
-        \begin{itemize}\tiny
-          \item \textbf{BW}: largura de banda em kHz;
-          \item \textbf{SF}: fator de espalhamento (alcance e taxa);
-          \item \textbf{CR}: taxa de codificação para redundância/correção.
-        \end{itemize}
+      \setlength{\itemsep}{2pt}
+      \item Modulação \textit{Chirp Spread Spectrum} (CSS) da Semtech: longo alcance e baixo consumo.
+      \item Parâmetros: \textbf{BW} (largura de banda), \textbf{SF} (fator de espalhamento: alcance $\times$ taxa) e \textbf{CR} (taxa de codificação).
     \end{itemize}
-    \column{0.49\textwidth}
+    \vspace{0.1cm}
     {\footnotesize\bfseries\color{senacblue}Protocolo (LoRaWAN)}
     \begin{itemize}\scriptsize
-      \setlength{\itemsep}{3pt}
-      \item Rede LPWAN \textit{open-source} (LoRa Alliance): dispositivos finais, \textit{gateways}, servidores de rede e aplicação.
+      \setlength{\itemsep}{2pt}
+      \item Rede LPWAN aberta (LoRa Alliance): dispositivos finais, \textit{gateways}, servidores de rede e aplicação.
       \item Criptografia simétrica \textbf{AES}; ativação \textbf{OTAA} ou \textbf{ABP}.
       \item Classes: \textbf{A} (menor consumo), \textbf{B} (janelas agendadas) e \textbf{C} (recepção contínua).
     \end{itemize}
-  \end{columns}
-\end{frame}
-
-\subsection{Restrições Regulatórias}
-\begin{frame}{Referencial Teórico: Restrições Regulatórias}
-  \begin{columns}[t]
-    \column{0.51\textwidth}
+    \column{0.49\textwidth}
     {\footnotesize\bfseries\color{senacblue}Ato n\textordmasculine~14.448 da ANATEL (AU915)}
     \begin{itemize}\scriptsize
-      \setlength{\itemsep}{3pt}
-      \item Faixa ISM de 915 a 928~MHz no plano AU915 (sem restrição de \textit{duty cycle}).
-      \item \textbf{Salto em canais $<$250~kHz (125~kHz)}: ocupação média $\leq$ \textbf{0,4~s} em 14~s e $\geq$35 canais.
-      \item \textbf{Item 10.3 (Modulação Digital)}: dispensa salto e limite por canal se:
-        \begin{itemize}\tiny
-          \item largura a 6~dB $\geq$ \textbf{500~kHz};
-          \item potência de pico $\leq$ 1~W e densidade $\leq$ 8~dBm em 3~kHz.
-        \end{itemize}
+      \setlength{\itemsep}{2pt}
+      \item Faixa de 915 a 928~MHz, sem restrição de \textit{duty cycle}.
+      \item \textbf{Canais $<$250~kHz}: salto em $\geq$35 canais e ocupação média $\leq$ \textbf{0,4~s} em 14~s.
+      \item \textbf{Item 10.3}: dispensa o salto se a largura a 6~dB for $\geq$ \textbf{500~kHz}, com potência de pico $\leq$ 1~W e densidade $\leq$ 8~dBm em 3~kHz.
     \end{itemize}
-    \column{0.46\textwidth}
-    {\footnotesize\bfseries\color{senacblue}Configuração DR6}
+    \vspace{0.1cm}
+    {\footnotesize\bfseries\color{senacblue}Configuração adotada: DR6}
     \begin{itemize}\scriptsize
-      \setlength{\itemsep}{3pt}
-      \item AU915 possui 64 canais de 125~kHz (0--63) e 8 de 500~kHz (64--71).
+      \setlength{\itemsep}{2pt}
+      \item AU915: 64 canais de 125~kHz (0--63) e 8 de 500~kHz (64--71).
       \item \textbf{DR6 (SF8 / 500~kHz)}: 12.500~bit/s nominais e \textit{payload} até \textbf{222~bytes}.
-      \item Permite canal fixo (915,9~MHz, canal 64) em conformidade com o item 10.3.
+      \item Canal fixo 64 (915,9~MHz), conforme o item 10.3.
     \end{itemize}
   \end{columns}
 \end{frame}
 
-\subsection{OCR}
-\begin{frame}{Referencial Teórico: OCR}
+\subsection{OCR e Edge $\times$ Cloud}
+\begin{frame}{Referencial Teórico: OCR e Edge $\times$ Cloud Computing}
   \begin{columns}[t]
     \column{0.48\textwidth}
-    {\footnotesize\bfseries\color{senacblue}Pipeline e CNNs}
+    {\scriptsize\bfseries\color{senacblue}Pipeline e CNNs}
     \begin{itemize}\scriptsize
-      \setlength{\itemsep}{3pt}
-      \item Converte imagens com texto/dígitos em dados estruturados.
-      \item Etapas clássicas: pré-processamento, localização/segmentação (ROI), classificação e pós-processamento.
-      \item \textbf{CNNs}: convolução (com escala de cinza reduzindo canais), \textit{max pooling} e camadas densas.
+      \setlength{\itemsep}{1pt}
+      \item Etapas: pré-processamento, localização/segmentação (ROI), classificação e pós-processamento.
+      \item \textbf{CNNs}: convolução, \textit{max pooling} e camadas densas.
     \end{itemize}
     \column{0.49\textwidth}
-    {\footnotesize\bfseries\color{senacblue}Segmentação, Sequência e Quantização}
+    {\scriptsize\bfseries\color{senacblue}Segmentação, Sequência e Quantização}
     \begin{itemize}\scriptsize
-      \setlength{\itemsep}{3pt}
-      \item \textbf{U-Net}: \textit{encoder}, \textit{bottleneck}, \textit{decoder} e \textit{skip connections} com perda híbrida BCE + \textit{Dice loss}.
-      \item \textbf{CRNN + CTC}: leitura sequencial; em microcontroladores, LSTMs têm custo e suporte limitados.
-      \item \textbf{Quantização INT8 e QAT}: reduzem memória e aceleram inferência embarcada.
+      \setlength{\itemsep}{1pt}
+      \item \textbf{U-Net} (\textit{encoder}--\textit{decoder}) e \textbf{CRNN + CTC} (leitura sequencial; LSTMs caras em microcontroladores).
+      \item \textbf{Quantização INT8 e QAT}: reduzem memória e aceleram a inferência embarcada.
     \end{itemize}
   \end{columns}
-\end{frame}
-
-\subsection{Edge e Cloud Computing}
-\begin{frame}{Referencial Teórico: Edge e Cloud Computing}
+  \vspace{0.2cm}
   \centering
   \scriptsize
-  \renewcommand{\arraystretch}{1.3}
-  \begin{tabular}{@{}l >{\raggedright\arraybackslash}p{5.4cm} >{\raggedright\arraybackslash}p{5.4cm}@{}}
+  \renewcommand{\arraystretch}{1.05}
+  \begin{tabular}{@{}l >{\raggedright\arraybackslash}p{5.0cm} >{\raggedright\arraybackslash}p{5.0cm}@{}}
     \toprule
     \textbf{Critério} & \textbf{\color{corBorda}Edge Computing (Borda)} & \textbf{\color{corNuvem}Cloud Computing (Nuvem)} \\
     \midrule
@@ -378,7 +358,7 @@
     \textbf{Firmware e gestão} & Maior complexidade no nó & Menor complexidade de firmware e manutenção centralizada \\
     \bottomrule
   \end{tabular}
-  \fonteslide{Adaptado de Andriulo et al. (2024).}
+  \fonteslide{Tabela adaptada de Andriulo et al. (2024).}
 \end{frame}
 
 \begin{frame}{Trabalhos Correlatos}
@@ -447,7 +427,6 @@
       \item Localização automática na borda atingiu \textbf{15,5~s} ($\approx$17,6~s no ciclo) e \textbf{Dice 0,39}.
       \item Custo temporal e baixa precisão de segmentação inviabilizaram o uso contínuo.
     \end{itemize}
-    \etiqueta{corFalha}{ABANDONADO}
 
     \column{0.32\textwidth}
     {\scriptsize\bfseries\color{senacblue}2. U-Net + CRNN + CTC}
@@ -461,7 +440,6 @@
           \item U-Net compacta ($160\times160$, $\approx$1,7~MB) gerou máscara vazia em $\approx$15\%.
         \end{itemize}
     \end{itemize}
-    \etiqueta{corFalha}{ABANDONADO}
 
     \column{0.33\textwidth}
     {\scriptsize\bfseries\color{senacblue}3. U-Net + CNN de Dígito ($68\times68$)}
@@ -470,7 +448,6 @@
       \item Herdou a limitação de memória da U-Net para execução embarcada.
       \item Treinada com fontes genéricas (Kaggle), fora do domínio de hidrômetros.
     \end{itemize}
-    \etiqueta{corFalha}{ABANDONADO}
     \vspace{0.12cm}
     \begin{block}{Solução adotada}
       \tiny CNN leve ($28\times28$, 81,5~KB INT8) treinada com recortes de roletes + ROI calibrada na instalação.
@@ -498,62 +475,52 @@
   \end{tabular}
 \end{frame}
 
+\begin{frame}{Metodologia de Pesquisa: Definição das Métricas}
+  \begin{columns}[t]
+    \column{0.49\textwidth}
+    {\scriptsize\bfseries\color{senacorange}OCR (H1)}
+    \begin{itemize}\scriptsize
+      \setlength{\itemsep}{2pt}
+      \item \textbf{Leitura exata}: fração das fotos com os 6 dígitos corretos;
+        $Acc_{\mathrm{leitura}} = \frac{1}{M}\sum_{m} \mathbf{1}[\hat{y}_m = y_m]$.
+      \item \textbf{Acerto por dígito}: fração dos dígitos corretos, posição a posição.
+      \item \textbf{CER}: distância de edição (Levenshtein) por dígito;
+        $CER = \frac{\sum_m d_{\mathrm{L}}(\hat{y}_m, y_m)}{\sum_m N_m}$.
+      \item \textbf{Macro-F1}: média do $F1 = \frac{2VP}{2VP + FP + FN}$ nas 10 classes (0 a 9).
+      \item \textbf{McNemar exato}: FP32 $\times$ INT8 nos mesmos recortes (amostras pareadas).
+    \end{itemize}
+    \vspace{0.08cm}
+    {\scriptsize\bfseries\color{senacorange}Custo no nó (H2)}
+    \begin{itemize}\scriptsize
+      \item Tempo de processamento, uso do núcleo da CPU e pico de PSRAM.
+    \end{itemize}
+    \column{0.49\textwidth}
+    {\scriptsize\bfseries\color{senacorange}Energia (H3)}
+    \begin{itemize}\scriptsize
+      \setlength{\itemsep}{2pt}
+      \item \textbf{Carga por leitura}: corrente integrada em um ciclo inteiro;
+        $Q = \frac{1}{3600}\int i(t)\,dt$ (mAh).
+      \item \textbf{Autonomia}: $A = \frac{C_{\mathrm{bat}}}{Q(T)} \cdot \frac{T}{86400}$ dias, com
+        $Q(T) = \frac{I_{\mathrm{ac}}\,t_{\mathrm{ac}} + I_{\mathrm{rep}}\,(T - t_{\mathrm{ac}})}{3600}$.
+    \end{itemize}
+    \vspace{0.08cm}
+    {\scriptsize\bfseries\color{senacorange}Rede (complementares)}
+    \begin{itemize}\scriptsize
+      \setlength{\itemsep}{2pt}
+      \item \textbf{Latência}: do disparo no nó até o dado disponível no servidor.
+      \item \textbf{PDR} $= \frac{\text{pacotes recebidos}}{\text{pacotes enviados}}$;
+        \textbf{entrega por leitura} $= \frac{\text{leituras no servidor}}{\text{leituras disparadas}}$.
+      \item \textbf{Fisher exato}: entrega entre os fluxos (amostras independentes).
+    \end{itemize}
+  \end{columns}
+  \fonteslide{Testes exatos, bilaterais, com nível de significância de 5\%.}
+\end{frame}
+
 \subsection{Implementação do Fluxo Definitivo}
-\begin{frame}[fragile]{Implementação do Fluxo Definitivo: Arquitetura}
-  \vspace{-0.4cm}
+\begin{frame}{Implementação: Sequência de um Ciclo em \only<1>{\textcolor{corBorda}{Borda}}\only<2>{\textcolor{corNuvem}{Nuvem}}}
   \centering
-  \makebox[\linewidth][c]{%
-    \resizebox{!}{6.9cm}{%
-      \begin{tikzpicture}[
-          font=\tiny,
-          node distance=3.2mm and 3.5mm,
-          bloco/.style={draw, rounded corners=2pt, align=center, fill=white,
-                       minimum height=5.5mm, text width=#1},
-          bloco/.default=4.8cm,
-          seta/.style={-{Stealth[length=1.5mm]}, thick},
-          rotulo/.style={font=\tiny\itshape, align=center}
-      ]
-          \node[bloco] (hidro) {Medidor analógico (mostrador de roletes)};
-          \node[bloco, below=of hidro] (cam)
-              {\textbf{ESP32-CAM}\\captura quadro $160\times120$ em tons de cinza e desliga câmera/\textit{deep sleep}};
-          \node[bloco=4.0cm, draw=corBorda, anchor=north, minimum height=1.55cm] (borda)
-              at ($(cam.south)+(-2.65cm,-5mm)$)
-              {\textbf{\color{corBorda}Fluxo em borda}\\classifica dígitos na ROI calibrada (TFLite Micro, INT8)\\envia leitura: \textbf{9 bytes, 1 pacote (FPort 2)}};
-          \node[bloco=4.0cm, draw=corNuvem, anchor=north, minimum height=1.55cm] (nuvem)
-              at ($(cam.south)+(2.65cm,-5mm)$)
-              {\textbf{\color{corNuvem}Fluxo em nuvem}\\comprime em JPEG (qualidade 90, 2,9--3,4~KB)\\envia blocos de até 175~B + 6~B cabeçalho (FPort 1)};
-          \node[bloco, anchor=north] (radio) at ($(borda.south)!0.5!(nuvem.south)+(0,-6mm)$)
-              {\textbf{Radioenge RD49C}\\módulo LoRaWAN por UART (comandos AT), classe A};
-          \node[draw, dashed, rounded corners=3pt, inner sep=1.6mm,
-                fit=(cam) (borda) (nuvem) (radio),
-                label={[font=\tiny\bfseries, anchor=north west]north west:Nó sensor}] {};
-          \node[bloco, below=10mm of radio] (rx)
-              {\textbf{Receptor LoRa32}\\escuta canal 915,9~MHz e repassa quadros via serial};
-          \node[bloco, below=of rx] (pc)
-              {\textbf{Computador (servidor)}\\descriptografa (\texttt{AppSKey}); lê FPort 2 ou remonta JPEG e executa OCR via LiteRT (FPort 1)};
-          \draw[seta] (hidro) -- (cam);
-          \draw[seta] (cam.south) -- ++(0,-2.5mm) -| (borda.north);
-          \draw[seta] (cam.south) -- ++(0,-2.5mm) -| (nuvem.north);
-          \draw[thick] (borda.south) |- ([yshift=3mm]radio.north);
-          \draw[thick] (nuvem.south) |- ([yshift=3mm]radio.north);
-          \draw[seta] ([yshift=3mm]radio.north) -- (radio.north);
-          \draw[seta] (radio) -- node[rotulo, right=1mm]
-              {AU915, DR6 (SF8 / 500~kHz), canal 64 fixo, ABP} (rx);
-          \draw[seta] (rx) -- node[rotulo, right=1mm] {USB-serial} (pc);
-      \end{tikzpicture}%
-    }%
-  }
-\end{frame}
-
-\begin{frame}{Implementação: Sequência de um Ciclo no Fluxo em \textcolor{corBorda}{Borda}}
-  \centering
-  \resizebox{\textwidth}{!}{\input{sections/desenvolvimento/uml_borda}}
-  \fonteslide{Fonte: Elaborado pelos autores (2026).}
-\end{frame}
-
-\begin{frame}{Implementação: Sequência de um Ciclo no Fluxo em \textcolor{corNuvem}{Nuvem}}
-  \centering
-  \resizebox{!}{6.4cm}{\input{sections/desenvolvimento/uml_nuvem}}
+  \only<1>{\resizebox{\textwidth}{!}{\input{sections/desenvolvimento/uml_borda}}}%
+  \only<2>{\resizebox{!}{6.4cm}{\input{sections/desenvolvimento/uml_nuvem}}}
   \fonteslide{Fonte: Elaborado pelos autores (2026).}
 \end{frame}
 
@@ -623,8 +590,7 @@
       \item Hidrômetro físico (30 fotos): \textbf{25/30} (83,3\%) e 175/180 dígitos (97,2\%, CER 0,028) em ambas ($p = 1{,}0$).
     \end{itemize}
     \vspace{0.1cm}
-    \etiqueta{senacblue}{H1 NÃO CONFIRMADA}\\[2pt]
-    {\scriptsize sem redução significativa: favorável ao INT8}
+    {\scriptsize H1 não confirmada: sem redução significativa, o que favorece o INT8.}
   \end{columns}
 \end{frame}
 
@@ -666,7 +632,7 @@
   linhas laranja dividem as fatias e os retângulos azuis marcam a face enviada ao classificador.}
 \end{frame}
 
-\begin{frame}{Resultados: H2 --- Custo Computacional e Latência}
+\begin{frame}{Resultados: H2 --- Custo Computacional no Nó}
   \begin{columns}[c]
     \column{0.57\textwidth}
     \centering
@@ -689,14 +655,62 @@
     \end{tikzpicture}
     \column{0.40\textwidth}
     \begin{itemize}\scriptsize
-      \item \textbf{Nó (H2)}: 1.917~ms (100\% núcleo 1) e \textbf{788,9~KB} PSRAM na borda $\times$ 11~ms e \textbf{148,9~KB} na nuvem (240~MHz). \etiqueta{corOk}{H2 CONFIRMADA}
-      \item \textbf{Latência ponta a ponta}: \textbf{3,50~s} (borda) $\times$ \textbf{148,3~s} (nuvem, classe A) --- borda $\approx$42$\times$ mais rápida.
-      \item \textbf{Entrega (classe A)}: 96,7\% (29/30) borda $\times$ 80,0\% (24/30) nuvem ($p = 0{,}10$).
+      \setlength{\itemsep}{2pt}
+      \item \textbf{Processamento no nó}: \textbf{1.917~ms} na borda (100\% do núcleo 1) $\times$ 11~ms na nuvem (captura e JPEG, $\approx$50\%), ambos a 240~MHz.
+      \item \textbf{Pico de PSRAM}: \textbf{788,9~KB} $\times$ 148,9~KB (arena de 768~KB; o modelo usa $<$29~KB).
+      \item \textbf{Servidor}: 1,91~ms para os 6 dígitos, $\approx$1.000$\times$ mais rápido que o nó.
     \end{itemize}
+    {\scriptsize H2 confirmada: a borda custa mais ao dispositivo final.}
   \end{columns}
 \end{frame}
 
-\begin{frame}{Resultados: H3 --- Energia e Autonomia}
+\begin{frame}{Resultados: Latência e Entrega (Métricas Complementares)}
+  \begin{columns}[t]
+    \column{0.49\textwidth}
+    \centering
+    {\footnotesize\bfseries\color{senacblue}Latência ponta a ponta (mediana)}\\[2pt]
+    \begin{tikzpicture}
+      \begin{axis}[estiloSlides, xbar, scale only axis, width=3.9cm, height=1.4cm,
+          bar width=0.38cm, xmin=0, xmax=200, xtick={0,50,100,150}, enlarge y limits=0.6,
+          symbolic y coords={nuvem,borda}, ytick={nuvem,borda}, yticklabels={Nuvem,Borda},
+          y dir=reverse, xlabel={Segundos desde o disparo},
+          nodes near coords, point meta=explicit symbolic,
+          nodes near coords style={font=\scriptsize\bfseries, anchor=west}]
+        \addplot[fill=corNuvem, draw=none, bar shift=0pt] coordinates {(148.3,nuvem) [148,3~s]};
+        \addplot[fill=corBorda, draw=none, bar shift=0pt] coordinates {(3.50,borda) [3,50~s]};
+      \end{axis}
+    \end{tikzpicture}
+    \begin{itemize}\scriptsize
+      \setlength{\itemsep}{1pt}
+      \item Borda \textbf{$\approx$42$\times$ mais rápida} e quase determinística: 3,501 a 3,505~s (desvio de 1~ms).
+      \item Nuvem: 132,3 a 156,6~s (desvio de 6,7~s). A imagem fica pronta em 0,70~s; o resto é a transmissão de 17 a 20 blocos ($\approx$7,8~s cada).
+    \end{itemize}
+    \column{0.49\textwidth}
+    \centering
+    {\footnotesize\bfseries\color{senacblue}Entrega dos dados}\\[2pt]
+    \begin{tikzpicture}
+      \begin{axis}[estiloSlides, ybar, width=\linewidth, height=3.5cm,
+          bar width=0.42cm, ymin=0, ymax=118, ytick={0,50,100}, enlarge x limits=0.5,
+          symbolic x coords={Pacotes,Leituras}, xtick=data,
+          ylabel={Entrega (\%)},
+          legend style={at={(0.5,1.02)}, anchor=south, legend columns=2},
+          nodes near coords, nodes near coords style={font=\tiny\bfseries},
+          point meta=explicit symbolic]
+        \addplot[fill=corNuvem, draw=none] coordinates {(Pacotes,98.9) [98,9] (Leituras,80.0) [80,0]};
+        \addplot[fill=corBorda, draw=none] coordinates {(Pacotes,96.7) [96,7] (Leituras,96.7) [96,7]};
+        \legend{Nuvem, Borda}
+      \end{axis}
+    \end{tikzpicture}
+    \begin{itemize}\scriptsize
+      \setlength{\itemsep}{1pt}
+      \item Sem retransmissão, 1 bloco perdido anula a imagem: 551/557 pacotes $\rightarrow$ 24/30 leituras.
+      \item Por leitura, 29/30 $\times$ 24/30, sem diferença significativa (Fisher, $p = 0{,}10$).
+    \end{itemize}
+  \end{columns}
+  \fonteslide{Fonte: Elaborado pelos autores (2026). Testes finais, com a ROI calibrada e o rádio em classe A.}
+\end{frame}
+
+\begin{frame}{Resultados: H3 --- Energia por Leitura}
   \begin{columns}[c]
     \column{0.6\textwidth}
     \centering
@@ -717,12 +731,44 @@
     \bignum[corBorda]{16,7$\times$}{menos carga por leitura na borda}
     \vspace{0.1cm}
     \begin{itemize}\scriptsize
-      \item Consumo regido pelo \textbf{tempo acordado} (147,6~s $\times$ 6,49~s).
-      \item \textbf{Classe A} reduziu o repouso de $\approx$24 para $\approx$6,2~mA.
-      \item Autonomia (2.000~mAh): \textbf{12,1} $\times$ 3,8 dias (1 leit./10~min); 13,2 $\times$ 9,5 dias (1 leit./h).
+      \setlength{\itemsep}{2pt}
+      \item 29 ciclos por fluxo: 2,91 $\pm$ 0,14~mAh (nuvem) $\times$ 0,175 $\pm$ 0,004~mAh (borda).
+      \item Consumo regido pelo \textbf{tempo acordado} (147,6~s $\times$ 6,49~s), com corrente média acordado parecida (69,9 $\times$ 71,4~mA).
+      \item Repouso de $\approx$6~mA nos dois fluxos (classe A).
     \end{itemize}
-    \etiqueta{corOk}{H3 CONFIRMADA}
   \end{columns}
+\end{frame}
+
+\begin{frame}{Resultados: H3 --- Autonomia Estimada}
+  \begin{columns}[c]
+    \column{0.55\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[estiloSlides, ybar, width=\linewidth, height=4.8cm,
+          bar width=0.6cm, ymin=0, ymax=16, enlarge x limits=0.5,
+          symbolic x coords={dez,hora}, xtick=data,
+          xticklabels={{1 leitura a cada 10~min},{1 leitura por hora}},
+          ylabel={Autonomia (dias)},
+          legend style={at={(0.5,1.02)}, anchor=south, legend columns=2},
+          nodes near coords, nodes near coords style={font=\scriptsize\bfseries},
+          point meta=explicit symbolic]
+        \addplot[fill=corNuvem, draw=none] coordinates {(dez,3.8) [3,8] (hora,9.5) [9,5]};
+        \addplot[fill=corBorda, draw=none] coordinates {(dez,12.1) [12,1] (hora,13.2) [13,2]};
+        \legend{Nuvem, Borda}
+      \end{axis}
+    \end{tikzpicture}\\
+    {\tiny Bateria ideal de 2.000~mAh e repouso medido de 6,2~mA}
+    \column{0.42\textwidth}
+    \bignum[corBorda]{3,2$\times$ e 1,4$\times$}{mais autonomia na borda (10~min e 1~h)}
+    \vspace{0.1cm}
+    \begin{itemize}\scriptsize
+      \setlength{\itemsep}{2pt}
+      \item Com 1 leitura por hora, o \textbf{repouso} gasta $\approx$6,2~mAh, contra 2,9~mAh de uma leitura na nuvem e 0,13~mAh na borda.
+      \item O próximo ganho está nos $\approx$6~mA de repouso, e não no fluxo.
+    \end{itemize}
+    {\scriptsize H3 confirmada, com magnitude dependente do repouso.}
+  \end{columns}
+  \fonteslide{Fonte: Elaborado pelos autores (2026). Modelo ideal, sem perdas do regulador nem autodescarga; o modelo reproduz as cargas medidas (2,92 e 0,180 contra 2,91 e 0,175~mAh).}
 \end{frame}
 
 \subsection{Retomada dos Objetivos}
@@ -792,116 +838,6 @@
   {\Large\bfseries\color{senacblue}Obrigado!\par}
   \vspace{0.25cm}
   {\normalsize Perguntas?\par}
-\end{frame}
-
-% ---------------------------------------------------------------
-% APÊNDICE
-% ---------------------------------------------------------------
-\appendix
-
-\begin{frame}{Apoio - Corrente do Nó em um Ciclo (Classe A)}
-  \centering
-  \begin{tikzpicture}
-    \begin{groupplot}[estiloSlides,
-        group style={group size=1 by 2, vertical sep=1.15cm},
-        width=0.95\textwidth, height=2.9cm,
-        xmin=0, xmax=175, ymin=0, ymax=250, ytick={0,100,200},
-        ylabel={mA}]
-      \nextgroupplot[title={\color{corNuvem}Nuvem: ciclo de 171~s, 2,88~mAh (média de 2,91~mAh)}]
-      \IfFileExists{sections/dados/corrente_ciclo_nuvem_classe_a.dat}{%
-        \addplot[color=corNuvem, line width=0.35pt] table {sections/dados/corrente_ciclo_nuvem_classe_a.dat};
-      }{%
-        \addplot[color=corNuvem, line width=0.8pt] coordinates {
-          (0,6.3) (0.2,145) (1.5,185) (2.0,65) (10,72) (30,68) (60,75) (90,69) (120,74) (147.6,70) (148.0,6.3) (171,6.3)
-        };
-      }
-      \nextgroupplot[title={\color{corBorda}Borda: ciclo de 34~s, 0,176~mAh (média de 0,175~mAh)},
-                     xlabel={Tempo desde o despertar (s)}]
-      \IfFileExists{sections/dados/corrente_ciclo_borda_classe_a.dat}{%
-        \addplot[color=corBorda, line width=0.35pt] table {sections/dados/corrente_ciclo_borda_classe_a.dat};
-      }{%
-        \addplot[color=corBorda, line width=0.8pt] coordinates {
-          (0,6.1) (0.2,145) (1.2,180) (1.6,95) (3.5,98) (4.5,130) (6.49,68) (6.8,6.1) (34,6.1)
-        };
-      }
-    \end{groupplot}
-  \end{tikzpicture}
-  \fonteslide{ROI calibrada e rádio em classe A, repouso de 30~s (testes finais). Envelope mín./máx. a cada 0,25~s (100~Hz).}
-\end{frame}
-
-\begin{frame}{Apoio - Precisão Exigida da ROI}
-  \begin{columns}[c]
-    \column{0.6\textwidth}
-    \centering
-    \begin{tikzpicture}
-      \begin{axis}[estiloSlides, width=\linewidth, height=4.9cm,
-          xmin=-0.3, xmax=6.3, ymin=0, ymax=100,
-          xtick={0,1,2,3,4,6}, xticklabels={0,$\pm$1,$\pm$2,$\pm$3,$\pm$4,$\pm$6},
-          xlabel={Erro máximo sorteado em cada coordenada da ROI (pixels)},
-          ylabel={Leituras exatas (\%)}, legend pos=south west]
-        \addplot[color=senacblue, line width=1pt, mark=*, mark size=1.6pt]
-          coordinates {(0,82) (1,71) (2,62) (3,51) (4,40) (6,20)};
-        \addlegendentry{Fatias iguais}
-        \addplot[color=senacorange, line width=1pt, mark=square*, mark size=1.5pt, densely dashed, mark options={solid}]
-          coordinates {(0,87) (1,81) (2,70) (3,64) (4,50) (6,26)};
-        \addlegendentry{Votação entre 5 caixas}
-      \end{axis}
-    \end{tikzpicture}
-    \column{0.37\textwidth}
-    \begin{itemize}\scriptsize
-      \item Cada dígito tem $\approx$16~px de largura: $\pm$2~px já deslocam 1/8 do dígito.
-      \item Votação compensa $\approx$1~px ao custo de 5 inferências no servidor.
-      \item Câmera fixa preservou a ROI entre leituras no medidor da bancada.
-    \end{itemize}
-  \end{columns}
-  \fonteslide{Conjunto comum, fluxo em nuvem, quadro endireitado.}
-\end{frame}
-
-\begin{frame}{Apoio - Memória do TensorFlow Lite Micro}
-  \centering
-  \scriptsize
-  \renewcommand{\arraystretch}{1.2}
-  \begin{tabular}{@{}lrr@{}}
-    \toprule
-    \textbf{Item} & \textbf{Reservado (bytes)} & \textbf{Usado (bytes)} \\
-    \midrule
-    Buffer de quadro da câmera & --- & $\approx$19.216 \\
-    Arena do classificador de dígitos & 786.432 & 28.556 \\
-    \bottomrule
-  \end{tabular}
-
-  \vspace{0.3cm}
-  \begin{itemize}\scriptsize
-    \item Com ROI calibrada, apenas o classificador é carregado: pico de \textbf{788,9~KB} de PSRAM (modelo usa $<$29~KB).
-    \item Firmware compilado ocupa 563~KB ($\approx$17\% da memória de programa); arena de 768~KB mostrou-se superdimensionada.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Apoio - Entrega dos Dados (PDR $\times$ Leitura)}
-  \begin{columns}[c]
-    \column{0.58\textwidth}
-    \centering
-    \begin{tikzpicture}
-      \begin{axis}[estiloSlides, ybar, width=\linewidth, height=4.6cm,
-          bar width=0.65cm, ymin=0, ymax=112, enlarge x limits=0.45,
-          symbolic x coords={Pacotes,Leituras}, xtick=data,
-          ylabel={Taxa de entrega (\%)},
-          legend style={at={(0.5,1.02)}, anchor=south, legend columns=2},
-          nodes near coords, nodes near coords style={font=\scriptsize\bfseries},
-          point meta=explicit symbolic]
-        \addplot[fill=corNuvem, draw=none] coordinates {(Pacotes,98.9) [98,9] (Leituras,80.0) [80,0]};
-        \addplot[fill=corBorda, draw=none] coordinates {(Pacotes,96.7) [96,7] (Leituras,96.7) [96,7]};
-        \legend{Nuvem, Borda}
-      \end{axis}
-    \end{tikzpicture}\\
-    {\tiny Testes finais: ROI calibrada e rádio em classe A}
-    \column{0.39\textwidth}
-    \begin{itemize}\scriptsize
-      \item Sem retransmissão no modo autônomo, 1 bloco perdido anula a imagem: 551/557 (98,9\%) PDR $\rightarrow$ 24/30 (80,0\%) leituras.
-      \item Borda: 29/30 (96,7\%) por pacote e por leitura; Fisher $p = 0{,}10$.
-      \item Nos testes iniciais (classe C), a entrega por leitura foi de 66,7\% (nuvem) e 79,4\% (borda).
-    \end{itemize}
-  \end{columns}
 \end{frame}
 
 \end{document}
