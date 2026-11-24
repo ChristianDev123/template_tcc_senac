@@ -545,27 +545,6 @@
   \fonteslide{Fonte: Elaborado pelos autores (2026).}
 \end{frame}
 
-\begin{frame}{Implementação: Hardware, Enlace e OCR}
-  \begin{columns}[t]
-    \column{0.48\textwidth}
-    {\footnotesize\bfseries\color{senacblue}Hardware e Enlace}
-    \begin{itemize}\scriptsize
-      \setlength{\itemsep}{3pt}
-      \item \textbf{Nó}: AI-Thinker ESP32-CAM (240~MHz, 4~MB PSRAM) + Radioenge RD49C; \textit{power-down} da câmera após captura.
-      \item \textbf{Rede}: AU915, canal 64 (915,9~MHz), \textbf{DR6 (SF8 / 500~kHz)}, CR 4/5, +20~dBm, ABP, \textbf{Classe A}.
-      \item \textbf{Tráfego}: \textbf{9~B} (1 pacote, $\approx$25,7~ms no ar) na borda $\times$ \textbf{2,9--3,4~KB} (17--20 pacotes nos testes finais) na nuvem.
-    \end{itemize}
-    \column{0.49\textwidth}
-    {\footnotesize\bfseries\color{senacblue}Pipeline OCR e ROI}
-    \begin{itemize}\scriptsize
-      \setlength{\itemsep}{3pt}
-      \item \textbf{CNN}: entrada $28\times28$ em cinza (72.442 parâmetros; \textbf{81,5~KB} em INT8 pós-treinamento).
-      \item \textbf{Treino em 2 fases}: 49.038 recortes públicos (41.660 treino / 7.378 validação) + 24 recortes do ESP32-CAM.
-      \item \textbf{ROI calibrada}: salva na flash do nó com recorte da \textbf{face do rolete} (14\%--74\% da largura).
-    \end{itemize}
-  \end{columns}
-\end{frame}
-
 \subsection{Resultados Alcançados}
 \begin{frame}{Resultados: H1 --- Quantização INT8}
   \begin{columns}[c]
