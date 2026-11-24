@@ -254,6 +254,9 @@
 \glsadd{aes}\glsadd{anatel}\glsadd{api}\glsadd{cer}\glsadd{csv}\glsadd{led}\glsadd{fp32}\glsadd{int8}\glsadd{iou}%
 \glsadd{jpeg}\glsadd{mic}\glsadd{psram}\glsadd{uart}\glsadd{usb}%
 \printglossary[type=\acronymtype, title={Lista de Abreviaturas e Siglas}, style=long, nonumberlist]
+% O estilo long usa longtable, que incrementa o contador de tabelas; sem isto a
+% primeira tabela do texto seria numerada como Tabela 2.
+\setcounter{table}{0}
 \cleardoublepage
 
 \vspace{\onelineskip}

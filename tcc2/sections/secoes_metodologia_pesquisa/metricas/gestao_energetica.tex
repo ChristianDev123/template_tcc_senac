@@ -1,30 +1,22 @@
 
 Utilizando como base as métricas levantadas por \citeonline{Ferreira2020}, no
 que tange ao consumo energético de nós sensores baseados em ESP32,
-implementa-se a medição do pico de consumo no período de processamento e da
-autonomia energética do dispositivo ao longo do tempo, métricas que pautam a
-validade da hipótese \textit{H3}.
+implementa-se a medição da corrente de pico durante o processamento e a
+transmissão, da carga consumida por leitura e da autonomia energética do
+dispositivo ao longo do tempo, métricas que pautam a validade da hipótese
+\textit{H3}.
 
-O pico de potência instantânea consumida durante a janela crítica de
-processamento e transmissão ($P_{\text{pico}}$, em watts) e a autonomia
-energética estimada ($A$, em dias) para uma bateria de capacidade nominal
-$C_{\text{bat}}$ (em mAh) submetida a um consumo médio de corrente ao longo do
-tempo ($I_{\text{médio}}$, em mA) são definidos pelas
-Equações~\eqref{eq:pico_consumo} e \eqref{eq:autonomia_energetica}:
-
-\begin{equation}
-    \label{eq:pico_consumo}
-    P_{\text{pico}} = V_{\text{alim}} \times I_{\text{pico}}
-\end{equation}
+A corrente de pico ($I_{\text{pico}}$, em mA) é a maior corrente registrada
+durante a execução da inferência embarcada ou do envio de pacotes via rádio
+\gls{lora}. A autonomia energética estimada ($A$, em dias) de uma bateria de
+capacidade nominal $C_{\text{bat}}$ (em mAh), submetida a uma corrente média
+$I_{\text{médio}}$ (em mA) ao longo do tempo, é dada pela
+Equação~\eqref{eq:autonomia_energetica}:
 
 \begin{equation}
     \label{eq:autonomia_energetica}
     A = \frac{C_{\text{bat}}}{I_{\text{médio}} \times 24}
 \end{equation}
-
-Em que $V_{\text{alim}}$ representa a tensão de alimentação do módulo (5~V) e
-$I_{\text{pico}}$ corresponde à corrente máxima registrada durante a execução
-ativa da inferência embarcada ou do envio de pacotes via rádio \gls{lora}.
 
 A carga consumida em uma leitura é a integral da corrente $i(t)$ ao
 longo de um ciclo completo, de um despertar ao seguinte, incluindo o repouso, calculada pela
@@ -48,6 +40,7 @@ $C_{\mathrm{bat}}$ em mAh, é então:
     A = \frac{C_{\mathrm{bat}}}{Q_{\mathrm{leitura}}(T)} \cdot \frac{T}{86400}
 \end{equation}
 
-O modelo é ideal: não considera as perdas do regulador, a autodescarga nem a variação da
+\noindent Essa expressão é a Equação~\eqref{eq:autonomia_energetica} aplicada à corrente
+média do ciclo, $I_{\text{médio}} = 3600\,Q_{\mathrm{leitura}}(T)/T$. O modelo é ideal: não considera as perdas do regulador, a autodescarga nem a variação da
 capacidade da bateria com a temperatura, de modo que a autonomia calculada é um limite
 superior.

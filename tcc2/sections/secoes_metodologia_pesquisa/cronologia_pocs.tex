@@ -75,8 +75,8 @@ de imagem para um único quadro de 9~bytes contendo a leitura decodificada envia
 porta \texttt{FPort~2}.
 
 Para viabilizar a execução embarcada dentro das restrições de memória e processamento,
-todas as entradas foram processadas em canal único (escala de cinza), e consolidou-se o
-pipeline embarcado definitivo, composto por uma rede codificador--decodificador leve
+todas as entradas foram processadas em canal único (escala de cinza), e o primeiro
+pipeline embarcado foi composto por uma rede codificador--decodificador leve
 ($192 \times 192$ pixels, 11,8~KB em INT8) e uma \gls{cnn} classificadora de dígitos de
 $28 \times 28$ pixels (81,5~KB em INT8), estruturada com camadas convolucionais,
 \textit{max-pooling} $2 \times 2$ e camadas totalmente conectadas. O classificador foi
@@ -131,7 +131,7 @@ e, no conjunto de teste comum, a caixa prevista teve mediana de $130 \times 90$ 
 contra cerca de $97 \times 18$ pixels da janela real. Com essa caixa, cada fatia continha
 pedaços de vários roletes, e nenhuma das 39 fotos foi lida corretamente; com a janela
 marcada à mão, o mesmo classificador leu 46\% das leituras. No nó, a localização também era
-o passo mais caro: levava cerca de 15,5~s dos 17,6~s de processamento de uma leitura e
+o passo mais caro: levava cerca de 15,6~s dos 17,6~s de processamento de uma leitura e
 ocupava cerca de 1,6~MB de PSRAM. Por isso, ela foi substituída pela ROI calibrada à mão
 (Seção~\ref{subsubsec:leitura_roi}).
 

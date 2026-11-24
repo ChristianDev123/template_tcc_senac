@@ -64,7 +64,7 @@ Integrado de forma homogênea ao TensorFlow,
 o Keras é uma API de alto nível desenvolvida pelo Google (lançada em 2015) 
 com o foco em simplificar o desenvolvimento de redes neurais com poucas linhas de código.
 
-O TensorFlow Lite (TFLite), oficialmente anunciado pelo Google em 2017, é um framework que tem por objetivo viabilizar o desenvolvimento de soluções com base em \gls{ia} em microcontroladores. Tal ferramenta fornece os SDKs necessários para executar modelos minimizados em microcontroladores de desempenho limitado. Desde 2024, o TFLite foi renomeado como LiteRT, sem grandes alterações estruturais em seu funcionamento, mantendo inclusive a extensão \textit{.tflite} nos arquivos de modelo.
+O TensorFlow Lite (TFLite), oficialmente anunciado pelo Google em 2017, é a versão do TensorFlow voltada à execução de modelos de \gls{ia} em dispositivos móveis e embarcados. Sua variante para microcontroladores, o TensorFlow Lite Micro, usada no firmware deste trabalho, executa modelos minimizados em microcontroladores de desempenho limitado. Desde 2024, o TFLite foi renomeado como LiteRT, sem grandes alterações estruturais em seu funcionamento, mantendo inclusive a extensão \textit{.tflite} nos arquivos de modelo.
 
 
 \subsubsection{Arduino IDE e Arduino CLI}
@@ -87,15 +87,15 @@ ferramenta de linha de comando desenvolvida para agilizar compilações, testes,
 de bibliotecas e automação de tarefas relacionadas ao desenvolvimento de sistemas baseados
 em microcontroladores.
 
-\paragraph{C (.ino)}
-A linguagem C, implementada em arquivos \texttt{.ino} neste trabalho, 
+\paragraph{C++ (.ino)}
+A linguagem C++, usada nos arquivos \texttt{.ino} do core Arduino-ESP32 neste trabalho,
 foi utilizada para realizar a comunicação e a orquestração de funções do 
 hardware do \gls{esp32cam} e de seus módulos. 
 Essa linguagem possui grande relevância no cenário de dispositivos \gls{iot} 
 por proporcionar alta granularidade no controle de memória RAM 
 e PSRAM alocadas às mais diversas tarefas. 
 
-\begin{lstlisting}[language=C++, caption={Exemplo ilustrativo de código em C para ESP32}]
+\begin{lstlisting}[language=C++, caption={Exemplo ilustrativo de código em C++ para ESP32}]
 #define LORA_RX_PIN 15 // Conectado ao TX da Radioenge (Pino 3)
 #define LORA_TX_PIN 14 // Conectado ao RX da Radioenge (Pino 2)
 
