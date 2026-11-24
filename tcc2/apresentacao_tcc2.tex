@@ -613,34 +613,40 @@
 
 \begin{frame}{Resultados: H2 --- Custo Computacional no Nó}
   \begin{columns}[c]
-    \column{0.57\textwidth}
+    \column{0.55\textwidth}
     \centering
     \begin{tikzpicture}
-      \begin{axis}[estiloSlides, xbar, xmode=log, log basis x=10, log origin=infty,
-          scale only axis, width=3.9cm, height=3.5cm, bar width=0.38cm, enlarge y limits=0.16,
-          xmin=1, xmax=1000000, xtick={1,100,10000,1000000},
-          xticklabels={1,100,{10.000},{1.000.000}},
-          xlabel={Tempo por leitura (ms, escala log.)},
-          symbolic y coords={srv,jpeg,roi,loc}, ytick={srv,jpeg,roi,loc}, y dir=reverse,
-          yticklabels={{Servidor: 6 dígitos},{Nuvem: comp. JPEG},{Borda: 6 dígitos (ROI)},{Borda: loc. inicial}},
-          yticklabel style={font=\tiny, align=right},
+      \begin{groupplot}[estiloSlides,
+          group style={group size=1 by 2, vertical sep=1.75cm},
+          xbar, scale only axis, width=3.9cm, height=1.15cm,
+          enlarge y limits=0.55, symbolic y coords={nuvem,borda}, ytick={nuvem,borda},
+          yticklabels={Nuvem,Borda}, y dir=reverse, yticklabel style={font=\scriptsize},
           nodes near coords, point meta=explicit symbolic,
-          nodes near coords style={font=\scriptsize, anchor=west}]
-        \addplot[fill=corNuvem!45, draw=none, bar shift=0pt] coordinates {(1.91,srv) [1,91~ms]};
-        \addplot[fill=corNuvem, draw=none, bar shift=0pt] coordinates {(11,jpeg) [11~ms]};
-        \addplot[fill=corBorda, draw=none, bar shift=0pt] coordinates {(1917,roi) [1.917~ms]};
-        \addplot[fill=corBorda!45, draw=none, bar shift=0pt] coordinates {(17568,loc) [17.568~ms]};
-      \end{axis}
+          nodes near coords style={font=\scriptsize\bfseries, anchor=west},
+          every axis plot/.append style={bar width=0.34cm, bar shift=0pt}]
+        \nextgroupplot[title={Processamento da imagem no ESP32-CAM},
+            xmode=log, log basis x=10, log origin=infty, xmin=1, xmax=100000,
+            xtick={1,100,10000}, xticklabels={1,100,{10.000}},
+            xlabel={ms (escala log.)}]
+        \addplot[fill=corNuvem, draw=none, bar shift=0pt] coordinates {(11,nuvem) [11~ms]};
+        \addplot[fill=corBorda, draw=none, bar shift=0pt] coordinates {(1917,borda) [1.917~ms]};
+        \nextgroupplot[title={Pico de PSRAM no ESP32-CAM},
+            xmin=0, xmax=1150, xtick={0,400,800}, xlabel={KB (de 4~MB)}]
+        \addplot[fill=corNuvem, draw=none, bar shift=0pt] coordinates {(148.9,nuvem) [148,9~KB]};
+        \addplot[fill=corBorda, draw=none, bar shift=0pt] coordinates {(788.9,borda) [788,9~KB]};
+      \end{groupplot}
     \end{tikzpicture}
-    \column{0.40\textwidth}
+    \column{0.42\textwidth}
     \begin{itemize}\scriptsize
       \setlength{\itemsep}{2pt}
-      \item \textbf{Processamento no nó}: \textbf{1.917~ms} na borda (100\% do núcleo 1) $\times$ 11~ms na nuvem (captura e JPEG, $\approx$50\%), ambos a 240~MHz.
-      \item \textbf{Pico de PSRAM}: \textbf{788,9~KB} $\times$ 148,9~KB (arena de 768~KB; o modelo usa $<$29~KB).
-      \item \textbf{Servidor}: 1,91~ms para os 6 dígitos, $\approx$1.000$\times$ mais rápido que o nó.
+      \item \textbf{Borda}: classifica os 6 dígitos no nó, \textbf{1.917~ms} com o núcleo 1 a \textbf{100\%}.
+      \item \textbf{Nuvem}: no nó, só captura e comprime em JPEG, 11~ms com o núcleo 1 a $\approx$50\%.
+      \item CPU a 240~MHz nos dois fluxos.
+      \item PSRAM: a arena de 768~KB domina o pico da borda; o modelo usa $<$29~KB dela.
     \end{itemize}
     {\scriptsize H2 confirmada: a borda custa mais ao dispositivo final.}
   \end{columns}
+  \fonteslide{Fonte: Elaborado pelos autores (2026). Medianas de 30 ciclos por fluxo, com a ROI calibrada e o rádio em classe A.}
 \end{frame}
 
 \begin{frame}{Resultados: Latência e Entrega (Métricas Complementares)}
@@ -767,18 +773,18 @@
 
 \subsection{Contribuição para a Computação}
 \begin{frame}{Contribuição para a Computação}
-  \begin{itemize}\scriptsize
+  \begin{block}{Comparação controlada borda $\times$ nuvem}
+    \footnotesize Mesmo hardware, modelos e enlace LoRaWAN: as diferenças medidas vêm só do local do processamento, em um caso real de \textit{smart metering}.
+  \end{block}
+  \vspace{0.15cm}
+  \begin{enumerate}\footnotesize
     \setlength{\itemsep}{4pt}
-    \item \textbf{Benchmark controlado}: comparação direta \textit{Edge} $\times$ \textit{Cloud} sobre o mesmo hardware, modelos e enlace LoRaWAN.
-    \item \textbf{Três diretrizes para projetos IoT de baixa taxa}:
-      \begin{enumerate}\scriptsize
-        \item volume transmitido domina latência e consumo por leitura mais que a velocidade de inferência;
-        \item ganho de autonomia na borda depende da redução da corrente em repouso (Classe A);
-        \item precisão da ROI e recorte da face da roda importam mais que a arquitetura ou quantização INT8.
-      \end{enumerate}
-    \item \textbf{Conformidade regulatória}: envio de blocos de imagem em canal fixo de 500~kHz no AU915 (item 10.3/ANATEL).
-    \item \textbf{Reprodutibilidade}: firmwares, calibrador de ROI, \textit{scripts} e dados de medição em repositório público.
-  \end{itemize}
+    \item \textbf{Onde computar (\textit{offloading})}: em redes de baixa taxa, o custo de comunicação domina o de computação. Mesmo $\approx$1.000$\times$ mais lento que o servidor, o nó entregou a leitura com 42$\times$ menos latência e 16,7$\times$ menos energia.
+    \item \textbf{Aprendizado de máquina embarcado}: a quantização INT8 pós-treinamento não reduziu a acurácia de forma significativa (McNemar, $p = 0{,}29$) em um modelo de 81,5~KB; a qualidade da entrada (ROI e face da roda) pesou mais que o modelo.
+    \item \textbf{Método de avaliação}: comparação controlada, com testes estatísticos exatos (McNemar e Fisher) e um conjunto de teste mantido fora do treino.
+    \item \textbf{Reprodutibilidade}: código e dados em repositório público (tag \texttt{tcc2-resultados}).
+  \end{enumerate}
+  \fonteslide{Fonte: Elaborado pelos autores (2026).}
 \end{frame}
 
 \subsection{Limitações}

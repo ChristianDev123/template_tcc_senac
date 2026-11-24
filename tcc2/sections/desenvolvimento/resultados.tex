@@ -88,11 +88,7 @@ por classe compensaram apenas em parte o excesso de zeros no treino.
 No teste independente, com as 1.894 imagens que ficaram fora de todo o treinamento, o
 modelo INT8 leu 92,8\% das leituras inteiras e 97,7\% dos dígitos, com CER de 0,023. O
 ajuste fino com as imagens do \gls{esp32cam} (fase B) não prejudicou a generalização:
-melhorou 0,4 ponto percentual a leitura exata em relação ao modelo da fase A. Esse número
-é inferior aos 95,6\% de leituras exatas que uma versão anterior do classificador obtinha
-nesse mesmo conjunto, mas aquela versão havia sido treinada com essas imagens. A diferença
-mostra o quanto um teste contaminado pelo treino superestima o desempenho, e é por isso que
-o valor adotado é o do teste independente.
+melhorou 0,4 ponto percentual a leitura exata em relação ao modelo da fase A.
 
 Quanto à hipótese H1, o modelo INT8 teve acurácia numericamente menor que a do modelo em
 ponto flutuante, mas a diferença, de 0,08 ponto percentual na validação (0,001 no
