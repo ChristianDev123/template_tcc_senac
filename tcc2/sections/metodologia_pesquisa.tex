@@ -1,46 +1,76 @@
-A pesquisa bibliográfica foi conduzida de forma sistemática, 
-estruturando-se em três temas principais: Hardware, Software e Redes. 
-Para a seleção dos trabalhos, utilizaram-se as bases de dados Google Scholar, MDPI e Intechopen.
+A pesquisa bibliográfica foi conduzida de forma sistemática, em um fluxo de filtragem em
+etapas (funil), resumido na Figura~\ref{fig:funil_bibliografico}. A busca foi iniciada nas
+bases das editoras MDPI e IntechOpen, com \textit{strings} de busca majoritariamente em
+inglês, tais como ``iot AND energy efficiency'' e ``ESP32 AND camera monitoring'', listadas
+na Tabela~\ref{tab:strings_busca}. Como ferramentas auxiliares na descoberta de conexões
+entre autores e na triagem inicial de relevância, foram utilizadas as plataformas
+ResearchRabbit e Gemini Deep Research.
 
-O processo de seleção seguiu um fluxo de filtragem (funil). 
-Inicialmente, foram identificados 120 artigos por meio da análise de títulos, 
-utilizando strings de busca majoritariamente em inglês,
-tais como ``iot AND energy efficiency'' e ``ESP32 AND camera monitoring'', listadas na
-Tabela~\ref{tab:strings_busca}.  
-Como ferramentas auxiliares na descoberta de conexões entre autores e na triagem inicial de relevância, 
-foram utilizadas as plataformas ResearchRabbit e Gemini Deep Research.
+Na primeira etapa, foram identificados 120 trabalhos, dos quais foram lidos o título e as
+palavras-chave. Os 60 considerados mais relevantes seguiram para a etapa seguinte e foram
+divididos em três temas, Redes, Hardware e Software, cada um analisado por um integrante
+do grupo.
 
-Na etapa de refinamento, aplicou-se a leitura dos resumos (abstracts) 
-e a verificação de disponibilidade integral dos textos. 
-Foram adotados como critérios de inclusão: artigos publicados entre 2020 e 2026, 
-relevância direta para sistemas de telemetria e foco em implementações práticas. 
-Como critério de exclusão, descartaram-se trabalhos com acesso restrito ou que não 
-apresentassem detalhes técnicos sobre a integração dos eixos propostos.
+Na etapa de refinamento, aplicou-se a leitura dos resumos (\textit{abstracts}) e a
+verificação de disponibilidade integral dos textos. Foram adotados como critérios de
+inclusão: artigos publicados entre 2020 e 2026, relevância direta para sistemas de
+telemetria e foco em implementações práticas. Como critérios de exclusão, descartaram-se
+trabalhos com acesso restrito, sem métricas relevantes para a comparação proposta, sem
+detalhes técnicos sobre a integração dos eixos propostos ou com eixo temático muito
+distante do deste trabalho. Ao final, foram selecionados dez trabalhos de cada tema, cerca
+de 30 no total.
+
+\begin{figure}[H]
+    \centering
+    \caption{Etapas da seleção dos trabalhos na pesquisa bibliográfica}
+    \label{fig:funil_bibliografico}
+    \begin{tikzpicture}[
+        etapa/.style={draw, rounded corners=2pt, align=center, font=\small,
+                      minimum height=1.05cm, inner sep=4pt},
+        seta/.style={-{Stealth[length=2mm]}, thick}]
+        \node[etapa, text width=0.98\textwidth] (e1) at (0,0)
+            {\textbf{120 trabalhos identificados} nas bases MDPI e IntechOpen\\
+             leitura do título e das palavras-chave};
+        \node[etapa, text width=0.82\textwidth] (e2) at (0,-1.85)
+            {\textbf{60 trabalhos mais relevantes}\\
+             divididos em Redes, Hardware e Software, um tema por integrante};
+        \node[etapa, text width=0.66\textwidth] (e3) at (0,-3.7)
+            {\textbf{Cerca de 30 trabalhos} (dez por tema)\\
+             leitura dos resumos e critérios de inclusão e exclusão};
+        \node[etapa, dashed, text width=0.82\textwidth] (e4) at (0,-5.55)
+            {\textbf{Trabalhos incorporados ao longo do desenvolvimento}\\
+             obras seminais e trabalhos sobre tecnologias específicas, sem filtro de data};
+        \draw[seta] (e1) -- (e2);
+        \draw[seta] (e2) -- (e3);
+        \draw[seta] (e3) -- (e4);
+    \end{tikzpicture}
+    \legend{Fonte: Elaborado pelos autores (2026).}
+\end{figure}
 
 \begin{table}[H]
     \centering
     \caption{Strings de busca utilizadas no levantamento bibliográfico.}
     \label{tab:strings_busca}
-    \begin{tabular}{@{}lll@{}}
+    % Aspas tipográficas (``...''): com o babel em português, a aspa reta " é um atalho
+    % que consome o espaço seguinte e juntava as palavras das strings.
+    \begin{tabularx}{\textwidth}{@{}ll>{\raggedright\arraybackslash}X@{}}
     \toprule
     \textbf{ID} & \textbf{Eixo Temático} & \textbf{String de Busca} \\ \midrule
-        ST01 & Redes & "IoT" AND "\gls{lorawan}" AND "water waste" \\
+        ST01 & Redes & ``IoT'' AND ``LoRaWAN'' AND ``water waste'' \\
         ST02 & Contexto & smart water meter market \\
         ST03 & Contexto & smart water meter costs and benefits \\
-        ST04 & Hardware & "IoT" AND "energy efficiency" \\
-        ST05 & Hardware & "ESP32" AND "camera monitoring" \\
-        ST06 & Hardware & "\gls{esp32cam}" AND "analog meter" AND "OCR" \\
-        ST07 & Software & "automatic meter reading" OCR accuracy "error rate" evaluation \\
-        ST08 & Redes & "packet delivery ratio" \gls{lorawan} "latency" monitoring system \\
-        ST09 & Contexto & "water consumption prediction" "mean absolute error" forecasting metrics \\ \bottomrule
-    \end{tabular}
+        ST04 & Hardware & ``IoT'' AND ``energy efficiency'' \\
+        ST05 & Hardware & ``ESP32'' AND ``camera monitoring'' \\
+        ST06 & Hardware & ``ESP32-CAM'' AND ``analog meter'' AND ``OCR'' \\
+        ST07 & Software & ``automatic meter reading'' OCR accuracy ``error rate'' evaluation \\
+        ST08 & Redes & ``packet delivery ratio'' LoRaWAN ``latency'' monitoring system \\
+        ST09 & Contexto & ``water consumption prediction'' ``mean absolute error'' forecasting metrics \\ \bottomrule
+    \end{tabularx}
     \legend{Fonte: Elaborado pelos autores (2026).}
 \end{table}
 
-
-Ao decorrer do desenvolvimento do trabalho surgiu a necessidade da inclusão de novos trabalhos, 
-muitos deles sendo seminais, 
-fundamentais para o entendimento do funcionamento de algum componente utilizado na etapa de desenvolvimento, 
-para estes não se adotou filtro de datas de publicação. 
-E de maneira aditiva, 
-foram incorporados novos trabalhos que baseiam a implementação de tecnologias específicas.
+Ao longo do desenvolvimento do trabalho, novos trabalhos foram incorporados conforme se
+mostraram relevantes. Muitos deles são seminais, fundamentais para o entendimento do
+funcionamento de algum componente utilizado na etapa de desenvolvimento, e, para estes, não
+se adotou filtro de datas de publicação. De maneira aditiva, também foram incorporados
+trabalhos que embasam a implementação de tecnologias específicas.
